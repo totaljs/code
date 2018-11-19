@@ -1,0 +1,7 @@
+name                  : Code
+allow_custom_titles   : true
+
+cookie                : __sauth
+authkey               : seEdCollabo
+
+backup                : /www/tmp/backup/

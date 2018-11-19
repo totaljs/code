@@ -1,0 +1,85 @@
+<div class="container">
+	<br />
+	<div class="fullheight">
+
+		<div class="toolbar">
+			<button class="exec" data-exec="projects/create"><i class="fa fa-plus-circle"></i>@(Add)</button>
+			<button data-bind="projects.checked__disabled:!value || !value.length" class="exec" data-exec="projects/options" disabled><i class="fa fa-check-circle"></i>@(Selected)</button>
+		</div>
+
+		<div data-jc="datagrid__projects.grid__click:projects/edit;checked:projects/checked;highlight:true">
+			<script type="text/plain">
+				[
+					{ name: 'name', text: '@(Name)', width: 200 },
+					{ name: 'url', text: '@(URL)', width: 200 },
+					{ name: 'path', text: '@(Path)', width: 200 },
+					{ name: 'users', text: '@(Users)', template: '{{ foreach m in users }}<span class="badge badge-small badge-blue">{{ m }}</span>{{ end }}', width: 200 },
+					{ name: 'created', text: '@(Created)', align: 'center', template: '{{ created | format(\'dd.MM.yyyy\') }}', align: 1, width: 100 }
+				]
+			</script>
+		</div>
+
+	</div>
+</div>
+
+<div data-jc="importer__common.form__if:projectsform;url:/forms/project.html"></div>
+
+<script>
+
+	PLUGIN('projects', function(exports) {
+
+		exports.create = function() {
+			SET('projectsform.id', null);
+			DEFAULT('projectsform.*');
+			SET('common.form', 'projectsform');
+		};
+
+		exports.refresh = function() {
+			AJAX('GET /api/projects/', 'projects.grid');
+		};
+
+		exports.reload = function() {
+			setTimeout(EXEC2('#resize'), 100);
+			exports.refresh();
+		};
+
+		exports.edit = function(row) {
+			row && AJAX('GET /api/projects/{id}/'.arg(row), function(response) {
+				SETR('projectsform', response);
+				SET('common.form', 'projectsform');
+			});
+		};
+
+		exports.checked = function(rows) {
+			SET('projects.checked', rows);
+		};
+
+		exports.options = function(el) {
+
+			var items = [];
+
+			items.push({ value: 255, name: '@(Remove)', icon: 'times-circle red' });
+
+			SETTER('menu', 'show', 'right', el, items, function(item) {
+				switch (item.value) {
+					case 255:
+						SETTER('confirm', 'show', '@(Are you sure you want to remove selected projects?)', ['"trash-o"@(Remove)', '@(Cancel)'], function(index) {
+							if (!index) {
+								SETTER('loading', 'show');
+								projects.checked.wait(function(item, next) {
+									AJAX('DELETE /api/projects/{id}/'.arg(item), next);
+								}, function() {
+									SETTER('loading', 'hide', 100);
+									SETTER('snackbar', 'success', '@(Selected projects have been removed.)');
+									exports.refresh();
+								});
+							}
+						});
+						break;
+				}
+			});
+		};
+
+	});
+
+</script>

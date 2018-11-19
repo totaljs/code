@@ -1,0 +1,88 @@
+<div class="container">
+	<br />
+	<div class="fullheight">
+
+		<div class="toolbar">
+			<button class="exec" data-exec="users/create"><i class="fa fa-plus-circle"></i>@(Add)</button>
+			<button data-bind="users.checked__disabled:!value || !value.length" class="exec" data-exec="users/options" disabled><i class="fa fa-check-circle"></i>@(Selected)</button>
+		</div>
+
+		<div data-jc="datagrid__users.grid__click:users/edit;checked:users/checked;highlight:true">
+			<script type="text/plain">
+				[
+					{ name: 'id', text: '@(User ID)', template: '{{ if online }}<i class="fa fa-circle green fs11 mr5" title="@(Online)"></i>{{ fi }}{{ id }}', width: 130 },
+					{ name: 'name', text: '@(Name)', width: 160 },
+					{ name: 'email', text: '@(Email)', width: 170 },
+					{ name: 'phone', text: '@(Phone)', width: 140 },
+					{ name: 'position', text: '@(Position)', width: 150 },
+					{ name: 'sa', text: '@(Admin)', template: '{{ if sa }}<i class="fa fa-check-square green"></i>{{ fi }}', width: 100, align: 1 },
+					{ name: 'logged', text: '@(Logged)', align: 'center', template: '{{ updated | format(\'dd.MM.yyyy\') }}', align: 1, width: 100 },
+					{ name: 'created', text: '@(Created)', align: 'center', template: '{{ created | format(\'dd.MM.yyyy\') }}', align: 1, width: 100 }
+				]
+			</script>
+		</div>
+
+	</div>
+</div>
+
+<div data-jc="importer__common.form__if:usersform;url:/forms/user.html"></div>
+
+<script>
+
+	PLUGIN('users', function(exports) {
+
+		exports.create = function() {
+			SET('usersform.id', null);
+			DEFAULT('usersform.*');
+			SET('common.form', 'usersform');
+		};
+
+		exports.refresh = function() {
+			AJAX('GET /api/users/', 'users.grid');
+		};
+
+		exports.reload = function() {
+			setTimeout(EXEC2('#resize'), 100);
+			exports.refresh();
+		};
+
+		exports.checked = function(rows) {
+			SET('users.checked', rows);
+		};
+
+		exports.edit = function(row) {
+			row && AJAX('GET /api/users/{id}/'.arg(row), function(response) {
+				SETR('usersform', response);
+				SET('common.form', 'usersform');
+			});
+		};
+
+		exports.options = function(el) {
+
+			var items = [];
+
+			items.push({ value: 255, name: '@(Remove)', icon: 'times-circle red' });
+
+			SETTER('menu', 'show', 'right', el, items, function(item) {
+				switch (item.value) {
+					case 255:
+						SETTER('confirm', 'show', '@(Are you sure you want to remove selected users?)', ['"trash-o"@(Remove)', '@(Cancel)'], function(index) {
+							if (!index) {
+								SETTER('loading', 'show');
+								users.checked.wait(function(item, next) {
+									AJAX('DELETE /api/users/{id}/'.arg(item), next);
+								}, function() {
+									SETTER('loading', 'hide', 100);
+									SETTER('snackbar', 'success', '@(Selected users have been removed.)');
+									exports.refresh();
+								});
+							}
+						});
+						break;
+				}
+			});
+		};
+
+	});
+
+</script>

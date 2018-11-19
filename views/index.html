@@ -1,0 +1,181 @@
+@{layout('')}
+@{title(config.name)}
+
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=10" />
+	<meta name="format-detection" content="telephone=no" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, viewport-fit=cover" />
+	<meta name="robots" content="all,follow" />
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+	<meta name="apple-mobile-web-app-title" content="@{'%name'}" />
+	<link rel="apple-touch-icon" href="/img/icon.png" />
+	<link rel="stylesheet" href="//cdn.componentator.com/spa.min@16pro.css" />
+	<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Sans+Pro:400,200,700" />
+	<!--
+	<link rel="stylesheet" href="/css/cdn.css" />
+	-->
+	<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/codemirror/5.32.0/codemirror.min.css" />
+	<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/codemirror/5.41.0/addon/lint/lint.min.css" />
+	<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/codemirror/5.41.0/addon/dialog/dialog.min.css" />
+	<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/codemirror/5.41.0/addon/search/matchesonscrollbar.min.css" />
+	<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/codemirror/5.41.0/addon/hint/show-hint.min.css" />
+	<script src="//cdn.componentator.com/spa.min@16.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/codemirror/5.32.0/codemirror.min.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/codemirror/5.32.0/mode/markdown/markdown.min.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/codemirror/5.32.0/mode/javascript/javascript.min.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/codemirror/5.32.0/mode/htmlmixed/htmlmixed.min.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/codemirror/5.32.0/mode/xml/xml.min.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/codemirror/5.32.0/mode/css/css.min.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/codemirror/5.32.0/mode/shell/shell.min.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/codemirror/5.32.0/mode/sql/sql.min.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/codemirror/5.32.0/addon/mode/simple.min.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/codemirror/5.32.0/addon/mode/multiplex.min.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/codemirror/5.32.0/mode/nginx/nginx.min.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/codemirror/5.41.0/addon/lint/lint.min.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/codemirror/5.41.0/addon/lint/css-lint.min.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/codemirror/5.41.0/addon/lint/html-lint.min.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/codemirror/5.41.0/addon/lint/javascript-lint.min.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/codemirror/5.41.0/addon/lint/json-lint.min.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/codemirror/5.41.0/addon/selection/active-line.min.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/jsonlint/1.6.0/jsonlint.min.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/jshint/2.9.6/jshint.min.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/codemirror/5.41.0/addon/search/jump-to-line.min.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/codemirror/5.41.0/addon/search/search.min.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/codemirror/5.41.0/addon/search/searchcursor.min.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/codemirror/5.41.0/addon/dialog/dialog.min.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/codemirror/5.41.0/addon/search/matchesonscrollbar.min.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/codemirror/5.41.0/addon/scroll/annotatescrollbar.min.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/codemirror/5.41.0/addon/edit/matchbrackets.min.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/codemirror/5.41.0/addon/edit/closetag.min.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/codemirror/5.41.0/addon/edit/matchtags.min.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/codemirror/5.41.0/addon/edit/closebrackets.min.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/codemirror/5.41.0/addon/hint/show-hint.min.js"></script>
+	<!--
+	<script src="/js/cdn.js"></script>
+	-->
+	@{import('meta', 'head', 'default.css', 'default.js', 'favicon.ico')}
+</head>
+<body data-jc="exec" class="invisible" data-jc-class="invisible">
+
+	<div data-jc="loading" class="ui-loading"></div>
+	<div data-jc="LAZY autocomplete__null__height:200"></div>
+	<div data-jc="LAZY snackbar__null__button:@(OK)"></div>
+	<div data-jc="LAZY features__null__placeholder:@(What are you looking for?)"></div>
+	<div data-jc="menu" class="hidden"></div>
+	<div data-jc="confirm"></div>
+	<div data-jc="shortcuts__null"></div>
+
+	<header>
+		<button class="exec" data-exec="mainmenu"><i class="fa fa-navicon"></i></button>
+		<div class="tools" data-jc="selected__common.page__selector:a.R">
+			<a href="@{#}/" title="@(Code)" class="R" data-if="code"><i class="far fa-laptop-code"></i></a>
+			@{if user.sa}
+			<a href="@{#}/projects/" title="@(Projects)" class="R" data-if="projects"><i class="fab fa-app-store-ios"></i></a>
+			<a href="@{#}/users/" title="@(Users)" class="R" data-if="users"><i class="far fa-users"></i></a>
+			@{fi}
+			<a href="@{#}/settings/" title="@(Settings)" class="R" data-if="settings"><i class="far fa-cog"></i></a>
+			<a href="@{#}/logout/" title="@(Sign out)"><i class="far fa-sign-out"></i></a>
+		</div>
+	</header>
+
+	<div data-jc="part__common.page__if:code;url:/parts/code.html;reload:code/reload"></div>
+	<div data-jc="part__common.page__if:projects;url:/parts/projects.html;reload:projects/reload;cleaner:10"></div>
+	<div data-jc="part__common.page__if:users;url:/parts/users.html;reload:users/reload;cleaner:10"></div>
+	<div data-jc="part__common.page__if:settings;url:/parts/settings.html;reload:settings/reload;cleaner:10"></div>
+	<div data-jc="websocket__null__url:/"></div>
+
+	@{json(user, 'userdata')}
+
+	<script>
+
+		var common = {};
+
+		var user = PARSE('#userdata');
+
+		NAV.clientside('.R');
+
+		ROUTE('/', function() {
+			SET('common.page', 'code');
+		});
+
+		ROUTE('/settings/', function() {
+			SET('common.page', 'settings');
+		});
+
+		ROUTE('/users/', function() {
+			SET('common.page', 'users');
+		});
+
+		ROUTE('/projects/', function() {
+			SET('common.page', 'projects');
+		});
+
+		ON('online', function(is) {
+			SETTER('loading', is ? 'hide' : 'show');
+		});
+
+		ON('message', function(msg) {
+			switch (msg.TYPE) {
+				case 'open':
+					EXEC('code/collaboration', msg);
+					break;
+			}
+		});
+
+		SETTER(true, 'shortcuts', 'register', 'F1', function(e) {
+
+			var arr = [];
+
+			if (common.page === 'code') {
+
+				for (var i = 0; i < code.data.files.length; i++) {
+					var file = code.data.files[i];
+					arr.push({ name: file, icon: 'file-o', filename: FUNC.getName(file) });
+				}
+
+				arr.quicksort('name');
+
+				if (code.editor.path) {
+					arr.unshift({ name: '@(Save)', id: 'save', icon: 'floppy-o' });
+					arr.unshift({ name: '@(Reload)', id: 'reload', icon: 'refresh', keywords: 'refresh' });
+				}
+
+			}
+
+			SETTER('features', 'show', arr, function(value) {
+				if (value.filename) {
+					EXEC('code/open', { path: value.name, name: value.filename });
+				} else {
+					switch (value.id) {
+						case 'reload':
+							FUNC.editor_reload();
+							break;
+						case 'save':
+							EXEC('editor/save');
+							break;
+					}
+				}
+			});
+
+		}, true);
+
+		SETTER(true, 'shortcuts', 'register', 'F5', function(e) {
+			EXEC('code/shortcut', 'F5');
+		}, true);
+
+		SETTER(true, 'shortcuts', 'register', 'ctrl+s,cmd+s', function(e) {
+			EXEC('code/shortcut', 'save');
+		}, true);
+
+		SETTER(true, 'shortcuts', 'register', 'alt+w', function(e) {
+			EXEC('code/shortcut', 'close');
+		}, true);
+
+	</script>
+
+</body>
+</html>

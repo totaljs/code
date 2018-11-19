@@ -1,0 +1,61 @@
+<div data-jc="panel__common.form__if:usersform;icon:robot;width:500;reload:usersform/reload" class="hidden">
+	<div data-jc-scope="usersform">
+		<div class="padding">
+			<div class="row">
+				<div class="col-sm-6 m">
+					<div data-jc="textbox__id__required:true;placeholder:@(petersirka);type:lower__''">@(ID)</div>
+				</div>
+				<div class="col-sm-6 m">
+					<div data-jc="textbox__name__required:true__''">@(Name)</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-6 m">
+					<div data-jc="textbox__email__required:true__'@'">@(Email address)</div>
+				</div>
+				<div class="col-sm-6 m">
+					<div data-jc="textbox__phone__null__''">@(Phone number)</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-6 m">
+					<div data-jc="textbox__position__null__''">@(Position)</div>
+				</div>
+				<div class="col-sm-6 m">
+					<div data-jc="textbox__password__required:true__GUID()">@(Password)</div>
+				</div>
+			</div>
+			<div data-jc="checkbox__sa__null__false" class="b">@(User is administrator)</div>
+			<div data-jc="checkbox__blocked__null__false">@(User is blocked)</div>
+		</div>
+		<hr class="nmt nmb" />
+		<div class="padding">
+			<div data-jc="error__response"></div>
+			<div data-jc="validation__?" class="m">
+				<button name="submit" disabled="disabled" class="button exec b" data-exec="usersform/submit"><i class="fal fa-floppy-o"></i>@(Save)</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+	PLUGIN('usersform', function(exports) {
+
+		exports.reload = function(com) {
+			com.reconfigure({ title: GET('usersform.id') ? '@(Edit user)' : '@(New user)' });
+		};
+
+		exports.submit = function() {
+			var data = CLONE(GETR('usersform'));
+			AJAX('POST /api/users/', data, function(response) {
+				if (response.success) {
+					SET('common.form', '');
+					SETTER('snackbar', 'success', '@(The user has been saved successfully.)');
+					EXEC('users/refresh');
+				} else
+					SET('usersform.response', response);
+			});
+		};
+
+	});
+</script>

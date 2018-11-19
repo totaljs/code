@@ -1,0 +1,78 @@
+<div data-jc="panel__common.form__if:projectsform;icon:robot;width:580;reload:projectsform/reload" class="hidden">
+	<div data-jc-scope="projectsform">
+		<div class="padding">
+			<div class="row">
+				<div class="col-sm-6 m">
+					<div data-jc="textbox__name__required:true__''">@(Name)</div>
+				</div>
+				<div class="col-sm-6 m">
+					<div data-jc="textbox__path__required:true__''">@(Path)</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-6 m">
+					<div data-jc="textbox__url__required:true__''">@(URL address)</div>
+				</div>
+				<div class="col-sm-6 m">
+					<div data-jc="textbox__repository__placeholder:https\://username\:password@https\://github.com/totaljs/cms.git__''">@(GIT repository)</div>
+				</div>
+			</div>
+			<div data-jc="checkbox__backup__null__true">@(Backup all modified files)</div>
+			<div data-jc="checkbox__skiptmp__null__true">@(Skip <b>tmp</b> directory)</div>
+			<div data-jc="checkbox__skipsrc__null__true">@(Skip <b>.src</b> directory)</div>
+		</div>
+		<hr class="nmt nmb" />
+		<div class="padding">
+			<h3><i class="fa fa-users"></i>@(Users and permissions)</h3>
+			<div data-jc="selectbox__users__if:!value.sa;datasource:%projectsformusers;text:id__[]"></div>
+			<div class="help m">@(Choose users which can have access to this project)</div>
+			<div data-jc="textarea__permissions__height:100;monospace:true;placeholder:@(userid \: path)__''">@(Permissions)</div>
+			<div class="help">@(Define permissions for the users)</div>
+		</div>
+		<hr class="nmt nmb" />
+		<div class="padding">
+			<div data-jc="error__response"></div>
+			<div data-jc="validation__?" class="m">
+				<div class="row">
+					<div class="col-md-6">
+						<button name="submit" disabled="disabled" class="button exec b" data-exec="projectsform/submit"><i class="fal fa-floppy-o"></i>@(Save)</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+	PLUGIN('projectsform', function(exports) {
+
+		exports.reload = function(com) {
+			AJAX('GET /api/users/', '%projectsformusers');
+			com.reconfigure({ title: GET('projectsform.id') ? '@(Edit project)' : '@(New project)' });
+		};
+
+		exports.submit = function() {
+			var data = CLONE(GETR('projectsform'));
+			AJAX('POST /api/projects/', data, function(response) {
+				if (response.success) {
+					SET('common.form', '');
+					SETTER('snackbar', 'success', '@(The project has been saved successfully.)');
+					EXEC('projects/refresh');
+				} else
+					SET('projectsform.response', response);
+			});
+		};
+
+		exports.search = function(com) {
+			SETTER('autocomplete', 'attach', com, function(q, render) {
+				AJAX('GET /api/admin/users/search/', { q: q }, render);
+			}, function(value, input) {
+				var index = projectsform.users.findIndex('userid', value.id);
+				if (index === -1)
+					PUSH2('projectsform.users', { username: value.name, userid: value.id });
+				input.component().set('');
+			}, 0, 2);
+		};
+
+	});
+</script>

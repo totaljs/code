@@ -1,0 +1,572 @@
+<div data-bind="%projectsvisible__show:value" class="projectslist hidden">
+	<ul data-jc="listmenu__code.data.id__datasource:code.projects;selector:li">
+		<script type="text/html">
+			<li class="exec" data-exec="code/project" data-id="{{ id }}"><i class="far fa-project-diagram"></i>{{ name }}</li>
+		</script>
+	</ul>
+</div>
+
+<div id="panel">
+	<section class="project exec" data-exec="code/projects" data-bind="!code.data__html:value.name">@(Choose project)</section>
+	<div class="panel-scroller fullheight" data-margin="36">
+		<div data-jc="tree__code.tree__exec:code/open;options:code/options;rename:code/rename;first:false;upload:code/upload"></div>
+	</div>
+	<section class="status">
+		<button title="@(New file)"><i class="far fa-file"></i></button>
+		<button title="@(New folder)"><i class="far fa-folder"></i></button>
+	</section>
+</div>
+
+<div id="body">
+	<section class="tabs">
+		<a href="#" data-bind="code.data.url__href:value__show:value" target="_blank" class="preview" title="@(Preview)"><i class="fa fa-globe"></i></a>
+		<span class="options exec hidden" data-exec="code/options_editor" data-bind="code.editor.path__show:value"><i class="fa fa-cog"></i></span>
+		<nav data-jc="tabmenu__code.editor.path__datasource:code.open;selector:span;exec:code/opentab;reorder:code/savetabs">
+			<script type="text/html">
+				<span data-value="{{ path }}"{{ if modified }} class="modified"{{ fi }}><i class="fa exec" data-exec="code/close"></i>{{ name }}</span>
+			</script>
+		</nav>
+	</section>
+	<div id="content" data-margin="36">
+		<div class="messages">
+			<div class="alert hidden" data-bind="code.backup__show:value" data-name="backup"><i class="fa fa-times exec" data-exec="code/warning"></i><i class="fa fa-warning"></i>@(Content of this file wasn't be saved before. Do you want to restore it?) <span class="link exec" data-name="restore" data-exec="code/warning">@(Restore)</span> @(or) <span class="link exec" data-exec="code/warning">@(Cancel)</span></div>
+			<div class="alert hidden" data-bind="code.multiple__show:value" data-name="multiple"><i class="fa fa-times exec" data-exec="code/warning"></i><i class="fa fa-users"></i>@(Be careful because another user is editing content of this file.) <span class="link exec" data-exec="code/warning">@(I understand)</span>.</div>
+		</div>
+		<div data-bind="code.editor.path__show:value">
+			<div data-jc="editor__code.editor.body__height:100%;shortcut:code/shortcut"></div>
+		</div>
+	</div>
+	<section class="status">
+		<div data-bind="code.usersproject__template" class="collaborators">
+			<script type="text/html">
+				{{ foreach m in value }}
+					{{ m.name | initials }}
+				{{ end }}
+			</script>
+		</div>
+		<div data-bind="JSHINT.errors__html b:value?value.length:0__.red:value && value.length>0" class="status-alerts">
+			<i class="far fa-warning"></i><b>0</b>
+		</div>
+	</section>
+</div>
+
+<div data-bind="code.usersfile__template" class="collaborators">
+	<script type="text/html">
+		{{ foreach m in value }}
+			{{ m.name | initials }}
+		{{ end }}
+	</script>
+</div>
+
+<script>
+
+	var code = {};
+
+	PLUGIN('code', function(exports) {
+
+		exports.reload = function() {
+			EMIT('resize', exports.element);
+			var id = READPARAMS().id;
+			id && exports.load(id);
+			AJAX('GET /api/projects/', 'code.projects');
+			SET('%projectsvisible', false);
+		};
+
+		WATCH('code.editor.body', function(path, value, type) {
+
+			// cache
+			if (type === 1 && code.editor.body) {
+				exports.cache_set();
+				if (!code.current.modified) {
+					code.current.modified = true;
+					exports.element.find('section.tabs').find('span[data-value="{0}"]'.format(code.current.path)).aclass('modified');
+				}
+			}
+
+			setTimeout2('jshint', function() {
+				BIND('JSHINT.errors');
+			}, 1000);
+		});
+
+		exports.warning = function(el) {
+			var parent = el.closest('.alert');
+			switch (parent.attrd('name')) {
+				case 'backup':
+					if (el.attrd('name') === 'restore')
+						SET('code.editor.body', exports.cache_get(code.editor.path));
+					else
+						exports.cache_rem(code.editor.path);
+					SET('code.backup', false);
+					break;
+				case 'multiple':
+					SET('code.multiple', false);
+					break;
+			}
+		};
+
+		exports.rename = function(item, val, callback) {
+
+			var data = {};
+
+			data.oldpath = item.path;
+			data.newpath = val;
+
+			if (data.newpath === data.oldpath) {
+				callback(false);
+				return;
+			}
+
+			SETTER('loading', 'show');
+			AJAX('POST /api/files/{id}/rename/'.arg(code.data), data, function(response) {
+				SETTER('loading', 'hide', 500);
+				exports.closetab(data.oldpath);
+				callback(response.success);
+				exports.load(code.data.id, true);
+			});
+		};
+
+		exports.shortcut = function(type) {
+			switch (type) {
+				case 'F5':
+					FUNC.editor_reload();
+					break;
+				case 'save':
+					exports.save();
+					break;
+				case 'close':
+					exports.close();
+					break;
+			}
+		};
+
+		exports.upload = function(node, files) {
+
+			var data = new FormData();
+
+			data.append('path', node ? FUNC.getPath(node.path) : '/');
+
+			for (var i = 0, length = files.length; i < length; i++)
+				data.append('file' + i, files[i]);
+
+			UPLOAD('POST /api/projects/{id}/upload/'.arg(code.data), data, function(response) {
+				if (response instanceof Array)
+					FUNC.warning(response);
+				else
+					exports.load(code.data.id, true);
+			});
+		};
+
+		exports.open = function(item) {
+
+			if (!item || item.children)
+				return;
+
+			var tab = code.open.findItem('path', item.path);
+			if (tab && tab.loaded) {
+				if (tab.path !== code.editor.path) {
+					exports.edit(tab);
+					exports.savetabs();
+				}
+				return;
+			}
+
+			var newbie = false;
+			var ext = item.path.substring(item.path.lastIndexOf('.') + 1).toLowerCase();
+
+			switch (ext) {
+				case 'pdf':
+				case 'jpg':
+				case 'ico':
+				case 'jpeg':
+				case 'png':
+				case 'gif':
+				case 'xls':
+				case 'xlsx':
+				case 'docx':
+				case 'doc':
+				case 'zip':
+				case 'rar':
+				case 'file':
+				case 'nosql-binary':
+					window.open('/api/download/{0}/?path={1}'.format(code.data.id, encodeURIComponent(item.path)));
+					return;
+			}
+
+			AJAX('GET /api/projects/{id}/edit/'.arg(code.data), { path: item.path }, function(response) {
+
+
+				if (!tab) {
+					newbie = true;
+					tab = {};
+					tab.path = item.path;
+					tab.name = item.name;
+				}
+
+				tab.loaded = true;
+				tab.body = response;
+
+				var cache = exports.cache_get(item.path);
+				SET('code.backup', cache && cache !== response);
+
+				newbie && PUSH('code.open', tab);
+				exports.edit(tab);
+				exports.savetabs();
+				exports.element.SETTER('tree', 'select2', FUNC.treeindex(code.tree, item.path), true);
+			});
+		};
+
+		exports.opentab = function(path) {
+			exports.open({ children: null, path: path });
+		};
+
+		exports.options_editor = function(el) {
+
+			var items = [];
+
+			items.push({ value: 1, name: '@(Reload)', icon: 'refresh' });
+			items.push({ value: 2, name: '@(Find)', icon: 'search', command: 'findPersistent' });
+			items.push({ value: 2, name: '@(Replace)', icon: 'search', command: 'replaceAll' });
+
+			SETTER('menu', 'show', 'left', el, items, function(item) {
+				switch (item.value) {
+					case 1:
+						FUNC.editor_reload();
+						break;
+					case 2:
+						setTimeout(function() {
+							var editor = FIND('editor').editor;
+							editor.focus();
+							editor.execCommand(item.command);
+						}, 200);
+						break;
+				}
+			}, -5, -5);
+		};
+
+		exports.options = function(node, el) {
+
+			var items = [];
+
+			if (node.children) {
+				items.push({ value: 1, name: '@(Create directory)', icon: 'folder-o' });
+				items.push({ value: 2, name: '@(Create new file)', icon: 'file-text-o' });
+			}
+
+			items.push({ value: 3, name: '@(Rename)', icon: 'pencil' });
+			items.push({ value: 255, name: '@(Remove)', icon: 'times-circle red' });
+
+			SETTER('menu', 'show', 'right', el, items, function(item) {
+				switch (item.value) {
+					case 3:
+						setTimeout(function() {
+							exports.element.SETTER('tree', 'rename', node.$pointer);
+						}, 500);
+						break;
+					case 255:
+						SETTER('confirm', 'show', '@(Are you sure you want to remove selected file?)', ['"trash-o"@(Remove)', '@(Cancel)'], function(index) {
+							if (!index) {
+								var data = {};
+								data.path = node.path;
+								SETTER('loading', 'show');
+								AJAX('POST /api/files/{id}/remove/'.arg(code.data), data, function() {
+									SETTER('loading', 'hide', 100);
+									SETTER('snackbar', 'success', '@(Selected file has been removed.)');
+									SET('code.tree', FUNC.treeremove(code.tree, node.path));
+								});
+							}
+						});
+						break;
+				}
+			}, 5, -35);
+		};
+
+		exports.close = function() {
+			if (code.current.modified) {
+				SETTER('confirm', 'show', '@(Do you want to save the changes you made?)', ['"floppy-o"@(Save changes)', '@(No)'], function(index) {
+					if (index)
+						exports.closeforce();
+					else
+						exports.save(true);
+				});
+			} else
+				exports.closeforce();
+		};
+
+		exports.closeforce = function() {
+			exports.closetab(code.current.path);
+		};
+
+		exports.closetab = function(path) {
+			var tab = code.open.findItem('path', path);
+			if (tab == null)
+				return;
+			var index = code.open.indexOf(tab);
+			code.open.splice(index, 1);
+			exports.cache_rem(tab.path);
+			UPDATE('code.open');
+			if (tab.path === code.editor.path) {
+				if (code.open.length) {
+					if (index - 1 > -1)
+						index -= 1;
+					else
+						index = 0;
+					exports.opentab(code.open[index].path);
+				} else {
+					SET('code.multiple', false);
+					$('#body').rclass('warning');
+					SET('code.editor', {});
+					exports.element.RECONFIGURE('editor', 'disabled:true');
+				}
+			}
+			exports.savetabs();
+		};
+
+		exports.edit = function(tab) {
+
+			if (typeof(tab) === 'string')
+				tab = code.open.findItem('path', tab);
+
+			var editor = exports.element.FIND('editor');
+			var prev = GET('code.editor.path');
+			if (prev && prev !== tab.path) {
+				prev = code.open.findItem('path', prev);
+				if (prev)
+					prev.doc = editor.copy(true);
+			}
+
+			editor.clear(true);
+
+			var ext = tab.path.substring(tab.path.lastIndexOf('.') + 1).toLowerCase();
+			var mode;
+
+			switch (ext) {
+				case 'src/config':
+				case 'src/config-release':
+				case 'src/config-debug':
+				case 'src/config-test':
+				case 'src/versions':
+				case 'src/dependencies':
+				case 'src/sitemap':
+				case 'src/workflows':
+				case '/config':
+				case '/config-release':
+				case '/config-debug':
+				case '/config-test':
+				case '/versions':
+				case '/dependencies':
+				case '/sitemap':
+				case '/workflows':
+				case 'resource':
+					mode = 'totaljsresources';
+					break;
+				case 'js':
+					mode = 'javascript';
+					break;
+				case 'json':
+				case 'nosql':
+					mode = 'application/ld+json';
+					break;
+				case 'css':
+					mode = 'css';
+					break;
+				case 'sh':
+					mode = 'shell';
+					break;
+				case 'sql':
+					mode = 'sql';
+					break;
+				case 'md':
+					mode = 'markdown';
+					break;
+				case 'xml':
+					mode = 'xml';
+					break;
+				case 'html':
+				case 'htm':
+				default:
+					mode = 'totaljs';
+					break;
+			}
+
+			SET('code.editor.path', tab.path);
+			SET('code.editor.name', tab.name);
+
+			if (JSHINT.errors) {
+				JSHINT.errors.length = 0;
+				BIND('JSHINT.errors');
+			}
+
+			if (tab.doc) {
+				SETR('code.editor.body', tab.body, 'skip');
+				editor.paste(tab.doc);
+			} else {
+				editor.clear();
+				SETR('code.editor.body', tab.body, 2);
+				editor.paste(editor.copy(false));
+			}
+
+			code.current = tab;
+			editor.reconfigure('disabled:false;mode:' + mode);
+			FUNC.wsopen(code.data.id, code.current.path);
+		};
+
+		exports.load = function(id, skip) {
+
+			SETTER('loading', 'show');
+
+			AJAX('GET /api/projects/{0}/files/'.format(id), function(response) {
+
+				if (response instanceof Array) {
+					FUNC.warning(response);
+					return;
+				}
+
+				var tree = [];
+
+				for (var i = 0; i < response.directories.length; i++)
+					FUNC.treeappend(tree, response.directories[i]);
+
+				for (var i = 0; i < response.files.length; i++)
+					FUNC.treeappend(tree, response.files[i], true);
+
+				var item = tree.findItem('name', '#');
+				if (item) {
+					tree = tree.remove('name', '#');
+					for (var i = 0; i < item.children.length; i++)
+						tree.push(item.children[i]);
+				}
+
+				if (!skip)
+					exports.element.SETTER('tree', 'clear');
+
+				SET('code.data', response);
+				SET('code.tree', tree);
+
+				if (!skip) {
+					SET('code.editor', {});
+					SET('code.open', []);
+					SET('code.usersproject', EMPTYARRAY);
+					SET('code.usersfile', EMPTYARRAY);
+					SET('code.multiple', false);
+					$('#body').rclass('warning');
+					setTimeout(exports.restoretabs, 500);
+				}
+
+				SETTER('loading', 'hide', 1000);
+			});
+		};
+
+		exports.project = function(el) {
+			var id = el.attrd('id');
+			REDIRECT('/?id=' + id);
+		};
+
+		exports.projects = function() {
+			TOGGLE('%projectsvisible', true);
+		};
+
+		exports.save = function(close) {
+
+			var data = {};
+			data.path = code.editor.path;
+			data.body = FUNC.rtrim(code.editor.body);
+
+			code.current.modified = false;
+			exports.cache_rem(code.current.path);
+			exports.element.find('section.tabs').find('span[data-value="{0}"]'.format(code.current.path)).rclass('modified');
+
+			SETTER('loading', 'show');
+			AJAX('POST /api/files/{id}/'.arg(code.data), data, function(response) {
+				SETTER('loading', 'hide', 500);
+				if (close === true)
+					exports.closeforce();
+				SETTER('snackbar', 'success', '@(<b>{0}</b> saved)'.format(data.path));
+			});
+		};
+
+		exports.savetabs = function() {
+
+			var arr = [];
+
+			for (var i = 0; i < code.open.length; i++) {
+				var tab = code.open[i];
+				var data = {};
+				data.path = tab.path;
+				if (tab.path === code.current.path)
+					data.focused = true;
+				arr.push(data);
+			}
+
+			localStorage.setItem(code.data.id + '_tabs', STRINGIFY(arr));
+		};
+
+		exports.restoretabs = function() {
+			var open = localStorage.getItem(code.data.id + '_tabs');
+			if (!open)
+				return;
+
+			open = PARSE(open);
+
+			var selected = null;
+			var tabs = [];
+
+			for (var i = 0; i < open.length; i++) {
+				var tab = open[i];
+				var fileindex = code.data.files.indexOf(tab.path);
+				if (fileindex !== -1) {
+					tab.name = code.data.files[fileindex];
+					if (tab.name) {
+						tab.name = tab.name.split('/');
+						tab.name = tab.name[tab.name.length - 1];
+						tab.body = '';
+						tabs.push(tab);
+					}
+
+					if (tab.focused) {
+						delete tab.focused;
+						selected = tab;
+					}
+				}
+			}
+
+			tabs.length && SET('code.open', tabs);
+			selected && exports.open({ children: null, path: selected.path, name: selected.name });
+		};
+
+		exports.collaboration = function(msg) {
+
+			if (msg.projectid === code.data.id)
+				SET('code.usersproject', msg.project);
+
+			if (code.editor && msg.fileid === code.editor.path)
+				SET('code.usersfile', msg.file);
+
+			$('#body').tclass('warning', code.usersfile && code.usersfile.length > 1);
+			SET('code.multiple', !!(code.usersfile && code.usersfile.length > 1));
+		};
+
+		// Internal cache
+		// For unexpect of closing browser
+		exports.cache_set = function() {
+			if (code.editor.path) {
+				var key = code.data.id + '_' + HASH(code.editor.path);
+				localStorage.setItem(key, code.editor.body);
+			}
+		};
+
+		exports.cache_get = function(path) {
+			if (path) {
+				var key = code.data.id + '_' + HASH(path);
+				return localStorage.getItem(key);
+			}
+		};
+
+		exports.cache_rem = function() {
+			if (code.editor.path) {
+				var key = code.data.id + '_' + HASH(code.editor.path);
+				localStorage.removeItem(key);
+			}
+		};
+	});
+
+</script>

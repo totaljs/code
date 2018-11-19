@@ -1,0 +1,47 @@
+<h2>@(Dashboard)</h2>
+
+<div class="toolbar">
+	<button><i class="fa fa-cog"></i>@(Tools)</button>
+	<button><i class="fa fa-plus-circle"></i>@(More)</button>
+</div>
+
+<div class="row">
+	<div class="col-md-6 m">
+		<div class="panel">
+			<label>@(Title)</label>
+			<div class="body">
+				<div class="m">@(We have great plans for the near future. We have open several projects and ideas which can help you. We're looking for sponsors which can support us financially. <a href="https://www.totaljs.com/contact/" target="_blank" class="b">Contact us</a>.)</div>
+				<span class="badge badge-blue">@(Total.js)</span>
+				<span class="badge badge-blue">@(Total.js)</span>
+				<span class="badge badge-blue">@(Total.js)</span>
+
+			</div>
+		</div>
+	</div>
+	<div class="col-md-3 m">
+		<div class="panel">
+			<label>@(Title)</label>
+			<div class="body bg-yellow">
+				@(Lorem ipsum dolor sit amet, consectetur adipisicing elit. Expedita, suscipit.)
+			</div>
+		</div>
+	</div>
+	<div class="col-md-3 m">
+		<div class="panel">
+			<label>@(Title)</label>
+			<div class="body bg-smoke">
+				@(Lorem ipsum dolor sit amet, consectetur adipisicing elit. Expedita, suscipit.)
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+
+	PLUGIN('dashboard', function(exports) {
+		exports.reload = function() {
+
+		};
+	});
+
+</script>
