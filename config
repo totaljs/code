@@ -4,4 +4,4 @@ allow_custom_titles   : true
 cookie                : __sauth
 authkey               : seEdCollabo
 
-backup                : /www/backup/
+backup                : /www/tmp/backup/

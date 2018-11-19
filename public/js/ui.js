@@ -475,9 +475,10 @@ COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 
 		self.html(builder.join(''));
 
-		if (selindex !== -1)
-			self.select(selindex);
-		else
+		if (selindex !== -1) {
+			// Disables auto-select when is refreshed
+			// self.select(selindex);
+		} else
 			config.first !== false && cache.first && setTimeout(self.first, 100);
 	};
 });
@@ -3485,4 +3486,35 @@ COMPONENT('features', 'height:37', function(self, config) {
 			$('html,body').rclass('ui-features-noscroll');
 		}, sleep ? sleep : 100);
 	};
+});
+
+COMPONENT('statusform', function(self, config) {
+
+	var el;
+
+	self.singleton();
+
+	self.make = function() {
+		el = self.find('.statusform-item');
+		self.event('keydown', 'input', function(e) {
+			if (e.which === 13) {
+				var input = $(this);
+				EXEC(config.exec, input.parent().attrd('name'), input.val().toLowerCase().replace(/[^a-z0-9.-_]/gi, ''));
+				self.set('');
+			}
+		});
+	};
+
+	self.setter = function(value) {
+		el.aclass('hidden');
+		if (value) {
+			var input = el.filter('[data-name="{0}"]'.format(value)).rclass('hidden').find('input').val('');
+			setTimeout(function() {
+				input.focus();
+			}, 300);
+			self.rclass('hidden');
+		} else
+			self.aclass('hidden');
+	};
+
 });

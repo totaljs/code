@@ -12,8 +12,8 @@
 		<div data-jc="tree__code.tree__exec:code/open;options:code/options;rename:code/rename;first:false;upload:code/upload"></div>
 	</div>
 	<section class="status">
-		<button title="@(New file)"><i class="far fa-file"></i></button>
-		<button title="@(New folder)"><i class="far fa-folder"></i></button>
+		<button title="@(Create file)" class="exec" data-name="file" data-exec="code/statusform"><i class="far fa-file"></i></button>
+		<button title="@(Create folder)" class="exec" data-name="directory" data-exec="code/statusform"><i class="far fa-folder"></i></button>
 	</section>
 </div>
 
@@ -48,6 +48,15 @@
 			<i class="far fa-warning"></i><b>0</b>
 		</div>
 	</section>
+</div>
+
+<div data-jc="statusform__code.statusform.name__exec:code/statusform" class="statusform hidden">
+	<div class="statusform-item hidden" data-name="file">
+		<input type="text" placeholder="@(Enter filename.js)" />
+	</div>
+	<div class="statusform-item hidden" data-name="directory">
+		<input type="text" placeholder="@(Enter a folder name)" />
+	</div>
 </div>
 
 <div data-bind="code.usersfile__template" class="collaborators">
@@ -248,8 +257,8 @@
 			var items = [];
 
 			if (node.children) {
-				items.push({ value: 1, name: '@(Create directory)', icon: 'folder-o' });
-				items.push({ value: 2, name: '@(Create new file)', icon: 'file-text-o' });
+				items.push({ value: 'file', name: '@(Create file)', icon: 'file-text-o' });
+				items.push({ value: 'directory', name: '@(Create directory)', icon: 'folder-o' });
 			}
 
 			items.push({ value: 3, name: '@(Rename)', icon: 'pencil' });
@@ -257,20 +266,25 @@
 
 			SETTER('menu', 'show', 'right', el, items, function(item) {
 				switch (item.value) {
+					case 'file':
+					case 'directory':
+						SET('code.statusform.name', item.value);
+						code.statusform.path = node.path + (node.path ? '/' : '');
+						break;
 					case 3:
 						setTimeout(function() {
 							exports.element.SETTER('tree', 'rename', node.$pointer);
 						}, 500);
 						break;
 					case 255:
-						SETTER('confirm', 'show', '@(Are you sure you want to remove selected file?)', ['"trash-o"@(Remove)', '@(Cancel)'], function(index) {
+						SETTER('confirm', 'show', '@(Are you sure you want to remove <b>{0}</b>?)'.format(node.path), ['"trash-o"@(Remove)', '@(Cancel)'], function(index) {
 							if (!index) {
 								var data = {};
 								data.path = node.path;
 								SETTER('loading', 'show');
 								AJAX('POST /api/files/{id}/remove/'.arg(code.data), data, function() {
 									SETTER('loading', 'hide', 100);
-									SETTER('snackbar', 'success', '@(Selected file has been removed.)');
+									SETTER('snackbar', 'success', '@(Removed successfully: <b>{0}</b>.)'.format(data.path));
 									SET('code.tree', FUNC.treeremove(code.tree, node.path));
 								});
 							}
@@ -543,6 +557,33 @@
 
 			$('#body').tclass('warning', code.usersfile && code.usersfile.length > 1);
 			SET('code.multiple', !!(code.usersfile && code.usersfile.length > 1));
+		};
+
+		exports.statusform = function(name, value) {
+
+			if (name instanceof jQuery) {
+				// element
+				SET('code.statusform.path', '');
+				SET('code.statusform.name', name.attrd('name'));
+				return;
+			}
+
+			if (!value)
+				return;
+
+			var data = {};
+
+			data.path = (code.statusform.path || '') + value;
+			data.folder = name !== 'file';
+
+			SETTER('loading', 'show');
+			AJAX('POST /api/files/{id}/create/'.arg(code.data), data, function(response) {
+				SETTER('loading', 'hide', 500);
+				if (response.success)
+					exports.load(code.data.id, true);
+				else
+					FUNC.warning(response);
+			});
 		};
 
 		// Internal cache

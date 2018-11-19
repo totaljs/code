@@ -175,6 +175,13 @@
 			EXEC('code/shortcut', 'close');
 		}, true);
 
+		SETTER(true, 'shortcuts', 'register', 'esc', function(e) {
+
+			if (window.code && window.code.statusform)
+				SET('code.statusform', '');
+
+		});
+
 	</script>
 
 </body>

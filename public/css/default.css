@@ -194,3 +194,6 @@ header .tools .selected { background-color: #F0F0F0; }
 
 .status .collaborators { position: relative; float: right; margin: 0; left: inherit; top: inherit; }
 .status .initials { width: 20px; height: 20px; padding: 4px 0 0; font-size: 9px; }
+
+.statusform { position: absolute; bottom: 36px; background-color: #F0F0F0; left: 0; right: 0; height: 40px; z-index: 100; border-top: 1px solid #E0E0E0; padding: 8px 10px 0; }
+.statusform-item input { width: 100%; outline: 0; border: 0; background-color: #F0F0F0; }

@@ -138,8 +138,6 @@ NEWSCHEMA('FilesUpload', function(schema) {
 	schema.define('path', 'String', true);
 	schema.addWorkflow('exec', function($) {
 
-		console.log('OK');
-
 		var user = $.user;
 		var model = $.model;
 		var project = MAIN.projects.findItem('id', $.id);
@@ -166,6 +164,62 @@ NEWSCHEMA('FilesUpload', function(schema) {
 			MAIN.log($.user, 'files_upload', project, model.path + file.filename);
 			file.move(filename, next);
 		}, $.done());
+
+	});
+});
+
+NEWSCHEMA('FilesCreate', function(schema) {
+
+	schema.define('path', 'String', true);
+	schema.define('folder', Boolean);
+
+	schema.addWorkflow('exec', function($) {
+
+		var user = $.user;
+		var model = $.model;
+		var project = MAIN.projects.findItem('id', $.id);
+
+		if (project == null) {
+			$.invalid('error-project');
+			return;
+		}
+
+		if (!user.sa) {
+			if (project.users.indexOf(user.id) === -1) {
+				$.invalid('error-permissions');
+				return;
+			}
+
+			if (!MAIN.authorize(project, $.user, model.path)) {
+				$.invalid('error-permissions');
+				return;
+			}
+		}
+
+		var filename = Path.join(project.path, model.path);
+
+		Fs.lstat(filename, function(err) {
+
+			if (err) {
+				// file not found
+				// we can continue
+				if (model.folder) {
+					F.path.mkdir(filename);
+					$.success();
+				} else {
+					var name = U.getName(filename);
+					F.path.mkdir(filename.substring(0, filename.length - name.length));
+					Fs.writeFile(filename, '', function(err) {
+						if (err)
+							$.invalid(err);
+						else
+							$.success();
+					});
+				}
+			} else
+				$.invalid('path', model.path + ' already exists');
+
+		});
 
 	});
 });

@@ -15,6 +15,7 @@ exports.install = function() {
 		// Custom
 		ROUTE('POST    /api/files/{id}/rename/        *FilesRename  --> @exec');
 		ROUTE('POST    /api/files/{id}/remove/        *FilesRemove  --> @exec');
+		ROUTE('POST    /api/files/{id}/create/        *FilesCreate  --> @exec');
 		ROUTE('POST    /api/projects/{id}/upload/     *FilesUpload  --> @exec', ['upload']);
 		ROUTE('GET     /api/projects/{id}/files/      *Projects     --> @files');
 		ROUTE('GET     /api/projects/{id}/edit/       *Projects',   files_open);

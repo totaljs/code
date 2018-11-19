@@ -30,7 +30,6 @@ NEWSCHEMA('Projects', function(schema) {
 		var filename = Path.join(item.path, $.query.path);
 
 		MAIN.log($.user, 'files_read', item, filename);
-
 		Fs.readFile(filename, function(err, data) {
 			if (err)
 				$.invalid(err);
