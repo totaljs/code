@@ -52,6 +52,9 @@ h3 i { margin-right: 5px; color: $color; }
 #panel { width: 239px; float: left; overflow: hidden; }
 #content { overflow: hidden; }
 #panel .project { height: 50px; border-bottom: 1px solid #E0E0E0; background-color: #fffbed; color: black; cursor: pointer; font-size: 18px; padding: 12px 0 0 20px; font-weight: bold; }
+#panel .project i { float: right; margin: 3px 15px 0 0; }
+#panel .project b { margin-right: 40px; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+#panel .project:hover { background-color: #fef9e3; }
 #panel .status { padding: 0; }
 #panel .status button { float: left; border: 0; background-color: white; border-right: 1px solid #D0D0D0; height: 35px; width: 40px; outline: 0; }
 #panel .status button i { margin-right: 0; }
@@ -60,10 +63,10 @@ h3 i { margin-right: 5px; color: $color; }
 .bg-yellow { background-color: #FFFFD5; }
 .bg-smoke { background-color: #F8F8F8; }
 
-#content .alert { padding: 7px 15px 5px; position: absolute; left: 0; right: 0; z-index: 10; border-radius: 0; border-bottom: 1px solid #dddbaf; }
+#content .alert { padding: 7px 15px 5px; position: absolute; left: 0; right: 0; z-index: 5; border-radius: 0; border-bottom: 1px solid #dddbaf; }
 #content .messages { position: relative; }
 
-.projectslist { position: absolute; background-color: #fefbee; z-index: 5; top: 99px; width: 301px; border: 1px solid #E0E0E0; box-shadow: 0 5px 5px rgba(0,0,0,0.05); }
+.projectslist { position: absolute; background-color: white; z-index: 7; top: 99px; width: 301px; border: 1px solid #E0E0E0; box-shadow: 5px 5px 10px rgba(0,0,0,0.1); }
 .projectslist ul { margin: 0; padding: 0; }
 .projectslist li { list-style-type: none; border-top: 1px solid #E0E0E0; padding: 8px 20px; cursor: pointer; }
 .projectslist li:hover { background-color: #ffffd7; }
@@ -165,9 +168,9 @@ header .tools .selected { background-color: #F0F0F0; }
 .tabs nav i:before { content: '\f00d'; }
 .tabs nav .modified i:before { content: '\f111'; font-size: 10px; }
 .tabs nav i:hover { color: red; left: 10px; }
-.tabs nav i:hover:before { content: '\f00d'; font-size: 10px; }
+.tabs nav i:hover:before { content: '\f00d'; font-size: 11px; }
 .tabs .options { position: absolute; left: 21px; font-size: 20px; top: 12px; cursor: pointer; }
-.tabs .preview { position: absolute; right: 21px; font-size: 20px; top: 12px; cursor: pointer; color: #4285F4; }
+.tabs .preview { float: right; font-size: 20px; margin: 12px 20px 0 0; cursor: pointer; color: #4285F4; }
 .tabs .preview:hover { opacity: 0.6; }
 
 .status { height: 35px; border-top: 1px solid #E0E0E0; padding: 0 0 0 10px; }
@@ -186,14 +189,19 @@ header .tools .selected { background-color: #F0F0F0; }
 
 .right { text-align: right; }
 .center { text-align: center; }
+.initials { width: 31px; height: 31px; text-align: center; color: white; border-radius: 100px; display: inline-block; position: relative; vertical-align: middle; padding: 7px 0 0; font-weight: bold; cursor: default; font-size: 12px; }
 
-.collaborators { position: absolute; right: 5px; top: 0; }
-.collaborators span { margin: 8px 4px 0 0; }
+.collaborators { position: absolute; right: 0; top: 0; }
+.collaborators section { display: inline-block; }
+.collaborators .tools { float: right; font-size: 18px; padding: 0; }
+.collaborators .tools span { color: black; position: relative; display: inline-block; transition: color 0.5s; font-size: 12px; line-height: 14px; border-left: 1px solid #E0E0E0; height: 49px; vertical-align: top; padding: 16px 0 0 0; text-align: center; width: 50px; font-size: 16px; cursor: pointer; }
+.collaborators .tools span:first-child { border-left: 0; }
+.collaborators .tools span:hover { text-decoration: none; background-color: #F0F0F0; }
+.collaborators .tools .selected { background-color: #F0F0F0; }
+.collaborators .initials { width: 50px; height: 49px; border-radius: 0; font-size: 18px; padding-top: 12px; margin: 0; float: left; }
 
-.initials { width: 34px; height: 34px; text-align: center; color: white; border-radius: 100px; display: inline-block; position: relative; vertical-align: middle; padding: 7px 0 0; font-weight: bold; cursor: default; }
-
-.status .collaborators { position: relative; float: right; margin: 0; left: inherit; top: inherit; }
-.status .initials { width: 20px; height: 20px; padding: 4px 0 0; font-size: 9px; }
+.status-collaborators { position: relative; float: right; margin: 0; }
+.status .initials { width: 35px; height: 35px; padding: 8px 0 0; font-size: 14px; border-radius: 0; float: left; }
 
 .statusform { position: absolute; bottom: 36px; background-color: #F0F0F0; left: 0; right: 0; height: 40px; z-index: 100; border-top: 1px solid #E0E0E0; padding: 8px 10px 0; }
 .statusform-item input { width: 100%; outline: 0; border: 0; background-color: #F0F0F0; }

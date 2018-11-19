@@ -3,10 +3,6 @@ const Fs = require('fs');
 
 var MAIN = global.MAIN = {};
 
-// A storage for online sessions
-// Used in /definitions/auth.js
-MAIN.sessions = {};
-
 // Projects
 MAIN.projects = [];
 MAIN.projectsonline = {};
@@ -93,6 +89,10 @@ MAIN.log = function(user, type, projectid, path) {
 	if (typeof(projectid) === 'string')
 		projectid = MAIN.projects.findItem('id', projectid);
 	LOGGER(user.id, user.ip, type, projectid.name, path);
+};
+
+MAIN.send = function(msg) {
+	MAIN.ws && MAIN.ws.send(msg);
 };
 
 Fs.readFile(F.path.databases('users.json'), function(err, data) {

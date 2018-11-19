@@ -55,12 +55,13 @@ function files_download(id) {
 		return;
 	}
 
-	var path = self.query.path;
+	var path = self.query.path || '';
 	var filename = Path.join(item.path, path);
 
 	if (MAIN.authorize(item, self.user, path)) {
-		Fs.lstat(filename, function(err) {
-			if (err) {
+		Fs.lstat(filename, function(err, stats) {
+
+			if (err || stats.isDirectory()) {
 				self.invalid('error-file');
 				return;
 			}
