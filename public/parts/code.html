@@ -14,6 +14,7 @@
 	<section class="status">
 		<button title="@(Create file)" class="exec" data-name="file" data-exec="code/statusform"><i class="far fa-file"></i></button>
 		<button title="@(Create folder)" class="exec" data-name="directory" data-exec="code/statusform"><i class="far fa-folder"></i></button>
+		<button title="@(All tasks)" class="exec" data-name="directory" data-exec="code/statusform"><i class="far fa-tasks"></i></button>
 	</section>
 </div>
 
@@ -61,9 +62,7 @@
 
 <div class="collaborators">
 	<div class="tools">
-		<span title="@(Tasks)"><i class="far fa-tasks"></i></span>
-		<span title="@(Comments)"><i class="far fa-comments"></i></span>
-		<span title="@(Notes)"><i class="far fa-book-open"></i></span>
+		<span title="@(Tasks)" class="exec" data-path="common.form" data-value="'tasks'"><b data-bind="codetasks.items --> code/codetasks_unsolved__show:value>0__html:value" class="hidden"></b><i class="far fa-tasks"></i></span>
 	</div>
 	<section data-bind="code.usersfile__template">
 		<script type="text/html">
@@ -74,11 +73,24 @@
 	</section>
 </div>
 
+<div data-jc="importer__common.form__if:tasks;url:/forms/tasks.html"></div>
+
 <script>
 
 	var code = {};
 
 	PLUGIN('code', function(exports) {
+
+		exports.codetasks_unsolved = function(value) {
+			var count = 0;
+			if (value && value.length) {
+				for (var i = 0; i < value.length; i++) {
+					if (!value[i].solved)
+						count++;
+				}
+			}
+			return count > 99 ? 99 : count;
+		};
 
 		exports.reload = function() {
 			EMIT('resize', exports.element);
@@ -430,6 +442,9 @@
 			code.current = tab;
 			editor.reconfigure('disabled:false;mode:' + mode);
 			FUNC.wsopen(code.data.id, code.current.path);
+
+			// Refresh tasks
+			AJAX('GET /api/projects/{id}/tasks/'.arg(code.data), { path: code.current.path }, 'codetasks.items');
 		};
 
 		exports.load = function(id, skip) {

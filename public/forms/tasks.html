@@ -1,0 +1,54 @@
+<!--
+	It depends on "code editor"
+-->
+
+<div data-jc="panel__common.form__if:tasks;width:500;title:@(File tasks);icon:tasks;reload:codetasks/reload;bg:false" class="hidden">
+	<br />
+	<div data-jc="tasks__codetasks.items__exec:codetasks/submit;solved:codetasks/solved;placeholder:@(Enter a new task)"></div>
+</div>
+
+<script>
+	PLUGIN('codetasks', function(exports) {
+
+		exports.reload = function() {
+			// nothing to do
+		};
+
+		exports.refresh = function() {
+			var qs = {};
+			qs.path = code.editor.path;
+			AJAX('GET /api/projects/{id}/tasks/'.arg(code.data), qs, 'codetasks.items');
+		};
+
+		exports.submit = function(body) {
+
+			var data = {};
+
+			data.path = code.editor.path;
+			data.body = body;
+
+			SETTER('loading', 'show');
+
+			AJAX('POST /api/projects/{id}/tasks/'.arg(code.data), data, function(response) {
+
+				SETTER('loading', 'hide', 1000);
+
+				// prepares data
+
+				console.log(response);
+				exports.refresh();
+			});
+		};
+
+		exports.solved = function(item) {
+			SETTER('loading', 'show');
+			AJAX('GET /api/projects/{id}/tasks/{0}/'.format(item.id).arg(code.data), function(response) {
+				SETTER('loading', 'hide', 1500);
+				if (response.success) {
+					item.solved = !item.solved;
+					UPDATE('codetasks.items');
+				}
+			});
+		};
+	})
+</script>

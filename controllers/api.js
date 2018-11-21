@@ -6,20 +6,25 @@ exports.install = function() {
 
 		ROUTE('GET     /logout/', redirect_logout);
 
-		ROUTE('GET     /api/{schema}/                 *{schema}     --> @query');
-		ROUTE('GET     /api/{schema}/{id}/            *{schema}     --> @read');
-		ROUTE('POST    /api/{schema}/                 *{schema}     --> @save');
-		ROUTE('DELETE  /api/{schema}/{id}/            *{schema}     --> @remove');
-		ROUTE('POST    /api/{schema}/{id}/            *{schema}     --> @save');
+		ROUTE('GET     /api/{schema}/                          *{schema}     --> @query');
+		ROUTE('GET     /api/{schema}/{id}/                     *{schema}     --> @read');
+		ROUTE('POST    /api/{schema}/                          *{schema}     --> @save');
+		ROUTE('DELETE  /api/{schema}/{id}/                     *{schema}     --> @remove');
+		ROUTE('POST    /api/{schema}/{id}/                     *{schema}     --> @save');
 
 		// Custom
-		ROUTE('POST    /api/files/{id}/rename/        *FilesRename  --> @exec');
-		ROUTE('POST    /api/files/{id}/remove/        *FilesRemove  --> @exec');
-		ROUTE('POST    /api/files/{id}/create/        *FilesCreate  --> @exec');
-		ROUTE('POST    /api/projects/{id}/upload/     *FilesUpload  --> @exec', ['upload']);
-		ROUTE('GET     /api/projects/{id}/files/      *Projects     --> @files');
-		ROUTE('GET     /api/projects/{id}/edit/       *Projects',   files_open);
-		ROUTE('GET     /api/download/{id}/',                        files_download);
+		ROUTE('POST    /api/files/{id}/rename/                 *FilesRename  --> @exec');
+		ROUTE('POST    /api/files/{id}/remove/                 *FilesRemove  --> @exec');
+		ROUTE('POST    /api/files/{id}/create/                 *FilesCreate  --> @exec');
+		ROUTE('POST    /api/projects/{id}/tasks/               *Tasks        --> @insert');
+		ROUTE('GET     /api/projects/{id}/tasks/               *Tasks        --> @query');
+		ROUTE('GET     /api/projects/{id}/tasks/{taskid}/      *Tasks        --> @solved');
+		ROUTE('POST    /api/projects/{id}/comments/            *Comments     --> @insert');
+		ROUTE('GET     /api/projects/{id}/comments/            *Comments     --> @query');
+		ROUTE('POST    /api/projects/{id}/upload/              *FilesUpload  --> @exec', ['upload']);
+		ROUTE('GET     /api/projects/{id}/files/               *Projects     --> @files');
+		ROUTE('GET     /api/projects/{id}/edit/                *Projects',   files_open);
+		ROUTE('GET     /api/download/{id}/',                                 files_download);
 	});
 
 	GROUP(['unauthorize'], function() {

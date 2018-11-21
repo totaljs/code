@@ -62,7 +62,7 @@ COMPONENT('editor', function(self, config) {
 		options.lineWrapping = false;
 		options.matchBrackets = true;
 		options.scrollbarStyle = 'simple';
-		options.rulers = [{ color: '#E0E0E0', column: 130, lineStyle: 'dashed' }];
+		options.rulers = [{ column: 130, lineStyle: 'dashed' }];
 		options.gutters = ['CodeMirror-lint-markers', 'GutterColor'];
 		options.foldGutter = true;
 		options.highlightSelectionMatches = { annotateScrollbar: true, delay: 100 };
@@ -237,7 +237,7 @@ COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 	var expanded = {};
 	var selindex = -1;
 
-	self.template = Tangular.compile('<div class="item{{ if children }} expand{{ fi }}" data-index="{{ $pointer }}" title="{{ name }}"><i class="far icon fa-{{ if children }}folder{{ if isopen }}-open{{ fi }}{{ else }}file-o{{ fi }}"></i><span class="options"><i class="fa fa-cog"></i></span><div>{{ name }}</div></div>');
+	self.template = Tangular.compile('<div class="item{{ if children }} expand{{ fi }}" data-index="{{ $pointer }}" title="{{ name }}"><i class="icon fa-{{ if children }}folder fa{{ if isopen }}-open fa{{ fi }}{{ else }}file-o far{{ fi }}"></i><span class="options"><i class="fa fa-cog"></i></span><div>{{ name }}</div></div>');
 	self.readonly();
 
 	self.make = function() {
@@ -3517,4 +3517,284 @@ COMPONENT('statusform', function(self, config) {
 			self.aclass('hidden');
 	};
 
+});
+
+COMPONENT('tasks', function(self, config) {
+
+	self.readonly();
+
+	var binder;
+	var cache = {};
+
+	self.make = function() {
+
+		self.aclass('ui-tasks');
+		self.append('<div class="ui-tasks-input"><input type="text" maxlength="1000" placeholder="{0}" /></div><div class="ui-tasks-items"></div>'.format(config.placeholder));
+
+		binder = VBINDARRAY('<div class="ui-tasks-item" data-bind=".solved__.ui-tasks-solved:value"><span><i class="fa fa-check"></i></span><div><b data-bind=".userid__text:value"></b><span data-bind=".body__text:value"></span></div></div>', self.find('.ui-tasks-items'));
+
+		self.event('keydown', 'input', function(e) {
+			var t = this;
+			if (e.which === 13) {
+				EXEC(config.exec, t.value);
+				t.value = '';
+			} else if (e.which === 27)
+				t.value = '';
+		});
+
+		self.event('click', '.ui-tasks-item', function() {
+			var index = $(this).vbind().index;
+			var item = self.get()[index];
+			EXEC(config.solved, item);
+		});
+	};
+
+	self.setter = function(value) {
+		binder.set(value);
+	};
+
+});
+
+COMPONENT('checkbox', function(self, config) {
+
+	self.nocompile && self.nocompile();
+
+	self.validate = function(value) {
+		return (config.disabled || !config.required) ? true : (value === true || value === 'true' || value === 'on');
+	};
+
+	self.configure = function(key, value, init) {
+		if (init)
+			return;
+		switch (key) {
+			case 'label':
+				self.find('span').html(value);
+				break;
+			case 'required':
+				self.find('span').tclass('ui-checkbox-label-required', value);
+				break;
+			case 'disabled':
+				self.tclass('ui-disabled', value);
+				break;
+			case 'checkicon':
+				self.find('i').rclass2('fa-').aclass('fa-' + value);
+				break;
+		}
+	};
+
+	self.make = function() {
+		self.aclass('ui-checkbox');
+		self.html('<div><i class="fa fa-{2}"></i></div><span{1}>{0}</span>'.format(config.label || self.html(), config.required ? ' class="ui-checkbox-label-required"' : '', config.checkicon || 'check'));
+		config.disabled && self.aclass('ui-disabled');
+		self.event('click', function() {
+			if (config.disabled)
+				return;
+			self.dirty(false);
+			self.getter(!self.get());
+		});
+	};
+
+	self.setter = function(value) {
+		self.tclass('ui-checkbox-checked', !!value);
+	};
+});
+
+COMPONENT('textarea', function(self, config) {
+
+	var input, content = null;
+
+	self.nocompile && self.nocompile();
+
+	self.validate = function(value) {
+		if (config.disabled || !config.required || config.readonly)
+			return true;
+		if (value == null)
+			value = '';
+		else
+			value = value.toString();
+		return value.length > 0;
+	};
+
+	self.configure = function(key, value, init) {
+		if (init)
+			return;
+
+		var redraw = false;
+
+		switch (key) {
+			case 'readonly':
+				self.find('textarea').prop('readonly', value);
+				break;
+			case 'disabled':
+				self.tclass('ui-disabled', value);
+				self.find('textarea').prop('disabled', value);
+				self.reset();
+				break;
+			case 'required':
+				self.noValid(!value);
+				!value && self.state(1, 1);
+				self.tclass('ui-textarea-required', value);
+				break;
+			case 'placeholder':
+				input.prop('placeholder', value || '');
+				break;
+			case 'maxlength':
+				input.prop('maxlength', value || 1000);
+				break;
+			case 'label':
+				redraw = true;
+				break;
+			case 'autofocus':
+				input.focus();
+				break;
+			case 'monospace':
+				self.tclass('ui-textarea-monospace', value);
+				break;
+			case 'icon':
+				redraw = true;
+				break;
+			case 'format':
+				self.format = value;
+				self.refresh();
+				break;
+			case 'height':
+				self.find('textarea').css('height', (value > 0 ? value + 'px' : value));
+				break;
+		}
+
+		redraw && setTimeout2('redraw' + self.id, function() {
+			self.redraw();
+			self.refresh();
+		}, 100);
+	};
+
+	self.redraw = function() {
+
+		var attrs = [];
+		var builder = [];
+
+		self.tclass('ui-disabled', config.disabled === true);
+		self.tclass('ui-textarea-monospace', config.monospace === true);
+		self.tclass('ui-textarea-required', config.required === true);
+
+		config.placeholder && attrs.attr('placeholder', config.placeholder);
+		config.maxlength && attrs.attr('maxlength', config.maxlength);
+		config.error && attrs.attr('error');
+		attrs.attr('data-jc-bind', '');
+		config.height && attrs.attr('style', 'height:{0}px'.format(config.height));
+		config.autofocus === 'true' && attrs.attr('autofocus');
+		config.disabled && attrs.attr('disabled');
+		config.readonly && attrs.attr('readonly');
+		builder.push('<textarea {0}></textarea>'.format(attrs.join(' ')));
+
+		var label = config.label || content;
+
+		if (!label.length) {
+			config.error && builder.push('<div class="ui-textarea-helper"><i class="fa fa-warning" aria-hidden="true"></i> {0}</div>'.format(config.error));
+			self.aclass('ui-textarea ui-textarea-container');
+			self.html(builder.join(''));
+			input = self.find('textarea');
+			return;
+		}
+
+		var html = builder.join('');
+
+		builder = [];
+		builder.push('<div class="ui-textarea-label">');
+		config.icon && builder.push('<i class="fa fa-{0}"></i>'.format(config.icon));
+		builder.push(label);
+		builder.push(':</div><div class="ui-textarea">{0}</div>'.format(html));
+		config.error && builder.push('<div class="ui-textarea-helper"><i class="fa fa-warning" aria-hidden="true"></i> {0}</div>'.format(config.error));
+
+		self.html(builder.join(''));
+		self.rclass('ui-textarea');
+		self.aclass('ui-textarea-container');
+		input = self.find('textarea');
+	};
+
+	self.make = function() {
+		content = self.html();
+		self.type = config.type;
+		self.format = config.format;
+		self.redraw();
+	};
+
+	self.state = function(type) {
+		if (!type)
+			return;
+		var invalid = config.required ? self.isInvalid() : false;
+		if (invalid === self.$oldstate)
+			return;
+		self.$oldstate = invalid;
+		self.tclass('ui-textarea-invalid', invalid);
+		config.error && self.find('.ui-textarea-helper').tclass('ui-textarea-helper-show', invalid);
+	};
+});
+
+COMPONENT('error', function(self, config) {
+
+	self.readonly();
+	self.nocompile && self.nocompile();
+
+	self.make = function() {
+		self.aclass('ui-error hidden');
+	};
+
+	self.setter = function(value) {
+
+		if (!(value instanceof Array) || !value.length) {
+			self.tclass('hidden', true);
+			return;
+		}
+
+		var builder = [];
+		for (var i = 0, length = value.length; i < length; i++)
+			builder.push('<div><span class="fa {1}"></span>{0}</div>'.format(value[i].error, 'fa-' + (config.icon || 'times-circle')));
+
+		self.html(builder.join(''));
+		self.tclass('hidden', false);
+	};
+});
+
+COMPONENT('validation', 'delay:100;flags:visible', function(self, config) {
+
+	var path, elements = null;
+	var def = 'button[name="submit"]';
+	var flags = null;
+
+	self.readonly();
+
+	self.make = function() {
+		elements = self.find(config.selector || def);
+		path = self.path.replace(/\.\*$/, '');
+		setTimeout(function() {
+			self.watch(self.path, self.state, true);
+		}, 50);
+	};
+
+	self.configure = function(key, value, init) {
+		switch (key) {
+			case 'selector':
+				if (!init)
+					elements = self.find(value || def);
+				break;
+			case 'flags':
+				if (value) {
+					flags = value.split(',');
+					for (var i = 0; i < flags.length; i++)
+						flags[i] = '@' + flags[i];
+				} else
+					flags = null;
+				break;
+		}
+	};
+
+	self.state = function() {
+		setTimeout2(self.id, function() {
+			var disabled = DISABLED(path, flags);
+			if (!disabled && config.if)
+				disabled = !EVALUATE(self.path, config.if);
+			elements.prop('disabled', disabled);
+		}, config.delay);
+	};
 });

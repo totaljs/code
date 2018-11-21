@@ -14,15 +14,3 @@ AUTH(function(req, res, flags, next) {
 
 	next(!!user, user);
 });
-
-// Clears expired sessions
-ON('service', function(counter) {
-	if (counter % 5 !== 0)
-		return;
-	var keys = Object.keys(MAIN.sessions);
-	for (var i = 0; i < keys.length; i++) {
-		var id = keys[i];
-		if (MAIN.sessions[id].expire < NOW)
-			delete MAIN.sessions[id];
-	}
-});
