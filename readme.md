@@ -17,3 +17,4 @@ Online collaboration code.
 ## To-Do
 
 - missing encode / decode
+- missing show all JS errors from JSHINT
