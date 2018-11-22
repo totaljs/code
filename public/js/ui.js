@@ -74,6 +74,7 @@ COMPONENT('editor', function(self, config) {
 		options.autoCloseBrackets = true;
 		options.extraKeys = { 'Alt-F': 'findPersistent', 'Cmd-S': shortcut('save'), 'Ctrl-S': shortcut('save'), 'Alt-W': shortcut('close'), 'F5': shortcut('F5') };
 
+
 		options.autoSuggest = [{ mode: 'javascript', startChar: 'C', listCallback: function() {
 			return [{ text: 'cebe ', displayText: 'cebe' }, { text: 'jacmoe ', displayText: 'jacmoe' }, { text: 'samdark ', displayText: 'samdark' }];
 		}}];
@@ -91,6 +92,12 @@ COMPONENT('editor', function(self, config) {
 
 		editor = CodeMirror(container[0], options);
 		self.editor = editor;
+
+		self.event('contextmenu', function(e) {
+			e.preventDefault();
+			e.stopPropagation();
+			config.contextmenu && EXEC(config.contextmenu, e, editor);
+		});
 
 		editor.phrase = function(text) {
 			return options.phrases[text] || text;
@@ -2719,7 +2726,6 @@ COMPONENT('textbox', function(self, config) {
 	};
 });
 
-
 COMPONENT('menu', function(self) {
 
 	self.singleton();
@@ -2748,8 +2754,37 @@ COMPONENT('menu', function(self) {
 		});
 
 		$(document).on('touchstart mousedown', function(e) {
-			is && (self.target !== e.target && !self.target.contains(e.target)) && self.hide();
+			if (is && (!self.target || (self.target !== e.target && !self.target.contains(e.target))))
+				self.hide();
 		});
+	};
+
+	self.showxy = function(x, y, items, callback) {
+
+		var builder = [];
+
+		self.target = null;
+		self.items = items;
+		self.callback = callback;
+
+		for (var i = 0; i < items.length; i++) {
+			var item = items[i];
+			builder.push('<li{2}>{0}{1}</li>'.format(item.icon ? '<i class="fa fa-{0}"></i>'.format(item.icon) : '', item.name, item.icon ? '' : ' class="ui-menu-nofa"'));
+		}
+
+		ul.html(builder.join(''));
+
+		if (!is) {
+			self.rclass('hidden');
+			self.aclass('ui-menu-visible', 100);
+			is = true;
+		}
+
+		var opt = {};
+		opt.left = x;
+		opt.top = y;
+
+		self.element.css(opt);
 	};
 
 	self.show = function(orientation, element, items, callback, offsetX, offsetY) {

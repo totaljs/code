@@ -34,7 +34,7 @@
 			<div class="alert hidden" data-bind="code.multiple__show" data-name="multiple"><i class="fa fa-times exec" data-exec="code/warning"></i><i class="fa fa-users"></i>@(Be careful because another user is editing content of this file.) <span class="link exec" data-exec="code/warning">@(I understand)</span>.</div>
 		</div>
 		<div data-bind="code.editor.path__show">
-			<div data-jc="editor__code.editor.body__height:100%;shortcut:code/shortcut"></div>
+			<div data-jc="editor__code.editor.body__height:100%;shortcut:code/shortcut;contextmenu:code/contextmenu"></div>
 		</div>
 	</div>
 	<section class="status">
@@ -101,6 +101,17 @@
 			id && exports.load(id);
 			AJAX('GET /api/projects/', 'code.projects');
 			SET('%projectsvisible', false);
+		};
+
+		exports.contextmenu = function(e, editor) {
+			var items = [];
+			items.push({ name: '@(Copy)', icon: 'copy', command: 'copy' });
+			items.push({ name: '@(Paste)', icon: 'paste', command: 'paste' });
+			items.push({ name: '@(Encode)', icon: 'code', value: 'encode' });
+			items.push({ name: '@(Decode)', icon: 'broom', value: 'decode' });
+			SETTER('menu', 'showxy', e.pageX, + e.pageY, items, function(value) {
+				console.log(value);
+			});
 		};
 
 		WATCH('code.editor.body', function(path, value, type) {
