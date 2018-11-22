@@ -4,18 +4,18 @@ const Fs = require('fs');
 exports.install = function() {
 	GROUP(['authorize'], function() {
 
-		ROUTE('GET     /logout/', redirect_logout);
-
 		ROUTE('GET     /api/{schema}/                          *{schema}     --> @query');
 		ROUTE('GET     /api/{schema}/{id}/                     *{schema}     --> @read');
 		ROUTE('POST    /api/{schema}/                          *{schema}     --> @save');
 		ROUTE('DELETE  /api/{schema}/{id}/                     *{schema}     --> @remove');
 		ROUTE('POST    /api/{schema}/{id}/                     *{schema}     --> @save');
 
-		// Custom
+		// Files
 		ROUTE('POST    /api/files/{id}/rename/                 *FilesRename  --> @exec');
 		ROUTE('POST    /api/files/{id}/remove/                 *FilesRemove  --> @exec');
 		ROUTE('POST    /api/files/{id}/create/                 *FilesCreate  --> @exec');
+
+		// Projects
 		ROUTE('POST    /api/projects/{id}/tasks/               *Tasks        --> @insert');
 		ROUTE('GET     /api/projects/{id}/tasks/               *Tasks        --> @query');
 		ROUTE('GET     /api/projects/{id}/tasks/{taskid}/      *Tasks        --> @solved');
@@ -24,7 +24,10 @@ exports.install = function() {
 		ROUTE('POST    /api/projects/{id}/upload/              *FilesUpload  --> @exec', ['upload']);
 		ROUTE('GET     /api/projects/{id}/files/               *Projects     --> @files');
 		ROUTE('GET     /api/projects/{id}/edit/                *Projects',   files_open);
+
+		// Other
 		ROUTE('GET     /api/download/{id}/',                                 files_download);
+		ROUTE('GET     /logout/', redirect_logout);
 	});
 
 	GROUP(['unauthorize'], function() {

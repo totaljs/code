@@ -1,1 +1,56 @@
-Settings
+<div class="container">
+	<br />
+	<br />
+	<br />
+	<div class="row">
+		<div class="col-md-4 col-md-offset-4">
+			<div class="panel">
+				<label><i class="fa fa-cog"></i>@(Settings)</label>
+				<div class="body" data-jc-scope="settings">
+
+					<div data-jc="textbox__name__required:true;disabled:true" class="m">@(Account name)</div>
+					<div data-jc="textbox__email__required:true;type:email" class="m">@(Email address)</div>
+					<div data-jc="textbox__phone__type:phone" class="m">@(Phone number)</div>
+
+					<div data-jc="checkbox__darkmode">@(Dark mode)</div>
+					<div data-jc="checkbox__ispassword" class="b m">@(Change password)</div>
+
+					<div bind="?.ispassword__show" class="hidden m">
+						<div data-jc="textbox__password__type:password;required:true">@(New password)</div>
+					</div>
+
+					<div data-jc="error__response"></div>
+
+					<div data-jc="validation__?">
+						<button name="submit" class="button b exec" data-exec="settings/submit" disabled="disabled"><i class="fa fa-floppy-o"></i>@(Save)</button>
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+	PLUGIN('settings', function(exports) {
+		exports.reload = function() {
+			SETR('settings', {});
+			AJAX('GET /api/accounts/', 'settings');
+		};
+
+		exports.submit = function() {
+			var data = GETR('settings');
+			AJAX('POST /api/accounts/', data, function(response) {
+
+				if (response.success) {
+					SETTER('snackbar', 'show', '@(Account has been updated successfully.)');
+					user.darkmode = data.darkmode;
+					user.email = data.email;
+					$('body').tclass('td', user.darkmode);
+ 				}
+
+ 				SET('settings.response', response);
+			});
+		};
+	});
+</script>

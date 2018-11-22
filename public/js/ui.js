@@ -70,6 +70,7 @@ COMPONENT('editor', function(self, config) {
 		options.showTrailingSpace = true;
 		// options.matchTags = { bothTags: true };
 		// options.autoCloseTags = true;
+		options.scrollPastEnd = true;
 		options.autoCloseBrackets = true;
 		options.extraKeys = { 'Alt-F': 'findPersistent', 'Cmd-S': shortcut('save'), 'Ctrl-S': shortcut('save'), 'Alt-W': shortcut('close'), 'F5': shortcut('F5') };
 

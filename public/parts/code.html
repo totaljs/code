@@ -1,4 +1,4 @@
-<div data-bind="%projectsvisible__show:value" class="projectslist hidden">
+<div data-bind="%projectsvisible__show" class="projectslist hidden">
 	<ul data-jc="listmenu__code.data.id__datasource:code.projects;selector:li">
 		<script type="text/html">
 			<li class="exec" data-exec="code/project" data-id="{{ id }}"><i class="far fa-project-diagram"></i>{{ name }}</li>
@@ -20,7 +20,7 @@
 
 <div id="body">
 	<section class="tabs">
-		<a href="#" data-bind="code.data.url__href:value__show:value" target="_blank" class="preview" title="@(Preview)"><i class="far fa-globe"></i></a>
+		<a href="#" data-bind="code.data.url__href__show" target="_blank" class="preview" title="@(Preview)"><i class="far fa-globe"></i></a>
 		<span class="options exec hidden" data-exec="code/options_editor" data-bind="code.editor.path__show:value"><i class="fa fa-cog"></i></span>
 		<nav data-jc="tabmenu__code.editor.path__datasource:code.open;selector:span;exec:code/opentab;reorder:code/savetabs">
 			<script type="text/html">
@@ -30,10 +30,10 @@
 	</section>
 	<div id="content" data-margin="36">
 		<div class="messages">
-			<div class="alert hidden" data-bind="code.backup__show:value" data-name="backup"><i class="fa fa-times exec" data-exec="code/warning"></i><i class="fa fa-warning"></i>@(Content of this file wasn't be saved before. Do you want to restore it?) <span class="link exec" data-name="restore" data-exec="code/warning">@(Restore)</span> @(or) <span class="link exec" data-exec="code/warning">@(Cancel)</span></div>
-			<div class="alert hidden" data-bind="code.multiple__show:value" data-name="multiple"><i class="fa fa-times exec" data-exec="code/warning"></i><i class="fa fa-users"></i>@(Be careful because another user is editing content of this file.) <span class="link exec" data-exec="code/warning">@(I understand)</span>.</div>
+			<div class="alert hidden" data-bind="code.backup__show" data-name="backup"><i class="fa fa-times exec" data-exec="code/warning"></i><i class="fa fa-warning"></i>@(Content of this file wasn't be saved before. Do you want to restore it?) <span class="link exec" data-name="restore" data-exec="code/warning">@(Restore)</span> @(or) <span class="link exec" data-exec="code/warning">@(Cancel)</span></div>
+			<div class="alert hidden" data-bind="code.multiple__show" data-name="multiple"><i class="fa fa-times exec" data-exec="code/warning"></i><i class="fa fa-users"></i>@(Be careful because another user is editing content of this file.) <span class="link exec" data-exec="code/warning">@(I understand)</span>.</div>
 		</div>
-		<div data-bind="code.editor.path__show:value">
+		<div data-bind="code.editor.path__show">
 			<div data-jc="editor__code.editor.body__height:100%;shortcut:code/shortcut"></div>
 		</div>
 	</div>
@@ -58,9 +58,12 @@
 	<div class="statusform-item hidden" data-name="directory">
 		<input type="text" placeholder="@(Enter a folder name)" />
 	</div>
+	<div class="statusform-item hidden" data-name="commit">
+		<input type="text" placeholder="@(Describe changes for this file)" />
+	</div>
 </div>
 
-<div class="collaborators">
+<div class="collaborators hidden" data-bind="code.editor.path__show">
 	<div class="tools">
 		<span title="@(Tasks)" class="exec" data-path="common.form" data-value="'tasks'"><b data-bind="codetasks.items --> code/codetasks_unsolved__show:value>0__html:value" class="hidden"></b><i class="far fa-tasks"></i></span>
 	</div>
