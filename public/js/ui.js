@@ -3,6 +3,18 @@ COMPONENT('editor', function(self, config) {
 	var editor = null;
 	var skip = false;
 
+	var fn = {};
+
+	fn.lastIndexOf = function(str, chfrom) {
+		for (var i = chfrom; i > 0; i--) {
+			var c = str.substring(i - 1, i);
+			for (var j = 1; j < arguments.length; j++)
+				if (c === arguments[j])
+					return i;
+		}
+		return 0;
+	};
+
 	self.getter = null;
 	self.bindvisible();
 	self.nocompile && self.nocompile();
@@ -53,6 +65,41 @@ COMPONENT('editor', function(self, config) {
 			};
 		};
 
+		var tabulator = function() {
+
+			if (config.mode === 'totaljs' || config.mode === 'html') {
+
+				var cm = editor;
+				var cur = cm.getCursor();
+				var line = cm.getLine(cur.line);
+				var index = fn.lastIndexOf(line, cur.ch, '\t', '>', ' ');
+
+				if (index === -1)
+					return CodeMirror.Pass;
+
+				var html = line.substring(index, cur.ch);
+
+				if ((/(div|span|table|b|i|a|img|td|tr|thead|tfoot|tbody|section|figure|section)+([a-z0-9.-_])*/).test(html)) {
+
+					var cls = html.split('.');
+
+					if (!cls[0]) {
+						if (cls[1].substring(0, 2) === 'fa')
+							cls[0] = 'i';
+						else
+							cls[0] = 'div';
+					}
+
+					var tag = cls[0] === 'img' ? '<img src="" alt="" />' : ('<{0}{1}></{0}>'.format(cls[0], cls[1] ? (' class="' + cls[1] + '"') : ''));
+
+					cm.replaceRange(line.substring(0, index) + tag, { line: cur.line, ch: 0 }, { line: cur.line, ch: cur.cr });
+					cm.doc.setCursor({ line: cur.line, ch: index + (cls[0] === 'img' ? (tag.indexOf('"') + 1) : (tag.indexOf('>') + 1)) });
+					return;
+				}
+			}
+			return CodeMirror.Pass;
+		};
+
 		var options = {};
 		options.lineNumbers = true;
 		options.mode = config.type || 'htmlmixed';
@@ -72,12 +119,7 @@ COMPONENT('editor', function(self, config) {
 		// options.autoCloseTags = true;
 		options.scrollPastEnd = true;
 		options.autoCloseBrackets = true;
-		options.extraKeys = { 'Alt-F': 'findPersistent', 'Cmd-S': shortcut('save'), 'Ctrl-S': shortcut('save'), 'Alt-W': shortcut('close'), 'F5': shortcut('F5') };
-
-
-		options.autoSuggest = [{ mode: 'javascript', startChar: 'C', listCallback: function() {
-			return [{ text: 'cebe ', displayText: 'cebe' }, { text: 'jacmoe ', displayText: 'jacmoe' }, { text: 'samdark ', displayText: 'samdark' }];
-		}}];
+		options.extraKeys = { 'Alt-F': 'findPersistent', 'Cmd-S': shortcut('save'), 'Ctrl-S': shortcut('save'), 'Alt-W': shortcut('close'), 'F5': shortcut('F5'), Tab: tabulator };
 
 		var GutterColor = function(color) {
 			var marker = document.createElement('div');
@@ -124,6 +166,26 @@ COMPONENT('editor', function(self, config) {
 			}
 		};
 
+		var snippets = {};
+		var snippetsoptions = { completeSingle: false, hint: function(cm) {
+			var cur = cm.getCursor();
+			var start = snippets.index;
+			var end = cur.ch;
+			var tabs = ''.padLeft(snippets.index, '\t');
+			return {
+				list: FUNC.snippets(config.type, snippets.text, tabs, cur.line),
+				from: CodeMirror.Pos(cur.line, start),
+				to: CodeMirror.Pos(cur.line, end)
+			};
+		}};
+
+		editor.on('endCompletion', function(a, b) {
+			if (b) {
+				var cur = editor.getCursor();
+				editor.doc.setCursor({ line: b.line, ch: b.ch });
+			}
+		});
+
 		editor.on('change', function(a, b) {
 
 			setTimeout2('EditorGutterColor', prerender_colors, 500);
@@ -132,8 +194,21 @@ COMPONENT('editor', function(self, config) {
 				return;
 
 			setTimeout2(self.id, function() {
-				var val = editor.getValue();
 
+				var cur = editor.getCursor();
+				var line = editor.getLine(cur.line);
+				var index = fn.lastIndexOf(line, cur.ch, ' ', '>', '\t');
+
+				if (index !== -1) {
+					var text = line.substring(index, cur.ch);
+					if (text) {
+						snippets.index = index;
+						snippets.text = text;
+						editor.showHint(snippetsoptions);
+					}
+				}
+
+				var val = editor.getValue();
 				if (config.trim) {
 					var lines = val.split('\n');
 					for (var i = 0, length = lines.length; i < length; i++)

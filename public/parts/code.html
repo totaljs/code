@@ -1,7 +1,7 @@
 <div data-bind="%projectsvisible__show" class="projectslist hidden">
 	<ul data-jc="listmenu__code.data.id__datasource:code.projects;selector:li">
 		<script type="text/html">
-			<li class="exec" data-exec="code/project" data-id="{{ id }}"><i class="far fa-project-diagram"></i>{{ name }}</li>
+			<li class="exec" data-exec="code/project" data-id="{{ id }}"><i class="fa fa-project-diagram"></i>{{ name }}</li>
 		</script>
 	</ul>
 </div>
@@ -12,16 +12,16 @@
 		<div data-jc="tree__code.tree__exec:code/open;options:code/options;rename:code/rename;first:false;upload:code/upload"></div>
 	</div>
 	<section class="status">
-		<button title="@(Create file)" class="exec" data-name="file" data-exec="code/statusform"><i class="far fa-file"></i></button>
-		<button title="@(Create folder)" class="exec" data-name="directory" data-exec="code/statusform"><i class="far fa-folder"></i></button>
-		<button title="@(All tasks)" class="exec" data-name="directory" data-exec="code/statusform"><i class="far fa-tasks"></i></button>
+		<button title="@(Create file)" class="exec" data-name="file" data-exec="code/statusform"><i class="fa fa-file"></i></button>
+		<button title="@(Create folder)" class="exec" data-name="directory" data-exec="code/statusform"><i class="fa fa-folder"></i></button>
+		<button title="@(All tasks)" class="exec" data-name="directory" data-exec="code/statusform"><i class="fa fa-tasks"></i></button>
 	</section>
 </div>
 
 <div id="body">
 	<section class="tabs">
-		<a href="#" data-bind="code.data.url__href__show" target="_blank" class="preview" title="@(Preview)"><i class="far fa-globe"></i></a>
-		<span class="options exec hidden" data-exec="code/options_editor" data-bind="code.editor.path__show:value"><i class="fa fa-cog"></i></span>
+		<a href="#" data-bind="code.data.url__href__show" target="_blank" class="preview" title="@(Preview)"><i class="fa fa-globe"></i></a>
+		<span class="options exec hidden" data-exec="code/options_editor" data-bind="code.editor.path__show"><i class="fa fa-cog"></i></span>
 		<nav data-jc="tabmenu__code.editor.path__datasource:code.open;selector:span;exec:code/opentab;reorder:code/savetabs">
 			<script type="text/html">
 				<span data-value="{{ path }}"{{ if modified }} class="modified"{{ fi }}><i class="fa exec" data-exec="code/close"></i>{{ name }}</span>
@@ -46,7 +46,7 @@
 			</script>
 		</div>
 		<div data-bind="JSHINT.errors__html b:value?value.length:0__.red:value && value.length>0" class="status-alerts">
-			<i class="far fa-warning"></i><b>0</b>
+			<i class="fa fa-warning"></i><b>0</b>
 		</div>
 	</section>
 </div>
@@ -65,7 +65,7 @@
 
 <div class="collaborators hidden" data-bind="code.editor.path__show">
 	<div class="tools">
-		<span title="@(Tasks)" class="exec" data-path="common.form" data-value="'tasks'"><b data-bind="codetasks.items --> code/codetasks_unsolved__show:value>0__html:value" class="hidden"></b><i class="far fa-tasks"></i></span>
+		<span title="@(Tasks)" class="exec" data-path="common.form" data-value="'tasks'"><b data-bind="codetasks.items --> code/codetasks_unsolved__show:value>0__html:value" class="hidden"></b><i class="fa fa-tasks"></i></span>
 	</div>
 	<section data-bind="code.usersfile__template">
 		<script type="text/html">
@@ -109,6 +109,7 @@
 			items.push({ name: '@(Paste)', icon: 'paste', command: 'paste' });
 			items.push({ name: '@(Encode)', icon: 'code', value: 'encode' });
 			items.push({ name: '@(Decode)', icon: 'broom', value: 'decode' });
+
 			SETTER('menu', 'showxy', e.pageX, + e.pageY, items, function(value) {
 				console.log(value);
 			});
