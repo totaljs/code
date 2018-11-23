@@ -215,7 +215,7 @@ header .tools .selected { background-color: #F0F0F0; }
 .status-collaborators { position: relative; float: right; margin: 0; }
 .status .initials { width: 35px; height: 35px; padding: 8px 0 0; font-size: 14px; border-radius: 0; float: left; }
 
-.statusform { position: absolute; bottom: 36px; background-color: #F0F0F0; left: 0; right: 0; height: 40px; z-index: 100; border-top: 1px solid #E0E0E0; padding: 8px 10px 0; }
+.statusform { position: absolute; bottom: 36px; background-color: #F0F0F0; left: 0; right: 0; height: 40px; z-index: 6; border-top: 1px solid #E0E0E0; padding: 8px 10px 0; }
 .statusform-item input { width: 100%; outline: 0; border: 0; background-color: #F0F0F0; }
 
 /* THEME DARK */
@@ -302,11 +302,7 @@ header .tools .selected { background-color: #F0F0F0; }
 .td .ui-panel-title .ui-panel-button-close { border-left-color: #353535; }
 .td hr { border-color: #202020; }
 
-.ui-infopanel { position: absolute; z-index: 5; background-color: white; padding: 5px; border-radius: 3px; box-shadow: 2px 2px 5px rgba(0,0,0,0.05); border: 1px solid #E0E0E0; }
-.td .ui-infopanel { background-color: #151515; border: 1px solid #252525; }
-
-.infopanel-line { color: gray; font-size: 12px; font-size: 12px; cursor: pointer; padding: 1px 4px; border-radius: 3px; }
-
+.infopanel-line { color: gray; font-size: 12px; cursor: pointer; padding: 1px 4px; border-radius: 3px; }
 .infopanel-line b { float: right; width: 24px; text-align: right; color: red; }
 .infopanel-line:hover { background-color: #E0E0E0; }
 .infopanel-line span { margin-right: 24px; display: block; min-width: 200px; max-width: 400px; font-family: Menlo,Consolas; color: black; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; }

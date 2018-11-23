@@ -386,3 +386,6 @@ input:invalid { box-shadow: none; }
 .td .ui-dropdown-required .ui-dropdown:after { border-left-color: #101010; }
 .td .ui-dropdown-invalid .ui-dropdown { border-color: red !important; }
 .td .ui-dropdown-invalid .ui-dropdown:after { border-left-color: red !important; }
+
+.ui-infopanel { position: absolute; z-index: 7; background-color: white; padding: 5px; border-radius: 3px; box-shadow: 2px 2px 5px rgba(0,0,0,0.05); border: 1px solid #E0E0E0; }
+.td .ui-infopanel { background-color: #151515; border: 1px solid #252525; }
