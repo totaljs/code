@@ -14,7 +14,7 @@ Online collaboration code.
 - run `$ node debug.js`
 - open browser `http://127.0.0.1:8000`
 
-## To-Do
+## Default credentials
 
-- missing encode / decode
-- missing show all JS errors from JSHINT
+- user: `info@totaljs.com`
+- pass: `123456`
