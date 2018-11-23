@@ -202,7 +202,7 @@
 					exports.save();
 					break;
 				case 'close':
-					exports.close();
+					setTimeout2('closetab', exports.close, 200);
 					break;
 			}
 		};
