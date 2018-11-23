@@ -50,6 +50,8 @@ h3 i { margin-right: 5px; color: $color; }
 
 #body { border-left: 1px solid #E0E0E0; min-height: 200px; margin-left: 239px; overflow: hidden; }
 #body.warning .CodeMirror { background-color: #fbf6f6; }
+.td #body.warning .CodeMirror { background-color: #2d2323; }
+
 #panel { width: 239px; float: left; overflow: hidden; }
 #content { overflow: hidden; }
 #panel .project { height: 50px; border-bottom: 1px solid #E0E0E0; background-color: #fffbed; color: black; cursor: pointer; font-size: 18px; padding: 12px 0 0 20px; font-weight: bold; }
