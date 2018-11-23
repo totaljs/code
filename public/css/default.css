@@ -240,7 +240,7 @@ header .tools .selected { background-color: #F0F0F0; }
 .td .projectslist li { border-top-color: #353535; color: white; }
 .td .projectslist li:hover { background-color: #101010; }
 .td .projectslist { background-color: #101010; border-color: #353535; }
-.td .ui-tree .expand { color: #8b8c8f; }
+.td .ui-tree .expand { color: #a9aaae; }
 .td .ui-tree .item { border-bottom-color: #353535; }
 .td .ui-tree .item:hover { background-color: #303030; }
 .td .ui-tree .selected { background-color: #404040 !important; color: white; }

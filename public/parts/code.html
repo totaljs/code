@@ -34,7 +34,7 @@
 			<div class="alert hidden" data-bind="code.multiple__show" data-name="multiple"><i class="fa fa-times exec" data-exec="code/warning"></i><i class="fa fa-users"></i>@(Be careful because another user is editing content of this file.) <span class="link exec" data-exec="code/warning">@(I understand)</span>.</div>
 		</div>
 		<div data-bind="code.editor.path__show">
-			<div data-jc="editor__code.editor.body__height:100%;shortcut:code/shortcut;contextmenu:code/contextmenu"></div>
+			<div data-jc="editor__code.editor.body__height:100%;shortcut:code/shortcut;contextmenu:code/contextmenu;cursor:code/cursorposition"></div>
 		</div>
 	</div>
 	<section class="status">
@@ -99,8 +99,25 @@
 			EMIT('resize', exports.element);
 			var id = READPARAMS().id;
 			id && exports.load(id);
-			AJAX('GET /api/projects/', 'code.projects');
 			SET('%projectsvisible', false);
+
+			AJAX('GET /api/projects/', function(response) {
+
+				SET('code.projects', response);
+
+				var keys = Object.keys(localStorage);
+				var projects = {};
+
+				// Clears cache
+				for (var i = 0; i < response.length; i++)
+					projects[code.projects[i].id] = 1;
+
+				for (var i = 0; i < keys.length; i++) {
+					var id = keys[i].substring(0, keys[i].indexOf('_'));
+					if (id && id.length > 15 && !projects[id])
+						localStorage.removeItem(keys[i]);
+				}
+			});
 		};
 
 		exports.contextmenu = function(e, editor) {
@@ -385,6 +402,7 @@
 					prev.doc = editor.copy(true);
 			}
 
+			code.editor.loaded = false;
 			editor.clear(true);
 
 			var ext = tab.path.substring(tab.path.lastIndexOf('.') + 1).toLowerCase();
@@ -441,6 +459,7 @@
 
 			SET('code.editor.path', tab.path);
 			SET('code.editor.name', tab.name);
+			code.editor.hash = HASH(tab.path);
 
 			if (JSHINT.errors) {
 				JSHINT.errors.length = 0;
@@ -456,9 +475,25 @@
 				editor.paste(editor.copy(false));
 			}
 
+
 			code.current = tab;
 			editor.reconfigure('disabled:false;mode:' + mode);
 			FUNC.wsopen(code.data.id, code.current.path);
+
+			code.editor.loaded = true;
+
+			!tab.doc && setTimeout(function() {
+				editor.editor.refresh();
+				var cache = exports.cache_getscroll(code.current.path);
+				if (cache) {
+					editor.editor.scrollTo(cache.x, cache.y);
+					editor.editor.setCursor({ line: cache.line, ch: cache.ch });
+					editor.editor.focus();
+				} else {
+					editor.editor.scrollTo(0, 0);
+					editor.editor.setCursor(0);
+				}
+			}, 250);
 
 			// Refresh tasks
 			AJAX('GET /api/projects/{id}/tasks/'.arg(code.data), { path: code.current.path }, 'codetasks.items');
@@ -669,11 +704,22 @@
 			editor.focus();
 		};
 
+		exports.cursorposition = function(editor) {
+			setTimeout2('savescrollposition', function(editor) {
+				if (!code.editor.loaded)
+					return;
+				var info = editor.getScrollInfo();
+				var cur = editor.getCursor();
+				var key = code.data.id + '_' + code.editor.hash + '_scroll';
+				localStorage.setItem(key,  STRINGIFY({ x: info.left, y: info.top, line: cur.line, ch: cur.ch }));
+			}, 300, null, editor);
+		};
+
 		// Internal cache
 		// For unexpect of closing browser
 		exports.cache_set = function() {
 			if (code.editor.path) {
-				var key = code.data.id + '_' + HASH(code.editor.path);
+				var key = code.data.id + '_' + code.editor.hash;
 				localStorage.setItem(key, code.editor.body);
 			}
 		};
@@ -682,6 +728,14 @@
 			if (path) {
 				var key = code.data.id + '_' + HASH(path);
 				return localStorage.getItem(key);
+			}
+		};
+
+		exports.cache_getscroll = function(path) {
+			if (path) {
+				var key = code.data.id + '_' + HASH(path) + '_scroll';
+				var obj = localStorage.getItem(key);
+				return obj ? PARSE(obj) : null;
 			}
 		};
 

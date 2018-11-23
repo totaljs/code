@@ -180,10 +180,11 @@ COMPONENT('editor', function(self, config) {
 		}};
 
 		editor.on('endCompletion', function(a, b) {
-			if (b) {
-				var cur = editor.getCursor();
-				editor.doc.setCursor({ line: b.line, ch: b.ch });
-			}
+			b && editor.doc.setCursor({ line: b.line, ch: b.ch });
+		});
+
+		editor.on('cursorActivity', function() {
+			EXEC(config.cursor, editor);
 		});
 
 		editor.on('change', function(a, b) {
@@ -257,8 +258,6 @@ COMPONENT('editor', function(self, config) {
 
 		setTimeout(function() {
 			editor.refresh();
-			editor.scrollTo(0, 0);
-			editor.setCursor(0);
 		}, 200);
 
 		setTimeout(function() {
