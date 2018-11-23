@@ -100,6 +100,10 @@ COMPONENT('editor', function(self, config) {
 			return CodeMirror.Pass;
 		};
 
+		var cursor_duplicate_down = function() {
+			console.log('OK');
+		};
+
 		var options = {};
 		options.lineNumbers = true;
 		options.mode = config.type || 'htmlmixed';
@@ -120,6 +124,7 @@ COMPONENT('editor', function(self, config) {
 		options.scrollPastEnd = true;
 		options.autoCloseBrackets = true;
 		options.extraKeys = { 'Alt-F': 'findPersistent', 'Cmd-S': shortcut('save'), 'Ctrl-S': shortcut('save'), 'Alt-W': shortcut('close'), 'F5': shortcut('F5'), Tab: tabulator };
+		options.customKeys = { 'Down': cursor_duplicate_down };
 
 		var GutterColor = function(color) {
 			var marker = document.createElement('div');
@@ -139,6 +144,15 @@ COMPONENT('editor', function(self, config) {
 			e.preventDefault();
 			e.stopPropagation();
 			config.contextmenu && EXEC(config.contextmenu, e, editor);
+		});
+
+		editor.on('keydown', function(editor, e) {
+			if (e.shiftKey && e.ctrlKey && (e.keyCode === 40 || e.keyCode === 38)) {
+				var tmp = editor.getCursor();
+				editor.doc.addSelection({ line: tmp.line + (e.keyCode === 40 ? 1 : -1), ch: tmp.ch });
+				e.stopPropagation();
+				e.preventDefault();
+			}
 		});
 
 		editor.phrase = function(text) {
@@ -374,16 +388,6 @@ COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 			EXEC(config.upload, cache[index], e.originalEvent.dataTransfer.files);
 		});
 
-		self.event('dblclick', '.item', function() {
-			var el = $(this);
-			var div = el.find('div');
-			if (div[0].$def)
-				return;
-			div[0].$def = div.html();
-			div.html('<input type="text" value="{0}" />'.format(div[0].$def));
-			div.find('input').focus();
-		});
-
 		self.event('focusout', 'input', function() {
 			var input = $(this);
 			var el = input.parent();
@@ -457,7 +461,12 @@ COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 	};
 
 	self.rename = function(index) {
-		self.find('[data-index="{0}"]'.format(index)).trigger('dblclick');
+		var div = self.find('[data-index="{0}"] div'.format(index));
+		if (div[0].$def)
+			return;
+		div[0].$def = div.html();
+		div.html('<input type="text" value="{0}" />'.format(div[0].$def));
+		div.find('input').focus();
 	};
 
 	self.unselect = function() {

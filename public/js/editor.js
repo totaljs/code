@@ -210,8 +210,8 @@ WAIT('CodeMirror.defineSimpleMode', function() {
 			{ regex: /@{/,          push: 'totaljs', token: 'variable-T' },
 			{ regex: /{\{/,         push: 'tangular', token: 'variable-A' },
 			{ regex: /@\(/,         push: 'localization', token: 'variable-L' },
-			{ regex: /data-jc="/,   push: 'component', token: 'variable-J' },
-			{ regex: /data-bind="/, push: 'binder', token: 'variable-B' }
+			{ regex: /data-jc='/,   push: 'component', token: 'variable-J' },
+			{ regex: /data-bind='/, push: 'binder', token: 'variable-B' }
 		],
 
 		tangular: [
@@ -230,12 +230,12 @@ WAIT('CodeMirror.defineSimpleMode', function() {
 		],
 
 		component: [
-			{ regex: /"(\s|>)/, pop: false, token: 'variable-J' },
+			{ regex: /'(\s|>)/, pop: false, token: 'variable-J' },
 			{ regex: /./, token: 'variable-J' }
 		],
 
 		binder: [
-			{ regex: /"(\s|>)/, dedent: true, token: 'variable-B' },
+			{ regex: /'(\s|>)/, dedent: true, token: 'variable-B' },
 			{ regex: /./, token: 'variable-B' }
 		]
 	});
@@ -1072,11 +1072,10 @@ WAIT('CodeMirror.defineMode', function() {
 	CodeMirror.defineOption('hintOptions', null);
 });
 
-
 var SNIPPETS = [];
 
 SNIPPETS.push({ type: 'html', search: 'jc', text: 'Component', code: '<div data-jc="__"></div>', ch: 15 });
-SNIPPETS.push({ type: 'html', search: 'scope', text: 'Scope', code: '<div data-jc-scope=#"></div>', ch: 21 });
+SNIPPETS.push({ type: 'html', search: 'scope', text: 'Scope', code: '<div data-jc-scope=""></div>', ch: 21 });
 SNIPPETS.push({ type: 'html', search: 'data-bind', text: 'Binder', code: 'data-bind="__"', ch: 12 });
 SNIPPETS.push({ type: 'javascript', search: 'COMPONENT', text: 'COMPONENT', code: 'COMPONENT(\'\', \'\', function(self, config) {\n\t{0}\n{0}});', ch: 12 });
 SNIPPETS.push({ type: 'javascript', search: 'NEWSCHEMA', text: 'NEWSCHEMA', code: 'NEWSCHEMA(\'\', function(schema) {\n\t{0}schema.define(\'key\', String, true);\n{0}});', ch: 12 });
@@ -1119,4 +1118,3 @@ FUNC.snippets = function(type, text, tabs, line) {
 
 	return arr;
 };
-
