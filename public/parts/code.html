@@ -718,7 +718,12 @@
 				var info = editor.getScrollInfo();
 				var cur = editor.getCursor();
 				var key = code.data.id + '_' + code.editor.hash + '_scroll';
-				localStorage.setItem(key,  STRINGIFY({ x: info.left, y: info.top, line: cur.line, ch: cur.ch }));
+
+				if (info.left || info.top || cur.line)
+					localStorage.setItem(key,  STRINGIFY({ x: info.left, y: info.top, line: cur.line, ch: cur.ch }));
+				else
+					localStorage.removeItem(key);
+
 			}, 300, null, editor);
 		};
 
