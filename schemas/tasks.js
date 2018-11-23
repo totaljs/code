@@ -67,7 +67,9 @@ NEWSCHEMA('Tasks', function(schema) {
 		NOSQL($.id).scalar('group', 'path').make(function(builder) {
 			builder.where('type', 'task');
 			builder.where('solved', false);
-			builder.callback($.callback);
+			builder.callback(function(err, response) {
+				$.callback(response || EMPTYARRAY);
+			});
 		});
 
 	});

@@ -643,6 +643,8 @@
 						var value = response[key];
 						builder.push('<div class="infopanel-line exec" data-exec="code/opentab2" data-path="{0}"><b>{1}</b><span>{0}</span></div>'.format(key, value));
 					}
+
+					!builder.length && SETTER('snackbar', 'warning', '@(Project doesn\'t contain any tasks.)');
 					el.html(builder.join(''));
 				}, 0, -10);
 			});
@@ -652,9 +654,10 @@
 			SETTER('infopanel', 'show', el, function(el) {
 				var builder = [];
 				for (var i = 0; i < 10; i++) {
-					var err = JSHINT.errors[i];
+					var err = JSHINT.errors && JSHINT.errors[i];
 					err && builder.push('<div class="infopanel-line exec" data-exec="code/warnings_goto" data-pos="{1}x{2}"><b>:{1}</b><span>{0}</span></div>'.format(err.reason || err.raw, err.line, err.character));
 				}
+				!builder.length && SETTER('snackbar', 'warning', '@(File doesn\'t contain any warnings.)');
 				el.html(builder.join(''));
 			});
 		};
