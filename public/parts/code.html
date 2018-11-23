@@ -14,7 +14,7 @@
 	<section class="status">
 		<button title="@(Create file)" class="exec" data-name="file" data-exec="code/statusform"><i class="fa fa-file"></i></button>
 		<button title="@(Create folder)" class="exec" data-name="directory" data-exec="code/statusform"><i class="fa fa-folder"></i></button>
-		<button title="@(All tasks)" class="exec" data-name="directory" data-exec="code/statusform"><i class="fa fa-tasks"></i></button>
+		<button title="@(All uncomplete tasks)" class="exec" data-name="directory" data-exec="code/tasks_uncomplete"><i class="fa fa-tasks"></i></button>
 	</section>
 </div>
 
@@ -45,7 +45,7 @@
 				{{ end }}
 			</script>
 		</div>
-		<div data-bind="JSHINT.errors__html b:value?value.length:0__.red:value && value.length>0" class="status-alerts">
+		<div data-bind="JSHINT.errors__html b:value?value.length:0__.red:value && value.length>0" class="status-alerts exec" data-exec="code/warnings">
 			<i class="fa fa-warning"></i><b>0</b>
 		</div>
 	</section>
@@ -342,6 +342,7 @@
 		};
 
 		exports.closeforce = function() {
+			common.form && SET('common.form', '');
 			exports.closetab(code.current.path);
 		};
 
@@ -622,6 +623,46 @@
 				else
 					FUNC.warning(response);
 			});
+		};
+
+		exports.opentab2 = function(el) {
+			exports.element.SETTER('tree', 'selectpath', el.attrd('path'));
+			SET('common.form', 'tasks', 1000);
+		};
+
+		exports.tasks_uncomplete = function(el, e) {
+			AJAX('GET /api/projects/{id}/tasks/uncomplete/'.arg(code.data), function(response) {
+				SETTER('infopanel', 'show', el, function(el) {
+					var keys = Object.keys(response);
+					var builder = [];
+					for (var i = 0; i < 10; i++) {
+						var key = keys[i];
+						if (key == null)
+							break;
+						var value = response[key];
+						builder.push('<div class="infopanel-line exec" data-exec="code/opentab2" data-path="{0}"><b>{1}</b><span>{0}</span></div>'.format(key, value));
+					}
+					el.html(builder.join(''));
+				}, 0, -10);
+			});
+		};
+
+		exports.warnings = function(el, e) {
+			SETTER('infopanel', 'show', el, function(el) {
+				var builder = [];
+				for (var i = 0; i < 10; i++) {
+					var err = JSHINT.errors[i];
+					err && builder.push('<div class="infopanel-line exec" data-exec="code/warnings_goto" data-pos="{1}x{2}"><b>:{1}</b><span>{0}</span></div>'.format(err.reason || err.raw, err.line, err.character));
+				}
+				el.html(builder.join(''));
+			});
+		};
+
+		exports.warnings_goto = function(el) {
+			var pos = el.attrd('pos').split('x');
+			var editor = exports.element.FIND('editor').editor;
+			editor.setCursor({ line: +pos[0] - 1, char: +pos[1] }, 200);
+			editor.focus();
 		};
 
 		// Internal cache

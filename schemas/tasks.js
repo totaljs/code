@@ -56,4 +56,20 @@ NEWSCHEMA('Tasks', function(schema) {
 		$.success();
 	});
 
+	schema.addWorkflow('uncomplete', function($) {
+
+		var project = MAIN.projects.findItem('id', $.id);
+		if (project == null) {
+			$.invalid('error-project');
+			return;
+		}
+
+		NOSQL($.id).scalar('group', 'path').make(function(builder) {
+			builder.where('type', 'task');
+			builder.where('solved', false);
+			builder.callback($.callback);
+		});
+
+	});
+
 });

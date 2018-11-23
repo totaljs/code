@@ -19,6 +19,7 @@ exports.install = function() {
 		ROUTE('POST    /api/projects/{id}/tasks/               *Tasks        --> @insert');
 		ROUTE('GET     /api/projects/{id}/tasks/               *Tasks        --> @query');
 		ROUTE('GET     /api/projects/{id}/tasks/{taskid}/      *Tasks        --> @solved');
+		ROUTE('GET     /api/projects/{id}/tasks/uncomplete/    *Tasks        --> @uncomplete');
 		ROUTE('POST    /api/projects/{id}/comments/            *Comments     --> @insert');
 		ROUTE('GET     /api/projects/{id}/comments/            *Comments     --> @query');
 		ROUTE('POST    /api/projects/{id}/upload/              *FilesUpload  --> @exec', ['upload']);

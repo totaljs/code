@@ -44,7 +44,7 @@ COMPONENT('editor', function(self, config) {
 		switch (key) {
 			case 'mode':
 				editor.setOption('mode', value === 'totaljs' ? { name: 'totaljs', base: 'htmlmixed' } : value);
-				editor.setOption('lint', value === 'javascript' || value === 'xml' ? { esversion: 6, expr: true, evil: true } : false);
+				editor.setOption('lint', value === 'javascript' || value === 'xml' ? { esversion: 6, expr: true, evil: true, unused: true } : false);
 				break;
 			case 'disabled':
 				self.tclass('ui-disabled', value);
@@ -441,6 +441,14 @@ COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 			el.aclass(cls);
 			!noeval && config.exec && EXEC(config.exec, cache[index], false);
 			selindex = index;
+		}
+	};
+
+	self.selectpath = function(path) {
+		var index = FUNC.treeindex(self.get(), path);
+		if (index !== -1) {
+			self.expand(index);
+			self.select(index);
 		}
 	};
 
@@ -3908,4 +3916,73 @@ COMPONENT('validation', 'delay:100;flags:visible', function(self, config) {
 			elements.prop('disabled', disabled);
 		}, config.delay);
 	};
+});
+
+COMPONENT('infopanel', '', function(self, config) {
+
+	var is = false;
+	var cache;
+	var tsshow;
+	var tshide;
+
+	// self.singleton();
+	self.readonly();
+	// self.bindchanges();
+	// self.bindvisible();
+	// self.bindexact();
+	// self.blind();
+
+	self.make = function() {
+		self.aclass('ui-infopanel hidden invisible');
+		$(document).on('click mousedown', self.hide);
+	};
+
+	self.hide = function(force) {
+		if (is || force === true) {
+			clearTimeout(tshide);
+			tshide = setTimeout(function() {
+				is = false;
+				self.aclass('hidden invisible');
+				cache = null;
+			}, 100);
+		}
+	};
+
+	self.show = function(el, render, offsetX, offsetY) {
+
+		var main = self.element;
+
+		if (!(el instanceof jQuery))
+			el = $(el);
+
+		clearTimeout(tshide);
+
+		if (cache === el[0]) {
+			self.hide(true);
+			return;
+		}
+
+		clearTimeout(tsshow);
+		cache = el[0];
+		self.rclass('hidden');
+		tsshow = setTimeout(function() {
+
+			is = true;
+
+			render(main);
+
+			if (!self.html()) {
+				self.hide(true);
+				return;
+			}
+
+			// var w = main.width();
+			var h = main.height();
+			var off = el.offset();
+
+			main.css({ left: off.left - (offsetX || 0), top: off.top - h - (offsetY || 0) - el.height() });
+			main.rclass('invisible');
+		}, 50);
+	};
+
 });
