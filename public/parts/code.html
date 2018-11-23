@@ -122,14 +122,21 @@
 
 		exports.contextmenu = function(e, editor) {
 			var items = [];
-			// items.push({ name: '@(Copy)', icon: 'copy', command: 'copy' });
-			// items.push({ name: '@(Paste)', icon: 'paste', command: 'paste' });
+			var editor = exports.element.FIND('editor').editor;
+
+			editor.getSelections().join('').length && items.push({ name: '@(Copy)', icon: 'copy', command: 'copy' });
 			items.push({ name: '@(Encode)', icon: 'code', value: 'encode' });
 			items.push({ name: '@(Decode)', icon: 'broom', value: 'decode' });
 
 			SETTER('menu', 'showxy', e.pageX, + e.pageY, items, function(value) {
 
-				console.log(value);
+				if (value.command) {
+					editor.focus();
+					setTimeout(function() {
+						document.execCommand(value.command, true);
+					}, 100);
+					return;
+				}
 			});
 		};
 
