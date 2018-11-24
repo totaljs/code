@@ -9,14 +9,9 @@
 					<div data-jc="textbox__path__required:true__''">@(Path)</div>
 				</div>
 			</div>
-			<div class="row">
-				<div class="col-sm-6 m">
-					<div data-jc="textbox__url__required:true__''">@(URL address)</div>
-				</div>
-				<div class="col-sm-6 m">
-					<div data-jc="textbox__repository__placeholder:https\://username\:password@https\://github.com/totaljs/cms.git__''">@(GIT repository)</div>
-				</div>
-			</div>
+			<div data-jc="textbox__url__required:true__''" class="m">@(URL address)</div>
+			<div data-jc="textbox__repository__placeholder:https\://user\:pass@github.com/totaljs/cms.git #branch_name__''">@(GIT repository)</div>
+			<div class="help m">@(Branches are supported too <code>#branch_name</code>).</div>
 			<div data-jc="checkbox__backup__null__true">@(Backup all modified files)</div>
 			<div data-jc="checkbox__skiptmp__null__true">@(Skip <b>tmp</b> directory)</div>
 			<div data-jc="checkbox__skipsrc__null__true">@(Skip <b>.src</b> directory)</div>

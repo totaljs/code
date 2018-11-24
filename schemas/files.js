@@ -44,7 +44,6 @@ NEWSCHEMA('Files', function(schema) {
 
 		$.success();
 	});
-
 });
 
 NEWSCHEMA('FilesRename', function(schema) {

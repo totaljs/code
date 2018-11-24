@@ -294,7 +294,9 @@
 			items.push({ value: 1, name: '@(Reload)', icon: 'refresh' });
 			items.push({ value: 2, name: '@(Find)', icon: 'search', command: 'findPersistent' });
 			items.push({ value: 2, name: '@(Replace)', icon: 'search', command: 'replaceAll' });
-			items.push({ value: 3, name: '<b>@(Save and commit)</b>', icon: 'code-branch' });
+
+			if (navigator.userAgent.indexOf('Electron') !== -1 && window.require)
+				items.push({ value: 3, name: '<b>@(Save locally)</b>', icon: 'code-branch' });
 
 			SETTER('menu', 'show', 'left', el, items, function(item) {
 				switch (item.value) {
@@ -307,6 +309,19 @@
 							editor.focus();
 							editor.execCommand(item.command);
 						}, 200);
+						break;
+					case 3:
+						var electronpath = require('electron').ipcRenderer.sendSync('getPath', { url: location.protocol + '//' + location.hostname + (location.port ? ':' + location.port : '') });
+						if (electronpath) {
+							var filename = require('path').join(electronpath, FUNC.getName(code.data.repository).replace(/\.git$/i, ''), code.editor.path);
+							require('fs').writeFile(filename, FUNC.rtrim(code.editor.body), function(err) {
+								if (err)
+									FUNC.warning(err.toString());
+								else
+									FUNC.success('<b>{0}</b> saved.'.format(filename));
+							});
+						} else
+							FUNC.warning('A problem in path');
 						break;
 				}
 			}, -5, -5);
@@ -561,11 +576,16 @@
 			TOGGLE('%projectsvisible', true);
 		};
 
-		exports.save = function(close) {
+		exports.save = function(close, comment) {
 
 			var data = {};
 			data.path = code.editor.path;
 			data.body = FUNC.rtrim(code.editor.body);
+
+			if (comment) {
+				data.comment = comment;
+				data.commit = true;
+			}
 
 			code.current.modified = false;
 			exports.cache_rem(code.current.path);

@@ -99,6 +99,8 @@ h3 i { margin-right: 5px; color: $color; }
 .help { font-size: 11px; color: #A0A0A0; margin-top: 8px; line-height: 13px; }
 .help i { margin-right: 5px; }
 .help code { font: normal normal 11px Arial; background-color: #F0F0F0; padding: 1px 3px; border-radius: 2px; border: 1px solid #E0E0E0; }
+.td .help { color: #505050; }
+.td .help code { background-color: #353535; border-color: #303030; color: #777777; }
 
 .table-small { font-size: 12px; }
 .table-small > tbody > tr > td { padding: 3px 5px; }
@@ -302,7 +304,7 @@ header .tools .selected { background-color: #F0F0F0; }
 .td .CodeMirror-ruler { border-color: #505050; }
 .td .cm-tab { background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAMCAYAAAAkuj5RAAAALUlEQVR4AWNwL/AZ0njEe2DUA6Me+P//vzGQAaZBeCjwR5PQ4MGjHhj1wKgHANFXkNnNqgRuAAAAAElFTkSuQmCC) no-repeat 100% 50%; }
 .td .ui-panel-title .ui-panel-button-close { border-left-color: #353535; }
-.td hr { border-color: #202020; }
+.td hr { border-color: #181818; }
 
 .infopanel-line { font-size: 12px; cursor: pointer; padding: 1px 4px; border-radius: 3px; }
 .infopanel-line b { float: right; width: 24px; text-align: right; color: red; }

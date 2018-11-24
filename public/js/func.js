@@ -89,6 +89,10 @@ FUNC.wsopen = function(project, path) {
 };
 
 
+FUNC.success = function(msg) {
+	SETTER('snackbar', 'success', msg);
+};
+
 FUNC.warning = function(msg) {
 	SETTER('snackbar', 'warning', msg instanceof Array ? msg[0].error : msg);
 };

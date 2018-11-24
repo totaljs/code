@@ -92,8 +92,9 @@
 	<script>
 
 		var common = {};
-
 		var user = PARSE('#userdata');
+
+		common.electron = navigator.userAgent.indexOf('Electron') !== -1 && window.require != null;
 
 		NAV.clientside('.R');
 
@@ -179,6 +180,10 @@
 			if (window.code && window.code.statusform)
 				SET('code.statusform', '');
 
+		});
+
+		common.electron && window.require('electron').ipcRenderer.on('tabs.close', function() {
+			EXEC('code/close');
 		});
 
 	</script>
