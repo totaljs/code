@@ -59,7 +59,7 @@
 </head>
 <body data-jc="exec" class="@{if user.darkmode}td @{fi}invisible" data-jc-class="invisible">
 
-	<div data-jc="loading" class="ui-loading"></div>
+	<div data-jc="loading" class="ui-loading"><div></div></div>
 	<div data-jc="LAZY autocomplete__null__height:200"></div>
 	<div data-jc="LAZY snackbar__null__button:@(OK)"></div>
 	<div data-jc="LAZY features__null__placeholder:@(What are you looking for?)"></div>
@@ -163,7 +163,7 @@
 
 		}, true);
 
-		SETTER(true, 'shortcuts', 'register', 'F5,cmd+r', function(e) {
+		SETTER(true, 'shortcuts', 'register', 'F5', function(e) {
 			EXEC('code/shortcut', 'F5');
 		}, true);
 
