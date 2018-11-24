@@ -123,7 +123,7 @@ COMPONENT('editor', function(self, config) {
 		// options.autoCloseTags = true;
 		options.scrollPastEnd = true;
 		options.autoCloseBrackets = true;
-		options.extraKeys = { 'Alt-F': 'findPersistent', 'Cmd-S': shortcut('save'), 'Ctrl-S': shortcut('save'), 'Alt-W': shortcut('close'), 'Cmd-W': shortcut('close'), 'F5': shortcut('F5'), 'Cmd-R': shortcut('F5'), Tab: tabulator };
+		options.extraKeys = { 'Alt-F': 'findPersistent', 'Cmd-S': shortcut('save'), 'Ctrl-S': shortcut('save'), 'Alt-W': shortcut('close'), 'Cmd-W': shortcut('close'), 'F5': shortcut('F5'), Tab: tabulator };
 		options.customKeys = { 'Down': cursor_duplicate_down };
 
 		var GutterColor = function(color) {
@@ -199,6 +199,21 @@ COMPONENT('editor', function(self, config) {
 
 		editor.on('cursorActivity', function() {
 			EXEC(config.cursor, editor);
+		});
+
+		editor.on('drop', function(data, e) {
+
+			var files = e.dataTransfer.files;
+			var reader = new FileReader();
+
+			if (files[0].type.substring(0, 4) === 'text')
+				reader.readAsText(files[0]);
+			else
+				reader.readAsDataURL(files[0]);
+
+			reader.onload = function () {
+				editor.doc.replaceSelection(reader.result);
+			};
 		});
 
 		editor.on('change', function(a, b) {
