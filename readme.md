@@ -9,6 +9,8 @@
 
 Online collaboration code.
 
+![Electron](http://cdn.totaljs.com/images/code-electron-02.jpg)
+
 - install latest version of Total.js from NPM `$ npm install total.js`
 - download example
 - run `$ node debug.js`
