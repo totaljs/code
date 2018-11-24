@@ -7,7 +7,7 @@
 </div>
 
 <div id="panel">
-	<section class="project exec" data-exec="code/projects" data-bind="!code.data__html b:value.name"><i class="fa fa-caret-down"></i><b>@(Choose project)</b></section>
+	<section class="project exec" data-exec="code/projects" data-bind="!code.data__html b:value.name__title:value.name"><i class="fa fa-caret-down"></i><b>@(Choose project)</b></section>
 	<div class="panel-scroller fullheight" data-margin="36">
 		<div data-jc="tree__code.tree__exec:code/open;options:code/options;rename:code/rename;first:false;upload:code/upload"></div>
 	</div>
@@ -24,7 +24,7 @@
 		<span class="options exec hidden" data-exec="code/options_editor" data-bind="code.editor.path__show"><i class="fa fa-cog"></i></span>
 		<nav data-jc="tabmenu__code.editor.path__datasource:code.open;selector:span;exec:code/opentab;reorder:code/savetabs">
 			<script type="text/html">
-				<span data-value="{{ path }}"{{ if modified }} class="modified"{{ fi }}><i class="fa exec" data-exec="code/close"></i>{{ name }}</span>
+				<span data-value="{{ path }}"{{ if modified }} class="modified"{{ fi }} title="{{ name }}"><i class="fa exec" data-exec="code/close"></i>{{ name }}</span>
 			</script>
 		</nav>
 	</section>

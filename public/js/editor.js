@@ -360,7 +360,6 @@ WAIT('CodeMirror.defineMode', function() {
 	});
 
 	function cursorActivity(cm) {
-
 		var state = cm.state.matchHighlighter;
 		if (state.active || cm.hasFocus())
 			scheduleHighlight(cm, state);
@@ -404,8 +403,10 @@ WAIT('CodeMirror.defineMode', function() {
 
 	function highlightMatches(cm) {
 		cm.operation(function() {
+
 			var state = cm.state.matchHighlighter;
 			removeOverlay(cm);
+
 			if (!cm.somethingSelected() && state.options.showToken) {
 				var re = state.options.showToken === true ? /[\w$]/ : state.options.showToken;
 				var cur = cm.getCursor(), line = cm.getLine(cur.line), start = cur.ch, end = start;
@@ -422,6 +423,7 @@ WAIT('CodeMirror.defineMode', function() {
 
 			if (state.options.wordsOnly && !isWord(cm, from, to))
 				return;
+
 			var selection = cm.getRange(from, to);
 			if (state.options.trim) selection = selection.replace(/^\s+|\s+$/g, '');
 			if (selection.length >= state.options.minChars)

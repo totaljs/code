@@ -100,8 +100,19 @@ COMPONENT('editor', function(self, config) {
 			return CodeMirror.Pass;
 		};
 
-		var cursor_duplicate_down = function() {
-			console.log('OK');
+		var findmatch = function() {
+			var sel = editor.getSelections()[0];
+			var cur = editor.getCursor();
+			var beg = cur.ch;
+			var count = editor.lineCount();
+			for (var i = cur.line; i < count; i++) {
+				var ch = editor.getLine(i).indexOf(sel, beg);
+				if (ch !== -1) {
+					editor.doc.addSelection({ line: i, ch: ch }, { line: i, ch: ch + sel.length });
+					break;
+				}
+				beg = 0;
+			}
 		};
 
 		var options = {};
@@ -123,8 +134,7 @@ COMPONENT('editor', function(self, config) {
 		// options.autoCloseTags = true;
 		options.scrollPastEnd = true;
 		options.autoCloseBrackets = true;
-		options.extraKeys = { 'Alt-F': 'findPersistent', 'Cmd-S': shortcut('save'), 'Ctrl-S': shortcut('save'), 'Alt-W': shortcut('close'), 'Cmd-W': shortcut('close'), 'F5': shortcut('F5'), Tab: tabulator };
-		options.customKeys = { 'Down': cursor_duplicate_down };
+		options.extraKeys = { 'Alt-F': 'findPersistent', 'Cmd-D': findmatch, 'Ctrl-D': findmatch, 'Cmd-S': shortcut('save'), 'Ctrl-S': shortcut('save'), 'Alt-W': shortcut('close'), 'Cmd-W': shortcut('close'), 'F5': shortcut('F5'), Tab: tabulator };
 
 		var GutterColor = function(color) {
 			var marker = document.createElement('div');
@@ -419,8 +429,7 @@ COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 					el.html(el[0].$def);
 					el[0].$def = null;
 				} else {
-					// rename
-					var val = input.val().replace(/[^a-z0-9.-_]/gi, '');
+					var val = input.val().replace(/[^a-z0-9.\-_]/gi, '');
 					var index = +input.closest('.item').attrd('index');
 					var item = cache[index];
 					var newname = item.path.substring(0, item.path.length - item.name.length) + val;
