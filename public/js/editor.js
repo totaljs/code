@@ -179,7 +179,7 @@
 			t.horiz.node.style.left = measure.barLeft + 'px';
 		}
 
-		return {right: needsV ? width : 0, bottom: needsH ? width : 0};
+		return { right: needsV ? width : 0, bottom: needsH ? width : 0 };
 	};
 
 	SimpleScrollbars.prototype.setScrollTop = function(pos) {
@@ -199,6 +199,7 @@
 	CodeMirror.scrollbarModel.simple = function(place, scroll) {
 		return new SimpleScrollbars('CodeMirror-simplescroll', place, scroll);
 	};
+
 	CodeMirror.scrollbarModel.overlay = function(place, scroll) {
 		return new SimpleScrollbars('CodeMirror-overlayscroll', place, scroll);
 	};
