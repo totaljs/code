@@ -123,7 +123,7 @@ COMPONENT('editor', function(self, config) {
 		// options.autoCloseTags = true;
 		options.scrollPastEnd = true;
 		options.autoCloseBrackets = true;
-		options.extraKeys = { 'Alt-F': 'findPersistent', 'Cmd-S': shortcut('save'), 'Ctrl-S': shortcut('save'), 'Alt-W': shortcut('close'), 'F5': shortcut('F5'), Tab: tabulator };
+		options.extraKeys = { 'Alt-F': 'findPersistent', 'Cmd-S': shortcut('save'), 'Ctrl-S': shortcut('save'), 'Alt-W': shortcut('close'), 'Cmd-W': shortcut('close'), 'F5': shortcut('F5'), 'Cmd-R': shortcut('F5'), Tab: tabulator };
 		options.customKeys = { 'Down': cursor_duplicate_down };
 
 		var GutterColor = function(color) {
