@@ -10,7 +10,7 @@
 		<div data-jc="datagrid__users.grid__click:users/edit;checked:users/checked;highlight:true">
 			<script type="text/plain">
 				[
-					{ name: 'id', text: '@(User ID)', template: '{{ if online }}<i class="fa fa-circle green fs11 mr5" title="@(Online)"></i>{{ fi }}{{ id }}', width: 130 },
+					{ name: 'id', text: '@(User ID)', template: '{{ if online }}<i class="fa fa-circle green fs11 mr5" title="@(Online - {{ online }}x devices)"></i>{{ fi }}{{ id }}', width: 130 },
 					{ name: 'name', text: '@(Name)', width: 160 },
 					{ name: 'email', text: '@(Email)', width: 170 },
 					{ name: 'phone', text: '@(Phone)', width: 140 },

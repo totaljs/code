@@ -44,6 +44,7 @@
 	<div data-jc="part__common.page__if:projects;url:/parts/projects.html;reload:projects/reload;cleaner:10"></div>
 	<div data-jc="part__common.page__if:users;url:/parts/users.html;reload:users/reload;cleaner:10"></div>
 	<div data-jc="part__common.page__if:settings;url:/parts/settings.html;reload:settings/reload;cleaner:10"></div>
+
 	<div data-jc="websocket__null__url:/"></div>
 
 	@{json(user, 'userdata')}
@@ -75,6 +76,8 @@
 
 		ON('online', function(is) {
 			SETTER('loading', is ? 'hide' : 'show');
+			if (is && window.code && window.code.data)
+				FUNC.wsopen(code.data.id, code.editor ? code.editor.path : '');
 		});
 
 		ON('message', function(msg) {

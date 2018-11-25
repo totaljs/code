@@ -176,7 +176,7 @@ header .tools .selected { background-color: #F0F0F0; }
 
 .tabs { height: 50px; background-color: #F0F0F0; border-bottom: 1px solid #E0E0E0; position: relative; }
 .tabs, .tabs * { user-select: none; }
-.tabs nav { position: absolute; margin: 15px 0 0 49px; }
+.tabs nav { position: absolute; margin: 15px 0 0 50px; }
 .tabs nav span { position: relative; display: inline-block; max-width: 150px; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; height: 34px; background-color: #E0E0E0; padding: 8px 15px 0 25px; border-radius: 3px 3px 0 0; margin-left: 10px; font-size: 12px; border: 1px solid #E0E0E0; border-bottom: 0; cursor: pointer; color: gray; vertical-align: top; }
 .tabs nav .selected { background-color: white; height: 35px; color: black; box-shadow: 0 -1px 5px rgba(0,0,0,0.05); height: 36px; }
 .tabs nav i { color: gray; font-size: 11px; position: absolute; left: 10px; top: 10px; width: 14px; }
@@ -246,6 +246,7 @@ header .tools .selected { background-color: #F0F0F0; }
 .td .ui-tree .item { border-bottom-color: #353535; }
 .td .ui-tree .item:hover { background-color: #303030; }
 .td .ui-tree .selected { background-color: #404040 !important; color: white; }
+.td .tabs nav { margin-left: 49px; }
 .td .tabs nav .selected { background-color: #282c34; color: white; }
 .td .tabs nav span { border-color: #22242b; color: gray; background-color: #1d2027; }
 .td .CodeMirror { background-color: #282c34; }

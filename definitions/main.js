@@ -97,6 +97,11 @@ MAIN.send = function(msg) {
 
 Fs.readFile(F.path.databases('users.json'), function(err, data) {
 	data && (MAIN.users = data.toString('utf8').parseJSON(true));
+	for (var i = 0; i < MAIN.users.length; i++) {
+		var user = MAIN.users[i];
+		user.online = 0;
+		user.open = [];
+	}
 });
 
 Fs.readFile(F.path.databases('projects.json'), function(err, data) {

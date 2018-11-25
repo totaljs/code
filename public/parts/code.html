@@ -690,6 +690,9 @@
 
 		exports.collaboration = function(msg) {
 
+			if (code.data == null)
+				return;
+
 			if (msg.projectid === code.data.id)
 				SET('code.usersproject', msg.project);
 
