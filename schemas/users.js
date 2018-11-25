@@ -29,7 +29,8 @@ NEWSCHEMA('Users', function(schema) {
 			item = CLONE(item);
 			item.password = '*******';
 			$.callback(item);
-		}
+		} else
+			$.invalid('error-users');
 	});
 
 	schema.setSave(function($) {

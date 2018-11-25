@@ -29,6 +29,9 @@ exports.install = function() {
 		// Other
 		ROUTE('GET     /api/download/{id}/',                                 files_download);
 		ROUTE('GET     /logout/', redirect_logout);
+
+		ROUTE('GET    /api/users/online/',                                   users_online);
+
 	});
 
 	GROUP(['unauthorize'], function() {
@@ -100,4 +103,30 @@ function files_download(id) {
 		});
 	} else
 		self.invalid('error-permissions');
+}
+
+function users_online() {
+
+	var self = this;
+	var arr = [];
+
+	for (var i = 0; i < MAIN.users.length; i++) {
+		var user = MAIN.users[i];
+		if (user.online) {
+
+			var item = {};
+
+			item.name = user.name;
+
+			if (user.projectid) {
+				var project = MAIN.projects.findItem('id', user.projectid);
+				if (project)
+					item.project = project.name + (user.fileid || '');
+			}
+
+			arr.push(item);
+		}
+	}
+
+	self.json(arr);
 }

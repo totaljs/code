@@ -311,5 +311,12 @@ header .tools .selected { background-color: #F0F0F0; }
 .infopanel-line:hover { background-color: #E0E0E0; }
 .infopanel-line span { margin-right: 24px; display: block; min-width: 200px; max-width: 400px; font-family: Menlo,Consolas; color: black; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; }
 
+.infopanel-online { font-size: 11px; padding: 5px; color: #505050; border-top: 1px solid #E0E0E0; line-height: 14px; }
+.infopanel-online b { display: block; color: black; }
+.infopanel-online span { display: block; min-width: 200px; max-width: 400px; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; }
+.infopanel-online:first-child { border-top: 0; }
+
 .td .infopanel-line:hover { background-color: #303030; }
 .td .infopanel-line span { color: white; }
+.td .infopanel-online { color: #A0A0A0; border-top-color: #353535; }
+.td .infopanel-online b { color: white; }

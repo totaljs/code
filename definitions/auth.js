@@ -9,8 +9,16 @@ AUTH(function(req, res, flags, next) {
 		return next(false);
 
 	var user = MAIN.users.findItem('id', obj.id);
-	if (user)
+	if (user) {
 		user.ip = req.ip;
+		user.logged = NOW;
+	}
 
 	next(!!user, user);
+});
+
+ON('service', function(counter) {
+	// Logged time
+	if (counter % 10 === 0)
+		MAIN.save(1);
 });

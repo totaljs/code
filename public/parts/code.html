@@ -11,10 +11,11 @@
 	<div class="panel-scroller fullheight" data-margin="36">
 		<div data-jc="tree__code.tree__exec:code/open;options:code/options;rename:code/rename;first:false;upload:code/upload"></div>
 	</div>
-	<section class="status">
+	<section class="status invisible" data-bind="code.data__invisible:!value">
 		<button title="@(Create file)" class="exec" data-name="file" data-exec="code/statusform"><i class="fa fa-file-text-o"></i></button>
 		<button title="@(Create folder)" class="exec" data-name="directory" data-exec="code/statusform"><i class="fa fa-folder"></i></button>
 		<button title="@(All uncomplete tasks)" class="exec" data-name="directory" data-exec="code/tasks_uncomplete"><i class="fa fa-tasks"></i></button>
+		<button title="@(Users)" class="exec" data-name="directory" data-exec="code/usersonline"><i class="fa fa-users"></i></button>
 	</section>
 </div>
 
@@ -37,7 +38,7 @@
 			<div data-jc="editor__code.editor.body__height:100%;shortcut:code/shortcut;contextmenu:code/contextmenu;cursor:code/cursorposition"></div>
 		</div>
 	</div>
-	<section class="status">
+	<section class="status invisible" data-bind="code.data__invisible:!value">
 		<div data-bind="code.usersproject__template" class="status-collaborators">
 			<script type="text/html">
 				{{ foreach m in value }}
@@ -536,7 +537,6 @@
 				editor.paste(editor.copy(false));
 			}
 
-
 			code.current = tab;
 			editor.reconfigure('disabled:false;mode:' + mode);
 			FUNC.wsopen(code.data.id, code.current.path);
@@ -724,6 +724,24 @@
 					exports.load(code.data.id, true);
 				else
 					FUNC.warning(response);
+			});
+		};
+
+		exports.usersonline = function(el) {
+			AJAX('GET /api/users/online/', function(response) {
+				SETTER('infopanel', 'show', el, function(el) {
+
+					var builder = [];
+					for (var i = 0; i < 10; i++) {
+						var user = response[i];
+						if (user == null)
+							break;
+						builder.push('<div class="infopanel-online"><span>{0}</span><b>{1}</b></div>'.format(user.name, user.project || '@(No file open)'));
+					}
+
+					!builder.length && SETTER('snackbar', 'warning', '@(No-one works.)');
+					el.html(builder.join(''));
+				}, 0, -10);
 			});
 		};
 

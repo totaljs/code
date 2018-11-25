@@ -44,7 +44,7 @@ COMPONENT('editor', function(self, config) {
 		switch (key) {
 			case 'mode':
 				editor.setOption('mode', value === 'totaljs' ? { name: 'totaljs', base: 'htmlmixed' } : value);
-				editor.setOption('lint', value === 'javascript' || value === 'xml' ? { esversion: 6, expr: true, evil: true, unused: true } : false);
+				editor.setOption('lint', value === 'javascript' || value === 'xml' || value === 'totaljs' || value === 'html' ? { esversion: 6, expr: true, evil: true, unused: true } : false);
 				break;
 			case 'disabled':
 				self.tclass('ui-disabled', value);
@@ -78,20 +78,15 @@ COMPONENT('editor', function(self, config) {
 					return CodeMirror.Pass;
 
 				var html = line.substring(index, cur.ch);
-
-				if ((/(div|span|table|b|i|a|img|td|tr|thead|tfoot|tbody|section|figure|section)+([a-z0-9.-_])*/).test(html)) {
-
+				if ((/(div|span|table|b|i|a|img|td|tr|thead|tfoot|tbody|section|figure|section)+(\.[a-z0-9-_])*/).test(html) || (/(^|\s)\.[a-z0-9-_]*/).test(html)) {
 					var cls = html.split('.');
-
 					if (!cls[0]) {
 						if (cls[1].substring(0, 2) === 'fa')
 							cls[0] = 'i';
 						else
 							cls[0] = 'div';
 					}
-
 					var tag = cls[0] === 'img' ? '<img src="" alt="" />' : ('<{0}{1}></{0}>'.format(cls[0], cls[1] ? (' class="' + cls[1] + '"') : ''));
-
 					cm.replaceRange(line.substring(0, index) + tag, { line: cur.line, ch: 0 }, { line: cur.line, ch: cur.cr });
 					cm.doc.setCursor({ line: cur.line, ch: index + (cls[0] === 'img' ? (tag.indexOf('"') + 1) : (tag.indexOf('>') + 1)) });
 					return;
@@ -103,8 +98,9 @@ COMPONENT('editor', function(self, config) {
 		var findmatch = function() {
 			var sel = editor.getSelections()[0];
 			var cur = editor.getCursor();
-			var beg = cur.ch;
 			var count = editor.lineCount();
+			var before = editor.getLine(cur.line).substring(cur.ch, cur.ch + sel.length) === sel;
+			var beg = cur.ch + (before ? sel.length : 0);
 			for (var i = cur.line; i < count; i++) {
 				var ch = editor.getLine(i).indexOf(sel, beg);
 				if (ch !== -1) {
@@ -133,6 +129,7 @@ COMPONENT('editor', function(self, config) {
 		// options.matchTags = { bothTags: true };
 		// options.autoCloseTags = true;
 		options.scrollPastEnd = true;
+		options.lint = true;
 		options.autoCloseBrackets = true;
 		options.extraKeys = { 'Alt-F': 'findPersistent', 'Cmd-D': findmatch, 'Ctrl-D': findmatch, 'Cmd-S': shortcut('save'), 'Ctrl-S': shortcut('save'), 'Alt-W': shortcut('close'), 'Cmd-W': shortcut('close'), 'F5': shortcut('F5'), Tab: tabulator };
 

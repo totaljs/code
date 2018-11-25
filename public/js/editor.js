@@ -1075,8 +1075,27 @@ WAIT('CodeMirror.defineMode', function() {
 	CodeMirror.defineOption('hintOptions', null);
 });
 
-var SNIPPETS = [];
+(function(mod) {
+	mod(CodeMirror);
+})(function(CodeMirror) {
+	var RULES = { 'tagname-lowercase': true, 'attr-lowercase': true, 'attr-value-double-quotes': true, 'doctype-first': false, 'tag-pair': true, 'spec-char-escape': true, 'id-unique': true, 'src-not-empty': true, 'attr-no-duplication': true };
+	var fn = function(text) {
+		var found = [];
+		var message;
+		if (!window.HTMLHint)
+			return found;
+		var messages = HTMLHint.verify(text, RULES);
+		for (var i = 0; i < messages.length; i++) {
+			message = messages[i];
+			var startLine = message.line -1, endLine = message.line -1, startCol = message.col -1, endCol = message.col;
+			found.push({ from: CodeMirror.Pos(startLine, startCol), to: CodeMirror.Pos(endLine, endCol), message: message.message, severity : message.type });
+		}
+		return found;
+	};
+	CodeMirror.registerHelper('lint', 'html', fn);
+});
 
+var SNIPPETS = [];
 SNIPPETS.push({ type: 'html', search: 'jc', text: 'Component', code: '<div data-jc="__"></div>', ch: 15 });
 SNIPPETS.push({ type: 'html', search: 'scope', text: 'Scope', code: '<div data-jc-scope=""></div>', ch: 21 });
 SNIPPETS.push({ type: 'html', search: 'data-bind', text: 'Binder', code: 'data-bind="__"', ch: 12 });

@@ -58,6 +58,7 @@ div.CodeMirror span.CodeMirror-matchingbracket { border-bottom: 2px solid blue; 
 .ui-tree .show > .item { font-weight: bold; color: black; }
 .ui-tree .selected { background-color: #fffbed !important; color: black; }
 .ui-tree .item-ddhere { background-color: #E0E0E0 !important; }
+.td .ui-tree .item-ddhere { background-color: #404040 !important; }
 .ui-tree .children1 .item { padding-left: 33px; }
 .ui-tree .children2 .item { padding-left: 48px; }
 .ui-tree .children3 .item { padding-left: 63px; }
