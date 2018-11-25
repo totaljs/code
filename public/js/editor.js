@@ -1102,7 +1102,7 @@ SNIPPETS.push({ type: 'html', search: 'data-bind', text: 'Binder', code: 'data-b
 SNIPPETS.push({ type: 'javascript', search: 'COMPONENT', text: 'COMPONENT', code: 'COMPONENT(\'\', \'\', function(self, config) {\n\t{0}\n{0}});', ch: 12 });
 SNIPPETS.push({ type: 'javascript', search: 'NEWSCHEMA', text: 'NEWSCHEMA', code: 'NEWSCHEMA(\'\', function(schema) {\n\t{0}schema.define(\'key\', String, true);\n{0}});', ch: 12 });
 SNIPPETS.push({ type: 'javascript', search: 'NEWOPERATION', text: 'NEWOPERATION', code: 'NEWOPERATION(\'\', function($) {\n\t{0}\n{0}});', ch: 15 });
-SNIPPETS.push({ type: 'javascript', search: 'schema.define', text: 'scheam.define', code: 'schema.define(\'\', String, true)', ch: 15 });
+SNIPPETS.push({ type: 'javascript', search: 'schema.define', text: 'scheam.define', code: 'schema.define(\'\', String, true)', ch: 16 });
 SNIPPETS.push({ type: 'javascript', search: 'schema.addWorkflow', text: 'schema.addWorkflow', code: 'schema.addWorkflow(\'\', function($) {\n\t{0}\n{0}});', ch: 21 });
 SNIPPETS.push({ type: 'javascript', search: 'schema.addOperation', text: 'schema.addOperation', code: 'schema.addOperation(\'\', function($) {\n\t{0}\n{0}});', ch: 21 });
 SNIPPETS.push({ type: 'javascript', search: 'schema.addTransform', text: 'schema.addTransform', code: 'schema.addTransform(\'\', function($) {\n\t{0}\n{0}});', ch: 21 });
