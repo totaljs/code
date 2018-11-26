@@ -235,6 +235,15 @@
 
 		exports.shortcut = function(type) {
 			switch (type) {
+				case 'nexttab':
+					var index = code.current ? code.open.indexOf(code.current) : -1;
+					if (index !== -1) {
+						var next = code.open[index + 1];
+						if (next == null && index !== 0)
+							next = code.open[0];
+						next && exports.opentab(next.path);
+					}
+					break;
 				case 'F5':
 					FUNC.editor_reload();
 					break;
@@ -272,6 +281,9 @@
 			var tab = code.open.findItem('path', item.path);
 			if (tab && tab.loaded) {
 				if (tab.path !== code.editor.path) {
+
+					// check if the content has been modified
+
 					exports.edit(tab);
 					exports.savetabs();
 				}

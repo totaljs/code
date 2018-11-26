@@ -131,7 +131,7 @@ COMPONENT('editor', function(self, config) {
 		options.scrollPastEnd = true;
 		options.lint = true;
 		options.autoCloseBrackets = true;
-		options.extraKeys = { 'Alt-F': 'findPersistent', 'Cmd-D': findmatch, 'Ctrl-D': findmatch, 'Cmd-S': shortcut('save'), 'Ctrl-S': shortcut('save'), 'Alt-W': shortcut('close'), 'Cmd-W': shortcut('close'), 'F5': shortcut('F5'), Tab: tabulator };
+		options.extraKeys = { 'Alt-F': 'findPersistent', 'Cmd-D': findmatch, 'Ctrl-D': findmatch, 'Cmd-S': shortcut('save'), 'Ctrl-S': shortcut('save'), 'Alt-W': shortcut('close'), 'Cmd-W': shortcut('close'), 'F5': shortcut('F5'), Tab: tabulator, 'Alt-Tab': shortcut('nexttab'), 'Cmd-Tab': shortcut('nexttab'), 'Ctrl-Tab': shortcut('nexttab') };
 
 		var GutterColor = function(color) {
 			var marker = document.createElement('div');

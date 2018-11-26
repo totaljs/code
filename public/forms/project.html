@@ -22,7 +22,7 @@
 			<div data-jc="selectbox__users__if:!value.sa;datasource:%projectsformusers;text:id__[]"></div>
 			<div class="help m">@(Choose users which can have access to this project)</div>
 			<div data-jc="textarea__permissions__height:100;monospace:true;placeholder:@(userid \: path)__''">@(Permissions)</div>
-			<div class="help">@(Define permissions for the users)</div>
+			<div class="help">@(Define permissions for the users. Path starting with <code>^</code> will disable the access.)</div>
 		</div>
 		<hr class="nmt nmb" />
 		<div class="padding">

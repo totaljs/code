@@ -355,6 +355,7 @@ input:invalid { box-shadow: none; }
 .ui-textarea-helper-show { display: block; }
 .ui-disabled.ui-textarea { background-color: #191919; cursor: not-allowed; }
 .ui-disabled.ui-textarea textarea { background-color: #191919; color: #505050 !important; }
+.td .ui-textarea textarea { color: white; }
 .td .ui-textbox-container.ui-disabled .ui-textbox { background-color: #191919; cursor: not-allowed; }
 .td .ui-textbox-container.ui-disabled .ui-textbox input { background-color: #191919; color: #505050 !important; }
 
