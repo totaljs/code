@@ -39,6 +39,9 @@ function realtime() {
 				}
 				refresh_collaborators(self, client.user, true, open);
 				break;
+			case 'sync':
+				self.send(msg);
+				break;
 		}
 	});
 }

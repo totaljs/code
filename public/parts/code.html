@@ -35,7 +35,7 @@
 			<div class="alert hidden" data-bind="code.multiple__show" data-name="multiple"><i class="fa fa-times exec" data-exec="code/warning"></i><i class="fa fa-users"></i>@(Be careful because another user is editing content of this file.) <span class="link exec" data-exec="code/warning">@(I understand)</span>.</div>
 		</div>
 		<div data-bind="code.editor.path__show">
-			<div data-jc="editor__code.editor.body__height:100%;shortcut:code/shortcut;contextmenu:code/contextmenu;cursor:code/cursorposition"></div>
+			<div data-jc="editor__code.editor.body__height:100%;shortcut:code/shortcut;contextmenu:code/contextmenu;cursor:code/cursorposition;sync:code/sync"></div>
 		</div>
 	</div>
 	<section class="status invisible" data-bind="code.data__invisible:!value">
@@ -81,7 +81,7 @@
 
 <script>
 
-	var code = {};
+	var code = { SYNC: false };
 
 	PLUGIN('code', function(exports) {
 
@@ -210,6 +210,10 @@
 					SET('code.multiple', false);
 					break;
 			}
+		};
+
+		exports.sync = function(data) {
+			SETTER('websocket', 'send', { TYPE: 'sync', data: STRINGIFY(data), id: common.id });
 		};
 
 		exports.rename = function(item, val, callback) {
@@ -643,7 +647,7 @@
 			exports.element.find('section.tabs').find('span[data-value="{0}"]'.format(code.current.path)).rclass('modified');
 
 			SETTER('loading', 'show');
-			AJAX('POST /api/files/{id}/'.arg(code.data), data, function(response) {
+			AJAX('POST /api/files/{id}/ REPEAT'.arg(code.data), data, function(response) {
 				SETTER('loading', 'hide', 500);
 				if (close === true)
 					exports.closeforce();

@@ -54,6 +54,7 @@
 		var common = {};
 		var user = PARSE('#userdata');
 
+		common.id = GUID(5);
 		common.electron = navigator.userAgent.indexOf('Electron') !== -1 && window.require != null;
 
 		NAV.clientside('.R');
@@ -84,6 +85,15 @@
 			switch (msg.TYPE) {
 				case 'open':
 					EXEC('code/collaboration', msg);
+					break;
+				case 'sync':
+					if (msg.id !== common.id) {
+						var editor = FIND('editor').editor;
+						var data = PARSE(msg.data);
+						code.SYNC = false;
+						editor.replaceRange(data.text, data.from, data.to);
+						code.SYNC = true;
+					}
 					break;
 			}
 		});

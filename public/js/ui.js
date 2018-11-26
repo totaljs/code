@@ -225,6 +225,14 @@ COMPONENT('editor', function(self, config) {
 
 		editor.on('change', function(a, b) {
 
+			if (b.origin !== 'setValue' && code.SYNC) {
+				var data = {};
+				data.from = { line: b.from.line, ch: b.from.ch };
+				data.to = { line: b.to.line, ch: b.to.ch };
+				data.text = b.text;
+				EXEC(config.sync, data);
+			}
+
 			setTimeout2('EditorGutterColor', prerender_colors, 500);
 
 			if (config.disabled || !can[b.origin])
