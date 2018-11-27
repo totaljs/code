@@ -457,7 +457,7 @@
 
 		exports.close = function() {
 			if (code.current.modified) {
-				SETTER('confirm', 'show', '@(Do you want to save the changes you made?)', ['"floppy-o"@(Save changes)', '@(No)'], function(index) {
+				SETTER('confirm', 'show', '@(Do you want to save the changes you made?)', ['"floppy-o"@(Save changes)', '@(Discard)'], function(index) {
 					if (index)
 						exports.closeforce();
 					else

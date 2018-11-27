@@ -4,6 +4,7 @@ COMPONENT('editor', function(self, config) {
 	var skip = false;
 	var markers = {};
 	var fn = {};
+	var autocomplete;
 
 	fn.lastIndexOf = function(str, chfrom) {
 		for (var i = chfrom; i > 0; i--) {
@@ -137,7 +138,7 @@ COMPONENT('editor', function(self, config) {
 		options.foldGutter = true;
 		options.highlightSelectionMatches = { annotateScrollbar: true, delay: 100 };
 		options.phrases = {};
-		options.showTrailingSpace = true;
+		// options.showTrailingSpace = true;
 		options.matchTags = { bothTags: true };
 		// options.autoCloseTags = true;
 		options.scrollPastEnd = true;
@@ -209,16 +210,26 @@ COMPONENT('editor', function(self, config) {
 		};
 
 		var snippets = {};
+		var cache_snip = {};
 		var snippetsoptions = { completeSingle: false, hint: function(cm) {
 			var cur = cm.getCursor();
 			var start = snippets.index;
 			var end = cur.ch;
 			var tabs = ''.padLeft(snippets.index, '\t');
-			return {
-				list: FUNC.snippets(config.type, snippets.text, tabs, cur.line),
-				from: CodeMirror.Pos(cur.line, start),
-				to: CodeMirror.Pos(cur.line, end)
-			};
+
+			var index = snippets.text.lastIndexOf('.');
+			if (index > -1) {
+				index++;
+				snippets.text = snippets.text.substring(index);
+				start += index;
+				end += index;
+			} else
+				index = 0;
+
+			cache_snip.list = FUNC.snippets(config.type, snippets.text, tabs, cur.line, autocomplete, index);
+			cache_snip.from = CodeMirror.Pos(cur.line, start);
+			cache_snip.to = CodeMirror.Pos(cur.line, end);
+			return cache_snip;
 		}};
 
 		editor.on('endCompletion', function(a, b) {
@@ -348,6 +359,18 @@ COMPONENT('editor', function(self, config) {
 		markers = {};
 		editor.setValue(value || '');
 		editor.refresh();
+
+		var words = (value || '').match(/[a-zA-Z0-9_-]{3,}/g);
+		if (words) {
+			var unique = {};
+			for (var i = 0; i < words.length; i++)
+				unique[words[i].toLowerCase()] = words[i];
+			autocomplete = Object.keys(unique);
+			for (var i = 0; i < autocomplete.length; i++) {
+				var s = autocomplete[i];
+				autocomplete[i] = { search: s, code: unique[s] };
+			}
+		}
 
 		setTimeout(function() {
 			editor.refresh();

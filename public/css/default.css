@@ -77,6 +77,7 @@ h3 i { margin-right: 5px; color: $color; }
 .projectslist li:first-child { border-top: 0; }
 .projectslist i { margin-right: 8px; }
 .projectslist .selected { font-weight: bold; }
+.td .projectslist .selected { background-color: #202020 !important; }
 
 .mainmenu { background-color: white; border-radius: 3px; padding: 30px 0 20px; }
 .mainmenu .caption { font-size: 12px; font-family: $font; font-weight: 700; margin-bottom: 10px; text-transform: uppercase; color: black; border-bottom: 1px solid #E0E0E0; padding: 0 0 5px 0; }
@@ -241,7 +242,7 @@ header .tools .selected { background-color: #F0F0F0; }
 .td #panel .project { background-color: black; color: white; border-bottom-color: black; }
 .td #panel .project:hover { background-color: #101010; }
 .td .projectslist li { border-top-color: #353535; color: white; }
-.td .projectslist li:hover { background-color: #101010; }
+.td .projectslist li:hover { background-color: #202020; }
 .td .projectslist { background-color: #101010; border-color: #353535; }
 .td .ui-tree .expand { color: #a9aaae; }
 .td .ui-tree .item { border-bottom-color: #353535; }

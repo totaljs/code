@@ -475,7 +475,10 @@ WAIT('CodeMirror.defineMode', function() {
 			cm.removeOverlay('trailingspace');
 		else if (!prev && val) {
 			cm.addOverlay({ token: function(stream) {
-				for (var l = stream.string.length, i = l; i && /\s/.test(stream.string.charAt(i - 1)); --i) {}
+				for (var l = stream.string.length, i = l; i; --i) {
+					if (stream.string.charCodeAt(i - 1) !== 32)
+						break;
+				}
 				if (i > stream.pos) {
 					stream.pos = i;
 					return null;
@@ -1096,30 +1099,30 @@ WAIT('CodeMirror.defineMode', function() {
 });
 
 var SNIPPETS = [];
-SNIPPETS.push({ type: 'html', search: 'jc', text: 'Component', code: '<div data-jc="__"></div>', ch: 15 });
-SNIPPETS.push({ type: 'html', search: 'scope', text: 'Scope', code: '<div data-jc-scope=""></div>', ch: 21 });
-SNIPPETS.push({ type: 'html', search: 'data-bind', text: 'Binder', code: 'data-bind="__"', ch: 12 });
-SNIPPETS.push({ type: 'javascript', search: 'COMPONENT', text: 'COMPONENT', code: 'COMPONENT(\'\', \'\', function(self, config) {\n\t{0}\n{0}});', ch: 12 });
-SNIPPETS.push({ type: 'javascript', search: 'NEWSCHEMA', text: 'NEWSCHEMA', code: 'NEWSCHEMA(\'\', function(schema) {\n\t{0}schema.define(\'key\', String, true);\n{0}});', ch: 12 });
-SNIPPETS.push({ type: 'javascript', search: 'NEWOPERATION', text: 'NEWOPERATION', code: 'NEWOPERATION(\'\', function($) {\n\t{0}\n{0}});', ch: 15 });
-SNIPPETS.push({ type: 'javascript', search: 'schema.define', text: 'scheam.define', code: 'schema.define(\'\', String, true)', ch: 16 });
-SNIPPETS.push({ type: 'javascript', search: 'schema.addWorkflow', text: 'schema.addWorkflow', code: 'schema.addWorkflow(\'\', function($) {\n\t{0}\n{0}});', ch: 21 });
-SNIPPETS.push({ type: 'javascript', search: 'schema.addOperation', text: 'schema.addOperation', code: 'schema.addOperation(\'\', function($) {\n\t{0}\n{0}});', ch: 21 });
-SNIPPETS.push({ type: 'javascript', search: 'schema.addTransform', text: 'schema.addTransform', code: 'schema.addTransform(\'\', function($) {\n\t{0}\n{0}});', ch: 21 });
-SNIPPETS.push({ type: 'javascript', search: 'schema.setSave', text: 'schema.setSave', code: 'schema.setSave(function($) {\n\t{0}\n{0}});', ch: 21, line: 1 });
-SNIPPETS.push({ type: 'javascript', search: 'schema.setInsert', text: 'schema.setInsert', code: 'schema.setInsert(function($) {\n\t{0}\n{0}});', ch: 2, line: 1 });
-SNIPPETS.push({ type: 'javascript', search: 'schema.setUpdate', text: 'schema.setUpdate', code: 'schema.setUpdate(function($) {\n\t{0}\n{0}});', ch: 2, line: 1 });
-SNIPPETS.push({ type: 'javascript', search: 'schema.setRemove', text: 'schema.setRemove', code: 'schema.setRemove(function($) {\n\t{0}\n{0}});', ch: 2, line: 1 });
-SNIPPETS.push({ type: 'javascript', search: 'schema.setQuery', text: 'schema.setQuery', code: 'schema.setQuery(function($) {\n\t{0}\n{0}});', ch: 2, line: 1 });
-SNIPPETS.push({ type: 'javascript', search: 'schema.setRead', text: 'schema.setRead', code: 'schema.setRead(function($) {\n\t{0}\n{0}});', ch: 2, line: 1 });
-SNIPPETS.push({ type: 'javascript', search: 'schema.setGet', text: 'schema.setGet', code: 'schema.setGet(function($) {\n\t{0}\n{0}});', ch: 2, line: 1 });
-SNIPPETS.push({ type: 'javascript', search: 'MERGE', text: 'MERGE', code: 'MERGE(\'\', \'\');', ch: 8 });
-SNIPPETS.push({ type: 'javascript', search: 'ROUTE', text: 'ROUTE', code: 'ROUTE(\'\', \'\');', ch: 8 });
-SNIPPETS.push({ type: 'javascript', search: 'WEBSOCKET', text: 'WEBSOCKET', code: 'WEBSOCKET(\'\', \'\');', ch: 11 });
-SNIPPETS.push({ type: 'javascript', search: 'LOCALIZE', text: 'LOCALIZE', code: 'LOCALIZE(\'\', \'\');', ch: 11 });
-SNIPPETS.push({ type: 'javascript', search: 'exports.install', text: 'exports.install', code: 'exports.install = function() {\n\t{0}\n{0}};', ch: 2, line: 1 });
+SNIPPETS.push({ type: 'html', search: 'jc', text: 'S: Component', code: '<div data-jc="__"></div>', ch: 15 });
+SNIPPETS.push({ type: 'html', search: 'scope', text: 'S: Scope', code: '<div data-jc-scope=""></div>', ch: 21 });
+SNIPPETS.push({ type: 'html', search: 'data-bind', text: 'S: Binder', code: 'data-bind="__"', ch: 12 });
+SNIPPETS.push({ type: 'javascript', search: 'COMPONENT', text: 'S: COMPONENT', code: 'COMPONENT(\'\', \'\', function(self, config) {\n\t{0}\n{0}});', ch: 12 });
+SNIPPETS.push({ type: 'javascript', search: 'NEWSCHEMA', text: 'S: NEWSCHEMA', code: 'NEWSCHEMA(\'\', function(schema) {\n\t{0}schema.define(\'key\', String, true);\n{0}});', ch: 12 });
+SNIPPETS.push({ type: 'javascript', search: 'NEWOPERATION', text: 'S: NEWOPERATION', code: 'NEWOPERATION(\'\', function($) {\n\t{0}\n{0}});', ch: 15 });
+SNIPPETS.push({ type: 'javascript', search: 'schema.define', text: 'S: scheam.define', code: 'schema.define(\'\', String, true)', ch: 16 });
+SNIPPETS.push({ type: 'javascript', search: 'schema.addWorkflow', text: 'S: schema.addWorkflow', code: 'schema.addWorkflow(\'\', function($) {\n\t{0}\n{0}});', ch: 21 });
+SNIPPETS.push({ type: 'javascript', search: 'schema.addOperation', text: 'S: schema.addOperation', code: 'schema.addOperation(\'\', function($) {\n\t{0}\n{0}});', ch: 21 });
+SNIPPETS.push({ type: 'javascript', search: 'schema.addTransform', text: 'S: schema.addTransform', code: 'schema.addTransform(\'\', function($) {\n\t{0}\n{0}});', ch: 21 });
+SNIPPETS.push({ type: 'javascript', search: 'schema.setSave', text: 'S: schema.setSave', code: 'schema.setSave(function($) {\n\t{0}\n{0}});', ch: 21, line: 1 });
+SNIPPETS.push({ type: 'javascript', search: 'schema.setInsert', text: 'S: schema.setInsert', code: 'schema.setInsert(function($) {\n\t{0}\n{0}});', ch: 2, line: 1 });
+SNIPPETS.push({ type: 'javascript', search: 'schema.setUpdate', text: 'S: schema.setUpdate', code: 'schema.setUpdate(function($) {\n\t{0}\n{0}});', ch: 2, line: 1 });
+SNIPPETS.push({ type: 'javascript', search: 'schema.setRemove', text: 'S: schema.setRemove', code: 'schema.setRemove(function($) {\n\t{0}\n{0}});', ch: 2, line: 1 });
+SNIPPETS.push({ type: 'javascript', search: 'schema.setQuery', text: 'S: schema.setQuery', code: 'schema.setQuery(function($) {\n\t{0}\n{0}});', ch: 2, line: 1 });
+SNIPPETS.push({ type: 'javascript', search: 'schema.setRead', text: 'S: schema.setRead', code: 'schema.setRead(function($) {\n\t{0}\n{0}});', ch: 2, line: 1 });
+SNIPPETS.push({ type: 'javascript', search: 'schema.setGet', text: 'S: schema.setGet', code: 'schema.setGet(function($) {\n\t{0}\n{0}});', ch: 2, line: 1 });
+SNIPPETS.push({ type: 'javascript', search: 'MERGE', text: 'S: MERGE', code: 'MERGE(\'\', \'\');', ch: 8 });
+SNIPPETS.push({ type: 'javascript', search: 'ROUTE', text: 'S: ROUTE', code: 'ROUTE(\'\', \'\');', ch: 8 });
+SNIPPETS.push({ type: 'javascript', search: 'WEBSOCKET', text: 'S: WEBSOCKET', code: 'WEBSOCKET(\'\', \'\');', ch: 11 });
+SNIPPETS.push({ type: 'javascript', search: 'LOCALIZE', text: 'S: LOCALIZE', code: 'LOCALIZE(\'\', \'\');', ch: 11 });
+SNIPPETS.push({ type: 'javascript', search: 'exports.install', text: 'S: exports.install', code: 'exports.install = function() {\n\t{0}\n{0}};', ch: 2, line: 1 });
 
-FUNC.snippets = function(type, text, tabs, line) {
+FUNC.snippets = function(type, text, tabs, line, words, chplus) {
 
 	switch (type) {
 		case 'html':
@@ -1134,7 +1137,15 @@ FUNC.snippets = function(type, text, tabs, line) {
 	for (var i = 0; i < SNIPPETS.length; i++) {
 		var snip = SNIPPETS[i];
 		if (snip.search.indexOf(text) !== -1) {
-			arr.push({ displayText: snip.text, text: snip.code.format(tabs || ''), ch: (snip.line ? snip.ch + tabs.length : tabs.length === 0 ? snip.ch - 1 : snip.ch + tabs.length - 1), line: line + (snip.line || 0) });
+			arr.push({ displayText: snip.text, text: snip.code.format(tabs || ''), ch: (snip.line ? snip.ch + tabs.length : tabs.length === 0 ? snip.ch - 1 : snip.ch + tabs.length - 1) + chplus, line: line + (snip.line || 0) });
+		}
+	}
+
+	if (words && words.length) {
+		for (var i = 0; i < words.length; i++) {
+			var snip = words[i];
+			if (snip.search.indexOf(text) !== -1)
+				arr.push({ displayText: snip.code, text: snip.code, ch: snip.code.length + tabs.length + chplus, line: line });
 		}
 	}
 
