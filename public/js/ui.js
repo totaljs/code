@@ -209,12 +209,28 @@ COMPONENT('editor', function(self, config) {
 		var snippets = {};
 		var cache_snip = {};
 		var snippetsoptions = { completeSingle: false, hint: function(cm) {
+
+			if (snippets.text.length < 2) {
+				cache_snip.list = EMPTYARRAY;
+				cache_snip.from = 0;
+				cache_snip.to = 0;
+				return cache_snip;
+			}
+
 			var cur = cm.getCursor();
 			var start = snippets.index;
 			var end = cur.ch;
 			var tabs = ''.padLeft(snippets.index, '\t');
+			var index = -1;
 
-			var index = snippets.text.lastIndexOf('.');
+			for (var i = snippets.text.length - 1; i > 0; i--) {
+				var c = snippets.text.charCodeAt(i);
+				if ((c > 64 && c < 91) || (c > 96 && c < 123) || (c > 47 && c < 58) || c === 45 || c === 95)
+					continue;
+				index = i;
+				break;
+			}
+
 			if (index > -1) {
 				index++;
 				snippets.text = snippets.text.substring(index);
@@ -223,9 +239,14 @@ COMPONENT('editor', function(self, config) {
 			} else
 				index = 0;
 
-			cache_snip.list = FUNC.snippets(config.type, snippets.text, tabs, cur.line, autocomplete, index);
 			cache_snip.from = CodeMirror.Pos(cur.line, start);
 			cache_snip.to = CodeMirror.Pos(cur.line, end);
+
+			if (snippets.text.length < 2)
+				cache_snip.list = EMPTYARRAY;
+			else
+				cache_snip.list = FUNC.snippets(config.type, snippets.text, tabs, cur.line, autocomplete, index);
+
 			return cache_snip;
 		}};
 

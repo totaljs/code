@@ -1103,9 +1103,9 @@ WAIT('CodeMirror.defineMode', function() {
 });
 
 var SNIPPETS = [];
-SNIPPETS.push({ type: 'html', search: 'jc', text: 'S: Component', code: '<div data-jc="__"></div>', ch: 15 });
-SNIPPETS.push({ type: 'html', search: 'scope', text: 'S: Scope', code: '<div data-jc-scope=""></div>', ch: 21 });
-SNIPPETS.push({ type: 'html', search: 'data-bind', text: 'S: Binder', code: 'data-bind="__"', ch: 12 });
+SNIPPETS.push({ type: 'html', search: 'jc', text: '<b>Component</b>', code: '<div data-jc="__"></div>', ch: 15 });
+SNIPPETS.push({ type: 'html', search: 'scope', text: '<b>Scope</b>', code: '<div data-jc-scope=""></div>', ch: 21 });
+SNIPPETS.push({ type: 'html', search: 'data-bind', text: '<b>Binder</b>', code: 'data-bind="__"', ch: 12 });
 SNIPPETS.push({ type: 'javascript', search: 'COMPONENT', text: '<b>COMPONENT</b>', code: 'COMPONENT(\'\', \'\', function(self, config) {\n\t{0}\n{0}});', ch: 12 });
 SNIPPETS.push({ type: 'javascript', search: 'NEWSCHEMA', text: '<b>NEWSCHEMA</b>', code: 'NEWSCHEMA(\'\', function(schema) {\n\t{0}schema.define(\'key\', String, true);\n{0}});', ch: 12 });
 SNIPPETS.push({ type: 'javascript', search: 'NEWOPERATION', text: '<b>NEWOPERATION</b>', code: 'NEWOPERATION(\'\', function($) {\n\t{0}\n{0}});', ch: 15 });
@@ -1133,14 +1133,15 @@ FUNC.snippets = function(type, text, tabs, line, words, chplus) {
 		case 'totaljs':
 			type = 'html';
 			break;
-		case 'javascript':
+		default:
+			type = 'javascript';
 			break;
 	}
 
 	var arr = [];
 	for (var i = 0; i < SNIPPETS.length; i++) {
 		var snip = SNIPPETS[i];
-		if (snip.search.indexOf(text) !== -1) {
+		if (snip.type === type && snip.search.indexOf(text) !== -1) {
 			arr.push({ displayText: snip.text, text: snip.code.format(tabs || ''), ch: (snip.line ? snip.ch + tabs.length : tabs.length === 0 ? snip.ch - 1 : snip.ch + tabs.length - 1) + chplus, line: line + (snip.line || 0) });
 		}
 	}
