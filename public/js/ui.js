@@ -2,7 +2,7 @@ COMPONENT('editor', function(self, config) {
 
 	var editor = null;
 	var skip = false;
-
+	var markers = {};
 	var fn = {};
 
 	fn.lastIndexOf = function(str, chfrom) {
@@ -18,6 +18,13 @@ COMPONENT('editor', function(self, config) {
 	self.getter = null;
 	self.bindvisible();
 	self.nocompile && self.nocompile();
+
+	self.clearmarkers = function() {
+		var m = editor.doc.getAllMarks();
+		for (var i = 0; i < m.length; i++)
+			m[i].clear();
+		markers = {};
+	};
 
 	self.reload = function() {
 		editor.refresh();
@@ -111,6 +118,11 @@ COMPONENT('editor', function(self, config) {
 			}
 		};
 
+		var clearsearch = function() {
+			editor.execCommand('clearSearch');
+			return CodeMirror.pass;
+		};
+
 		var options = {};
 		options.lineNumbers = true;
 		options.mode = config.type || 'htmlmixed';
@@ -126,12 +138,17 @@ COMPONENT('editor', function(self, config) {
 		options.highlightSelectionMatches = { annotateScrollbar: true, delay: 100 };
 		options.phrases = {};
 		options.showTrailingSpace = true;
-		// options.matchTags = { bothTags: true };
+		options.matchTags = { bothTags: true };
 		// options.autoCloseTags = true;
 		options.scrollPastEnd = true;
 		options.lint = true;
 		options.autoCloseBrackets = true;
-		options.extraKeys = { 'Alt-F': 'findPersistent', 'Cmd-D': findmatch, 'Ctrl-D': findmatch, 'Cmd-S': shortcut('save'), 'Ctrl-S': shortcut('save'), 'Alt-W': shortcut('close'), 'Cmd-W': shortcut('close'), 'F5': shortcut('F5'), Tab: tabulator, 'Alt-Tab': shortcut('nexttab'), 'Cmd-Tab': shortcut('nexttab'), 'Ctrl-Tab': shortcut('nexttab') };
+		options.extraKeys = { 'Alt-F': 'findPersistent', 'Esc': clearsearch, 'Cmd-D': findmatch, 'Ctrl-D': findmatch, 'Cmd-S': shortcut('save'), 'Ctrl-S': shortcut('save'), 'Alt-W': shortcut('close'), 'Cmd-W': shortcut('close'), 'F5': shortcut('F5'), Tab: tabulator, 'Alt-Tab': shortcut('nexttab') };
+
+		if (common.electron) {
+			options.extraKeys['Cmd-Tab'] = shortcut('nexttab');
+			options.extraKeys['Ctrl-Tab'] = shortcut('nexttab');
+		}
 
 		var GutterColor = function(color) {
 			var marker = document.createElement('div');
@@ -153,10 +170,14 @@ COMPONENT('editor', function(self, config) {
 			config.contextmenu && EXEC(config.contextmenu, e, editor);
 		});
 
+		var cache_selection = {};
+
 		editor.on('keydown', function(editor, e) {
 			if (e.shiftKey && e.ctrlKey && (e.keyCode === 40 || e.keyCode === 38)) {
 				var tmp = editor.getCursor();
-				editor.doc.addSelection({ line: tmp.line + (e.keyCode === 40 ? 1 : -1), ch: tmp.ch });
+				cache_selection.line = tmp.line + (e.keyCode === 40 ? 1 : -1);
+				cache_selection.ch = tmp.ch;
+				editor.doc.addSelection(cache_selection);
 				e.stopPropagation();
 				e.preventDefault();
 			}
@@ -223,14 +244,17 @@ COMPONENT('editor', function(self, config) {
 			};
 		});
 
+		var cache_sync = { from: {}, to: {} };
+
 		editor.on('change', function(a, b) {
 
 			if (b.origin !== 'setValue' && code.SYNC) {
-				var data = {};
-				data.from = { line: b.from.line, ch: b.from.ch };
-				data.to = { line: b.to.line, ch: b.to.ch };
-				data.text = b.text;
-				EXEC(config.sync, data);
+				cache_sync.from.line = b.from.line;
+				cache_sync.from.ch = b.from.ch;
+				cache_sync.to.line= b.to.line;
+				cache_sync.to.ch = b.to.ch;
+				cache_sync.text = b.text;
+				EXEC(config.sync, cache_sync);
 			}
 
 			setTimeout2('EditorGutterColor', prerender_colors, 500);
@@ -273,6 +297,30 @@ COMPONENT('editor', function(self, config) {
 		self.resize();
 	};
 
+	var cache_mt_f = {};
+	var cache_mt_t = {};
+	var cache_mt_css = { css: {} };
+
+	self.marker = function(id, fline, fch, tline, tch, color) {
+		markers[id] && markers[id].clear();
+
+		cache_mt_f.line = fline;
+		cache_mt_f.ch = fline === tline && tch === fch ? (fch - 1) : fch;
+		cache_mt_t.line = tline;
+		cache_mt_t.ch = tch;
+
+		if (cache_mt_f.ch < 0) {
+			cache_mt_f.ch = 0;
+			cache_mt_t.ch = 1;
+		}
+
+		cache_mt_css.css = 'background-color:' + hexrgba(color, 0.5);
+		cache_mt_css.className = 'cm-user';
+		cache_mt_css.title = id;
+
+		markers[id] = editor.markText(cache_mt_f, cache_mt_t, cache_mt_css);
+	};
+
 	self.copy = function(history) {
 		return editor.doc.copy(history);
 	};
@@ -297,6 +345,7 @@ COMPONENT('editor', function(self, config) {
 		if (type === 'skip')
 			return;
 
+		markers = {};
 		editor.setValue(value || '');
 		editor.refresh();
 

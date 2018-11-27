@@ -30,12 +30,12 @@
 		</nav>
 	</section>
 	<div id="content" data-margin="36">
-		<div class="messages">
-			<div class="alert hidden" data-bind="code.backup__show" data-name="backup"><i class="fa fa-times exec" data-exec="code/warning"></i><i class="fa fa-warning"></i>@(Content of this file wasn't be saved before. Do you want to restore it?) <span class="link exec" data-name="restore" data-exec="code/warning">@(Restore)</span> @(or) <span class="link exec" data-exec="code/warning">@(Cancel)</span></div>
-			<div class="alert hidden" data-bind="code.multiple__show" data-name="multiple"><i class="fa fa-times exec" data-exec="code/warning"></i><i class="fa fa-users"></i>@(Be careful because another user is editing content of this file.) <span class="link exec" data-exec="code/warning">@(I understand)</span>.</div>
-		</div>
 		<div data-bind="code.editor.path__show">
 			<div data-jc="editor__code.editor.body__height:100%;shortcut:code/shortcut;contextmenu:code/contextmenu;cursor:code/cursorposition;sync:code/sync"></div>
+		</div>
+		<div class="messages">
+			<div class="alert hidden" data-bind="code.backup__show" data-name="backup"><i class="fa fa-times exec" data-exec="code/warning"></i><i class="fa fa-warning"></i>@(Content of this file wasn't be saved before. Do you want to restore it?) <span class="link exec" data-name="restore" data-exec="code/warning">@(Restore)</span> @(or) <span class="link exec" data-exec="code/warning">@(Cancel)</span>.</div>
+			<div class="alert hidden" data-bind="code.multiple__show" data-name="multiple"><i class="fa fa-times exec" data-exec="code/warning"></i><i class="fa fa-users"></i>@(Be careful because another user is editing content of this file.) <span class="link exec b" data-exec="code/syncdata"><i class="fa fa-refresh fa-spin mr5"></i>@(Synchronize)</span> @(or) <span class="link exec" data-exec="code/warning">@(Cancel)</span>.</div>
 		</div>
 	</div>
 	<section class="status invisible" data-bind="code.data__invisible:!value">
@@ -85,6 +85,14 @@
 
 	PLUGIN('code', function(exports) {
 
+		var editor;
+		var cache_synccur = { TYPE: 'synccur', id: user.id };
+		var cache_scrollpos = {};
+
+		FIND('editor', function(com) {
+			editor = com;
+		});
+
 		exports.codetasks_unsolved = function(value) {
 			var count = 0;
 			if (value && value.length) {
@@ -96,10 +104,29 @@
 			return count > 99 ? 99 : count;
 		};
 
+		exports.syncdata = function() {
+			SET('code.multiple', false);
+			SETTER('loading', 'show');
+			FUNC.wssend({ TYPE: 'syncsend', projectid: code.data.id, fileid: code.editor.path, connid: common.id });
+		};
+
+		exports.synccursor = function(msg) {
+			for (var i = 0; i < code.usersfile.length; i++) {
+				var uf = code.usersfile[i];
+				if (uf.id === msg.id) {
+					editor.marker(uf.id, msg.fline, msg.fch, msg.tline, msg.tch, uf.color);
+					return;
+				}
+			}
+		};
+
 		exports.reload = function() {
+
 			EMIT('resize', exports.element);
+
 			var id = READPARAMS().id;
 			id && exports.load(id);
+
 			SET('%projectsvisible', false);
 
 			AJAX('GET /api/projects/', function(response) {
@@ -142,7 +169,6 @@
 				setTimeout(function() {
 					var items = [];
 
-					console.log(value.value);
 					if (value.value === 'encode') {
 						items.push({ name: '@(Base64)', icon: 'chevron-right', value: 'btoa' });
 						items.push({ name: '@(Encode URI)', icon: 'chevron-right', value: 'encodeURIComponent' });
@@ -176,7 +202,6 @@
 					});
 
 				}, 200);
-
 			});
 		};
 
@@ -207,13 +232,20 @@
 					SET('code.backup', false);
 					break;
 				case 'multiple':
+					code.SYNC = false;
+					if (code.backup) {
+						exports.cache_rem(code.editor.path);
+						SET('code.backup', false);
+					}
 					SET('code.multiple', false);
 					break;
 			}
 		};
 
 		exports.sync = function(data) {
-			SETTER('websocket', 'send', { TYPE: 'sync', data: STRINGIFY(data), id: common.id });
+			// Determines how many people is editing this file?
+			if (code.usersfile.length > 1 && code.SYNC)
+				FUNC.wssend({ TYPE: 'sync', data: STRINGIFY(data), id: common.id });
 		};
 
 		exports.rename = function(item, val, callback) {
@@ -285,9 +317,7 @@
 			var tab = code.open.findItem('path', item.path);
 			if (tab && tab.loaded) {
 				if (tab.path !== code.editor.path) {
-
 					// check if the content has been modified
-
 					exports.edit(tab);
 					exports.savetabs();
 				}
@@ -458,6 +488,7 @@
 						index = 0;
 					exports.opentab(code.open[index].path);
 				} else {
+					FUNC.wsopen(code.data.id, '');
 					SET('code.multiple', false);
 					$('#body').rclass('warning');
 					SET('code.editor', {});
@@ -472,7 +503,6 @@
 			if (typeof(tab) === 'string')
 				tab = code.open.findItem('path', tab);
 
-			var editor = exports.element.FIND('editor');
 			var prev = GET('code.editor.path');
 			if (prev && prev !== tab.path) {
 				prev = code.open.findItem('path', prev);
@@ -528,6 +558,14 @@
 				case 'xml':
 					mode = 'xml';
 					break;
+				case 'log':
+				case 'txt':
+				case 'table':
+					mode = 'plain';
+					break;
+				case 'nosql':
+					mode = 'json';
+					break;
 				case 'html':
 				case 'htm':
 				default:
@@ -563,8 +601,8 @@
 				editor.editor.refresh();
 				var cache = exports.cache_getscroll(code.current.path);
 				if (cache) {
-					editor.editor.scrollTo(cache.x, cache.y);
-					editor.editor.setCursor({ line: cache.line, ch: cache.ch });
+					editor.editor.scrollTo(cache.x || 0, cache.y || 0);
+					editor.editor.setCursor({ line: cache.line || 0, ch: cache.ch || 0 });
 					editor.editor.focus();
 				} else {
 					editor.editor.scrollTo(0, 0);
@@ -704,6 +742,8 @@
 			selected && exports.open({ children: null, path: selected.path, name: selected.name });
 		};
 
+		var colorclasses = {};
+
 		exports.collaboration = function(msg) {
 
 			if (code.data == null)
@@ -712,9 +752,17 @@
 			if (msg.projectid === code.data.id)
 				SET('code.usersproject', msg.project);
 
-			if (code.editor && msg.fileid === code.editor.path)
+			if (code.editor && msg.fileid === code.editor.path) {
 				SET('code.usersfile', msg.file);
+				var colors = [];
+				for (var i = 0; i < msg.file.length; i++) {
+					var usr = msg.file[i];
+					usr.color = Thelpers.initials(usr.name, true);
+				}
+				colors.length && CSS(colors.join(''));
+			}
 
+			editor && editor.clearmarkers();
 			$('#body').tclass('warning', code.usersfile && code.usersfile.length > 1);
 			SET('code.multiple', !!(code.usersfile && code.usersfile.length > 1));
 		};
@@ -802,22 +850,35 @@
 
 		exports.warnings_goto = function(el) {
 			var pos = el.attrd('pos').split('x');
-			var editor = exports.element.FIND('editor').editor;
-			editor.setCursor({ line: +pos[0] - 1, char: +pos[1] }, 200);
-			editor.focus();
+			editor.editor.setCursor({ line: +pos[0] - 1, char: +pos[1] }, 200);
+			editor.editor.focus();
 		};
 
 		exports.cursorposition = function(editor) {
+
+			if (code.usersfile.length > 1 && code.SYNC) {
+				var a = editor.getCursor(true);
+				var b = editor.getCursor(false);
+				cache_synccur.fline = a.line;
+				cache_synccur.fch = a.ch;
+				cache_synccur.tline = b.line;
+				cache_synccur.tch = b.ch;
+				FUNC.wssend(cache_synccur);
+			}
+
 			setTimeout2('savescrollposition', function(editor) {
 				if (!code.editor.loaded)
 					return;
 				var info = editor.getScrollInfo();
 				var cur = editor.getCursor();
 				var key = code.data.id + '_' + code.editor.hash + '_scroll';
-
-				if (info.left || info.top || cur.line)
-					localStorage.setItem(key,  STRINGIFY({ x: info.left, y: info.top, line: cur.line, ch: cur.ch }));
-				else
+				if (info.left || info.top || cur.line) {
+					cache_scrollpos.x = info.left;
+					cache_scrollpos.y = info.top;
+					cache_scrollpos.line = info.line;
+					cache_scrollpos.ch = info.ch;
+					localStorage.setItem(key,  STRINGIFY(cache_scrollpos));
+				} else
 					localStorage.removeItem(key);
 
 			}, 300, null, editor);

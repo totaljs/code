@@ -113,15 +113,12 @@ function users_online() {
 	for (var i = 0; i < MAIN.users.length; i++) {
 		var user = MAIN.users[i];
 		if (user.online) {
-			for (var j = 0; j < user.open.length; j++) {
-				var open = user.open[j];
-				var item = {};
-				var project = MAIN.projects.findItem('id', open.projectid);
-				if (project)
-					item.project = project.name + (open.fileid || '');
-				item.name = user.name;
-				arr.push(item);
-			}
+			var item = {};
+			var project = MAIN.projects.findItem('id', user.projectid);
+			if (project)
+				item.project = project.name + (user.fileid || '');
+			item.name = user.name;
+			arr.push(item);
 		}
 	}
 

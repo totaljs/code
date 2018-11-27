@@ -165,8 +165,8 @@
 		var needsH = measure.scrollWidth > measure.clientWidth + 1;
 		var needsV = measure.scrollHeight > measure.clientHeight + 1;
 
-		t.vert.node.style.display = needsV ? 'block' : 'none';
-		t.horiz.node.style.display = needsH ? 'block' : 'none';
+		t.vert.inner.style.display = needsV ? 'block' : 'none';
+		t.horiz.inner.style.display = needsH ? 'block' : 'none';
 
 		if (needsV) {
 			t.vert.update(measure.scrollHeight, measure.clientHeight, measure.viewHeight - (needsH ? width : 0));

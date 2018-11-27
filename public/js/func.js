@@ -88,6 +88,9 @@ FUNC.wsopen = function(project, path) {
 	SETTER('websocket', 'send', { TYPE: 'edit', projectid: project, fileid: path });
 };
 
+FUNC.wssend = function(msg) {
+	SETTER('websocket', 'send', msg);
+};
 
 FUNC.success = function(msg) {
 	SETTER('snackbar', 'success', msg);

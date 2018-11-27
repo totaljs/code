@@ -49,9 +49,10 @@ h3 i { margin-right: 5px; color: $color; }
 .m { margin-bottom: 20px; }
 
 #body { border-left: 1px solid #E0E0E0; min-height: 200px; margin-left: 239px; overflow: hidden; }
+/*
 #body.warning .CodeMirror { background-color: #fbf6f6; }
 .td #body.warning .CodeMirror { background-color: #2d2323; }
-
+*/
 #panel { width: 239px; float: left; overflow: hidden; }
 #content { overflow: hidden; }
 #panel .project { height: 50px; border-bottom: 1px solid #E0E0E0; background-color: #fffbed; color: black; cursor: pointer; font-size: 18px; padding: 12px 0 0 20px; font-weight: bold; }
@@ -66,8 +67,8 @@ h3 i { margin-right: 5px; color: $color; }
 .bg-yellow { background-color: #FFFFD5; }
 .bg-smoke { background-color: #F8F8F8; }
 
-#content .alert { padding: 7px 15px 5px; position: absolute; left: 0; right: 0; z-index: 5; border-radius: 0; border-bottom: 1px solid #dddbaf; }
-#content .messages { position: relative; }
+#content .alert { padding: 7px 15px 5px; position: absolute; left: 240px; right: 0; z-index: 5; border-radius: 0; border-top: 1px solid #dddbaf; bottom: 44px; }
+#content .messages {}
 
 .projectslist { position: absolute; background-color: white; z-index: 7; top: 99px; width: 301px; border: 1px solid #E0E0E0; box-shadow: 5px 5px 10px rgba(0,0,0,0.1); }
 .projectslist ul { margin: 0; padding: 0; }

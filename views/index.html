@@ -83,6 +83,10 @@
 
 		ON('message', function(msg) {
 			switch (msg.TYPE) {
+				case 'close':
+					// close all projects
+					location.href = '/offline/';
+					break;
 				case 'open':
 					EXEC('code/collaboration', msg);
 					break;
@@ -94,6 +98,34 @@
 						editor.replaceRange(data.text, data.from, data.to);
 						code.SYNC = true;
 					}
+					break;
+				case 'syncsend':
+					if (msg.projectid === code.data.id && msg.fileid === code.editor.path && msg.connid !== common.id) {
+						SETTER('loading', 'show');
+						code.SYNC = false;
+						var editor = FIND('editor').editor;
+						msg.TYPE = 'syncbody';
+						msg.body = editor.getValue();
+						SETTER('websocket', 'send', msg);
+					}
+					break;
+				case 'syncbody':
+					if (msg.projectid === code.data.id && msg.fileid === code.editor.path && msg.connid === common.id) {
+						code.SYNC = false;
+						msg.TYPE = 'syncdone';
+						FIND('editor').editor.setValue(msg.body);
+						msg.body = null;
+						SETTER('websocket', 'send', msg);
+					}
+					break;
+				case 'syncdone':
+					code.SYNC = true;
+					SET('code.multiple', false);
+					SETTER('loading', 'hide');
+					break;
+				case 'synccur':
+					if (msg.id !== user.id)
+						EXEC('code/synccursor', msg);
 					break;
 			}
 		});

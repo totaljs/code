@@ -1,8 +1,8 @@
-
 const MSG_OPEN = { TYPE: 'open' };
+const MSG_CLOSE = { TYPE: 'close' };
 
 exports.install = function() {
-	WEBSOCKET('/', realtime, ['json', 'authorize']);
+	WEBSOCKET('/', realtime, ['authorize']);
 };
 
 function realtime() {
@@ -11,85 +11,60 @@ function realtime() {
 	MAIN.ws = self;
 
 	self.on('open', function(client) {
-		client.user.online++;
+
+		var old = self.find(conn => conn.user === client.user && conn.id !== client.id);
+		if (old) {
+			old.send(MSG_CLOSE);
+			setTimeout(() => old.close, 1000);
+		}
+
+		client.user.online = true;
 	});
 
 	self.on('close', function(client) {
-		var index = client.user.open.findIndex('connid', client.id);
-		var open = client.user.open[index];
-
-		if (index !== -1)
-			client.user.open.splice(index, 1);
-
-		client.user.online--;
-		refresh_collaborators(self, client.user, false, open);
+		var offline = self.find(conn => conn.user === client.user && conn.id !== client.id) == null;
+		if (offline) {
+			client.user.projectid && refresh_collaborators(self, client.user);
+			client.user.projectid = '';
+			client.user.fileid = '';
+			client.user.online = false;
+		}
 	});
 
 	self.on('message', function(client, msg) {
-		switch (msg.TYPE) {
-			case 'edit':
-				var open = client.user.open.findItem('connid', client.id);
-				if (open) {
-					refresh_collaborators(self, client.user, false, open);
-					open.projectid = msg.projectid;
-					open.fileid = msg.fileid;
-				} else {
-					open = { connid: client.id, projectid: msg.projectid, fileid: msg.fileid };
-					client.user.open.push(open);
-				}
-				refresh_collaborators(self, client.user, true, open);
-				break;
-			case 'sync':
-				self.send(msg);
-				break;
-		}
+		// TYPE = [e]dit
+		if (msg[9] === 'e') {
+			msg = msg.parseJSON();
+			client.user.projectid && refresh_collaborators(self, client.user);
+			client.user.projectid = msg.projectid;
+			client.user.fileid = msg.fileid;
+			refresh_collaborators(self, client.user, true);
+		} else
+			self.send(msg);
 	});
 }
 
-function refresh_collaborators(ws, user, add, open) {
+function refresh_collaborators(ws, user, add) {
 
 	MSG_OPEN.userid = user.id;
-	MSG_OPEN.projectid = open ? open.projectid : '';
-	MSG_OPEN.fileid = open ? open.fileid : '';
+	MSG_OPEN.projectid = user.projectid;
+	MSG_OPEN.fileid = user.fileid;
 	MSG_OPEN.project = [];
 	MSG_OPEN.file = [];
-
-	var cache = {};
 
 	for (var i = 0; i < MAIN.users.length; i++) {
 
 		var item = MAIN.users[i];
 
-		if (!item.online) // || (item.id === user.id && !add)
+		if (item.id === user.id && !add)
 			continue;
 
-		for (var j = 0; j < item.open.length; j++) {
-			var edit = item.open[j];
-
-			if (open && edit.connid === open.connid && !add)
-				continue;
-
-			if (edit.projectid === MSG_OPEN.projectid) {
-
-				var key = 'p' + edit.projectid + '_' + item.id;
-
-				// A prevention for duplicating names
-				if (!cache[key]) {
-					MSG_OPEN.project.push({ id: item.id, name: item.name });
-					cache[key] = 1;
-				}
-
-				if (edit.fileid === MSG_OPEN.fileid) {
-					key = 'f' + edit.fileid + '_' + item.id;
-					// A prevention for duplicating names
-					if (!cache[key]) {
-						MSG_OPEN.file.push({ id: item.id, name: item.name });
-						cache[key] = 1;
-					}
-				}
-			}
+		if (item.projectid === MSG_OPEN.projectid) {
+			MSG_OPEN.project.push({ id: item.id, name: item.name });
+			if (item.fileid === MSG_OPEN.fileid)
+				MSG_OPEN.file.push({ id: item.id, name: item.name });
 		}
 	}
 
-	ws.send(MSG_OPEN);
+	ws.send(JSON.stringify(MSG_OPEN));
 }

@@ -28,7 +28,8 @@ button { outline: 0; }
 .cm-variable-J { border-bottom: 2px solid #E0E0E0; }
 .cm-variable-B { border-bottom: 2px solid red; }
 .cm-trailingspace { background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAACCAYAAAB/qH1jAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH3QUXCToH00Y1UgAAACFJREFUCNdjPMDBUc/AwNDAAAFMTAwMDA0OP34wQgX/AQBYgwYEx4f9lQAAAABJRU5ErkJggg==); background-position: bottom left; background-repeat: repeat-x; }
-
+.CodeMirror-matchingtag { background-color: rgba(200,200,200,0.1); }
+.td .CodeMirror-matchingtag { background-color: rgba(220,220,220,0.15); }
 .CodeMirror-focused .cm-matchhighlight { }
 .cm-matchhighlight { outline: 1px solid #4285F4; }
 .CodeMirror-selection-highlight-scrollbar { background-color: yellow; }
