@@ -121,6 +121,7 @@ COMPONENT('editor', function(self, config) {
 
 		var clearsearch = function() {
 			editor.execCommand('clearSearch');
+			editor.execCommand('singleSelection');
 			return CodeMirror.pass;
 		};
 
@@ -171,14 +172,10 @@ COMPONENT('editor', function(self, config) {
 			config.contextmenu && EXEC(config.contextmenu, e, editor);
 		});
 
-		var cache_selection = {};
-
 		editor.on('keydown', function(editor, e) {
 			if (e.shiftKey && e.ctrlKey && (e.keyCode === 40 || e.keyCode === 38)) {
 				var tmp = editor.getCursor();
-				cache_selection.line = tmp.line + (e.keyCode === 40 ? 1 : -1);
-				cache_selection.ch = tmp.ch;
-				editor.doc.addSelection(cache_selection);
+				editor.doc.addSelection({ line: tmp.line + (e.keyCode === 40 ? 1 : -1), ch: tmp.ch });
 				e.stopPropagation();
 				e.preventDefault();
 			}

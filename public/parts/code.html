@@ -490,6 +490,7 @@
 				} else {
 					FUNC.wsopen(code.data.id, '');
 					SET('code.multiple', false);
+					SET('code.backup', false);
 					$('#body').rclass('warning');
 					SET('code.editor', {});
 					exports.element.RECONFIGURE('editor', 'disabled:true');

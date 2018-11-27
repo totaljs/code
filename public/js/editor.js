@@ -425,6 +425,10 @@ WAIT('CodeMirror.defineMode', function() {
 				return;
 
 			var selection = cm.getRange(from, to);
+
+			if ((/\W/).test(selection))
+				return;
+
 			if (state.options.trim) selection = selection.replace(/^\s+|\s+$/g, '');
 			if (selection.length >= state.options.minChars)
 				addOverlay(cm, selection, false, state.options.style);
