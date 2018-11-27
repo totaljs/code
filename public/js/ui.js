@@ -3159,6 +3159,7 @@ COMPONENT('snackbar', 'timeout:4000;button:OK', function(self, config) {
 
 	var show = true;
 	var callback;
+	var thide;
 
 	self.readonly();
 	self.blind();
@@ -3176,7 +3177,7 @@ COMPONENT('snackbar', 'timeout:4000;button:OK', function(self, config) {
 	self.hide = function() {
 		clearTimeout2(self.ID);
 		self.rclass('ui-snackbar-visible');
-		setTimeout(function() {
+		thide = setTimeout(function() {
 			self.aclass('hidden');
 		}, 1000);
 		show = true;
@@ -3206,6 +3207,8 @@ COMPONENT('snackbar', 'timeout:4000;button:OK', function(self, config) {
 		self.find('.ui-snackbar-icon').html('<i class="fa {0}"></i>'.format(icon || 'fa-info-circle'));
 		self.find('.ui-snackbar-body').html(message).attr('title', message);
 		self.find('.ui-snackbar-dismiss').html(button || config.button);
+
+		clearTimeout(thide);
 
 		if (show) {
 			self.rclass('hidden');

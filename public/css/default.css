@@ -27,6 +27,10 @@ html,body { margin: 0; padding: 0; overflow: hidden; }
 .alert .fa-times { float: right; cursor: pointer; margin: 2px 0 0; }
 .fs11 { font-size: 11px; }
 
+.alert-saved { position: absolute; right: 20px; top: 120px; background-color: yellow; color: black; width: 250px; z-index: 10; border-radius: 3px; padding: 10px; font-size: 12px; line-height: 16px; cursor: pointer; box-shadow: 0 5px 20px rgba(0,0,0,0.05); }
+.alert-saved i { margin-right: 5px; color: red; }
+.td .alert-saved { box-shadow: 0 5px 20px rgba(0,0,0,0.3); }
+
 .padding { padding: 20px; }
 .hidden { display: none; }
 .logo { display: block; margin: 17px 20px 0; float: left; color: #505050; font-weight: bold; font-size: 18px; }

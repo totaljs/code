@@ -127,6 +127,10 @@
 					if (msg.id !== user.id)
 						EXEC('code/synccursor', msg);
 					break;
+				case 'save':
+					if (msg.id !== user.id)
+						EXEC('code/syncsave', msg);
+					break;
 			}
 		});
 

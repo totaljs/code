@@ -30,6 +30,7 @@
 		</nav>
 	</section>
 	<div id="content" data-margin="36">
+		<div class="alert-saved hidden exec" data-bind="code.saved__show__html b" data-exec="code/syncsave"><i class="fa fa-warning"></i><b></b> @(has replaced content of this file on the server.)</div>
 		<div data-bind="code.editor.path__show">
 			<div data-jc="editor__code.editor.body__height:100%;shortcut:code/shortcut;contextmenu:code/contextmenu;cursor:code/cursorposition;sync:code/sync"></div>
 		</div>
@@ -108,6 +109,21 @@
 			SET('code.multiple', false);
 			SETTER('loading', 'show');
 			FUNC.wssend({ TYPE: 'syncsend', projectid: code.data.id, fileid: code.editor.path, connid: common.id });
+		};
+
+		exports.syncsave = function(msg) {
+
+			var p = 'code.saved';
+
+			if (!msg || msg instanceof jQuery) {
+				SET(p, null);
+				return;
+			}
+
+			if (msg.projectid === code.data.id && msg.fileid === code.editor.path) {
+				SET(p, msg.user);
+				SET(p, null, 5000);
+			}
 		};
 
 		exports.synccursor = function(msg) {
@@ -445,7 +461,7 @@
 								SETTER('loading', 'show');
 								AJAX('POST /api/files/{id}/remove/'.arg(code.data), data, function() {
 									SETTER('loading', 'hide', 100);
-									SETTER('snackbar', 'success', '@(Removed successfully: <b>{0}</b>.)'.format(data.path));
+									FUNC.success('@(Removed successfully: <b>{0}</b>.)'.format(data.path));
 									SET('code.tree', FUNC.treeremove(code.tree, node.path));
 								});
 							}
@@ -673,6 +689,9 @@
 
 		exports.save = function(close, comment) {
 
+			if (BLOCKED('code_saving', 2000))
+				return;
+
 			var data = {};
 			data.path = code.editor.path;
 			data.body = FUNC.rtrim(code.editor.body);
@@ -691,7 +710,8 @@
 				SETTER('loading', 'hide', 500);
 				if (close === true)
 					exports.closeforce();
-				SETTER('snackbar', 'success', '@(<b>{0}</b> saved)'.format(data.path));
+				FUNC.wssend({ TYPE: 'save', projectid: code.data.id, fileid: code.editor.path, id: user.id, user: user.name });
+				FUNC.success('@(<b>{0}</b> saved)'.format(data.path));
 			});
 		};
 
@@ -808,7 +828,7 @@
 						builder.push('<div class="infopanel-online"><span>{0}</span><b>{1}</b></div>'.format(user.name, user.project || '@(No file open)'));
 					}
 
-					!builder.length && SETTER('snackbar', 'warning', '@(No-one works.)');
+					!builder.length && FUNC.warning('@(No-one works.)');
 					el.html(builder.join(''));
 				}, 0, -10);
 			});
@@ -832,7 +852,7 @@
 						builder.push('<div class="infopanel-line exec" data-exec="code/opentab2" data-path="{0}"><b>{1}</b><span>{0}</span></div>'.format(key, value));
 					}
 
-					!builder.length && SETTER('snackbar', 'warning', '@(Project doesn\'t contain any tasks.)');
+					!builder.length && FUNC.warning('@(Project doesn\'t contain any tasks.)');
 					el.html(builder.join(''));
 				}, 0, -10);
 			});
@@ -845,7 +865,7 @@
 					var err = JSHINT.errors && JSHINT.errors[i];
 					err && builder.push('<div class="infopanel-line exec" data-exec="code/warnings_goto" data-pos="{1}x{2}"><b>:{1}</b><span>{0}</span></div>'.format(err.reason || err.raw, err.line, err.character));
 				}
-				!builder.length && SETTER('snackbar', 'warning', '@(File doesn\'t contain any warnings.)');
+				!builder.length && FUNC.warning('@(File doesn\'t contain any warnings.)');
 				el.html(builder.join(''));
 			});
 		};
