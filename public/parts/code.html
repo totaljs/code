@@ -122,7 +122,9 @@
 
 			if (msg.projectid === code.data.id && msg.fileid === code.editor.path) {
 				SET(p, msg.user);
-				SET(p, null, 5000);
+				setTimeout2(p, function() {
+					SET(p, null);
+				}, 5000);
 			}
 		};
 
