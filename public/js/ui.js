@@ -360,18 +360,6 @@ COMPONENT('editor', function(self, config) {
 		editor.setValue(value || '');
 		editor.refresh();
 
-		var words = (value || '').match(/[a-zA-Z0-9_-]{3,}/g);
-		if (words) {
-			var unique = {};
-			for (var i = 0; i < words.length; i++)
-				unique[words[i].toLowerCase()] = words[i];
-			autocomplete = Object.keys(unique);
-			for (var i = 0; i < autocomplete.length; i++) {
-				var s = autocomplete[i];
-				autocomplete[i] = { search: s, code: unique[s] };
-			}
-		}
-
 		setTimeout(function() {
 			editor.refresh();
 		}, 200);
@@ -396,6 +384,26 @@ COMPONENT('editor', function(self, config) {
 		self.$oldstate = invalid;
 		self.find('.ui-editor').tclass('ui-editor-invalid', invalid);
 	};
+
+	self.rebuild_autocomplete = function() {
+		var words = editor.getValue();
+		var max = 100000;
+		if (words.length > max)
+			words = words.substring(0, max);
+		words = words.match(/[a-zA-Z0-9_-]{3,}/g);
+		if (words) {
+			var unique = {};
+			for (var i = 0; i < words.length; i++)
+				unique[words[i].toLowerCase()] = words[i];
+			autocomplete = Object.keys(unique);
+			for (var i = 0; i < autocomplete.length; i++) {
+				var s = autocomplete[i];
+				autocomplete[i] = { search: s, code: unique[s] };
+			}
+		} else
+			autocomplete = null;
+	};
+
 });
 
 COMPONENT('exec', function(self, config) {

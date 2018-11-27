@@ -591,6 +591,7 @@
 				editor.paste(editor.copy(false));
 			}
 
+			setTimeout2('code.autocomplete', editor.rebuild_autocomplete, 1000);
 			code.current = tab;
 			editor.reconfigure('disabled:false;mode:' + mode);
 			FUNC.wsopen(code.data.id, code.current.path);

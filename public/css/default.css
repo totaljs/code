@@ -264,6 +264,7 @@ header .tools .selected { background-color: #F0F0F0; }
 .td .CodeMirror-guttermarker-subtle { color: #d0d0d0; }
 .td .CodeMirror-linenumber { color: gray; }
 .td .CodeMirror-cursor { border-left: 1px solid #f8f8f0; }
+.CodeMirror-linenumber { font-size: 12px; }
 
 .td span.cm-comment { color: #75715e; }
 .td span.cm-atom { color: #ae81ff; }
