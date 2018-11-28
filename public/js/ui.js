@@ -245,7 +245,7 @@ COMPONENT('editor', function(self, config) {
 			if (snippets.text.length < 2)
 				cache_snip.list = EMPTYARRAY;
 			else
-				cache_snip.list = FUNC.snippets(config.type, snippets.text, tabs, cur.line, autocomplete, index);
+				cache_snip.list = FUNC.snippets(config.mode, snippets.text, tabs, cur.line, autocomplete, index);
 
 			return cache_snip;
 		}};

@@ -1103,6 +1103,7 @@ WAIT('CodeMirror.defineMode', function() {
 });
 
 var SNIPPETS = [];
+SNIPPETS.push({ type: 'html', search: 'fa', text: '<b>Font-Awesome Icon</b>', code: '<i class="fa fa-"></i>', ch: 17 });
 SNIPPETS.push({ type: 'html', search: 'jc', text: '<b>Component</b>', code: '<div data-jc="__"></div>', ch: 15 });
 SNIPPETS.push({ type: 'html', search: 'scope', text: '<b>Scope</b>', code: '<div data-jc-scope=""></div>', ch: 21 });
 SNIPPETS.push({ type: 'html', search: 'data-bind', text: '<b>Binder</b>', code: 'data-bind="__"', ch: 12 });
