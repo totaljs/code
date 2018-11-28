@@ -36,7 +36,7 @@
 		</div>
 		<div class="messages">
 			<div class="alert hidden" data-bind="code.backup__show" data-name="backup"><i class="fa fa-times exec" data-exec="code/warning"></i><i class="fa fa-warning"></i>@(Content of this file wasn't be saved before. Do you want to restore it?) <span class="link exec" data-name="restore" data-exec="code/warning">@(Restore)</span> @(or) <span class="link exec" data-exec="code/warning">@(Cancel)</span>.</div>
-			<div class="alert hidden" data-bind="code.multiple__show" data-name="multiple"><i class="fa fa-times exec" data-exec="code/warning"></i><i class="fa fa-users"></i>@(Be careful because another user is editing content of this file.) <span class="link exec b" data-exec="code/syncdata"><i class="fa fa-refresh fa-spin mr5"></i>@(Synchronize)</span> @(or) <span class="link exec" data-exec="code/warning">@(Cancel)</span>.</div>
+			<div class="alert hidden" data-bind="code.multiple__show" data-name="multiple"><i class="fa fa-times exec" data-exec="code/warning"></i><i class="fa fa-users"></i>@(Be careful because another user is editing content of this file.) <span class="link exec b ml5" data-exec="code/syncdata"><i class="fa fa-refresh fa-spin mr5"></i>@(Synchronize)</span> @(or) <span class="link exec" data-exec="code/warning">@(Cancel)</span>.</div>
 		</div>
 	</div>
 	<section class="status invisible" data-bind="code.data__invisible:!value">
@@ -106,9 +106,28 @@
 		};
 
 		exports.syncdata = function() {
-			SET('code.multiple', false);
-			SETTER('loading', 'show');
-			FUNC.wssend({ TYPE: 'syncsend', projectid: code.data.id, fileid: code.editor.path, connid: common.id });
+
+			var min;
+
+			for (var i = 0; i < code.usersfile.length; i++) {
+				var usr = code.usersfile[i];
+				if (usr.id === user.id)
+					continue;
+
+				if (!min) {
+					min = usr;
+					continue;
+				}
+
+				if (min.ts > usr.ts)
+					min = usr;
+			}
+
+			if (min) {
+				SET('code.multiple', false);
+				SETTER('loading', 'show');
+				FUNC.wssend({ TYPE: 'syncsend', projectid: code.data.id, fileid: code.editor.path, connid: common.id, fromid: min.id });
+			}
 		};
 
 		exports.syncsave = function(msg) {
@@ -121,6 +140,13 @@
 			}
 
 			if (msg.projectid === code.data.id && msg.fileid === code.editor.path) {
+
+				// Remove tab changes indicator
+				if (code.SYNC && code.current.modified) {
+					code.current.modified = false;
+					exports.element.find('section.tabs').find('span[data-value="{0}"]'.format(code.current.path)).rclass('modified');
+				}
+
 				SET(p, msg.user);
 				setTimeout2(p, function() {
 					SET(p, null);

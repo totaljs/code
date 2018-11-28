@@ -103,10 +103,12 @@
 					if (msg.projectid === code.data.id && msg.fileid === code.editor.path && msg.connid !== common.id) {
 						SETTER('loading', 'show');
 						code.SYNC = false;
-						var editor = FIND('editor').editor;
-						msg.TYPE = 'syncbody';
-						msg.body = editor.getValue();
-						SETTER('websocket', 'send', msg);
+						if (msg.fromid === user.id) {
+							var editor = FIND('editor').editor;
+							msg.TYPE = 'syncbody';
+							msg.body = editor.getValue();
+							SETTER('websocket', 'send', msg);
+						}
 					}
 					break;
 				case 'syncbody':
@@ -124,7 +126,7 @@
 					SETTER('loading', 'hide');
 					break;
 				case 'synccur':
-					if (msg.id !== user.id)
+					if (msg.id !== user.id && code.SYNC)
 						EXEC('code/synccursor', msg);
 					break;
 				case 'save':

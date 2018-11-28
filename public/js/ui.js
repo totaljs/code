@@ -331,6 +331,7 @@ COMPONENT('editor', function(self, config) {
 	var cache_mt_css = { css: {} };
 
 	self.marker = function(id, fline, fch, tline, tch, color) {
+
 		markers[id] && markers[id].clear();
 
 		cache_mt_f.line = fline;
@@ -344,10 +345,12 @@ COMPONENT('editor', function(self, config) {
 		}
 
 		cache_mt_css.css = 'background-color:' + hexrgba(color, 0.5);
-		cache_mt_css.className = 'cm-user';
+		cache_mt_css.className = 'cm-user cm-user-' + id;
 		cache_mt_css.title = id;
 
 		markers[id] = editor.markText(cache_mt_f, cache_mt_t, cache_mt_css);
+		self.find('.cm-uname-' + id).remove();
+		self.find('.cm-user-' + id).eq(0).prepend('<span class="cm-uname cm-uname-{1}" style="border-left:1px solid {0}"><b style="background-color:{0}">{1}</b></span>'.format(hexrgba(color, 0.5), id));
 	};
 
 	self.copy = function(history) {

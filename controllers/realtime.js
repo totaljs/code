@@ -28,6 +28,7 @@ function realtime() {
 			client.user.projectid = '';
 			client.user.fileid = '';
 			client.user.online = false;
+			client.user.ts = null;
 		}
 	});
 
@@ -38,6 +39,7 @@ function realtime() {
 			client.user.projectid && refresh_collaborators(self, client.user);
 			client.user.projectid = msg.projectid;
 			client.user.fileid = msg.fileid;
+			client.user.ts = Date.now();
 			refresh_collaborators(self, client.user, true);
 		} else
 			self.send(msg);
@@ -62,7 +64,7 @@ function refresh_collaborators(ws, user, add) {
 		if (item.projectid === MSG_OPEN.projectid) {
 			MSG_OPEN.project.push({ id: item.id, name: item.name });
 			if (item.fileid === MSG_OPEN.fileid)
-				MSG_OPEN.file.push({ id: item.id, name: item.name });
+				MSG_OPEN.file.push({ id: item.id, name: item.name, ts: item.ts });
 		}
 	}
 
