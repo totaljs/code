@@ -3280,7 +3280,8 @@ COMPONENT('websocket', 'reconnect:3000', function(self, config) {
 		return self;
 	};
 
-	function onClose() {
+	function onClose(e) {
+		e.reason && WARN('WebSocket:', decodeURIComponent(e.reason));
 		self.close(true);
 		setTimeout(self.connect, config.reconnect);
 	}

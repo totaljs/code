@@ -107,7 +107,7 @@
 							var editor = FIND('editor').editor;
 							msg.TYPE = 'syncbody';
 							msg.body = editor.getValue();
-							SETTER('websocket', 'send', msg);
+							FUNC.wssend(msg);
 						}
 					}
 					break;
@@ -117,7 +117,7 @@
 						msg.TYPE = 'syncdone';
 						FIND('editor').editor.setValue(msg.body);
 						msg.body = null;
-						SETTER('websocket', 'send', msg);
+						FUNC.wssend(msg);
 					}
 					break;
 				case 'syncdone':
