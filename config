@@ -1,4 +1,6 @@
 name                  : Code
+version               : 0.0.1
+
 allow_custom_titles   : true
 
 cookie                : __sauth
