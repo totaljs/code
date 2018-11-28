@@ -129,7 +129,7 @@ function users_online() {
 function users_refresh() {
 	var self = this;
 	if (self.user.sa) {
-		MAIN.send(JSON.stringify({ TYPE: 'refresh' }));
+		MAIN.send({ TYPE: 'refresh' });
 		self.success();
 	} else
 		self.invalid('error-permissions');

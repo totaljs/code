@@ -24,11 +24,11 @@ function realtime() {
 	self.on('close', function(client) {
 		var offline = self.find(conn => conn.user === client.user && conn.id !== client.id) == null;
 		if (offline) {
+			client.user.ts = 0;
 			client.user.projectid && refresh_collaborators(self, client.user);
 			client.user.projectid = '';
 			client.user.fileid = '';
 			client.user.online = false;
-			client.user.ts = null;
 		}
 	});
 
@@ -68,5 +68,5 @@ function refresh_collaborators(ws, user, add) {
 		}
 	}
 
-	ws.send(JSON.stringify(MSG_OPEN));
+	ws.send(MSG_OPEN);
 }

@@ -119,7 +119,7 @@
 					continue;
 				}
 
-				if (min.ts > usr.ts)
+				if (min.ts && usr.ts && min.ts > usr.ts)
 					min = usr;
 			}
 
