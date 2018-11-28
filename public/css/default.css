@@ -159,6 +159,7 @@ header .tools .selected { background-color: #F0F0F0; }
 .toolbar button.right { float: right; margin-left: 5px; margin-right: 0; }
 .toolbar button .fa-check-circle { color: #68B25B; }
 .toolbar .highlight { background-color: #FFFFD5; }
+.toolbar-right { float: right; }
 
 .td .toolbar button { background-color: #252525; border-color: #353535; color: #A0A0A0; }
 .td .toolbar button:hover { background-color: #303030; }

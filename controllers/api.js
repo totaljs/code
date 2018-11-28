@@ -31,6 +31,7 @@ exports.install = function() {
 		ROUTE('GET     /logout/', redirect_logout);
 
 		ROUTE('GET    /api/users/online/',                                   users_online);
+		ROUTE('GET    /api/users/refresh/',                                  users_refresh);
 
 	});
 
@@ -123,4 +124,13 @@ function users_online() {
 	}
 
 	self.json(arr);
+}
+
+function users_refresh() {
+	var self = this;
+	if (self.user.sa) {
+		MAIN.send(JSON.stringify({ TYPE: 'refresh' }));
+		self.success();
+	} else
+		self.invalid('error-permissions');
 }

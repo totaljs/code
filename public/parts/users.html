@@ -1,6 +1,9 @@
 <div class="container">
 	<br />
 	<div class="fullheight">
+		<div class="toolbar toolbar-right">
+			<button class="exec" data-exec="users/execrefresh" title="Refreshes all user browsers which are online"><i class="fa fa-refresh"></i>@(Refresh browsers)</button>
+		</div>
 
 		<div class="toolbar">
 			<button class="exec" data-exec="users/create"><i class="fa fa-plus-circle"></i>@(Add)</button>
@@ -35,6 +38,12 @@
 			SET('usersform.id', null);
 			DEFAULT('usersform.*');
 			SET('common.form', 'usersform');
+		};
+
+		exports.execrefresh = function() {
+			SETTER('confirm', 'show', '@(Are you sure you want to send refresh command?)', ['"refresh" Yes, refresh', 'Cancel'], function(index) {
+				!index && AJAX('GET /api/users/refresh/', NOOP);
+			});
 		};
 
 		exports.refresh = function() {
