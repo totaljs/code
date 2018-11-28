@@ -517,13 +517,17 @@
 		};
 
 		exports.closetab = function(path) {
+
 			var tab = code.open.findItem('path', path);
 			if (tab == null)
 				return;
+
 			var index = code.open.indexOf(tab);
 			code.open.splice(index, 1);
 			exports.cache_rem(tab.path);
+
 			UPDATE('code.open');
+
 			if (tab.path === code.editor.path) {
 				if (code.open.length) {
 					if (index - 1 > -1)
@@ -533,10 +537,10 @@
 					exports.opentab(code.open[index].path);
 				} else {
 					FUNC.wsopen(code.data.id, '');
-					SET('code.multiple', false);
-					SET('code.backup', false);
 					$('#body').rclass('warning');
 					SET('code.editor', {});
+					SET('code.multiple', false);
+					SET('code.backup', false);
 					exports.element.RECONFIGURE('editor', 'disabled:true');
 				}
 			}
@@ -717,12 +721,12 @@
 
 		exports.save = function(close, comment) {
 
-			if (BLOCKED('code_saving', 2000))
+			if (BLOCKED('code_saving', 1000))
 				return;
 
 			var data = {};
 			data.path = code.editor.path;
-			data.body = FUNC.rtrim(code.editor.body);
+			data.body = FUNC.rtrim(editor.editor.getValue());
 
 			if (comment) {
 				data.comment = comment;
@@ -812,9 +816,12 @@
 				colors.length && CSS(colors.join(''));
 			}
 
-			editor && editor.clearmarkers();
-			$('#body').tclass('warning', code.usersfile && code.usersfile.length > 1);
-			SET('code.multiple', !!(code.usersfile && code.usersfile.length > 1));
+			if (msg.fileid === code.editor.path) {
+				editor && editor.clearmarkers();
+				$('#body').tclass('warning', code.usersfile && code.usersfile.length > 1);
+				SET('code.multiple', !!(code.usersfile && code.usersfile.length > 1));
+			}
+
 		};
 
 		exports.statusform = function(name, value) {
