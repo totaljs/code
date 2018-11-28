@@ -126,7 +126,7 @@
 			if (min) {
 				SET('code.multiple', false);
 				SETTER('loading', 'show');
-				FUNC.wssend({ TYPE: 'syncsend', projectid: code.data.id, fileid: code.editor.path, connid: common.id, fromid: min.id });
+				FUNC.wssend({ TYPE: 'syncsend', projectid: code.projectid, connid: common.id, fromid: min.id });
 			}
 		};
 
@@ -139,7 +139,7 @@
 				return;
 			}
 
-			if (msg.projectid === code.data.id && msg.fileid === code.editor.path) {
+			if (msg.projectid === code.projectid) {
 
 				// Remove tab changes indicator
 				if (code.SYNC && code.current.modified) {
@@ -286,10 +286,16 @@
 			}
 		};
 
+		var cache_sync = { TYPE: 'sync' };
+
 		exports.sync = function(data) {
 			// Determines how many people is editing this file?
-			if (code.usersfile.length > 1 && code.SYNC)
-				FUNC.wssend({ TYPE: 'sync', data: STRINGIFY(data), id: common.id });
+			if (code.usersfile.length > 1 && code.SYNC) {
+				cache_sync.data = STRINGIFY(data);
+				cache_sync.id = common.id;
+				cache_sync.projectid = code.projectid;
+				FUNC.wssend(cache_sync);
+			}
 		};
 
 		exports.rename = function(item, val, callback) {
@@ -625,6 +631,7 @@
 			SET('code.editor.path', tab.path);
 			SET('code.editor.name', tab.name);
 			code.editor.hash = HASH(tab.path);
+			code.projectid = HASH(code.data.id + '_' + tab.path);
 
 			if (JSHINT.errors) {
 				JSHINT.errors.length = 0;
@@ -742,7 +749,7 @@
 				SETTER('loading', 'hide', 500);
 				if (close === true)
 					exports.closeforce();
-				FUNC.wssend({ TYPE: 'save', projectid: code.data.id, fileid: code.editor.path, id: user.id, user: user.name });
+				FUNC.wssend({ TYPE: 'save', projectid: code.projectid, id: user.id, user: user.name });
 				FUNC.success('@(<b>{0}</b> saved)'.format(data.path));
 			});
 		};
@@ -916,6 +923,7 @@
 			if (code.usersfile.length > 1 && code.SYNC) {
 				var a = editor.getCursor(true);
 				var b = editor.getCursor(false);
+				cache_synccur.projectid = code.projectid;
 				cache_synccur.fline = a.line;
 				cache_synccur.fch = a.ch;
 				cache_synccur.tline = b.line;

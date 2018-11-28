@@ -91,7 +91,7 @@
 					EXEC('code/collaboration', msg);
 					break;
 				case 'sync':
-					if (msg.id !== common.id) {
+					if (msg.projectid === code.projectid && msg.id !== common.id) {
 						var editor = FIND('editor').editor;
 						var data = PARSE(msg.data);
 						code.SYNC = false;
@@ -100,7 +100,7 @@
 					}
 					break;
 				case 'syncsend':
-					if (msg.projectid === code.data.id && msg.fileid === code.editor.path && msg.connid !== common.id) {
+					if (msg.projectid === code.projectid && msg.connid !== common.id) {
 						SETTER('loading', 'show');
 						code.SYNC = false;
 						if (msg.fromid === user.id) {
@@ -112,7 +112,7 @@
 					}
 					break;
 				case 'syncbody':
-					if (msg.projectid === code.data.id && msg.fileid === code.editor.path && msg.connid === common.id) {
+					if (msg.projectid === code.projectid && msg.connid === common.id) {
 						code.SYNC = false;
 						msg.TYPE = 'syncdone';
 						FIND('editor').editor.setValue(msg.body);
@@ -121,16 +121,18 @@
 					}
 					break;
 				case 'syncdone':
-					code.SYNC = true;
-					SET('code.multiple', false);
-					SETTER('loading', 'hide');
+					if (msg.projectid === code.projectid) {
+						code.SYNC = true;
+						SET('code.multiple', false);
+						SETTER('loading', 'hide');
+					}
 					break;
 				case 'synccur':
-					if (msg.id !== user.id && code.SYNC)
+					if (msg.projectid === code.projectid && msg.id !== user.id && code.SYNC)
 						EXEC('code/synccursor', msg);
 					break;
 				case 'save':
-					if (msg.id !== user.id)
+					if (msg.projectid === code.projectid && msg.id !== user.id)
 						EXEC('code/syncsave', msg);
 					break;
 				case 'refresh':
