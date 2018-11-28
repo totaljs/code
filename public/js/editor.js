@@ -585,14 +585,13 @@ WAIT('CodeMirror.defineMode', function() {
 			}
 		}
 
-		if (this.state.completionActive)
-			this.state.completionActive.close();
+		this.state.completionActive && this.state.completionActive.close();
 
 		var completion = this.state.completionActive = new Completion(this, options);
-		if (!completion.options.hint)
-			return;
-		CodeMirror.signal(this, 'startCompletion', this);
-		completion.update(true);
+		if (completion.options.hint) {
+			CodeMirror.signal(this, 'startCompletion', this);
+			completion.update(true);
+		}
 	});
 
 	function Completion(cm, options) {
@@ -618,15 +617,14 @@ WAIT('CodeMirror.defineMode', function() {
 
 	Completion.prototype = {
 		close: function(item) {
-			if (!this.active())
-				return;
-			this.cm.state.completionActive = null;
-			this.tick = null;
-			this.cm.off('cursorActivity', this.activityFunc);
-			if (this.widget && this.data)
-				CodeMirror.signal(this.data, 'close');
-			this.widget && this.widget.close();
-			CodeMirror.signal(this.cm, 'endCompletion', this.cm, item);
+			if (this.active()) {
+				this.cm.state.completionActive = null;
+				this.tick = null;
+				this.cm.off('cursorActivity', this.activityFunc);
+				this.widget && this.data && CodeMirror.signal(this.data, 'close');
+				this.widget && this.widget.close();
+				CodeMirror.signal(this.cm, 'endCompletion', this.cm, item);
+			}
 		},
 
 		active: function() {
@@ -638,12 +636,13 @@ WAIT('CodeMirror.defineMode', function() {
 			if (completion.hint)
 				completion.hint(this.cm, data, completion);
 			else
-				this.cm.replaceRange(getText(completion), completion.from || data.from, completion.to || data.to, 'complete');
+				this.cm.replaceRange(getText(completion), completion.to || data.to, completion.from || data.from, 'complete');
 			CodeMirror.signal(data, 'pick', completion);
 			this.close(completion);
 		},
 
 		cursorActivity: function() {
+
 			if (this.debounce) {
 				cancelAnimationFrame(this.debounce);
 				this.debounce = 0;

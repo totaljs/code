@@ -75,7 +75,6 @@ FUNC.treeindex = function(tree, path) {
 	}
 };
 
-
 FUNC.rtrim = function(value) {
 	var lines = value.split('\n');
 	var reg = /\s+$/;

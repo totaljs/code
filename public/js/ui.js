@@ -295,7 +295,7 @@ COMPONENT('editor', function(self, config) {
 
 				var cur = editor.getCursor();
 				var line = editor.getLine(cur.line);
-				var index = fn.lastIndexOf(line, cur.ch, ' ', '>', '\t');
+				var index = fn.lastIndexOf(line, cur.ch, ' ', '>', '\t', ';', '.');
 
 				if (index !== -1) {
 					var text = line.substring(index, cur.ch);
@@ -414,8 +414,12 @@ COMPONENT('editor', function(self, config) {
 		words = words.match(/[a-zA-Z0-9_-]{3,}/g);
 		if (words) {
 			var unique = {};
-			for (var i = 0; i < words.length; i++)
+			for (var i = 0; i < words.length; i++) {
+				var index = words[i].indexOf('__');
+				if (index !== -1)
+					words[i] = words[i].substring(0, index);
 				unique[words[i].toLowerCase()] = words[i];
+			}
 			autocomplete = Object.keys(unique);
 			for (var i = 0; i < autocomplete.length; i++) {
 				var s = autocomplete[i];

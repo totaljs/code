@@ -193,9 +193,11 @@ header .tools .selected { background-color: #F0F0F0; }
 .tabs .preview { float: right; font-size: 20px; margin: 12px 20px 0 0; cursor: pointer; color: #4285F4; }
 .tabs .preview:hover { opacity: 0.6; }
 
-.status { height: 35px; border-top: 1px solid #E0E0E0; padding: 0 0 0 10px; }
-.status-alerts { padding: 7px 0 0; cursor: pointer; }
+.status { height: 35px; border-top: 1px solid #E0E0E0; padding: 0 0 0 10px; font-size: 12px; }
+.status-alerts { padding: 9px 0 0; cursor: pointer; position: relative; display: inline-block; vertical-align: top; height: 34px; }
 .status i { margin-right: 5px; }
+.status-info { padding: 10px 0 0 10px; font-size: 12px; position: relative; display: inline-block; border-left: 1px solid #E0E0E0; margin-left: 10px; height: 34px; vertical-align: top; color: black; }
+.td .status-info { border-left-color: #404040; color: white; font-family: Menlo,Consolas; }
 
 @media(max-width: 767px) {
 	.mainmenu { position: absolute; left: 0; right: 0; z-index: 5; padding: 0; display: none; top: 0; overflow: hidden; }

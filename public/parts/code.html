@@ -50,6 +50,7 @@
 		<div data-bind="JSHINT.errors__html b:value?value.length:0__.red:value && value.length>0" class="status-alerts exec" data-exec="code/warnings">
 			<i class="fa fa-warning"></i><b>0</b>
 		</div>
+		<div class="status-info" data-bind="code.cursor__html:code/statusinfo" title="@(Line : Char index : Selected chars)"></div>
 	</section>
 </div>
 
@@ -86,13 +87,18 @@
 
 	PLUGIN('code', function(exports) {
 
+		code.cursor = { TYPE: 'synccur', id: user.id };
+
 		var editor;
-		var cache_synccur = { TYPE: 'synccur', id: user.id };
 		var cache_scrollpos = {};
 
 		FIND('editor', function(com) {
 			editor = com;
 		});
+
+		exports.statusinfo = function(value) {
+			return (value.fline || 0) + ':' + (value.fch || 0) + (value.fline === value.tline ? (':' + ((value.tch || 0) - (value.fch || 0))) : '');
+		};
 
 		exports.codetasks_unsolved = function(value) {
 			var count = 0;
@@ -920,24 +926,27 @@
 
 		exports.cursorposition = function(editor) {
 
+			var a = editor.getCursor(true);
+			var b = editor.getCursor(false);
+
+			code.cursor.fline = a.line;
+			code.cursor.fch = a.ch;
+			code.cursor.tline = b.line;
+			code.cursor.tch = b.ch;
+
 			if (code.usersfile.length > 1 && code.SYNC) {
-				var a = editor.getCursor(true);
-				var b = editor.getCursor(false);
-				cache_synccur.projectid = code.projectid;
-				cache_synccur.fline = a.line;
-				cache_synccur.fch = a.ch;
-				cache_synccur.tline = b.line;
-				cache_synccur.tch = b.ch;
-				FUNC.wssend(cache_synccur);
+				code.cursor.projectid = code.projectid;
+				FUNC.wssend(code.cursor);
 			}
+
+			BIND('code.cursor');
 
 			setTimeout2('savescrollposition', function(editor) {
 				if (!code.editor.loaded)
 					return;
 				var info = editor.getScrollInfo();
-				var cur = editor.getCursor();
 				var key = code.data.id + '_' + code.editor.hash + '_scroll';
-				if (info.left || info.top || cur.line) {
+				if (info.left || info.top || a.line) {
 					cache_scrollpos.x = info.left;
 					cache_scrollpos.y = info.top;
 					cache_scrollpos.line = info.line;
