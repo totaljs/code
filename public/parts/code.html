@@ -404,6 +404,10 @@
 
 			AJAX('GET /api/projects/{id}/edit/'.arg(code.data), { path: item.path }, function(response) {
 
+				if (response instanceof Array) {
+					FUNC.warning(response);
+					response = '';
+				}
 
 				if (!tab) {
 					newbie = true;
@@ -654,8 +658,8 @@
 				editor.editor.refresh();
 				var cache = exports.cache_getscroll(code.current.path);
 				if (cache) {
-					editor.editor.scrollTo(cache.x || 0, cache.y || 0);
 					editor.editor.setCursor({ line: cache.line || 0, ch: cache.ch || 0 });
+					editor.editor.scrollTo(cache.x || 0, cache.y || 0);
 					editor.editor.focus();
 				} else {
 					editor.editor.scrollTo(0, 0);
@@ -950,16 +954,15 @@
 				if (!code.editor.loaded)
 					return;
 				var info = editor.getScrollInfo();
-				var key = code.data.id + '_' + code.editor.hash + '_scroll';
+				var key = code.projectid + '_scroll';
 				if (info.left || info.top || a.line) {
 					cache_scrollpos.x = info.left;
 					cache_scrollpos.y = info.top;
-					cache_scrollpos.line = info.line;
-					cache_scrollpos.ch = info.ch;
-					localStorage.setItem(key,  STRINGIFY(cache_scrollpos));
+					cache_scrollpos.line = a.line;
+					cache_scrollpos.ch = a.ch;
+					localStorage.setItem(key, STRINGIFY(cache_scrollpos));
 				} else
 					localStorage.removeItem(key);
-
 			}, 300, null, editor);
 		};
 
@@ -981,7 +984,7 @@
 
 		exports.cache_getscroll = function(path) {
 			if (path) {
-				var key = code.data.id + '_' + HASH(path) + '_scroll';
+				var key = code.projectid + '_scroll';
 				var obj = localStorage.getItem(key);
 				return obj ? PARSE(obj) : null;
 			}

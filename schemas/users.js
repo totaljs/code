@@ -44,6 +44,7 @@ NEWSCHEMA('Users', function(schema) {
 		var item = MAIN.users.findItem('id', model.id);
 		if (item == null) {
 
+			model.id = model.id.slug().replace(/-/g, '');
 			model.password = model.password.sha256();
 			model.created = NOW;
 			MAIN.users.push(model);

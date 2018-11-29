@@ -295,7 +295,7 @@ COMPONENT('editor', function(self, config) {
 
 				var cur = editor.getCursor();
 				var line = editor.getLine(cur.line);
-				var index = fn.lastIndexOf(line, cur.ch, ' ', '>', '\t', ';', '.');
+				var index = fn.lastIndexOf(line, cur.ch, ' ', '>', '\t', ';', '.', '"', '\'', ')', '(', '<', ',');
 
 				if (index !== -1) {
 					var text = line.substring(index, cur.ch);
