@@ -15,6 +15,7 @@ NEWSCHEMA('Projects', function(schema) {
 	schema.define('backup', Boolean);
 	schema.define('skipsrc', Boolean);
 	schema.define('skiptmp', Boolean);
+	schema.define('skipnm', Boolean);
 
 	schema.setGet(function($) {
 		var item = MAIN.projects.findItem('id', $.id);
@@ -124,14 +125,21 @@ NEWSCHEMA('Projects', function(schema) {
 		else
 			allowed = null;
 
-		var skip;
+		var skip = '';
 
-		if (item.skiptmp && item.skipsrc)
-			skip = /\/tmp\/|\/\.src\//;
-		else if (item.skiptmp)
-			skip = /\/tmp\//;
-		else if (skip.skipsrc)
-			skip = /\/\.src\//;
+		if (item.skiptmp)
+			skip += (skip ? '|' : '') + '\\/tmp\\/';
+
+		if (item.skipsrc)
+			skip += (skip ? '|' : '') + '\\/\\.src\\/';
+
+		if (item.skipnm)
+			skip += (skip ? '|' : '') + '\\/node_modules\\/';
+
+		if (skip)
+			skip = new RegExp(skip);
+		else
+			skip = null;
 
 		U.ls(path, function(files, directories) {
 
