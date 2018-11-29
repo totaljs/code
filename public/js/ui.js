@@ -144,7 +144,7 @@ COMPONENT('editor', function(self, config) {
 		// options.autoCloseTags = true;
 		options.scrollPastEnd = true;
 		options.lint = true;
-		options.autoCloseBrackets = true;
+		// options.autoCloseBrackets = true;
 		options.extraKeys = { 'Alt-F': 'findPersistent', 'Esc': clearsearch, 'Cmd-D': findmatch, 'Ctrl-D': findmatch, 'Cmd-S': shortcut('save'), 'Ctrl-S': shortcut('save'), 'Alt-W': shortcut('close'), 'Cmd-W': shortcut('close'), 'F5': shortcut('F5'), Tab: tabulator, 'Alt-Tab': shortcut('nexttab') };
 
 		if (common.electron) {
