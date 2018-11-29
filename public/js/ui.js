@@ -194,7 +194,7 @@ COMPONENT('editor', function(self, config) {
 		var can = {};
 		can['+input'] = can['+delete'] = can.undo = can.redo = can.paste = can.cut = can.clear = true;
 
-		var REGHEXCOLOR = /#[a-f0-9]{6}(;|"|'|$)/i;
+		var REGHEXCOLOR = /#[a-f0-9]{6}(;|"|'|>|<|\)|\(|$)/i;
 
 		var prerender_colors = function() {
 			var lines = editor.getValue().split('\n');

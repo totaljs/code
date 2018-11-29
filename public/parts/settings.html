@@ -12,6 +12,7 @@
 					<div data-jc="textbox__email__required:true;type:email" class="m">@(Email address)</div>
 					<div data-jc="textbox__phone__type:phone" class="m">@(Phone number)</div>
 
+					<div data-jc="checkbox__localsave">@(Always local storing files in Electron version)</div>
 					<div data-jc="checkbox__darkmode">@(Dark mode)</div>
 					<div data-jc="checkbox__ispassword" class="b m">@(Change password)</div>
 
@@ -46,6 +47,7 @@
 					SETTER('snackbar', 'show', '@(Account has been updated successfully.)');
 					user.darkmode = data.darkmode;
 					user.email = data.email;
+					user.localsave = data.localsave;
 					$('body').tclass('td', user.darkmode);
  				}
 

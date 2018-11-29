@@ -560,9 +560,10 @@ WAIT('CodeMirror.defineMode', function() {
 			getHints.async = true;
 
 		var newOpts = { hint: getHints };
-		if (options)
+		if (options) {
 			for (var prop in options)
 				newOpts[prop] = options[prop];
+		}
 		return cm.showHint(newOpts);
 	};
 

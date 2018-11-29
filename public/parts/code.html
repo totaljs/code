@@ -21,7 +21,7 @@
 
 <div id="body">
 	<section class="tabs">
-		<a href="#" data-bind="code.data.url__href__show" target="_blank" class="preview" title="@(Preview)"><i class="fa fa-globe"></i></a>
+		<a data-bind="code.data.url__href__show" target="_blank" class="preview" title="@(Preview)"><i class="fa fa-globe"></i></a>
 		<span class="options exec hidden" data-exec="code/options_editor" data-bind="code.editor.path__show"><i class="fa fa-cog"></i></span>
 		<nav data-jc="tabmenu__code.editor.path__datasource:code.open;selector:span;exec:code/opentab;reorder:code/savetabs">
 			<script type="text/html">
@@ -453,17 +453,7 @@
 						}, 200);
 						break;
 					case 3:
-						var electronpath = require('electron').ipcRenderer.sendSync('getPath', { url: location.protocol + '//' + location.hostname + (location.port ? ':' + location.port : '') });
-						if (electronpath) {
-							var filename = require('path').join(electronpath, FUNC.getName(code.data.repository).replace(/\.git$/i, ''), code.editor.path);
-							require('fs').writeFile(filename, FUNC.rtrim(code.editor.body), function(err) {
-								if (err)
-									FUNC.warning(err.toString());
-								else
-									FUNC.success('<b>{0}</b> saved.'.format(filename));
-							});
-						} else
-							FUNC.warning('A problem in path');
+
 						break;
 				}
 			}, -5, -5);
@@ -732,6 +722,20 @@
 			TOGGLE('%projectsvisible', true);
 		};
 
+		exports.savelocal = function(nowarning) {
+			var electronpath = require('electron').ipcRenderer.sendSync('getPath', { url: location.protocol + '//' + location.hostname + (location.port ? ':' + location.port : '') });
+			if (electronpath) {
+				var filename = require('path').join(electronpath, FUNC.getName(code.data.repository).replace(/\.git$/i, ''), code.editor.path);
+				require('fs').writeFile(filename, FUNC.rtrim(editor.editor.getValue()), function(err) {
+					if (err)
+						FUNC.warning(err.toString());
+					else
+						FUNC.success('<b>{0}</b> saved.'.format(filename));
+				});
+			} else if (!nowarning)
+				FUNC.warning('@(You don\'t have defined repository path.)');
+		};
+
 		exports.save = function(close, comment) {
 
 			if (BLOCKED('code_saving', 1000))
@@ -757,6 +761,7 @@
 					exports.closeforce();
 				FUNC.wssend({ TYPE: 'save', projectid: code.projectid, id: user.id, user: user.name });
 				FUNC.success('@(<b>{0}</b> saved)'.format(data.path));
+				common.electron && user.localsave && exports.savelocal();
 			});
 		};
 

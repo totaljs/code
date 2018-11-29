@@ -9,6 +9,7 @@ NEWSCHEMA('Users', function(schema) {
 	schema.define('blocked', Boolean);
 	schema.define('sa', Boolean);
 	schema.define('darkmode', Boolean);
+	schema.define('localsave', Boolean);
 
 	schema.setQuery(function($) {
 
@@ -55,6 +56,7 @@ NEWSCHEMA('Users', function(schema) {
 			item.blocked = model.blocked;
 			item.position = model.position;
 			item.darkmode = model.darkmode;
+			item.localsave = model.localsave;
 
 			if (item.password.substring(0, 3) !== '***')
 				item.password = model.password.sha256();
