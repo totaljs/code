@@ -3764,7 +3764,7 @@ COMPONENT('statusform', function(self, config) {
 		self.event('keydown', 'input', function(e) {
 			if (e.which === 13) {
 				var input = $(this);
-				EXEC(config.exec, input.parent().attrd('name'), input.val().toLowerCase().replace(/[^a-z0-9.-_]/gi, ''));
+				EXEC(config.exec, input.parent().attrd('name'), input.val().toLowerCase().replace(/[^a-z0-9.\-_]/gi, ''));
 				self.set('');
 			}
 		});
