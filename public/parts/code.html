@@ -761,7 +761,7 @@
 					exports.closeforce();
 				FUNC.wssend({ TYPE: 'save', projectid: code.projectid, id: user.id, user: user.name });
 				FUNC.success('@(<b>{0}</b> saved)'.format(data.path));
-				common.electron && user.localsave && exports.savelocal();
+				common.electron && code.data.repository && user.localsave && exports.savelocal();
 			});
 		};
 
