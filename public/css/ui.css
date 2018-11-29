@@ -6,7 +6,7 @@ button { outline: 0; }
 .ui-disabled .ui-editor { cursor: not-allowed; }
 .CodeMirror-gutters { background-color: white !important; }
 .CodeMirror-scroll { overflow-scrolling: touch; }
-.CodeMirror { font-size: 15px; font-family: Menlo,Consolas; line-height: 24px; user-select: none; }
+.CodeMirror { font-size: 15px; font-family: Menlo,Consolas,monospace; line-height: 24px; user-select: none; }
 .CodeMirror-scrollbar-filler { background-color: #303030; }
 .CodeMirror-simplescroll-horizontal div, .CodeMirror-simplescroll-vertical div { position: absolute; background: #A0A0A0; }
 .CodeMirror-simplescroll-horizontal, .CodeMirror-simplescroll-vertical { position: absolute; z-index: 6; background: #D0D0D0; }
@@ -41,7 +41,7 @@ div.CodeMirror span.CodeMirror-matchingbracket { border-bottom: 2px solid blue; 
 .td .cm-uname b { color: white; }
 
 .CodeMirror-dialog { padding: 2px 10px; color: gray; }
-.CodeMirror-dialog input { font-weight: bold; font-family: Menlo,Consolas; color: black; }
+.CodeMirror-dialog input { font-weight: bold; font-family: Menlo,Consolas,monospace; color: black; }
 
 .td .CodeMirror-dialog { color: #A0A0A0; border-bottom-color: #404040; box-shadow: 0 2px 3px rgba(0,0,0,0.05); }
 .td .CodeMirror-dialog input { color: white; }
