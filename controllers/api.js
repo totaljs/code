@@ -28,6 +28,7 @@ exports.install = function() {
 
 		// Other
 		ROUTE('GET     /api/download/{id}/',                                 files_download);
+		ROUTE('POST    /api/files/minify/                      *Minify',     files_minify);
 		ROUTE('GET     /logout/', redirect_logout);
 
 		ROUTE('GET    /api/users/online/',                                   users_online);
@@ -133,4 +134,9 @@ function users_refresh() {
 		self.success();
 	} else
 		self.invalid('error-permissions');
+}
+
+function files_minify() {
+	var self = this;
+	self.body.$workflow('exec', (err, response) => self.plain(response || ''));
 }

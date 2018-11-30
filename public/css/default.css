@@ -64,6 +64,7 @@ h3 i { margin-right: 5px; color: $color; }
 #panel .status button { float: left; border: 0; background-color: white; border-right: 1px solid #D0D0D0; height: 35px; width: 40px; outline: 0; }
 #panel .status button i { margin-right: 0; }
 #panel .status button:hover { background-color: #fffbed; }
+#panel .status > span { float: right; margin: 11px 10px 0 0; font-size: 11px; }
 
 .bg-yellow { background-color: #FFFFD5; }
 .bg-smoke { background-color: #F8F8F8; }
@@ -253,7 +254,7 @@ header .tools .selected { background-color: #F0F0F0; }
 .td .ui-tree .item:hover { background-color: #303030; }
 .td .ui-tree .selected { background-color: #404040 !important; color: white; }
 .td .tabs nav { margin-left: 49px; }
-.td .tabs nav .selected { background-color: #282c34; color: white; }
+.td .tabs nav .selected { background-color: #282c34; color: white; border-color: #181a1f; }
 .td .tabs nav span { border-color: #22242b; color: gray; background-color: #1d2027; }
 .td .CodeMirror { background-color: #282c34; }
 .td .CodeMirror-activeline-background { background-color: rgba(0,0,0,0.1); }

@@ -16,6 +16,7 @@
 		<button title="@(Create folder)" class="exec" data-name="directory" data-exec="code/statusform"><i class="fa fa-folder"></i></button>
 		<button title="@(All uncomplete tasks)" class="exec" data-name="directory" data-exec="code/tasks_uncomplete"><i class="fa fa-tasks"></i></button>
 		<button title="@(Users)" class="exec" data-name="directory" data-exec="code/usersonline"><i class="fa fa-users"></i></button>
+		<span>v@{config.version}</span>
 	</section>
 </div>
 
@@ -47,7 +48,7 @@
 				{{ end }}
 			</script>
 		</div>
-		<div data-bind="JSHINT.errors__html b:value?value.length:0__.red:value && value.length>0" class="status-alerts exec" data-exec="code/warnings">
+		<div data-bind="code.errors__html b:value?value.length:0__.red:value && value.length>0" class="status-alerts exec" data-exec="code/warnings">
 			<i class="fa fa-warning"></i><b>0</b>
 		</div>
 		<div class="status-info" data-bind="code.cursor__html:code/statusinfo" title="@(Line : Char index : Selected chars)"></div>
@@ -205,6 +206,8 @@
 			editor.getSelections().join('').length && items.push({ name: '@(Copy)', icon: 'copy', command: 'copy' });
 			items.push({ name: '@(Encode)', icon: 'code', value: 'encode' });
 			items.push({ name: '@(Decode)', icon: 'broom', value: 'decode' });
+			items.push({ name: '@(Minify code)', icon: 'compress', value: 'minify' });
+			items.push({ name: '@(Convert to Tabs)', icon: 'align-right', value: 'tabs' });
 
 			SETTER('menu', 'showxy', e.pageX, e.pageY, items, function(value) {
 
@@ -217,20 +220,37 @@
 				}
 
 				setTimeout(function() {
-					var items = [];
 
-					if (value.value === 'encode') {
+					var items = [];
+					var y = 0;
+					var x = 20;
+
+					if (value.value === 'tabs') {
+						if (code.SYNC)
+							FUNC.warning('@(You can\'t replace all spaces to tabs in collaboration mode.)');
+						else
+							editor.setValue(FUNC.spaces_to_tabs(editor.getValue()));
+						return;
+					}
+
+					if (value.value === 'minify') {
+						items.push({ name: '@(JavaScript)', icon: 'chevron-right', value: 'js' });
+						items.push({ name: '@(HTML)', icon: 'chevron-right', value: 'html' });
+						items.push({ name: '@(CSS)', icon: 'chevron-right', value: 'css' });
+						y = 60;
+					} else if (value.value === 'encode') {
 						items.push({ name: '@(Base64)', icon: 'chevron-right', value: 'btoa' });
 						items.push({ name: '@(Encode URI)', icon: 'chevron-right', value: 'encodeURIComponent' });
 						items.push({ name: '@(Escape)', icon: 'chevron-right', value: 'escape' });
 						items.push({ name: '@(Slug)', icon: 'chevron-right', value: 'slug' });
 					} else {
+						y = 40;
 						items.push({ name: '@(Base64)', icon: 'chevron-right', value: 'atob' });
 						items.push({ name: '@(Decode URI)', icon: 'chevron-right', value: 'decodeURIComponent' });
 						items.push({ name: '@(Unescape)', icon: 'chevron-right', value: 'unescape' });
 					}
 
-					SETTER('menu', 'showxy', e.pageX, e.pageY, items, function(value) {
+					SETTER('menu', 'showxy', e.pageX + x, e.pageY + y, items, function(value) {
 						var sel = editor.getSelections();
 						switch (value.value) {
 							case 'encodeURIComponent':
@@ -247,6 +267,13 @@
 								for (var i = 0; i < sel.length; i++)
 									sel[i] = sel[i][value.value]();
 								editor.replaceSelections(sel);
+								break;
+							case 'js':
+							case 'css':
+							case 'html':
+								AJAX('POST /api/files/minify/', { body: editor.getSelection(), type: value.value }, function(response) {
+									editor.replaceSelection(response);
+								});
 								break;
 						}
 					});
@@ -266,9 +293,11 @@
 				}
 			}
 
-			setTimeout2('jshint', function() {
-				BIND('JSHINT.errors');
-			}, 1000);
+			if (code.current && code.current.path.substring(code.current.path.length - 3) === '.js') {
+				setTimeout2('jshint', function() {
+					SET('code.errors', JSHINT.errors.slice(0));
+				}, 1000);
+			}
 		});
 
 		exports.warning = function(el) {
@@ -351,17 +380,22 @@
 		exports.upload = function(node, files) {
 
 			var data = new FormData();
+			var name = [];
 
 			data.append('path', node ? FUNC.getPath(node.path) : '/');
 
-			for (var i = 0, length = files.length; i < length; i++)
+			for (var i = 0, length = files.length; i < length; i++) {
+				name.push(files[i].name);
 				data.append('file' + i, files[i]);
+			}
 
 			UPLOAD('POST /api/projects/{id}/upload/'.arg(code.data), data, function(response) {
 				if (response instanceof Array)
 					FUNC.warning(response);
-				else
+				else {
+					FUNC.success('Uploaded successfully: <b>' + name.join(', ') + '</b>');
 					exports.load(code.data.id, true);
+				}
 			});
 		};
 
@@ -502,7 +536,7 @@
 						});
 						break;
 				}
-			}, 5, -35);
+			}, 20, -30);
 		};
 
 		exports.close = function() {
@@ -635,7 +669,7 @@
 
 			if (JSHINT.errors) {
 				JSHINT.errors.length = 0;
-				BIND('JSHINT.errors');
+				SET('code.errors', EMPTYARRAY);
 			}
 
 			if (tab.doc) {
@@ -921,7 +955,7 @@
 			SETTER('infopanel', 'show', el, function(el) {
 				var builder = [];
 				for (var i = 0; i < 10; i++) {
-					var err = JSHINT.errors && JSHINT.errors[i];
+					var err = code.errors && code.errors[i];
 					err && builder.push('<div class="infopanel-line exec" data-exec="code/warnings_goto" data-pos="{1}x{2}"><b>:{1}</b><span>{0}</span></div>'.format(err.reason || err.raw, err.line, err.character));
 				}
 				!builder.length && FUNC.warning('@(File doesn\'t contain any warnings.)');

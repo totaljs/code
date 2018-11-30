@@ -163,3 +163,23 @@ FUNC.editor_reload = function() {
 	tab.doc = null;
 	EXEC('code/open', tab);
 };
+
+FUNC.spaces_to_tabs = function(value) {
+	var lines = value.split('\n');
+	for (var i = 0; i < lines.length; i++) {
+		lines[i] = lines[i].replace(/^\s{1,}/, function(text) {
+
+			var count = 0;
+			var str = '';
+			for (var j = 0; j < text.length; j++) {
+				if (text.charCodeAt(j) === 32)
+					count++;
+				else
+					str += text.charAt(j);
+			}
+
+			return count === 0 ? text : (''.padLeft(count / 4 >> 0, '\t') + str);
+		});
+	}
+	return lines.join('\n');
+};
