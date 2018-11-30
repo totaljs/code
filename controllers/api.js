@@ -22,7 +22,7 @@ exports.install = function() {
 		ROUTE('GET     /api/projects/{id}/tasks/uncomplete/    *Tasks        --> @uncomplete');
 		ROUTE('POST    /api/projects/{id}/comments/            *Comments     --> @insert');
 		ROUTE('GET     /api/projects/{id}/comments/            *Comments     --> @query');
-		ROUTE('POST    /api/projects/{id}/upload/              *FilesUpload  --> @exec', ['upload']);
+		ROUTE('POST    /api/projects/{id}/upload/              *FilesUpload  --> @exec', ['upload'], 1024 * 50);
 		ROUTE('GET     /api/projects/{id}/files/               *Projects     --> @files');
 		ROUTE('GET     /api/projects/{id}/edit/                *Projects',   files_open);
 
