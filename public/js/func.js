@@ -8,6 +8,60 @@ FUNC.getPath = function(path) {
 	return path.substring(0, index + 1);
 };
 
+FUNC.mkdir = function(p) {
+
+	var Fs = require('fs');
+
+	var existsSync = function(filename, file) {
+		try {
+			var val = Fs.statSync(filename);
+			return val ? (file ? val.isFile() : true) : false;
+		} catch (e) {
+			return false;
+		}
+	};
+
+	var is = require('os').platform().substring(0, 3).toLowerCase() === 'win';
+	var s = '';
+
+	if (p[0] === '/') {
+		s = is ? '\\' : '/';
+		p = p.substring(1);
+	}
+
+	var l = p.length - 1;
+	var beg = 0;
+
+	if (is) {
+		if (p[l] === '\\')
+			p = p.substring(0, l);
+
+		if (p[1] === ':')
+			beg = 1;
+
+	} else {
+		if (p[l] === '/')
+			p = p.substring(0, l);
+	}
+
+	if (existsSync(p))
+		return;
+
+	var arr = is ? p.replace(/\//g, '\\').split('\\') : p.split('/');
+	var directory = s;
+
+	for (var i = 0, length = arr.length; i < length; i++) {
+		var name = arr[i];
+		if (is)
+			directory += (i && directory ? '\\' : '') + name;
+		else
+			directory += (i && directory ? '/' : '') + name;
+
+		if (i >= beg && !existsSync(directory))
+			Fs.mkdirSync(directory);
+	}
+};
+
 FUNC.treeappend = function(tree, path, is) {
 
 	var filename;

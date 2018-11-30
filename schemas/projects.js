@@ -48,6 +48,8 @@ NEWSCHEMA('Projects', function(schema) {
 
 		var model = $.clean();
 
+		model.path = U.path(model.path);
+
 		if (model.id) {
 			var item = MAIN.projects.findItem('id', model.id);
 			if (item) {
@@ -58,7 +60,6 @@ NEWSCHEMA('Projects', function(schema) {
 			model.id = UID();
 			model.ownerid = $.user.id;
 			model.created = NOW;
-
 			MAIN.projects.push(model);
 		}
 

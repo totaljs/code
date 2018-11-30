@@ -729,7 +729,9 @@
 		exports.savelocal = function(nowarning) {
 			var electronpath = require('electron').ipcRenderer.sendSync('getPath', { url: location.protocol + '//' + location.hostname + (location.port ? ':' + location.port : '') });
 			if (electronpath) {
-				var filename = require('path').join(electronpath, FUNC.getName(code.data.repository).replace(/\.git$/i, ''), code.editor.path);
+				var Path = require('path');
+				var filename = Path.join(electronpath, FUNC.getName(code.data.repository).replace(/\.git$/i, ''), code.editor.path);
+				FUNC.mkdir(Path.dirname(filename));
 				require('fs').writeFile(filename, FUNC.rtrim(editor.editor.getValue()), function(err) {
 					if (err)
 						FUNC.warning(err.toString());
