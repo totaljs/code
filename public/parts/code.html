@@ -1,7 +1,7 @@
 <div data-bind="%projectsvisible__show" class="projectslist hidden">
 	<ul data-jc="listmenu__code.data.id__datasource:code.projects;selector:li">
 		<script type="text/html">
-			<li class="exec" data-exec="code/project" data-id="{{ id }}"><i class="fa fa-project-diagram"></i>{{ name }}</li>
+			<li class="exec" data-exec="code/project" data-id="{{ id }}">{{ if online }}<span>{{ online }}</span>{{ fi }}<i class="fa fa-project-diagram"></i>{{ name }}</li>
 		</script>
 	</ul>
 </div>

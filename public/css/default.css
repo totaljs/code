@@ -75,6 +75,7 @@ h3 i { margin-right: 5px; color: $color; }
 .projectslist { position: absolute; background-color: white; z-index: 7; top: 99px; width: 301px; border: 1px solid #E0E0E0; box-shadow: 5px 5px 10px rgba(0,0,0,0.1); }
 .projectslist ul { margin: 0; padding: 0; }
 .projectslist li { list-style-type: none; border-top: 1px solid #E0E0E0; padding: 8px 20px; cursor: pointer; }
+.projectslist li span { float: right; font-size: 11px; background-color: red; color: white; width: 24px; text-align: center; padding: 3px 0; border-radius: 3px; }
 .projectslist li:hover { background-color: #ffffd7; }
 .projectslist li:first-child { border-top: 0; }
 .projectslist i { margin-right: 8px; }
