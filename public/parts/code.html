@@ -650,7 +650,7 @@
 			setTimeout2('code.autocomplete', editor.rebuild_autocomplete, 1000);
 			code.current = tab;
 			editor.reconfigure('disabled:false;mode:' + mode);
-			FUNC.wsopen(code.data.id, code.current.path);
+			FUNC.wsopen(code.data.id, code.current.path, code.projectid);
 
 			code.editor.loaded = true;
 
@@ -945,7 +945,9 @@
 
 			if (code.usersfile.length > 1 && code.SYNC) {
 				code.cursor.projectid = code.projectid;
-				FUNC.wssend(code.cursor);
+				setTimeout2('cursorposition', function() {
+					FUNC.wssend(code.cursor);
+				}, 300);
 			}
 
 			BIND('code.cursor');

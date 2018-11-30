@@ -26,6 +26,7 @@ function realtime() {
 		if (offline) {
 			client.user.ts = 0;
 			client.user.fileid && refresh_collaborators(self, client.user);
+			client.user.openid = '';
 			client.user.projectid = '';
 			client.user.fileid = '';
 			client.user.online = false;
@@ -38,12 +39,17 @@ function realtime() {
 			msg = msg.parseJSON();
 			client.user.fileid && refresh_collaborators(self, client.user);
 			client.user.projectid = msg.projectid;
+			client.user.openid = (msg.openid || 0).toString();
 			client.user.fileid = msg.fileid;
 			client.user.ts = Date.now();
 			refresh_collaborators(self, client.user, true);
 		} else
-			self.send(msg);
+			self.send2(msg, openidcomparer);
 	});
+}
+
+function openidcomparer(client, msg) {
+	return msg.indexOf(client.user.openid) !== -1;
 }
 
 function refresh_collaborators(ws, user, add) {

@@ -56,6 +56,7 @@
 
 		common.id = GUID(5);
 		common.electron = navigator.userAgent.indexOf('Electron') !== -1 && window.require != null;
+		common.online = true;
 
 		NAV.clientside('.R');
 
@@ -77,8 +78,9 @@
 
 		ON('online', function(is) {
 			SETTER('loading', is ? 'hide' : 'show');
-			if (is && window.code && window.code.data)
-				FUNC.wsopen(code.data.id, code.editor ? code.editor.path : '');
+			if (is && window.code && window.code.data && !common.online)
+				FUNC.wsopen(code.data.id, code.editor ? code.editor.path : '', code.projectid);
+			SET('common.online', is);
 		});
 
 		ON('message', function(msg) {

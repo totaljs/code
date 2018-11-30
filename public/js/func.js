@@ -83,8 +83,8 @@ FUNC.rtrim = function(value) {
 	return lines.join('\n');
 };
 
-FUNC.wsopen = function(project, path) {
-	SETTER('websocket', 'send', { TYPE: 'edit', projectid: project, fileid: path });
+FUNC.wsopen = function(project, path, openid) {
+	SETTER('websocket', 'send', { TYPE: 'edit', projectid: project, fileid: path, openid: openid });
 };
 
 FUNC.wssend = function(msg) {
