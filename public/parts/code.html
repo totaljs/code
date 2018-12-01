@@ -155,6 +155,8 @@
 					exports.element.find('section.tabs').find('span[data-value="{0}"]'.format(code.current.path)).rclass('modified');
 				}
 
+				editor.diffgutterclear();
+
 				SET(p, msg.user);
 				setTimeout2(p, function() {
 					SET(p, null);
@@ -832,6 +834,8 @@
 				SETTER('loading', 'hide', 500);
 				if (close === true)
 					exports.closeforce();
+
+				editor.diffgutterclear();
 				FUNC.wssend({ TYPE: 'save', projectid: code.projectid, id: user.id, user: user.name });
 				FUNC.success('@(<b>{0}</b> saved)'.format(data.path));
 				common.electron && code.data.repository && user.localsave && exports.savelocal();
