@@ -87,6 +87,8 @@ div.CodeMirror span.CodeMirror-matchingbracket { border-bottom: 2px solid blue; 
 .ui-tree .fa-image { color: #85ac82; }
 .ui-tree .fa-cog { color: #9ea923; }
 .ui-tree .fa-code-branch, .ui-tree .fa-superscript { color: #ff918c; }
+.ui-tree .fa-python { color: #4b79a6; }
+.ui-tree .fa-markdown { color: #56b2ab; }
 
 .td .ui-tree .fa-js { color: #cd8029; }
 .td .ui-tree .fa-css3 { color: #5a85b1; }
