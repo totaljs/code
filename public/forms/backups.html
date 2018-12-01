@@ -46,8 +46,11 @@
 			SETTER('loading', 'show');
 			AJAX('GET /api/projects/{id}/restore/'.arg(code.data), qs, function(response) {
 				SETTER('loading', 'hide', 500);
-				FUNC.success('@(File has been restored.)');
-				PLUGIN('code').editor.editor.setValue(response);
+				FUNC.success('@(File has been restored in the code editor.)');
+				var codeplugin = PLUGIN('code');
+				code.current.modified = true;
+				codeplugin.editor.editor.setValue(response);
+				codeplugin.element.find('section.tabs').find('span[data-value="{0}"]'.format(code.current.path)).aclass('modified');
 			});
 		};
 	})
