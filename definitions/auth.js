@@ -12,9 +12,10 @@ AUTH(function(req, res, flags, next) {
 	if (user) {
 		user.ip = req.ip;
 		user.logged = NOW;
+		user.blocked && res.cookie(CONF.cookie, '', '-1 day');
 	}
 
-	next(!!user, user);
+	next(user && !user.blocked, user);
 });
 
 ON('service', function(counter) {

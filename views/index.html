@@ -58,21 +58,27 @@
 		common.electron = navigator.userAgent.indexOf('Electron') !== -1 && window.require != null;
 		common.online = true;
 
+		ENV('date', 'yyyy-MM-dd HH:mm');
+
 		NAV.clientside('.R');
 
 		ROUTE('/', function() {
+			SET('common.form', '');
 			SET('common.page', 'code');
 		});
 
 		ROUTE('/settings/', function() {
+			SET('common.form', '');
 			SET('common.page', 'settings');
 		});
 
 		ROUTE('/users/', function() {
+			SET('common.form', '');
 			SET('common.page', 'users');
 		});
 
 		ROUTE('/projects/', function() {
+			SET('common.form', '');
 			SET('common.page', 'projects');
 		});
 
@@ -85,6 +91,9 @@
 
 		ON('message', function(msg) {
 			switch (msg.TYPE) {
+				case 'blocked':
+					location.href = '/';
+					break;
 				case 'close':
 					// close all projects
 					location.href = '/offline/';
@@ -136,6 +145,11 @@
 				case 'save':
 					if (msg.projectid === code.projectid && msg.id !== user.id)
 						EXEC('code/syncsave', msg);
+					else if (code) {
+						msg.date = new Date();
+						code.changes[msg.projectid] = msg;
+					}
+
 					break;
 				case 'refresh':
 					location.reload(true);
@@ -200,6 +214,39 @@
 
 		common.electron && window.require('electron').ipcRenderer.on('tabs.close', function() {
 			EXEC('code/close');
+		});
+
+		Tangular.register('time', function(value) {
+
+			if (!value)
+				return;
+
+			var diff = Date.now() - value.parseDate().getTime();
+			var minutes = ((diff / 1000) / 60) >> 0;
+
+			if (minutes <= 1) {
+				var seconds = (diff / 1000) >> 0;
+				if (seconds < 60)
+					return @(seconds + ' ' + Tangular.helpers.pluralize(seconds >> 0, 'seconds', 'second', 'seconds', 'seconds') + ' ago');
+			}
+
+			if (minutes < 60)
+				return minutes < 3 ? '@(now)' : @(minutes + ' minutes ago');
+
+			var hours = (minutes / 60) >> 0;
+			if (hours < 24)
+				return @(hours + ' ' + Tangular.helpers.pluralize(hours, 'hours', 'hour', 'hours', 'hours') + ' ago');
+
+			var days = (hours / 24) >> 0;
+			if (days < 30)
+				return @(days + ' ' + Tangular.helpers.pluralize(days, 'days', 'day', 'days', 'days') + ' ago');
+
+			var months = (days / 29) >> 0;
+			if (months < 12)
+				return @(months + ' ' + Tangular.helpers.pluralize(months, 'months', 'month', 'months', 'months') + ' ago');
+
+			var years = (months / 12) >> 0;
+			return @(years + ' ' + Tangular.helpers.pluralize(years, 'years', 'year', 'years', 'years') + ' ago');
 		});
 
 	</script>

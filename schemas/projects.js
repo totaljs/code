@@ -1,4 +1,5 @@
 const SKIP = /\/\.git\//;
+const READDIROPTIONS = { withFileTypes: true };
 const Path = require('path');
 const Fs = require('fs');
 
@@ -163,6 +164,11 @@ NEWSCHEMA('Projects', function(schema) {
 
 	schema.setRemove(function($) {
 
+		if (!$.user.sa) {
+			$.invalid('error-permissions');
+			return;
+		}
+
 		var index = MAIN.projects.findIndex('id', $.id);
 		var item = MAIN.projects[index];
 
@@ -177,4 +183,128 @@ NEWSCHEMA('Projects', function(schema) {
 		$.success();
 	});
 
+	schema.addWorkflow('backupsclear', function($) {
+
+		if (!$.user.sa) {
+			$.invalid('error-permissions');
+			return;
+		}
+
+		var project = MAIN.projects.findItem('id', $.id);
+		if (project == null) {
+			$.invalid('error-project');
+			return;
+		}
+
+		var path = Path.join(CONF.backup, project.path);
+
+		U.ls(path, function(files, directories) {
+			PATH.unlink(files, function() {
+				directories.quicksort();
+				directories.reverse();
+				directories.wait(function(dir, next) {
+					Fs.rmdir(dir, next);
+				}, function() {
+					$.success();
+				});
+			});
+		});
+	});
+
+	schema.addWorkflow('backups', function($) {
+
+		var project = MAIN.projects.findItem('id', $.id);
+		if (project == null) {
+			$.invalid('error-project');
+			return;
+		}
+
+		var path = $.query.path;
+		var user = $.user;
+
+		if (!user.sa) {
+			if (project.users.indexOf(user.id) === -1) {
+				$.invalid('error-permissions');
+				return;
+			}
+
+			if (!MAIN.authorize(project, $.user, path)) {
+				$.invalid('error-permissions');
+				return;
+			}
+		}
+
+		var name = U.getName($.query.path);
+		path = Path.join(CONF.backup, project.path, Path.dirname(path));
+
+		var index = name.lastIndexOf('.');
+		if (index !== -1)
+			name = name.substring(0, index);
+
+		Fs.readdir(path, READDIROPTIONS, function(err, response) {
+
+			var tmp = name + '-';
+			var arr = [];
+			var users = {};
+
+			for (var i = 0; i < response.length; i++) {
+				var filename = response[i];
+				if (filename.substring(0, tmp.length) === tmp) {
+					var meta = filename.substring(tmp.length).split('_');
+					var dt = meta[0];
+					index = meta[1].lastIndexOf('.');
+					if (index !== -1)
+						meta[1] = meta[1].substring(0, index);
+
+					var usr = users[meta[1]];
+					if (!usr) {
+						usr = MAIN.users.findItem('id', meta[1]);
+						users[meta[1]] = usr;
+					}
+
+					arr.push({ filename: filename, date: new Date(2000 + (+dt.substring(0, 2)), (+dt.substring(2, 4)) - 1, +dt.substring(4, 6), +dt.substring(6, 8), +dt.substring(8, 10)), id: meta[1], user: usr ? usr.name : meta[1] });
+				}
+			}
+
+			$.callback(arr);
+		});
+	});
+
+	schema.addWorkflow('restore', function($) {
+
+		var project = MAIN.projects.findItem('id', $.id);
+		if (project == null) {
+			$.invalid('error-project');
+			return;
+		}
+
+		var user = $.user;
+		var path = $.query.path;
+
+		if (!user.sa) {
+
+			if (project.users.indexOf(user.id) === -1) {
+				$.invalid('error-permissions');
+				return;
+			}
+
+			var pathtmp = path.replace(/-\d+_[a-z0-9]/, '');
+
+			if (!MAIN.authorize(project, $.user, pathtmp)) {
+				$.invalid('error-permissions');
+				return;
+			}
+		}
+
+		var filename = Path.join(CONF.backup, project.path, path);
+
+		MAIN.log($.user, 'files_restore', project, filename);
+
+		Fs.readFile(filename, function(err, data) {
+			if (err)
+				$.invalid(err);
+			else
+				$.callback(data.toString('utf8'));
+		});
+	});
 });

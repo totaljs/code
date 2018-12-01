@@ -43,7 +43,9 @@ function realtime() {
 			client.user.fileid = msg.fileid;
 			client.user.ts = Date.now();
 			refresh_collaborators(self, client.user, true);
-		} else
+		} else if (msg[9] === 's' && msg[12] === 'e')
+			self.send2(msg);
+		else
 			self.send2(msg, openidcomparer);
 	});
 }
@@ -74,5 +76,5 @@ function refresh_collaborators(ws, user, add) {
 		}
 	}
 
-	MSG_OPEN.file.length && ws.send(MSG_OPEN);
+	MSG_OPEN.file.length && ws.send2(MSG_OPEN);
 }

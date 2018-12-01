@@ -192,8 +192,10 @@ header .tools .selected { background-color: #F0F0F0; }
 .tabs nav i:hover { color: red; left: 10px; }
 .tabs nav i:hover:before { content: '\f00d'; font-size: 11px; }
 .tabs .options { position: absolute; left: 21px; font-size: 20px; top: 12px; cursor: pointer; }
+.tabs .options:hover { color: black; }
 .tabs .preview { float: right; font-size: 20px; margin: 12px 20px 0 0; cursor: pointer; color: #4285F4; }
 .tabs .preview:hover { opacity: 0.6; }
+.td .tabs .options:hover { color: white; }
 
 .status { height: 35px; border-top: 1px solid #E0E0E0; padding: 0 0 0 10px; font-size: 12px; }
 .status-alerts { padding: 9px 0 0; cursor: pointer; position: relative; display: inline-block; vertical-align: top; height: 34px; }
@@ -289,7 +291,7 @@ header .tools .selected { background-color: #F0F0F0; }
 .td span.cm-variable { color: #f8f8f2; }
 .td span.cm-variable-2 { color: #9effff; }
 .td span.cm-variable-3, .td span.cm-type { color: #66d9ef; }
-.td span.cm-def { color: #fd971f; }
+.td span.cm-def { color: #fff9a1; }
 .td span.cm-bracket { color: #f8f8f2; }
 .td span.cm-tag { color: #f92672; }
 .td span.cm-header { color: #ae81ff; }

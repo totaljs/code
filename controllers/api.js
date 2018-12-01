@@ -24,6 +24,9 @@ exports.install = function() {
 		ROUTE('GET     /api/projects/{id}/comments/            *Comments     --> @query');
 		ROUTE('POST    /api/projects/{id}/upload/              *FilesUpload  --> @exec', ['upload'], 1024 * 50);
 		ROUTE('GET     /api/projects/{id}/files/               *Projects     --> @files');
+		ROUTE('GET     /api/projects/{id}/backups/             *Projects     --> @backups');
+		ROUTE('DELETE  /api/projects/{id}/backups/             *Projects     --> @backupsclear', [10000]);
+		ROUTE('GET     /api/projects/{id}/restore/             *Projects',   files_restore);
 		ROUTE('GET     /api/projects/{id}/edit/                *Projects',   files_open);
 
 		// Other
@@ -37,7 +40,7 @@ exports.install = function() {
 	});
 
 	GROUP(['unauthorize'], function() {
-		ROUTE('POST    /api/login/                    *Login        --> @exec');
+		ROUTE('POST    /api/login/                    *Login        --> @save');
 	});
 
 };
@@ -52,6 +55,17 @@ function files_open(id) {
 	var self = this;
 	self.id = id;
 	self.$workflow('edit', self.query, function(err, data) {
+		if (err)
+			self.invalid(err);
+		else
+			self.plain(data);
+	});
+}
+
+function files_restore(id) {
+	var self = this;
+	self.id = id;
+	self.$workflow('restore', self.query, function(err, data) {
 		if (err)
 			self.invalid(err);
 		else

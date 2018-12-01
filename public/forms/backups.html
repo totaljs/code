@@ -1,0 +1,66 @@
+<!--
+	It depends on "code editor"
+-->
+
+<style>
+	.backupitem { padding: 8px 20px; border-top: 1px solid #303030; cursor: pointer; }
+	.backupitem:first-child { border-top: 0; }
+	.backupitem:hover { background-color: #202020; }
+	.backupitem .photo { float: left; width: 31px; }
+	.backupitem .meta { margin-left: 40px; font-size: 12px; }
+	.backupitem .user { font-size: 11px; }
+	.backupitem .date { font-weight: bold; }
+	.backupitem .date span { font-weight: normal; float: right; }
+	.backupitem i { margin-right: 5px; }
+</style>
+
+<div data-jc="panel__common.form__if:backups;width:500;title:@(Backups);icon:history;reload:codebackups/reload;bg:false;autofocus:true" class="hidden">
+	<div data-bind="codebackups.items__template">
+		<script type="text/html">
+			{{ foreach m in value }}
+				<div class="backupitem exec" data-path="{{ m.filename }}" data-exec="codebackups/restore">
+					<div class="photo">{{ m.user | initials }}</div>
+					<div class="meta">
+						<div class="date"><span>{{ m.date | format('[date]') }}</span><i class="fa fa-clock"></i>{{ m.date | time }}</div>
+						<div class="user">{{ m.user }}</div>
+					</div>
+				</div>
+			{{ end }}
+		</script>
+	</div>
+</div>
+
+<script>
+	PLUGIN('codebackups', function(exports) {
+
+		exports.reload = function() {
+			exports.refresh();
+		};
+
+		exports.refresh = function() {
+			var qs = {};
+			qs.path = code.editor.path;
+			AJAX('GET /api/projects/{id}/backups/'.arg(code.data), qs, function(response) {
+				response.quicksort('date', false);
+				SET('codebackups.items', response);
+			});
+		};
+
+		exports.restore = function(el) {
+
+			if (code.SYNC) {
+				FUNC.warning('@(You can\'t restore file in collaboration mode.)');
+				return;
+			}
+
+			var qs = {};
+			qs.path = el.attrd('path');
+			SETTER('loading', 'show');
+			AJAX('GET /api/projects/{id}/restore/'.arg(code.data), qs, function(response) {
+				SETTER('loading', 'hide', 500);
+				FUNC.success('@(File has been restored.)');
+				PLUGIN('code').editor.editor.setValue(response);
+			});
+		};
+	})
+</script>

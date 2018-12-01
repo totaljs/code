@@ -13,12 +13,12 @@
 		<div data-jc="datagrid__users.grid__click:users/edit;checked:users/checked;highlight:true">
 			<script type="text/plain">
 				[
-					{ name: 'id', text: '@(User ID)', template: '{{ if online }}<i class="fa fa-circle green fs11 mr5" title="@(Online - {{ online }}x devices)"></i>{{ fi }}{{ id }}', width: 130 },
-					{ name: 'name', text: '@(Name)', width: 160 },
-					{ name: 'email', text: '@(Email)', width: 170 },
+					{ name: 'id', text: '@(User ID)', template: '{{ if online }}<i class="fa fa-circle green fs11 mr5" title="@(Online)"></i>{{ fi }}{{ if blocked }}<span class="badge badge-small badge-red">@(blocked)</span>{{ fi }}{{ id }}', width: 200 },
+					{ name: 'name', text: '@(Name)', width: 200 },
+					{ name: 'email', text: '@(Email)', width: 200 },
 					{ name: 'phone', text: '@(Phone)', width: 140 },
 					{ name: 'position', text: '@(Position)', width: 150 },
-					{ name: 'sa', text: '@(Admin)', template: '{{ if sa }}<i class="fa fa-check-square green"></i>{{ fi }}', width: 100, align: 1 },
+					{ name: 'sa', text: '@(Admin)', template: '{{ if sa }}<i class="fa fa-check-square green"></i>{{ fi }}', options: [{ text: 'yes', value: true }, { text: 'no', value: false }], width: 100, align: 1 },
 					{ name: 'logged', text: '@(Logged)', align: 'center', template: '{{ logged | format(\'dd.MM.yyyy\') }}', align: 1, width: 100 },
 					{ name: 'created', text: '@(Created)', align: 'center', template: '{{ created | format(\'dd.MM.yyyy\') }}', align: 1, width: 100 }
 				]
@@ -72,7 +72,7 @@
 
 			items.push({ value: 255, name: '@(Remove)', icon: 'times-circle red' });
 
-			SETTER('menu', 'show', 'right', el, items, function(item) {
+			SETTER('menu', 'show', 'left', el, items, function(item) {
 				switch (item.value) {
 					case 255:
 						SETTER('confirm', 'show', '@(Are you sure you want to remove selected users?)', ['"trash-o"@(Remove)', '@(Cancel)'], function(index) {

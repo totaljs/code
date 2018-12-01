@@ -1,3 +1,5 @@
+const WSBLOCKED = { TYPE: 'blocked' };
+
 NEWSCHEMA('Users', function(schema) {
 
 	schema.define('id', 'Lower(30)', true);
@@ -58,11 +60,13 @@ NEWSCHEMA('Users', function(schema) {
 			item.position = model.position;
 			item.darkmode = model.darkmode;
 			item.localsave = model.localsave;
+			item.initials = model.initials;
 
-			if (item.password.substring(0, 3) !== '***')
+			if (model.password.substring(0, 3) !== '***')
 				item.password = model.password.sha256();
 
-			// @TODO: update all users sessions
+			if (item.blocked && MAIN.ws)
+				MAIN.ws.send2(WSBLOCKED, client => client.user.id === item.id);
 		}
 
 
@@ -75,12 +79,14 @@ NEWSCHEMA('Users', function(schema) {
 		var index = MAIN.users.findIndex('id', $.id);
 		var item = MAIN.users[index];
 
+		item.blocked = true;
+		MAIN.ws.send2(WSBLOCKED, client => client.user.id === item.id);
+
 		if (index !== -1) {
 			MAIN.users.splice(index, 1);
 			MAIN.save(1);
 		}
 
-		// @TODO: update all users sessions
 		$.success();
 	});
 
@@ -91,11 +97,18 @@ NEWSCHEMA('Login', function(schema) {
 	schema.define('email', 'Email', true);
 	schema.define('password', 'String(50)', true);
 
-	schema.addWorkflow('exec', function($) {
+	// Performs login
+	schema.setSave(function($) {
 
 		var user = MAIN.users.findItem('email', $.model.email);
+
 		if (!user || user.password !== $.model.password.sha256()) {
 			$.invalid('error-credentials');
+			return;
+		}
+
+		if (user.blocked) {
+			$.invalid('error-blocked');
 			return;
 		}
 

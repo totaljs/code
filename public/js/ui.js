@@ -463,12 +463,78 @@ COMPONENT('exec', function(self, config) {
 
 COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 
+	Thelpers.fileicon = function(filename) {
+		var ext = filename.substring(filename.lastIndexOf('.') + 1).toLowerCase();
+
+		ext = ext.substring(ext.lastIndexOf('/') + 1);
+
+		switch (ext) {
+			case 'htm':
+			case 'html':
+				return 'fab fa-html5';
+			case 'sitemap':
+				return 'fa fa-code-branch';
+			case 'versions':
+				return 'fa fa-superscript';
+			case 'css':
+			case 'sass':
+				return 'fab fa-css3';
+			case 'py':
+				return 'fab fa-python';
+			case 'php':
+				return 'fab fa-php';
+			case 'pdf':
+			case 'csv':
+				return 'far fa-file-' + ext;
+			case 'eot':
+			case 'ttf':
+			case 'woff':
+			case 'woff2':
+				return 'fa fa-font';
+			case 'log':
+				return 'fa fa-clipboard-list';
+			case 'txt':
+			case 'sh':
+				return 'far fa-file-alt';
+			case 'md':
+				return 'fab fa-markdown';
+			case 'bundle':
+			case 'package':
+				return 'fa fa-box';
+			case 'url':
+				return 'fa fa-link';
+			case 'nosql':
+			case 'table':
+			case 'sql':
+				return 'fa fa-database';
+			case 'json':
+				return 'fa fa-toolbox';
+			case 'gif':
+			case 'ico':
+			case 'jpeg':
+			case 'jpg':
+			case 'png':
+			case 'svg':
+				return 'far fa-image';
+			case 'js':
+				return 'fab fa-js';
+			case 'config':
+			case 'config-debug':
+			case 'config-release':
+			case 'config-test':
+			case 'resource':
+			case 'workflows':
+				return 'fa fa-cog';
+		}
+		return 'fa-file-o far';
+	};
+
 	var cache = null;
 	var counter = 0;
 	var expanded = {};
 	var selindex = -1;
 
-	self.template = Tangular.compile('<div class="item{{ if children }} expand{{ fi }}" data-index="{{ $pointer }}" title="{{ name }}"><i class="icon fa-{{ if children }}folder fa{{ if isopen }}-open fa{{ fi }}{{ else }}file-o far{{ fi }}"></i><span class="options"><i class="fa fa-cog"></i></span><div>{{ name }}</div></div>');
+	self.template = Tangular.compile('<div class="item{{ if children }} expand{{ fi }}" data-index="{{ $pointer }}" title="{{ name }}"><i class="icon {{ if children }}fa fa-folder{{ if isopen }}-open {{ fi }}{{ else }}{{ name | fileicon }}{{ fi }}"></i><span class="options"><i class="fa fa-ellipsis-h"></i></span><div>{{ name }}</div></div>');
 	self.readonly();
 
 	self.make = function() {
@@ -2994,7 +3060,7 @@ COMPONENT('menu', function(self) {
 
 		for (var i = 0; i < items.length; i++) {
 			var item = items[i];
-			builder.push('<li{2}>{0}{1}</li>'.format(item.icon ? '<i class="fa fa-{0}"></i>'.format(item.icon) : '', item.name, item.icon ? '' : ' class="ui-menu-nofa"'));
+			builder.push('<li{2}>{3}{0}<span>{1}</span></li>'.format(item.icon ? '<i class="fa fa-{0}"></i>'.format(item.icon) : '', item.name, item.icon ? '' : ' class="ui-menu-nofa"', item.shortcut ? '<b>{0}</b>'.format(item.shortcut) : ''));
 		}
 
 		ul.html(builder.join(''));
@@ -3030,7 +3096,7 @@ COMPONENT('menu', function(self) {
 
 		for (var i = 0; i < items.length; i++) {
 			var item = items[i];
-			builder.push('<li{2}>{0}{1}</li>'.format(item.icon ? '<i class="fa fa-{0}"></i>'.format(item.icon) : '', item.name, item.icon ? '' : ' class="ui-menu-nofa"'));
+			builder.push('<li{2}>{3}{0}<span>{1}</span></li>'.format(item.icon ? '<i class="fa fa-{0}"></i>'.format(item.icon) : '', item.name, item.icon ? '' : ' class="ui-menu-nofa"', item.shortcut ? '<b>{0}</b>'.format(item.shortcut) : ''));
 		}
 
 		ul.html(builder.join(''));

@@ -80,11 +80,12 @@
 	</section>
 </div>
 
-<div data-jc="importer__common.form__if:tasks;url:/forms/tasks.html"></div>
+<div data-jc="importer__common.form__if:tasks;url:/forms/tasks.html;cleaner:10"></div>
+<div data-jc="importer__common.form__if:backups;url:/forms/backups.html;cleaner:10"></div>
 
 <script>
 
-	var code = { SYNC: false };
+	var code = { SYNC: false, changes: {} };
 
 	PLUGIN('code', function(exports) {
 
@@ -94,7 +95,7 @@
 		var cache_scrollpos = {};
 
 		FIND('editor', function(com) {
-			editor = com;
+			exports.editor = editor = com;
 		});
 
 		exports.statusinfo = function(value) {
@@ -201,13 +202,18 @@
 
 		exports.contextmenu = function(e, editor) {
 			var items = [];
-			var editor = exports.element.FIND('editor').editor;
+			var sel = editor.getSelections();
+			var can = sel.join('').length > 0;
 
-			editor.getSelections().join('').length && items.push({ name: '@(Copy)', icon: 'copy', command: 'copy' });
+			if (!can)
+				return;
+
+			items.push({ name: '@(Copy)', icon: 'copy', command: 'copy' });
 			items.push({ name: '@(Encode)', icon: 'code', value: 'encode' });
 			items.push({ name: '@(Decode)', icon: 'broom', value: 'decode' });
 			items.push({ name: '@(Minify code)', icon: 'compress', value: 'minify' });
-			items.push({ name: '@(Convert to Tabs)', icon: 'align-right', value: 'tabs' });
+			items.push({ name: '@(Upper Case)', icon: 'font', value: 'upper' });
+			items.push({ name: '@(Lower Case)', icon: 'font', value: 'lower' });
 
 			SETTER('menu', 'showxy', e.pageX, e.pageY, items, function(value) {
 
@@ -225,11 +231,10 @@
 					var y = 0;
 					var x = 20;
 
-					if (value.value === 'tabs') {
-						if (code.SYNC)
-							FUNC.warning('@(You can\'t replace all spaces to tabs in collaboration mode.)');
-						else
-							editor.setValue(FUNC.spaces_to_tabs(editor.getValue()));
+					if (value.value === 'lower' || value.value === 'upper') {
+						for (var i = 0; i < sel.length; i++)
+							sel[i] = value.value === 'lower' ? sel[i].toLowerCase() : sel[i].toUpperCase();
+						editor.replaceSelections(sel);
 						return;
 					}
 
@@ -251,7 +256,6 @@
 					}
 
 					SETTER('menu', 'showxy', e.pageX + x, e.pageY + y, items, function(value) {
-						var sel = editor.getSelections();
 						switch (value.value) {
 							case 'encodeURIComponent':
 							case 'decodeURIComponent':
@@ -471,9 +475,11 @@
 
 			var items = [];
 
-			items.push({ value: 1, name: '@(Reload)', icon: 'refresh' });
+			items.push({ value: 1, name: '@(Reload)', icon: 'refresh', shortcut: 'F5' });
 			items.push({ value: 2, name: '@(Find)', icon: 'search', command: 'findPersistent' });
 			items.push({ value: 2, name: '@(Replace)', icon: 'search', command: 'replaceAll' });
+			items.push({ value: 3, name: '@(Convert to Tabs)', icon: 'align-right' });
+			items.push({ value: 4, name: '@(Restore from backup)', icon: 'history' });
 
 			if (navigator.userAgent.indexOf('Electron') !== -1 && window.require)
 				items.push({ value: 3, name: '<b>@(Save locally)</b>', icon: 'code-branch' });
@@ -485,13 +491,18 @@
 						break;
 					case 2:
 						setTimeout(function() {
-							var editor = FIND('editor').editor;
-							editor.focus();
-							editor.execCommand(item.command);
+							editor.editor.focus();
+							editor.editor.execCommand(item.command);
 						}, 200);
 						break;
 					case 3:
-
+						if (code.SYNC)
+							FUNC.warning('@(You can\'t replace all spaces to tabs in collaboration mode.)');
+						else
+							editor.editor.setValue(FUNC.spaces_to_tabs(editor.editor.getValue()));
+						break;
+					case 4:
+						SET('common.form', 'backups');
 						break;
 				}
 			}, -5, -5);
@@ -592,6 +603,9 @@
 			if (typeof(tab) === 'string')
 				tab = code.open.findItem('path', tab);
 
+			if (common.form === 'backups')
+				SET('common.form', '');
+
 			var prev = GET('code.editor.path');
 			if (prev && prev !== tab.path) {
 				prev = code.open.findItem('path', prev);
@@ -623,6 +637,8 @@
 				case '/sitemap':
 				case '/workflows':
 				case 'resource':
+				case 'package':
+				case 'bundle':
 					mode = 'totaljsresources';
 					break;
 				case 'js':
@@ -632,33 +648,40 @@
 				case 'nosql':
 					mode = 'application/ld+json';
 					break;
-				case 'css':
-					mode = 'css';
+				case 'py':
+					mode = 'text/x-cython';
 					break;
-				case 'sh':
-					mode = 'shell';
+				case 'php':
+					mode = 'application/x-httpd-php';
+					break;
+				case 'css':
+					mode = 'text/css';
 					break;
 				case 'sql':
-					mode = 'sql';
+					mode = 'text/x-sql';
+					break;
+				case 'sh':
+					mode = 'text/x-sh';
 					break;
 				case 'md':
 					mode = 'markdown';
 					break;
+				case 'sass':
+					mode = 'text/x-sass';
+					break;
+				case 'yaml':
+					mode = 'text/x-yaml';
+					break;
 				case 'xml':
-					mode = 'xml';
-					break;
-				case 'log':
-				case 'txt':
-				case 'table':
-					mode = 'plain';
-					break;
-				case 'nosql':
-					mode = 'json';
+				case 'rss':
+					mode = 'application/xml';
 					break;
 				case 'html':
 				case 'htm':
-				default:
 					mode = 'totaljs';
+					break;
+				default:
+					mode = 'plain';
 					break;
 			}
 
@@ -666,6 +689,12 @@
 			SET('code.editor.name', tab.name);
 			code.editor.hash = HASH(tab.path);
 			code.projectid = HASH(code.data.id + '_' + tab.path);
+
+			var change = code.changes[code.projectid];
+			if (change && tab.doc) {
+				exports.syncsave(change);
+				code.changes[code.projectid] = null;
+			}
 
 			if (JSHINT.errors) {
 				JSHINT.errors.length = 0;
