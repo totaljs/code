@@ -228,14 +228,14 @@ COMPONENT('editor', function(self, config) {
 		can['+input'] = can['+delete'] = can.undo = can.redo = can.paste = can.cut = can.clear = true;
 
 		var REGHEXCOLOR = /#[a-f0-9]{6}(;|"|'|>|<|\)|\(|$)/i;
+		var cache_lines = null;
 
 		var prerender_colors = function() {
 			var lines = editor.getValue().split('\n');
-			//editor.doc.clearGutter('GutterColor');
 			for (var i = 0; i < lines.length; i++) {
 				var color = lines[i].match(REGHEXCOLOR);
-				if (color)
-					editor.setGutterMarker(i, 'GutterColor', GutterColor(color.toString().replace(/;|'|"|,/g, '')));
+				color && editor.setGutterMarker(i, 'GutterColor', GutterColor(color.toString().replace(/;|'|"|,/g, '')));
+				self.diffgutter(i, cache_lines && lines[i] === cache_lines[i]);
 			}
 		};
 
@@ -307,14 +307,12 @@ COMPONENT('editor', function(self, config) {
 		});
 
 		var cache_sync = { from: {}, to: {} };
-		var cache_lines = null;
 
 		editor.on('change', function(a, b) {
 
 			if (b.origin === 'setValue') {
 				cache_lines = editor.getValue().split('\n');
 			} else {
-
 				if (code.SYNC) {
 					cache_sync.from.line = b.from.line;
 					cache_sync.from.ch = b.from.ch;
@@ -322,11 +320,6 @@ COMPONENT('editor', function(self, config) {
 					cache_sync.to.ch = b.to.ch;
 					cache_sync.text = b.text;
 					EXEC(config.sync, cache_sync);
-				}
-
-				if (cache_lines) {
-					for (var i = b.from.line; i <= b.to.line; i++)
-						self.diffgutter(i, cache_lines && editor.getLine(i) === cache_lines[i]);
 				}
 			}
 
