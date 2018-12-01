@@ -769,6 +769,7 @@
 				if (!skip)
 					exports.element.SETTER('tree', 'clear');
 
+				document.title = common.name + ': ' + response.name;
 				SET('code.data', response);
 				SET('code.tree', tree);
 

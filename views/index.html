@@ -59,6 +59,7 @@
 		common.id = GUID(5);
 		common.electron = navigator.userAgent.indexOf('Electron') !== -1 && window.require != null;
 		common.online = true;
+		common.name = document.title;
 
 		ENV('date', 'yyyy-MM-dd HH:mm');
 
