@@ -49,7 +49,7 @@
 				FUNC.success('@(File has been restored in the code editor.)');
 				var codeplugin = PLUGIN('code');
 				code.current.modified = true;
-				codeplugin.editor.editor.setValue(response);
+				codeplugin.editor.restore(response);
 				codeplugin.element.find('section.tabs').find('span[data-value="{0}"]'.format(code.current.path)).aclass('modified');
 			});
 		};

@@ -62,6 +62,39 @@ COMPONENT('editor', function(self, config) {
 		}
 	};
 
+	var GutterDiff = function() {
+		var marker = document.createElement('div');
+		var css = marker.style;
+		css.color = '#3ed853';
+		css.position = 'absolute';
+		css.left = '39px';
+		css.top = '-1px';
+		marker.innerHTML = '+';
+		return marker;
+	};
+
+	self.restore = function(value) {
+
+		var current = editor.getValue().split('\n');
+		var lines = value.split('\n');
+
+		editor.setValue(value);
+		self.diffgutterclear();
+
+		for (var i = 0; i < lines.length; i++) {
+			if (lines[i] !== current[i])
+				self.diffgutter(i);
+		}
+	};
+
+	self.diffgutterclear = function() {
+		editor.doc.clearGutter('GutterDiff');
+	};
+
+	self.diffgutter = function(line, nullable) {
+		editor.setGutterMarker(line, 'GutterDiff', nullable ? null : GutterDiff());
+	};
+
 	self.make = function() {
 
 		self.html('<div class="ui-editor"></div>');
@@ -135,7 +168,7 @@ COMPONENT('editor', function(self, config) {
 		options.matchBrackets = true;
 		options.scrollbarStyle = 'simple';
 		options.rulers = [{ column: 130, lineStyle: 'dashed' }];
-		options.gutters = ['CodeMirror-lint-markers', 'GutterColor'];
+		options.gutters = ['CodeMirror-lint-markers', 'GutterColor', 'GutterDiff'];
 		options.foldGutter = true;
 		options.highlightSelectionMatches = { annotateScrollbar: true, delay: 100 };
 		options.phrases = {};
@@ -198,7 +231,7 @@ COMPONENT('editor', function(self, config) {
 
 		var prerender_colors = function() {
 			var lines = editor.getValue().split('\n');
-			editor.doc.clearGutter('GutterColor');
+			//editor.doc.clearGutter('GutterColor');
 			for (var i = 0; i < lines.length; i++) {
 				var color = lines[i].match(REGHEXCOLOR);
 				if (color)
@@ -274,16 +307,27 @@ COMPONENT('editor', function(self, config) {
 		});
 
 		var cache_sync = { from: {}, to: {} };
+		var cache_lines = null;
 
 		editor.on('change', function(a, b) {
 
-			if (b.origin !== 'setValue' && code.SYNC) {
-				cache_sync.from.line = b.from.line;
-				cache_sync.from.ch = b.from.ch;
-				cache_sync.to.line= b.to.line;
-				cache_sync.to.ch = b.to.ch;
-				cache_sync.text = b.text;
-				EXEC(config.sync, cache_sync);
+			if (b.origin === 'setValue') {
+				cache_lines = editor.getValue().split('\n');
+			} else {
+
+				if (code.SYNC) {
+					cache_sync.from.line = b.from.line;
+					cache_sync.from.ch = b.from.ch;
+					cache_sync.to.line = b.to.line;
+					cache_sync.to.ch = b.to.ch;
+					cache_sync.text = b.text;
+					EXEC(config.sync, cache_sync);
+				}
+
+				if (cache_lines) {
+					for (var i = b.from.line; i <= b.to.line; i++)
+						self.diffgutter(i, cache_lines && editor.getLine(i) === cache_lines[i]);
+				}
 			}
 
 			setTimeout2('EditorGutterColor', prerender_colors, 500);

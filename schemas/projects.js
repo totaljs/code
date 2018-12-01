@@ -237,7 +237,8 @@ NEWSCHEMA('Projects', function(schema) {
 		}
 
 		var name = U.getName($.query.path);
-		path = Path.join(CONF.backup, project.path, Path.dirname(path));
+		var dir = Path.dirname(path);
+		path = Path.join(CONF.backup, project.path, dir);
 
 		var index = name.lastIndexOf('.');
 		if (index !== -1)
@@ -264,7 +265,7 @@ NEWSCHEMA('Projects', function(schema) {
 						users[meta[1]] = usr;
 					}
 
-					arr.push({ filename: filename, date: new Date(2000 + (+dt.substring(0, 2)), (+dt.substring(2, 4)) - 1, +dt.substring(4, 6), +dt.substring(6, 8), +dt.substring(8, 10)), id: meta[1], user: usr ? usr.name : meta[1] });
+					arr.push({ filename: Path.join(dir, filename), date: new Date(2000 + (+dt.substring(0, 2)), (+dt.substring(2, 4)) - 1, +dt.substring(4, 6), +dt.substring(6, 8), +dt.substring(8, 10)), id: meta[1], user: usr ? usr.name : meta[1] });
 				}
 			}
 
