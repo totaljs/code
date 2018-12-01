@@ -481,8 +481,8 @@
 			items.push({ value: 3, name: '@(Convert to Tabs)', icon: 'align-right' });
 			items.push({ value: 4, name: '@(Restore from backup)', icon: 'history' });
 
-			if (navigator.userAgent.indexOf('Electron') !== -1 && window.require)
-				items.push({ value: 3, name: '<b>@(Save locally)</b>', icon: 'code-branch' });
+			if (common.electron && code.data.repository)
+				items.push({ value: 3, name: '@(Save locally)', icon: 'code-branch' });
 
 			SETTER('menu', 'show', 'left', el, items, function(item) {
 				switch (item.value) {
@@ -503,6 +503,9 @@
 						break;
 					case 4:
 						SET('common.form', 'backups');
+						break;
+					case 5:
+						exports.savelocal();
 						break;
 				}
 			}, -5, -5);
