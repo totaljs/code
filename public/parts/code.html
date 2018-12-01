@@ -482,7 +482,7 @@
 			items.push({ value: 4, name: '@(Restore from backup)', icon: 'history' });
 
 			if (common.electron && code.data.repository)
-				items.push({ value: 3, name: '@(Save locally)', icon: 'code-branch' });
+				items.push({ value: 5, name: '@(Save locally)', icon: 'code-branch' });
 
 			SETTER('menu', 'show', 'left', el, items, function(item) {
 				switch (item.value) {
