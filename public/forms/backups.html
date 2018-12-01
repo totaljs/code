@@ -2,18 +2,6 @@
 	It depends on "code editor"
 -->
 
-<style>
-	.backupitem { padding: 8px 20px; border-top: 1px solid #303030; cursor: pointer; }
-	.backupitem:first-child { border-top: 0; }
-	.backupitem:hover { background-color: #202020; }
-	.backupitem .photo { float: left; width: 31px; }
-	.backupitem .meta { margin-left: 40px; font-size: 12px; }
-	.backupitem .user { font-size: 11px; }
-	.backupitem .date { font-weight: bold; }
-	.backupitem .date span { font-weight: normal; float: right; }
-	.backupitem i { margin-right: 5px; }
-</style>
-
 <div data-jc="panel__common.form__if:backups;width:500;title:@(Backups);icon:history;reload:codebackups/reload;bg:false;autofocus:true" class="hidden">
 	<div data-bind="codebackups.items__template">
 		<script type="text/html">

@@ -479,10 +479,11 @@
 			items.push({ value: 2, name: '@(Find)', icon: 'search', command: 'findPersistent' });
 			items.push({ value: 2, name: '@(Replace)', icon: 'search', command: 'replaceAll' });
 			items.push({ value: 3, name: '@(Convert to Tabs)', icon: 'align-right' });
-			items.push({ value: 4, name: '@(Restore from backup)', icon: 'history' });
 
 			if (common.electron && code.data.repository)
-				items.push({ value: 5, name: '@(Save locally)', icon: 'code-branch' });
+				items.push({ value: 5, name: '@(Save locally)', icon: 'floppy-o' });
+
+			items.push({ value: 4, name: '@(Restore from backup)', icon: 'history' });
 
 			SETTER('menu', 'show', 'left', el, items, function(item) {
 				switch (item.value) {
