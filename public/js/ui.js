@@ -484,7 +484,6 @@ COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 			case 'php':
 				return 'fab fa-php';
 			case 'pdf':
-			case 'csv':
 				return 'far fa-file-' + ext;
 			case 'eot':
 			case 'ttf':
@@ -493,6 +492,7 @@ COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 				return 'fa fa-font';
 			case 'log':
 				return 'fa fa-clipboard-list';
+			case 'csv':
 			case 'txt':
 			case 'sh':
 				return 'far fa-file-alt';
@@ -516,6 +516,8 @@ COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 			case 'png':
 			case 'svg':
 				return 'far fa-image';
+			case 'pid':
+				return 'fa fa-plug';
 			case 'js':
 				return 'fab fa-js';
 			case 'config':

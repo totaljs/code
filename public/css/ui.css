@@ -228,7 +228,7 @@ div.CodeMirror span.CodeMirror-matchingbracket { border-bottom: 2px solid blue; 
 .ui-panel-container { width: 100%; position: fixed; left: 0; top: 0; bottom: 0; right: 0; background-color: rgba(230,230,230,0.8); z-index: 5; overflow: none; transform-style: preserve-3d; height: 100%; }
 .ui-panel-inline { right: 0; left: auto; background: transparent; }
 .ui-panel-inline .ui-panel { border-left: 1px solid #E0E0E0; background-color: white; }
-.ui-panel-header { height: 60px; }
+.ui-panel-header { height: 50px; }
 .ui-panel-body { overflow-scrolling: touch; overflow-y: auto; }
 .ui-panel-animate .ui-panel { transform: scale(1); opacity: 1; }
 .ui-panel-inline.ui-panel-animate { transition: box-shadow 0.5s; box-shadow: -10px 0 20px rgba(0,0,0,0.02); }

@@ -31,11 +31,13 @@
 		<button class="exec" data-exec="mainmenu"><i class="fa fa-navicon"></i></button>
 		<div class="tools" data-jc="selected__common.page__selector:a.R">
 			<a href="@{#}/" title="@(Code)" class="R" data-if="code"><i class="fa fa-laptop-code"></i></a>
+			<a href="#" data-bind="code.data.documentation__show__href" title="@(Documentation)" target="_blank" class="external hidden"><i class="fa fa-book-open"></i></a>
+			<a href="#" data-bind="code.data.support__show__href" title="@(Support)" target="_blank" class="external hidden"><i class="far fa-comments"></i></a>
+			<a href="@{#}/settings/" title="@(Settings)" class="R" data-if="settings"><i class="fa fa-cog"></i></a>
 			@{if user.sa}
 			<a href="@{#}/projects/" title="@(Projects)" class="R" data-if="projects"><i class="fab fa-app-store-ios"></i></a>
 			<a href="@{#}/users/" title="@(Users)" class="R" data-if="users"><i class="fa fa-users"></i></a>
 			@{fi}
-			<a href="@{#}/settings/" title="@(Settings)" class="R" data-if="settings"><i class="fa fa-cog"></i></a>
 			<a href="@{#}/logout/" title="@(Sign out)"><i class="fa fa-sign-out"></i></a>
 		</div>
 	</header>

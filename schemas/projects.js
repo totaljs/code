@@ -10,6 +10,8 @@ NEWSCHEMA('Projects', function(schema) {
 	schema.define('repository', 'String(100)');
 	schema.define('path', 'String(100)', true);
 	schema.define('permissions', String);
+	schema.define('documentation', 'String(200)');
+	schema.define('support', 'String(200)');
 	schema.define('url', 'String(100)');
 	schema.define('icon', 'String(30)');
 	schema.define('users', '[Lower(30)]');
@@ -157,7 +159,7 @@ NEWSCHEMA('Projects', function(schema) {
 				directories = directories.remove(cleaner);
 			}
 
-			$.callback({ files: files, directories: directories, url: item.url, name: item.name, icon: item.icon, repository: item.repository, id: item.id });
+			$.callback({ files: files, directories: directories, url: item.url, name: item.name, icon: item.icon, repository: item.repository, id: item.id, documentation: item.documentation, support: item.support });
 
 		}, n => !SKIP.test(n) && (!skip || !skip.test(n)));
 	});

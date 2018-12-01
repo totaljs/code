@@ -9,9 +9,20 @@
 					<div data-jc="textbox__path__required:true__''">@(Path)</div>
 				</div>
 			</div>
-			<div data-jc="textbox__url__required:true__''" class="m">@(URL address)</div>
-			<div data-jc="textbox__repository__placeholder:https\://user\:pass@github.com/totaljs/cms.git__''">@(GIT repository)</div>
-			<div class="help m">@(Branches are supported too <code>#branch_name</code>).</div>
+			<div data-jc="textbox__url__required:true__''" class="m">@(URL to application)</div>
+
+			<div class="row">
+				<div class="col-sm-6 m">
+					<div data-jc="textbox__documentation__placeholder:https://wiki.totaljs.com__'https://wiki.totaljs.com'">@(Documentation URL)</div>
+				</div>
+				<div class="col-sm-6 m">
+					<div data-jc="textbox__support__placeholder:https://messenger.totaljs.com__'https://messenger.totaljs.com'">@(Support URL)</div>
+				</div>
+			</div>
+
+			<div data-jc="textbox__repository__placeholder:cms__''">@(Folder name)</div>
+			<div class="help m">@(Electron version of Code app can store files locally in this folder name.)</div>
+
 			<div data-jc="checkbox__backup__null__true">@(Backup all modified files)</div>
 			<div data-jc="checkbox__skiptmp__null__true">@(Skip <b>tmp</b> directory)</div>
 			<div data-jc="checkbox__skipsrc__null__true">@(Skip <b>.src</b> directory)</div>
