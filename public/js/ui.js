@@ -235,7 +235,7 @@ COMPONENT('editor', function(self, config) {
 			for (var i = 0; i < lines.length; i++) {
 				var color = lines[i].match(REGHEXCOLOR);
 				color && editor.setGutterMarker(i, 'GutterColor', GutterColor(color.toString().replace(/;|'|"|,/g, '')));
-				self.diffgutter(i, cache_lines && lines[i] === cache_lines[i]);
+				// self.diffgutter(i, cache_lines && lines[i] === cache_lines[i]);
 			}
 		};
 
@@ -313,6 +313,7 @@ COMPONENT('editor', function(self, config) {
 			if (b.origin === 'setValue') {
 				cache_lines = editor.getValue().split('\n');
 			} else {
+
 				if (code.SYNC) {
 					cache_sync.from.line = b.from.line;
 					cache_sync.from.ch = b.from.ch;
@@ -321,6 +322,10 @@ COMPONENT('editor', function(self, config) {
 					cache_sync.text = b.text;
 					EXEC(config.sync, cache_sync);
 				}
+
+				for (var i = b.from.line; i < (b.from.line + b.text.length); i++)
+					self.diffgutter(i, cache_lines && cache_lines[i] === editor.getLine(i));
+
 			}
 
 			setTimeout2('EditorGutterColor', prerender_colors, 500);
