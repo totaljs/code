@@ -246,6 +246,11 @@ NEWSCHEMA('Projects', function(schema) {
 
 		Fs.readdir(path, READDIROPTIONS, function(err, response) {
 
+			if (err || !response || !response.length) {
+				$.callback(EMPTYARRAY);
+				return;
+			}
+
 			var tmp = name + '-';
 			var arr = [];
 			var users = {};
