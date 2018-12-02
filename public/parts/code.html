@@ -292,11 +292,19 @@
 
 			// cache
 			if (type === 1 && code.editor.body) {
-				exports.cache_set();
-				if (!code.current.modified) {
-					code.current.modified = true;
-					exports.element.find('section.tabs').find('span[data-value="{0}"]'.format(code.current.path)).aclass('modified');
-				}
+				setTimeout2('code.modified', function() {
+					var diffel = editor.find('.cm-diff:first-child');
+					if (diffel.length) {
+						exports.cache_set();
+						if (!code.current.modified) {
+							code.current.modified = true;
+							exports.element.find('section.tabs').find('span[data-value="{0}"]'.format(code.current.path)).aclass('modified');
+						}
+					} else if (code.current.modified) {
+						code.current.modified = false;
+						exports.element.find('section.tabs').find('span[data-value="{0}"]'.format(code.current.path)).rclass('modified');
+					}
+				}, 500);
 			}
 
 			if (code.current && code.current.path.substring(code.current.path.length - 3) === '.js') {

@@ -69,6 +69,7 @@ COMPONENT('editor', function(self, config) {
 		css.position = 'absolute';
 		css.left = '39px';
 		css.top = '-1px';
+		marker.className = 'cm-diff';
 		marker.innerHTML = '+';
 		return marker;
 	};
