@@ -142,7 +142,7 @@
 
 			var p = 'code.saved';
 
-			if (!msg || msg instanceof jQuery) {
+			if (!msg || msg instanceof jQuery || msg.id === user.id) {
 				SET(p, null);
 				return;
 			}
