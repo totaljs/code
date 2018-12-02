@@ -36,6 +36,9 @@ exports.install = function() {
 
 		ROUTE('GET    /api/users/online/',                                   users_online);
 		ROUTE('GET    /api/users/refresh/',                                  users_refresh);
+		ROUTE('GET    /api/common/uid/',                                     custom_uid);
+		ROUTE('GET    /api/common/ip/',                                      custom_ip);
+		ROUTE('POST   /api/common/encrypt/                     *Encoder      --> @exec');
 
 	});
 
@@ -153,4 +156,12 @@ function users_refresh() {
 function files_minify() {
 	var self = this;
 	self.body.$workflow('exec', (err, response) => self.plain(response || ''));
+}
+
+function custom_uid() {
+	this.plain(UID('custom'));
+}
+
+function custom_ip() {
+	this.plain(this.ip);
 }

@@ -310,8 +310,7 @@ input:invalid { box-shadow: none; }
 .ui-menu span { margin: 0 20px 0 35px; display: block; }
 
 .td .ui-menu b { color: #505050; }
-
-.td .ui-menu { background-color: #303030; border-color: #353535; }
+.td .ui-menu { background-color: #303030; border-color: #353535; box-shadow: 1px 5px 10px rgba(0,0,0,0.2); }
 .td .ui-menu .fa { color: white; }
 .td .ui-menu li:hover { background-color: #202020; }
 

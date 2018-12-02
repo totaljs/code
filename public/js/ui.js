@@ -232,11 +232,13 @@ COMPONENT('editor', function(self, config) {
 		var cache_lines = null;
 
 		var prerender_colors = function() {
-			var lines = editor.getValue().split('\n');
-			for (var i = 0; i < lines.length; i++) {
-				var color = lines[i].match(REGHEXCOLOR);
-				color && editor.setGutterMarker(i, 'GutterColor', GutterColor(color.toString().replace(/;|'|"|,/g, '')));
-				// self.diffgutter(i, cache_lines && lines[i] === cache_lines[i]);
+			var mode = editor.getMode().name;
+			if (mode === 'totaljsresources' || mode === 'javascript' || mode === 'totaljs' || mode === 'css' || mode === 'sass' || mode === 'html') {
+				var lines = editor.getValue().split('\n');
+				for (var i = 0; i < lines.length; i++) {
+					var color = lines[i].match(REGHEXCOLOR);
+					color && editor.setGutterMarker(i, 'GutterColor', GutterColor(color.toString().replace(/;|'|"|,/g, '')));
+				}
 			}
 		};
 
@@ -3866,7 +3868,7 @@ COMPONENT('features', 'height:37', function(self, config) {
 
 COMPONENT('statusform', function(self, config) {
 
-	var el;
+	var el, input, formtype;
 
 	self.singleton();
 
@@ -3875,16 +3877,22 @@ COMPONENT('statusform', function(self, config) {
 		self.event('keydown', 'input', function(e) {
 			if (e.which === 13) {
 				var input = $(this);
-				EXEC(config.exec, input.parent().attrd('name'), input.val().toLowerCase().replace(/[^a-z0-9.\-_]/gi, ''));
+				EXEC(config.exec, input.parent().attrd('name'), input.val().toLowerCase().replace(/[^a-z0-9./\-_]/gi, ''), formtype);
 				self.set('');
 			}
 		});
 	};
 
+	self.val = function(value, type) {
+		input && input.val(value);
+		formtype = type;
+	};
+
 	self.setter = function(value) {
 		el.aclass('hidden');
+		formtype = '';
 		if (value) {
-			var input = el.filter('[data-name="{0}"]'.format(value)).rclass('hidden').find('input').val('');
+			input = el.filter('[data-name="{0}"]'.format(value)).rclass('hidden').find('input').val('');
 			setTimeout(function() {
 				input.focus();
 			}, 300);

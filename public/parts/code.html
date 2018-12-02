@@ -207,17 +207,18 @@
 			var sel = editor.getSelections();
 			var can = sel.join('').length > 0;
 
-			if (!can)
-				return;
+			if (can) {
+				items.push({ name: '@(Copy)', icon: 'copy', command: 'copy' });
+				items.push({ name: '@(Encode)', icon: 'code', value: 'encode' });
+				items.push({ name: '@(Decode)', icon: 'broom', value: 'decode' });
+				items.push({ name: '@(Minify code)', icon: 'compress', value: 'minify' });
+				items.push({ name: '@(Upper Case)', icon: 'font', value: 'upper' });
+				items.push({ name: '@(Lower Case)', icon: 'font', value: 'lower' });
+			}
 
-			items.push({ name: '@(Copy)', icon: 'copy', command: 'copy' });
-			items.push({ name: '@(Encode)', icon: 'code', value: 'encode' });
-			items.push({ name: '@(Decode)', icon: 'broom', value: 'decode' });
-			items.push({ name: '@(Minify code)', icon: 'compress', value: 'minify' });
-			items.push({ name: '@(Upper Case)', icon: 'font', value: 'upper' });
-			items.push({ name: '@(Lower Case)', icon: 'font', value: 'lower' });
+			items.push({ name: '@(Insert)', icon: 'plus-circle', value: 'insert' });
 
-			SETTER('menu', 'showxy', e.pageX, e.pageY, items, function(value) {
+			SETTER('menu', 'showxy', e.pageX - 5, e.pageY - 15, items, function(value) {
 
 				if (value.command) {
 					editor.focus();
@@ -240,7 +241,13 @@
 						return;
 					}
 
-					if (value.value === 'minify') {
+					if (value.value === 'insert') {
+						items.push({ name: '@(UID)', icon: 'chevron-right', value: 'uid' });
+						items.push({ name: '@(GUID)', icon: 'chevron-right', value: 'guid' });
+						items.push({ name: '@(IP address)', icon: 'chevron-right', value: 'ip' });
+						items.push({ name: '@(Date / Time)', icon: 'chevron-right', value: 'date' });
+						y = -10;
+					} else if (value.value === 'minify') {
 						items.push({ name: '@(JavaScript)', icon: 'chevron-right', value: 'js' });
 						items.push({ name: '@(HTML)', icon: 'chevron-right', value: 'html' });
 						items.push({ name: '@(CSS)', icon: 'chevron-right', value: 'css' });
@@ -250,6 +257,14 @@
 						items.push({ name: '@(Encode URI)', icon: 'chevron-right', value: 'encodeURIComponent' });
 						items.push({ name: '@(Escape)', icon: 'chevron-right', value: 'escape' });
 						items.push({ name: '@(Slug)', icon: 'chevron-right', value: 'slug' });
+						items.push({ name: '@(HASH)', icon: 'chevron-right', value: 'HASH' });
+						items.push({ name: '@(MD5)', icon: 'chevron-right', value: 'md5', server: true });
+						items.push({ name: '@(SHA-1)', icon: 'chevron-right', value: 'sha1', server: true });
+						items.push({ name: '@(SHA-256)', icon: 'chevron-right', value: 'sha256', server: true });
+						items.push({ name: '@(SHA-512)', icon: 'chevron-right', value: 'sha512', server: true });
+						items.push({ name: '@(CRC-32)', icon: 'chevron-right', value: 'crc32', server: true });
+						items.push({ name: '@(CRC-32 unsigned)', icon: 'chevron-right', value: 'crc32unsigned', server: true });
+						y = -10;
 					} else {
 						y = 40;
 						items.push({ name: '@(Base64)', icon: 'chevron-right', value: 'atob' });
@@ -258,15 +273,42 @@
 					}
 
 					SETTER('menu', 'showxy', e.pageX + x, e.pageY + y, items, function(value) {
+
+						if (value.server) {
+							var model = {};
+							model.type = value.value;
+							model.body = sel;
+							AJAX('POST /api/common/encrypt/', model, function(response) {
+								editor.replaceSelections(response);
+							});
+							return;
+						}
+
 						switch (value.value) {
+							case 'uid':
+							case 'ip':
+								AJAX('GET /api/common/{0}/'.format(value.value), function(response) {
+									editor.replaceSelection(response);
+								});
+								break;
+							case 'date':
+								editor.replaceSelection(new Date().format(null));
+								break;
+							case 'GUID':
+								editor.replaceSelection(GUID(50));
+								break;
+							case 'guid':
+								editor.replaceSelection(FUNC.guid());
+								break;
 							case 'encodeURIComponent':
 							case 'decodeURIComponent':
 							case 'atob':
 							case 'btoa':
 							case 'escape':
 							case 'unescape':
+							case 'HASH':
 								for (var i = 0; i < sel.length; i++)
-									sel[i] = window[value.value](sel[i]);
+									sel[i] = window[value.value](sel[i]).toString();
 								editor.replaceSelections(sel);
 								break;
 							case 'slug':
@@ -532,6 +574,7 @@
 			}
 
 			items.push({ value: 3, name: '@(Rename)', icon: 'pencil' });
+			!node.children && items.push({ value: 2, name: '@(Duplicate)', icon: 'copy' });
 			items.push({ value: 255, name: '@(Remove)', icon: 'times-circle red' });
 
 			SETTER('menu', 'show', 'right', el, items, function(item) {
@@ -541,6 +584,21 @@
 						SET('code.statusform.name', item.value);
 						code.statusform.path = node.path + (node.path ? '/' : '');
 						break;
+
+					case 2:
+						// Duplicate
+						var name = node.path;
+
+						var index = name.lastIndexOf('.');
+						if (index === -1) {
+							name += '-2';
+						} else
+							name = name.substring(0, index) + '-2' + name.substring(index);
+
+						SET('code.statusform.name', 'file');
+						SETTER('statusform', 'val', name, node.path);
+						break;
+
 					case 3:
 						setTimeout(function() {
 							exports.element.SETTER('tree', 'rename', node.$pointer);
@@ -928,7 +986,7 @@
 
 		};
 
-		exports.statusform = function(name, value) {
+		exports.statusform = function(name, value, type) {
 
 			if (name instanceof jQuery) {
 				// element
@@ -944,6 +1002,7 @@
 
 			data.path = (code.statusform.path || '') + value;
 			data.folder = name !== 'file';
+			data.clone = type;
 
 			SETTER('loading', 'show');
 			AJAX('POST /api/files/{id}/create/'.arg(code.data), data, function(response) {

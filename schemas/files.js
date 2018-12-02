@@ -171,6 +171,7 @@ NEWSCHEMA('FilesCreate', function(schema) {
 
 	schema.define('path', 'String', true);
 	schema.define('folder', Boolean);
+	schema.define('clone', 'String');
 
 	schema.addWorkflow('exec', function($) {
 
@@ -208,16 +209,25 @@ NEWSCHEMA('FilesCreate', function(schema) {
 				} else {
 					var name = U.getName(filename);
 					F.path.mkdir(filename.substring(0, filename.length - name.length));
-					Fs.writeFile(filename, '', function(err) {
-						if (err)
-							$.invalid(err);
-						else
-							$.success();
-					});
+
+					if (model.clone) {
+						Fs.copyFile(Path.join(project.path, model.clone), filename, function(err) {
+							if (err)
+								$.invalid(err);
+							else
+								$.success();
+						});
+					} else {
+						Fs.writeFile(filename, '', function(err) {
+							if (err)
+								$.invalid(err);
+							else
+								$.success();
+						});
+					}
 				}
 			} else
 				$.invalid('path', model.path + ' already exists');
-
 		});
 
 	});
