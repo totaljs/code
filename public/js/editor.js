@@ -956,10 +956,19 @@ WAIT('CodeMirror.defineMode', function() {
 		},
 
 		changeActive: function(i, avoidWrap) {
-			if (i >= this.data.list.length)
-				i = avoidWrap ? this.data.list.length - 1 : 0;
-			else if (i < 0)
-				i = avoidWrap ? 0 : this.data.list.length - 1;
+			if (i >= this.data.list.length) {
+				this.completion.close();
+				// i = avoidWrap ? this.data.list.length - 1 : 0;
+				this.data.from.line++;
+				this.completion.cm.setCursor(this.data.from);
+				return;
+			} else if (i < 0) {
+				this.completion.close();
+				this.data.from.line--;
+				this.completion.cm.setCursor(this.data.from);
+				// i = avoidWrap ? 0 : this.data.list.length - 1;
+				return;
+			}
 			if (this.selectedHint == i)
 				return;
 			var node = this.hints.childNodes[this.selectedHint];
@@ -1087,18 +1096,20 @@ WAIT('CodeMirror.defineMode', function() {
 })(function(CodeMirror) {
 	var RULES = { 'tagname-lowercase': true, 'attr-lowercase': true, 'attr-value-double-quotes': true, 'doctype-first': false, 'tag-pair': true, 'spec-char-escape': true, 'id-unique': true, 'src-not-empty': true, 'attr-no-duplication': true };
 	var fn = function(text) {
+
 		var found = [];
 		var message;
-		if (!window.HTMLHint) {
+
+		if (window.HTMLHint) {
 			SET('code.errors', found);
-			return found;
+			var messages = HTMLHint.verify(text, RULES);
+			for (var i = 0; i < messages.length; i++) {
+				message = messages[i];
+				var startLine = message.line -1, endLine = message.line -1, startCol = message.col -1, endCol = message.col;
+				found.push({ from: CodeMirror.Pos(startLine, startCol), to: CodeMirror.Pos(endLine, endCol), message: message.message, severity : message.type, line: startLine + 1, reason: message.message, });
+			}
 		}
-		var messages = HTMLHint.verify(text, RULES);
-		for (var i = 0; i < messages.length; i++) {
-			message = messages[i];
-			var startLine = message.line -1, endLine = message.line -1, startCol = message.col -1, endCol = message.col;
-			found.push({ from: CodeMirror.Pos(startLine, startCol), to: CodeMirror.Pos(endLine, endCol), message: message.message, severity : message.type, line: startLine + 1, reason: message.message, });
-		}
+
 		SET('code.errors', found);
 		return found;
 	};
