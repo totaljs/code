@@ -9,6 +9,7 @@ NEWSCHEMA('Projects', function(schema) {
 	schema.define('name', 'String(50)', true);
 	schema.define('repository', 'String(100)');
 	schema.define('path', 'String(100)', true);
+	schema.define('pathsync', 'String(100)');
 	schema.define('permissions', String);
 	schema.define('documentation', 'String(200)');
 	schema.define('support', 'String(200)');
@@ -159,7 +160,7 @@ NEWSCHEMA('Projects', function(schema) {
 				directories = directories.remove(cleaner);
 			}
 
-			$.callback({ files: files, directories: directories, url: item.url, name: item.name, icon: item.icon, repository: item.repository, id: item.id, documentation: item.documentation, support: item.support });
+			$.callback({ files: files, directories: directories, url: item.url, name: item.name, icon: item.icon, repository: item.repository, id: item.id, documentation: item.documentation, support: item.support, pathsync: item.pathsync });
 
 		}, n => !SKIP.test(n) && (!skip || !skip.test(n)));
 	});

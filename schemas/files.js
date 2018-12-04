@@ -5,6 +5,7 @@ NEWSCHEMA('Files', function(schema) {
 
 	schema.define('body', String);
 	schema.define('path', 'String(500)', true);
+	schema.define('sync', Boolean);
 
 	schema.setSave(function($) {
 
@@ -42,7 +43,14 @@ NEWSCHEMA('Files', function(schema) {
 		else
 			Fs.writeFile(filename, model.body, ERROR('files.write'));
 
-		$.success();
+		if (model.sync && project.pathsync) {
+			filename = Path.join(project.pathsync, model.path);
+			F.path.mkdir(filename.substring(0, filename.length - name.length));
+			Fs.writeFile(filename, model.body, ERROR('files.write'));
+			$.success('synchronized');
+		} else
+			$.success();
+
 	});
 });
 

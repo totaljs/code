@@ -531,11 +531,9 @@
 			items.push({ value: 2, name: '@(Find)', icon: 'search', command: 'findPersistent' });
 			items.push({ value: 2, name: '@(Replace)', icon: 'search', command: 'replaceAll' });
 			items.push({ value: 3, name: '@(Convert to Tabs)', icon: 'align-right' });
-
-			if (common.electron && code.data.repository)
-				items.push({ value: 5, name: '@(Save locally)', icon: 'floppy-o' });
-
+			common.electron && code.data.repository && items.push({ value: 5, name: '@(Save locally)', icon: 'floppy-o' });
 			items.push({ value: 4, name: '@(Restore from backup)', icon: 'history' });
+			code.data.pathsync && items.push({ value: 6, name: '@(Save synchronized)', icon: 'sync green' });
 
 			SETTER('menu', 'show', 'left', el, items, function(item) {
 				switch (item.value) {
@@ -559,6 +557,9 @@
 						break;
 					case 5:
 						exports.savelocal();
+						break;
+					case 6:
+						exports.save(false, true);
 						break;
 				}
 			}, -5, -5);
@@ -878,7 +879,7 @@
 				FUNC.warning('@(You don\'t have defined repository path.)');
 		};
 
-		exports.save = function(close, comment) {
+		exports.save = function(close, sync) {
 
 			if (BLOCKED('code_saving', 1000))
 				return;
@@ -887,10 +888,8 @@
 			data.path = code.editor.path;
 			data.body = FUNC.rtrim(editor.editor.getValue());
 
-			if (comment) {
-				data.comment = comment;
-				data.commit = true;
-			}
+			if (sync)
+				data.sync = sync;
 
 			code.current.modified = false;
 			exports.cache_rem(code.current.path);
@@ -904,7 +903,7 @@
 
 				editor.diffgutterclear();
 				FUNC.wssend({ TYPE: 'save', projectid: code.projectid, id: user.id, user: user.name });
-				FUNC.success('@(<b>{0}</b> saved)'.format(data.path));
+				FUNC.success((response.value === 'synchronized' ? '@(<b>{0}</b> saved and synchronized)' : '@(<b>{0}</b> saved)').format(data.path));
 				common.electron && code.data.repository && user.localsave && exports.savelocal();
 			});
 		};

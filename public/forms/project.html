@@ -6,10 +6,19 @@
 					<div data-jc="textbox__name__required:true__''">@(Name)</div>
 				</div>
 				<div class="col-sm-6 m">
-					<div data-jc="textbox__path__required:true__''">@(Path)</div>
+					<div data-jc="textbox__url__required:true__''">@(URL to application)</div>
 				</div>
 			</div>
-			<div data-jc="textbox__url__required:true__''" class="m">@(URL to application)</div>
+			<div class="row">
+				<div class="col-sm-6 m">
+					<div data-jc="textbox__path__required:true__''">@(Path)</div>
+					<div class="help">@(Application's path.)</div>
+				</div>
+				<div class="col-sm-6 m">
+					<div data-jc="textbox__pathsync__maxlength:100__''">@(Path for synchronization)</div>
+					<div class="help">@(Additional path for e.g. production)</div>
+				</div>
+			</div>
 
 			<div class="row">
 				<div class="col-sm-6 m">
