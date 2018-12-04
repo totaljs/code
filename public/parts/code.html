@@ -467,7 +467,20 @@
 					exports.edit(tab);
 					exports.savetabs();
 				}
+				tab.skip = true;
 				return;
+			}
+
+			var rewrite = false;
+
+			// we can open file on the current tab
+			if (!code.SYNC && code.current && !code.current.modified && !code.current.skip) {
+				var index = code.open.indexOf(code.current);
+				if (index !== -1) {
+					code.open.splice(index, 1);
+					exports.cache_rem(code.current);
+					code.current = null;
+				}
 			}
 
 			var newbie = false;
@@ -516,6 +529,7 @@
 				exports.edit(tab);
 				exports.savetabs();
 				exports.element.SETTER('tree', 'select2', FUNC.treeindex(code.tree, item.path), true);
+				editor.editor.focus();
 			});
 		};
 
@@ -623,21 +637,22 @@
 			}, 20, -30);
 		};
 
-		exports.close = function() {
-			if (code.current.modified) {
-				SETTER('confirm', 'show', '@(Do you want to save the changes you made?)', ['"floppy-o"@(Save changes)', '@(Discard)'], function(index) {
-					if (index)
-						exports.closeforce();
-					else
-						exports.save(true);
+		exports.close = function(el, e) {
+			var path = code.current.path;
+			if (el instanceof jQuery)
+				path = el.parent().attrd('value');
+			var tab = code.open.findItem('path', path);
+			if (tab.modified) {
+				SETTER('confirm', 'show', '@(The content has been modified. <b>Do you want to <u>discard changes</u>?</b>)', ['"trash-o"@(Discard changes)', '@(Cancel)'], function(index) {
+					!index && exports.closeforce(tab.path);
 				});
 			} else
-				exports.closeforce();
+				exports.closeforce(tab.path);
 		};
 
-		exports.closeforce = function() {
+		exports.closeforce = function(path) {
 			common.form && SET('common.form', '');
-			exports.closetab(code.current.path);
+			exports.closetab(path || code.current.path);
 		};
 
 		exports.closetab = function(path) {
@@ -789,7 +804,6 @@
 			FUNC.wsopen(code.data.id, code.current.path, code.projectid);
 
 			code.editor.loaded = true;
-
 			!tab.doc && setTimeout(function() {
 				editor.editor.refresh();
 				var cache = exports.cache_getscroll(code.current.path);
@@ -943,6 +957,7 @@
 						tab.name = tab.name.split('/');
 						tab.name = tab.name[tab.name.length - 1];
 						tab.body = '';
+						tab.skip = true;
 						tabs.push(tab);
 					}
 

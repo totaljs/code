@@ -919,16 +919,14 @@ COMPONENT('tabmenu', 'class:selected;selector:li', function(self, config) {
 	self.nocompile && self.nocompile();
 
 	self.make = function() {
-		self.event('click', config.selector, function() {
-			if (!config.disabled) {
+		self.event('click', config.selector, function(e) {
+			if (!config.disabled && !$(e.target).hclass('exec')) {
 				var el = $(this);
-				if (!el.hclass(config.class)) {
-					var val = el.attrd('value');
-					if (config.exec)
-						EXEC(config.exec, val);
-					else
-						self.set(val);
-				}
+				var val = el.attrd('value');
+				if (config.exec)
+					EXEC(config.exec, val, e);
+				else
+					self.set(val);
 			}
 		});
 		var scr = self.find('script');
