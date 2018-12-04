@@ -3401,6 +3401,12 @@ COMPONENT('websocket', 'reconnect:3000', function(self, config) {
 	};
 
 	function onClose(e) {
+
+		if (e.code === 4001) {
+			location.href = location.href;
+			return;
+		}
+
 		e.reason && WARN('WebSocket:', decodeURIComponent(e.reason));
 		self.close(true);
 		setTimeout(self.connect, config.reconnect);
