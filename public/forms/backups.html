@@ -53,5 +53,11 @@
 				codeplugin.element.find('section.tabs').find('span[data-value="{0}"]'.format(code.current.path)).aclass('modified');
 			});
 		};
-	})
+
+		ON('knockknock', function(counter) {
+			if (common.form === 'backups')
+				exports.refresh();
+		});
+
+	});
 </script>

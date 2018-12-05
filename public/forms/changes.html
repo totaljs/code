@@ -34,5 +34,10 @@
 				SET('codechanges.items', response);
 			});
 		};
+
+		ON('knockknock', function(counter) {
+			if (common.form === 'changes')
+				exports.refresh();
+		});
 	})
 </script>
