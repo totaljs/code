@@ -4,7 +4,7 @@ NEWSCHEMA('Tasks', function(schema) {
 	schema.define('body', 'String', true);
 
 	schema.setQuery(function($) {
-		NOSQL($.id).find().where('type', 'task').where('path', $.query.path).sort('created', true).callback($.callback);
+		NOSQL($.id + '_tasks').find().where('type', 'task').where('path', $.query.path).sort('created', true).callback($.callback);
 	});
 
 	schema.setInsert(function($) {
@@ -25,7 +25,7 @@ NEWSCHEMA('Tasks', function(schema) {
 		model.userid = $.user.id;
 		model.solved = false;
 
-		NOSQL($.id).insert(model).callback(function() {
+		NOSQL($.id + '_tasks').insert(model).callback(function() {
 			$.success();
 			MAIN.send({ TYPE: op, projectid: $.id, taskid: $.params.taskid });
 			MAIN.log($.user, op, $.id, model.path);
@@ -44,7 +44,7 @@ NEWSCHEMA('Tasks', function(schema) {
 
 		var op = 'tasks_solve';
 
-		NOSQL($.id).modify({ '!solved': 1 }).make(function(builder) {
+		NOSQL($.id + '_tasks').modify({ '!solved': 1 }).make(function(builder) {
 
 			builder.where('id', $.params.taskid);
 
@@ -64,7 +64,7 @@ NEWSCHEMA('Tasks', function(schema) {
 			return;
 		}
 
-		NOSQL($.id).scalar('group', 'path').make(function(builder) {
+		NOSQL($.id + '_tasks').scalar('group', 'path').make(function(builder) {
 			builder.where('type', 'task');
 			builder.where('solved', false);
 			builder.callback(function(err, response) {

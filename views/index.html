@@ -173,9 +173,13 @@
 
 				arr.quicksort('name');
 
+				if (code.data && code.data.id)
+					arr.unshift({ name: '@(Changes)', id: 'changes', icon: 'clock-o' });
+
 				if (code.editor.path) {
 					arr.unshift({ name: '@(Save)', id: 'save', icon: 'floppy-o' });
 					arr.unshift({ name: '@(Reload)', id: 'reload', icon: 'refresh', keywords: 'refresh' });
+					arr.unshift({ name: '@(History &amp; Backups)', id: 'history', icon: 'history', keywords: 'backups' });
 				}
 			}
 
@@ -187,8 +191,12 @@
 						case 'reload':
 							FUNC.editor_reload();
 							break;
+						case 'history':
+							SET('common.form', 'backups');
+							break;
+						case 'changes':
 						case 'save':
-							EXEC('editor/save');
+							EXEC('editor/' + value.id);
 							break;
 					}
 				}

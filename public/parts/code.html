@@ -15,8 +15,9 @@
 		<button title="@(Create file)" class="exec" data-name="file" data-exec="code/statusform"><i class="fa fa-file-text-o"></i></button>
 		<button title="@(Create folder)" class="exec" data-name="directory" data-exec="code/statusform"><i class="fa fa-folder"></i></button>
 		<button title="@(All uncomplete tasks)" class="exec" data-name="directory" data-exec="code/tasks_uncomplete"><i class="fa fa-tasks"></i></button>
+		<button title="@(All tracked changes)" class="exec" data-exec="code/changes"><i class="fa fa-history"></i></button>
+		<button title="@(Refresh directories and files)" class="exec" data-exec="code/refresh"><i class="fa fa-refresh"></i></button>
 		<button title="@(Users)" class="exec" data-name="directory" data-exec="code/usersonline"><i class="fa fa-users"></i></button>
-		<span>v@{config.version}</span>
 	</section>
 </div>
 
@@ -82,6 +83,7 @@
 
 <div data-jc="importer__common.form__if:tasks;url:/forms/tasks.html;cleaner:10"></div>
 <div data-jc="importer__common.form__if:backups;url:/forms/backups.html;cleaner:10"></div>
+<div data-jc="importer__common.form__if:changes;url:/forms/changes.html;cleaner:10"></div>
 
 <script>
 
@@ -97,6 +99,10 @@
 		FIND('editor', function(com) {
 			exports.editor = editor = com;
 		});
+
+		exports.refresh = function() {
+			exports.load(code.data.id, true);
+		};
 
 		exports.statusinfo = function(value) {
 			return (value.fline || 0) + ':' + (value.fch || 0) + (value.fline === value.tline ? (':' + ((value.tch || 0) - (value.fch || 0))) : '');
@@ -202,6 +208,10 @@
 						localStorage.removeItem(keys[i]);
 				}
 			});
+		};
+
+		exports.changes = function() {
+			SET('common.form', 'changes');
 		};
 
 		exports.contextmenu = function(e, editor) {
@@ -348,6 +358,7 @@
 						code.current.modified = false;
 						exports.element.find('section.tabs').find('span[data-value="{0}"]'.format(code.current.path)).rclass('modified');
 					}
+					exports.tablocked();
 				}, 500);
 			}
 
@@ -1128,8 +1139,10 @@
 		};
 
 		exports.tablocked = function() {
-			code.current.skip = true;
-			exports.element.FIND('tabmenu').element.find('span[data-value="{0}"]'.format(code.current.path)).rclass('nolocked');
+			if (!code.current.skip) {
+				code.current.skip = true;
+				exports.element.FIND('tabmenu').element.find('span[data-value="{0}"]'.format(code.current.path)).rclass('nolocked');
+			}
 		};
 
 		// Internal cache

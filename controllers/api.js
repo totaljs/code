@@ -28,6 +28,7 @@ exports.install = function() {
 		ROUTE('DELETE  /api/projects/{id}/backups/             *Projects     --> @backupsclear', [10000]);
 		ROUTE('GET     /api/projects/{id}/restore/             *Projects',   files_restore);
 		ROUTE('GET     /api/projects/{id}/edit/                *Projects',   files_open);
+		ROUTE('GET     /api/projects/{id}/changes/             *Projects',   files_changes);
 
 		// Other
 		ROUTE('GET     /api/download/{id}/',                                 files_download);
@@ -164,4 +165,17 @@ function custom_uid() {
 
 function custom_ip() {
 	this.plain(this.ip);
+}
+
+function files_changes(id) {
+	var self = this;
+	NOSQL(id + '_changes').find2().take(50).callback(function(err, response) {
+		for (var i = 0; i < response.length; i++) {
+			var item = response[i];
+			var user = MAIN.users.findItem('id', item.userid);
+			if (user)
+				response[i].user = user.name;
+		}
+		self.json(response);
+	});
 }

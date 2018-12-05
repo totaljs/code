@@ -52,24 +52,25 @@ h3 i { margin-right: 5px; color: $color; }
 .b { font-weight: bold; }
 .m { margin-bottom: 20px; }
 
-#body { border-left: 1px solid #E0E0E0; min-height: 200px; margin-left: 239px; overflow: hidden; }
+#body { border-left: 1px solid #E0E0E0; min-height: 200px; margin-left: 240px; overflow: hidden; }
 #body.warning .tabs span.selected  { border-top-color: red; }
-#panel { width: 239px; float: left; overflow: hidden; }
+#panel { width: 240px; float: left; overflow: hidden; }
 #content { overflow: hidden; }
 #panel .project { height: 50px; border-bottom: 1px solid #E0E0E0; background-color: #fffbed; color: black; cursor: pointer; font-size: 18px; padding: 12px 0 0 20px; font-weight: bold; }
 #panel .project i { float: right; margin: 3px 15px 0 0; }
 #panel .project b { margin-right: 40px; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 #panel .project:hover { background-color: #fef9e3; }
 #panel .status { padding: 0; }
-#panel .status button { float: left; border: 0; background-color: white; border-right: 1px solid #D0D0D0; height: 35px; width: 40px; outline: 0; }
+#panel .status button { float: left; border: 0; background-color: white; border-left: 1px solid #D0D0D0; height: 35px; width: 40px; outline: 0; }
 #panel .status button i { margin-right: 0; }
 #panel .status button:hover { background-color: #fffbed; }
 #panel .status > span { float: right; margin: 11px 10px 0 0; font-size: 11px; width: 60px; text-align: center; }
+#panel .status button:first-child { border-left: 0; }
 
 .bg-yellow { background-color: #FFFFD5; }
 .bg-smoke { background-color: #F8F8F8; }
 
-#content .alert { padding: 7px 15px 5px; position: absolute; left: 240px; right: 0; z-index: 5; border-radius: 0; border-top: 1px solid #dddbaf; bottom: 44px; }
+#content .alert { padding: 7px 15px 5px; position: absolute; left: 241px; right: 0; z-index: 5; border-radius: 0; border-top: 1px solid #dddbaf; bottom: 44px; }
 #content .messages {}
 
 .projectslist { position: absolute; background-color: white; z-index: 7; top: 99px; width: 301px; border: 1px solid #E0E0E0; box-shadow: 5px 5px 10px rgba(0,0,0,0.1); }
@@ -247,7 +248,7 @@ header .tools .external { color: #a2a286; }
 .td .collaborators .tools span { border-left-color: #353535; color: white; }
 .td .collaborators .tools span:hover { text-decoration: none; background-color: #303030; }
 .td .status { border-top-color: #353535; }
-.td #panel .status button { background-color: #202020; border-right-color: #353535; color: white; }
+.td #panel .status button { background-color: #202020; border-left-color: #353535; color: white; }
 .td #panel .status button:hover { background-color: #303030; }
 .td .ui-tree { background-color: #202020; }
 .td #panel .project { background-color: black; color: white; border-bottom-color: black; }
@@ -347,3 +348,15 @@ header .tools .external { color: #a2a286; }
 .backupitem i { margin-right: 5px; }
 .td .backupitem { border-top: 1px solid #303030; }
 .td .backupitem:hover { background-color: #202020; }
+
+.changeitem { padding: 11px 20px; border-top: 1px solid #E0E0E0; user-select: none; }
+.changeitem:first-child { border-top: 0; }
+.changeitem .photo { float: left; width: 31px; }
+.changeitem .meta { margin-left: 40px; font-size: 12px; }
+.changeitem .user { font-size: 11px; }
+.changeitem .date { color: gray; }
+.changeitem .date span { font-weight: normal; float: right; }
+.changeitem i { margin-right: 5px; }
+.changeitem .path { margin-top: 5px; font-weight: bold; }
+.td .changeitem { border-top: 1px solid #303030; }
+.td .changeitem .path { color: white; }

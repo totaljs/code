@@ -1,5 +1,4 @@
 const SKIP = /\/\.git\//;
-const READDIROPTIONS = { withFileTypes: true };
 const Path = require('path');
 const Fs = require('fs');
 
@@ -245,7 +244,7 @@ NEWSCHEMA('Projects', function(schema) {
 		if (index !== -1)
 			name = name.substring(0, index);
 
-		Fs.readdir(path, READDIROPTIONS, function(err, response) {
+		Fs.readdir(path, function(err, response) {
 
 			if (err || !response || !response.length) {
 				$.callback(EMPTYARRAY);

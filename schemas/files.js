@@ -34,6 +34,7 @@ NEWSCHEMA('Files', function(schema) {
 		var name = U.getName(filename);
 
 		MAIN.log($.user, 'files_save', project, filename);
+		MAIN.change('save', $.user, project, model.path);
 
 		// Tries to create a folder
 		F.path.mkdir(filename.substring(0, filename.length - name.length));
@@ -83,6 +84,7 @@ NEWSCHEMA('FilesRename', function(schema) {
 		}
 
 		MAIN.log($.user, 'files_rename', project, model.oldpath, model.newpath);
+		MAIN.change('rename', $.user, project, model.oldpath + ' --> ' + model.newpath);
 
 		model.oldpath = Path.join(project.path, model.oldpath);
 		model.newpath = Path.join(project.path, model.newpath);
@@ -124,6 +126,7 @@ NEWSCHEMA('FilesRemove', function(schema) {
 
 		var filename = Path.join(project.path, model.path);
 		MAIN.log($.user, 'files_remove', project, model.path);
+		MAIN.change('remove', $.user, project, model.path);
 
 		try {
 			var stats = Fs.lstatSync(filename);
@@ -169,6 +172,7 @@ NEWSCHEMA('FilesUpload', function(schema) {
 		$.files.wait(function(file, next) {
 			var filename = Path.join(project.path, model.path, file.filename);
 			MAIN.log($.user, 'files_upload', project, model.path + file.filename);
+			MAIN.change('upload', $.user, project, model.path + file.filename);
 			file.move(filename, next);
 		}, $.done());
 
@@ -205,6 +209,8 @@ NEWSCHEMA('FilesCreate', function(schema) {
 		}
 
 		var filename = Path.join(project.path, model.path);
+
+		MAIN.change('create', $.user, project, model.path);
 
 		Fs.lstat(filename, function(err) {
 

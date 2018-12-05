@@ -91,6 +91,10 @@ MAIN.log = function(user, type, projectid, path) {
 	LOGGER(user.id, user.ip, type, projectid.name, path);
 };
 
+MAIN.change = function(type, user, project, path) {
+	NOSQL(project.id + '_changes').insert({ type: type, userid: user.id, path: path, ip: user.ip, date: new Date() });
+};
+
 MAIN.send = function(msg) {
 	MAIN.ws && MAIN.ws.send(msg);
 };

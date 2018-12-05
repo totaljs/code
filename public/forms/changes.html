@@ -1,0 +1,38 @@
+<!--
+	It depends on "code editor"
+-->
+
+<div data-jc="panel__common.form__if:changes;width:500;title:@(Changes);icon:history;reload:codechanges/reload;bg:false;autofocus:true" class="hidden">
+	<div data-bind="codechanges.items__template">
+		<script type="text/html">
+			{{ foreach m in value }}
+				<div class="changeitem" data-path="{{ m.filename }}">
+					<div class="photo">{{ m.user | initials }}</div>
+					<div class="meta">
+						<div class="date"><span>{{ m.date | format('[date]') }}</span><i class="fa fa-clock"></i>{{ m.date | time }}</div>
+						<div class="user">{{ m.user }}</div>
+						<div class="path"><span class="badge badge-blue badge-small">{{ m.type }}</span>{{ m.path }}</div>
+					</div>
+				</div>
+			{{ end }}
+		</script>
+	</div>
+</div>
+
+<script>
+	PLUGIN('codechanges', function(exports) {
+
+		exports.reload = function() {
+			exports.refresh();
+		};
+
+		exports.refresh = function() {
+			var qs = {};
+			qs.path = code.editor.path;
+			AJAX('GET /api/projects/{id}/changes/'.arg(code.data), qs, function(response) {
+				response.quicksort('date', false);
+				SET('codechanges.items', response);
+			});
+		};
+	})
+</script>
