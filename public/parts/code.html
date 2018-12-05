@@ -26,7 +26,7 @@
 		<span class="options exec hidden" data-exec="code/options_editor" data-bind="code.editor.path__show"><i class="fa fa-cog"></i></span>
 		<nav data-jc="tabmenu__code.editor.path__datasource:code.open;selector:span;exec:code/opentab;reorder:code/savetabs">
 			<script type="text/html">
-				<span data-value="{{ path }}"{{ if modified }} class="modified"{{ fi }} title="{{ name }}"><i class="fa exec" data-exec="code/close"></i>{{ name }}</span>
+				<span data-value="{{ path }}" class="{{ if !skip }}nolocked{{ fi }}{{ if modified }} modified{{ fi }}" title="{{ name }}"><i class="fa exec" data-exec="code/close"></i>{{ name }}</span>
 			</script>
 		</nav>
 	</section>
@@ -136,6 +136,8 @@
 				SETTER('loading', 'show');
 				FUNC.wssend({ TYPE: 'syncsend', projectid: code.projectid, connid: common.id, fromid: min.id });
 			}
+
+			exports.tablocked();
 		};
 
 		exports.syncsave = function(msg) {
@@ -375,6 +377,7 @@
 					SET('code.multiple', false);
 					break;
 			}
+			exports.tablocked();
 		};
 
 		var cache_sync = { TYPE: 'sync' };
@@ -468,6 +471,7 @@
 					exports.savetabs();
 				}
 				tab.skip = true;
+				exports.tablocked();
 				return;
 			}
 
@@ -1121,6 +1125,11 @@
 				} else
 					localStorage.removeItem(key);
 			}, 300, null, editor);
+		};
+
+		exports.tablocked = function() {
+			code.current.skip = true;
+			exports.element.FIND('tabmenu').element.find('span[data-value="{0}"]'.format(code.current.path)).rclass('nolocked');
 		};
 
 		// Internal cache
