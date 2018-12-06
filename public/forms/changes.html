@@ -3,13 +3,25 @@
 -->
 
 <div data-jc="panel__common.form__if:changes;width:500;title:@(Changes);icon:history;reload:codechanges/reload;bg:false;autofocus:true" class="hidden">
-	<div data-bind="codechanges.items__template">
+	<div data-bind="!codechanges__template">
 		<script type="text/html">
-			{{ foreach m in value }}
+			{{ if value.group.length }}
+			<div class="changedfiles">
+				<div><i class="far fa-clock-o"></i>@(Last changed files)</div>
+				<div>
+				{{ foreach m in value.group }}
+					<div class="changefile">
+						<div class="path"><i class="fa fa-file-alt"></i>{{ m }}</div>
+					</div>
+				{{ end }}
+				</div>
+			</div>
+			{{ fi }}
+			{{ foreach m in value.files }}
 				<div class="changeitem" data-path="{{ m.filename }}">
 					<div class="photo">{{ m.user | initials }}</div>
 					<div class="meta">
-						<div class="date"><span>{{ m.date | format('[date]') }}</span><i class="fa fa-clock"></i>{{ m.date | time }}</div>
+						<div class="date"><span>{{ m.date | format('[date]') }}</span><i class="far fa-clock"></i>{{ m.date | time }}</div>
 						<div class="user">{{ m.user }}</div>
 						<div class="path"><span class="badge badge-blue badge-small">{{ m.type }}</span>{{ m.path }}</div>
 					</div>
@@ -31,7 +43,15 @@
 			qs.path = code.editor.path;
 			AJAX('GET /api/projects/{id}/changes/'.arg(code.data), qs, function(response) {
 				response.quicksort('date', false);
-				SET('codechanges.items', response);
+
+				var changes = {};
+
+				for (var i = 0; i < response.length; i++) {
+					var item = response[i];
+					changes[item.path] = (changes[item.path] || 0) + 1;
+				}
+
+				SET('codechanges', { files: response, group: Object.keys(changes) });
 			});
 		};
 

@@ -360,3 +360,14 @@ header .tools .external { color: #a2a286; }
 .changeitem .path { margin-top: 5px; font-weight: bold; }
 .td .changeitem { border-top: 1px solid #303030; }
 .td .changeitem .path { color: white; }
+
+.changedfiles { background-color: #FFFFD5; padding: 10px 0; }
+.changedfiles > div:first-child { padding: 5px 18px; color: black; font-weight: bold; font-size: 12px; }
+.changedfiles i { margin-right: 5px; }
+.changefile { padding: 5px 20px; color: gray; border-top: 1px solid #E0E0E0; font-size: 12px; }
+.changefile:first-child { border-top: 0; }
+.changefile .path { text-overflow: ellipsis; white-space: nowrap; overflow: hidden; }
+
+.td .changedfiles { background-color: #303030; }
+.td .changefile { color: #A0A0A0; border-color: #202020; }
+.td .changedfiles > div:first-child { color: silver; }
