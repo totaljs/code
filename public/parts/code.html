@@ -476,6 +476,8 @@
 
 			var tab = code.open.findItem('path', item.path);
 			if (tab && tab.loaded) {
+				code.SYNC = false;
+				SET('code.multiple', false);
 				if (tab.path !== code.editor.path) {
 					// check if the content has been modified
 					exports.edit(tab);
@@ -520,6 +522,9 @@
 					return;
 			}
 
+			code.SYNC = false;
+			SET('code.multiple', false);
+
 			AJAX('GET /api/projects/{id}/edit/'.arg(code.data), { path: item.path }, function(response) {
 
 				if (response instanceof Array) {
@@ -539,7 +544,6 @@
 
 				var cache = exports.cache_get(item.path);
 				SET('code.backup', cache && cache !== response);
-
 				newbie && PUSH('code.open', tab);
 				exports.edit(tab);
 				exports.savetabs();

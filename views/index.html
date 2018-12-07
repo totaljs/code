@@ -105,7 +105,7 @@
 					EXEC('code/collaboration', msg);
 					break;
 				case 'sync':
-					if (msg.projectid === code.projectid && msg.id !== common.id) {
+					if (code.SYNC && msg.projectid === code.projectid && msg.id !== common.id) {
 						var editor = FIND('editor').editor;
 						var data = PARSE(msg.data);
 						code.SYNC = false;
