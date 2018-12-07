@@ -7,7 +7,7 @@
 
 # Total.js: Code
 
-Online collaboration tool for __Total Developers__.
+Online collaboration tool for __Total Developers__. We recommend to use [__bundled version of Code Editor__](https://github.com/totaljs/code-bundle).
 
 ![Electron](http://cdn.totaljs.com/images/code-electron-02.jpg)
 
@@ -25,3 +25,8 @@ Online collaboration tool for __Total Developers__.
 ---
 
 Best way how to provide __Code Editor__ is to install it via [Total.js SuperAdmin](https://www.totaljs.com/superadmin/).
+
+__Good to know__:
+
+- [Download: __Code bundled version__](https://github.com/totaljs/code-bundle)
+- [Download: __Code Electron__](https://github.com/totaljs/code-electron)
