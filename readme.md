@@ -7,10 +7,11 @@
 
 # Total.js: Code
 
-Online collaboration code.
+Online collaboration tool for __Total Developers__.
 
 ![Electron](http://cdn.totaljs.com/images/code-electron-02.jpg)
 
+- __can be provided only in Linux/Unix or MacOS__
 - install latest version of Total.js from NPM `$ npm install total.js`
 - download example
 - run `$ node debug.js`
@@ -20,3 +21,7 @@ Online collaboration code.
 
 - user: `info@totaljs.com`
 - pass: `123456`
+
+---
+
+Best way how to provide __Code Editor__ is to install it via [Total.js SuperAdmin](https://www.totaljs.com/superadmin/).
