@@ -27,7 +27,7 @@
 		<span class="options exec hidden" data-exec="code/options_editor" data-bind="code.editor.path__show"><i class="fa fa-cog"></i></span>
 		<nav data-jc="tabmenu__code.editor.path__datasource:code.open;selector:span;exec:code/opentab;reorder:code/savetabs">
 			<script type="text/html">
-				<span data-value="{{ path }}" class="{{ if !skip }}nolocked{{ fi }}{{ if modified }} modified{{ fi }}" title="{{ name }}"><i class="fa exec" data-exec="code/close"></i>{{ name }}</span>
+				<span data-value="{{ path }}" class="{{ if !skip }}nolocked{{ fi }}{{ if modified }} modified{{ fi }}" title="{{ path }}"><i class="fa exec" data-exec="code/close"></i>{{ name }}</span>
 			</script>
 		</nav>
 	</section>
@@ -485,13 +485,14 @@
 				}
 				exports.tablocked();
 				tab.skip = true;
+				exports.element.SETTER('tree', 'selectpath', tab.path, true);
 				return;
 			}
 
 			var rewrite = false;
 
 			// we can open file on the current tab
-			if (!code.SYNC && code.current && !code.current.modified && !code.current.skip) {
+			if (!code.SYNC && code.current && !code.current.modified && !code.current.skip && (!tab || code.current.path !== tab.path)) {
 				var index = code.open.indexOf(code.current);
 				if (index !== -1) {
 					code.open.splice(index, 1);

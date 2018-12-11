@@ -179,7 +179,7 @@ COMPONENT('editor', function(self, config) {
 		options.scrollPastEnd = true;
 		options.lint = true;
 		options.autoCloseBrackets = true;
-		options.extraKeys = { 'Alt-F': 'findPersistent', 'Esc': clearsearch, 'Cmd-D': findmatch, 'Ctrl-D': findmatch, 'Cmd-S': shortcut('save'), 'Ctrl-S': shortcut('save'), 'Alt-W': shortcut('close'), 'Cmd-W': shortcut('close'), 'F5': shortcut('F5'), Tab: tabulator, 'Alt-Tab': shortcut('nexttab') };
+		options.extraKeys = { 'Alt-F': 'findPersistent', 'Esc': clearsearch, 'Cmd-D': findmatch, 'Ctrl-D': findmatch, 'Cmd-S': shortcut('save'), 'Ctrl-S': shortcut('save'), 'Alt-W': shortcut('close'), 'Cmd-W': shortcut('close'), Tab: tabulator, 'Alt-Tab': shortcut('nexttab') };
 
 		if (common.electron) {
 			options.extraKeys['Cmd-Tab'] = shortcut('nexttab');
@@ -697,11 +697,11 @@ COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 		}
 	};
 
-	self.selectpath = function(path) {
+	self.selectpath = function(path, noeval) {
 		var index = FUNC.treeindex(self.get(), path);
 		if (index !== -1) {
 			self.expand(index);
-			self.select(index);
+			self.select(index, noeval);
 		}
 	};
 
