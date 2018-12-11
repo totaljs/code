@@ -11,12 +11,14 @@
 			</div>
 			<div class="row">
 				<div class="col-sm-6 m">
-					<div data-jc="textbox__path__required:true__''">@(Path)</div>
-					<div class="help">@(Application's path.)</div>
+					<div data-jc="textbox__path__required:true__'/www/www/'">@(Path)</div>
+					<div class="help">
+						<span class="link exec" data-exec="projectsform/autocomplete"><i class="fa fa-search"></i>@(Browse)</span>
+					</div>
 				</div>
 				<div class="col-sm-6 m">
 					<div data-jc="textbox__pathsync__maxlength:100__''">@(Path for synchronization)</div>
-					<div class="help">@(Additional path for e.g. production)</div>
+					<div class="help"><span class="link exec" data-exec="projectsform/autocomplete2"><i class="fa fa-search"></i>@(Browse)</span>. @(Additional path for e.g. production)</div>
 				</div>
 			</div>
 
@@ -61,6 +63,22 @@
 
 <script>
 	PLUGIN('projectsform', function(exports) {
+
+		exports.autocomplete = function(el) {
+			projectsform.path && AJAX('GET /api/common/directories/', { path: projectsform.path }, function(response) {
+				SETTER('suggestion', 'show', 'left', el, response, function(value) {
+					SET('projectsform.path', value.path);
+				}, 0, 5);
+			});
+		};
+
+		exports.autocomplete2 = function(el) {
+			projectsform.pathsync && AJAX('GET /api/common/directories/', { path: projectsform.pathsync }, function(response) {
+				SETTER('suggestion', 'show', 'left', el, response, function(value) {
+					SET('projectsform.pathsync', value.path);
+				}, 0, 5);
+			});
+		};
 
 		exports.reload = function(com) {
 			AJAX('GET /api/users/', '%projectsformusers');

@@ -107,6 +107,7 @@ h3 i { margin-right: 5px; color: $color; }
 .help code { font: normal normal 11px Arial; background-color: #F0F0F0; padding: 1px 3px; border-radius: 2px; border: 1px solid #E0E0E0; }
 .td .help { color: #505050; }
 .td .help code { background-color: #353535; border-color: #303030; color: #777777; }
+.td .help .link { color: #79d0ff; }
 
 .table-small { font-size: 12px; }
 .table-small > tbody > tr > td { padding: 3px 5px; }

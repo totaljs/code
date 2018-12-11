@@ -1,3 +1,4 @@
+const READDIROPTIONS = { withFileTypes: true };
 const Path = require('path');
 const Fs = require('fs');
 
@@ -38,6 +39,7 @@ exports.install = function() {
 
 		ROUTE('GET    /api/users/online/',                                   users_online);
 		ROUTE('GET    /api/users/refresh/',                                  users_refresh);
+		ROUTE('GET    /api/common/directories/',                             directories);
 		ROUTE('GET    /api/common/uid/',                                     custom_uid);
 		ROUTE('GET    /api/common/ip/',                                      custom_ip);
 		ROUTE('POST   /api/common/encrypt/                     *Encoder      --> @exec');
@@ -178,5 +180,20 @@ function files_changes(id) {
 				response[i].user = user.name;
 		}
 		self.json(response);
+	});
+}
+
+function directories() {
+	var self = this;
+	var path = self.query.path || '/www/';
+	Fs.readdir(path, READDIROPTIONS, function(err, list) {
+
+		var arr = [];
+		for (var i = 0; i < list.length; i++) {
+			if (list[i].isDirectory())
+				arr.push({ path: Path.join(path, list[i].name), name: list[i].name });
+		}
+
+		self.json(arr);
 	});
 }
