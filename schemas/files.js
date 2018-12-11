@@ -52,6 +52,11 @@ NEWSCHEMA('Files', function(schema) {
 		} else
 			$.success();
 
+		TABLE('changelog').modify({ user: $.user.id, updated: new Date() }, true).where('projectid', $.id).where('path', model.path).insert(function(obj) {
+			obj.projectid = $.id;
+			obj.path = model.path;
+		});
+
 	});
 });
 

@@ -52,6 +52,14 @@
 		<div data-bind="code.errors__html b:value?value.length:0__.red:value && value.length>0" class="status-alerts exec" data-exec="code/warnings">
 			<i class="fa fa-warning"></i><b>0</b>
 		</div>
+		<div class="status-modified" data-bind="code.current.modified__template__show">
+			<script type="text/html">
+				{{ if value }}
+					{{ value.user | initials }}
+				 	<div><i class="fa fa-history"></i><b title="{{ value.updated | format('[date]') }}">{{ value.updated | time }}</b></div>
+				{{ fi }}
+			</script>
+		</div>
 		<div class="status-info" data-bind="code.cursor__html:code/statusinfo" title="@(Line : Char index : Selected chars)"></div>
 	</section>
 </div>
@@ -838,7 +846,10 @@
 			}, 250);
 
 			// Refresh tasks
-			AJAX('GET /api/projects/{id}/tasks/'.arg(code.data), { path: code.current.path }, 'codetasks.items');
+			AJAX('GET /api/projects/{id}/tasks/'.arg(code.data), { path: code.current.path }, function(response) {
+				SET('codetasks.items', response.tasks);
+				SET('code.current.modified', response.modified);
+			});
 		};
 
 		exports.load = function(id, skip) {
