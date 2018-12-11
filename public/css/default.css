@@ -201,15 +201,15 @@ header .tools .external { color: #a2a286; }
 .nolocked { font-style: italic; }
 
 .status { height: 35px; border-top: 1px solid #E0E0E0; padding: 0 0 0 10px; font-size: 12px; }
-.status-alerts { padding: 9px 0 0; cursor: pointer; position: relative; display: inline-block; vertical-align: top; height: 34px; }
+.status-alerts { padding: 9px 0 0; cursor: pointer; position: relative; display: inline-block; vertical-align: top; height: 34px; min-width: 40px; text-align: center; }
 .status i { margin-right: 5px; }
 .status-info { padding: 10px 0 0 10px; font-size: 12px; position: relative; display: inline-block; border-left: 1px solid #E0E0E0; margin-left: 10px; height: 34px; vertical-align: top; color: black; width: 150px; }
 .td .status-info { border-left-color: #404040; color: white; font-family: Menlo,Consolas,monospace; }
 
 .status-modified { position: relative; display: inline-block; vertical-align: top; border-left: 1px solid #E0E0E0; margin-left: 10px; }
 .status .status-modified > .initials { margin: 7px 0 0 10px; width: 23px; height: 22px; font-size: 11px; padding-top: 3px; }
-.status-modified > div { padding: 8px 0 0 0; font-size: 12px; position: relative; display: inline-block; margin-left: 10px; height: 34px; vertical-align: top; color: #bf7e7f; line-height: 20px; cursor: default; }
-.td .status-modified { border-left-color: #404040; color: white; c }
+.status-modified > div { padding: 8px 0 0 0; font-size: 12px; position: relative; display: inline-block; margin-left: 10px; height: 34px; vertical-align: top; color: #bf7e7f; line-height: 20px; cursor: pointer; }
+.td .status-modified { border-left-color: #404040; color: white; }
 
 
 @media(max-width: 767px) {
