@@ -7,5 +7,3 @@ cookie                : __sauth
 authkey               : seEdCollabo
 
 backup                : /www/tmp/backup/
-
-table.changelog       : projectid:string|path:string|user:string|updated:date
