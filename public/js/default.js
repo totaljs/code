@@ -38,6 +38,10 @@ Thelpers.initials = function(value, coloronly) {
 	return coloronly ? TTIC[sum % value.length] : '<span class="initials" style="background-color:{1}" title="{2}">{0}</span>'.format(initials, TTIC[sum % value.length], value);
 };
 
+Thelpers.utc = function(dt) {
+	return STRINGIFY(dt).replace(/"/g, '');
+};
+
 function hexrgba(hex, alpha){
 	var c;
 	if(/^#([A-Fa-f0-9]{3}){1,2}$/.test(hex)){
@@ -49,3 +53,10 @@ function hexrgba(hex, alpha){
 	}
 	return 'rgba(0,0,0,' + alpha + ')';
 }
+
+setInterval(function() {
+	$('.time').each(function() {
+		var dt = new Date(this.getAttribute('data-time'));
+		this.innerHTML = Thelpers.time(dt);
+	});
+}, 1000 * 30);

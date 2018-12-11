@@ -1,22 +1,10 @@
-const RES_TASKS = {};
-
 NEWSCHEMA('Tasks', function(schema) {
 
 	schema.define('path', 'String');
 	schema.define('body', 'String', true);
 
 	schema.setQuery(function($) {
-		NOSQL($.id + '_tasks').find().where('type', 'task').where('path', $.query.path).sort('created', true).callback(function(err, response) {
-			TABLE('changelog').one().fields('user', 'updated').where('projectid', $.id).where('path', $.query.path).callback(function(err, modified) {
-				RES_TASKS.tasks = response;
-				RES_TASKS.modified = modified;
-				if (modified) {
-					var tmp = MAIN.users.findItem('id', modified.user);
-					modified.user = tmp ? tmp.name : modified.user;
-				}
-				$.callback(RES_TASKS);
-			});
-		});
+		NOSQL($.id + '_tasks').find().where('type', 'task').where('path', $.query.path).sort('created', true).callback($.callback);
 	});
 
 	schema.setInsert(function($) {

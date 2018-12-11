@@ -52,11 +52,11 @@
 		<div data-bind="code.errors__html b:value?value.length:0__.red:value && value.length>0" class="status-alerts exec" data-exec="code/warnings">
 			<i class="fa fa-warning"></i><b>0</b>
 		</div>
-		<div class="status-modified" data-bind="code.current.modified__template__show">
+		<div class="status-modified" data-bind="code.current.lastmodified__template__show">
 			<script type="text/html">
 				{{ if value }}
 					{{ value.user | initials }}
-				 	<div><i class="fa fa-history"></i><b title="{{ value.updated | format('[date]') }}">{{ value.updated | time }}</b></div>
+				 	<div><i class="fa fa-history"></i><b title="{{ value.updated | format('[date]') }}" class="time" data-time="{{ value.updated | utc }}">{{ value.updated | time }}</b></div>
 				{{ fi }}
 			</script>
 		</div>
@@ -157,6 +157,9 @@
 		exports.syncsave = function(msg) {
 
 			var p = 'code.saved';
+
+			if (msg && msg.projectid === code.projectid)
+				setTimeout(exports.changelog, 2000);
 
 			if (!msg || msg instanceof jQuery || msg.id === user.id) {
 				SET(p, null);
@@ -554,7 +557,7 @@
 				var cache = exports.cache_get(item.path);
 				SET('code.backup', cache && cache !== response);
 				newbie && PUSH('code.open', tab);
-				exports.edit(tab);
+				exports.edit(tab, true);
 				exports.savetabs();
 				exports.element.SETTER('tree', 'select2', FUNC.treeindex(code.tree, item.path), true);
 				editor.editor.focus();
@@ -714,7 +717,7 @@
 			exports.savetabs();
 		};
 
-		exports.edit = function(tab) {
+		exports.edit = function(tab, serverside) {
 
 			if (typeof(tab) === 'string')
 				tab = code.open.findItem('path', tab);
@@ -846,9 +849,19 @@
 			}, 250);
 
 			// Refresh tasks
-			AJAX('GET /api/projects/{id}/tasks/'.arg(code.data), { path: code.current.path }, function(response) {
-				SET('codetasks.items', response.tasks);
-				SET('code.current.modified', response.modified);
+			AJAX('GET /api/projects/{id}/tasks/'.arg(code.data), { path: code.current.path }, 'codetasks.items');
+			exports.changelog();
+		};
+
+		exports.changelog = function() {
+			AJAX('GET /api/projects/{id}/changelog/'.arg(code.data), { path: code.current.path }, function(response) {
+				if (code.current && code.current.lastmodified && response) {
+					var tmp = code.current.lastmodified;
+					if (tmp.user !== response.user || tmp.updated.getTime() !== response.updated.getTime()) {
+						FUNC.warning('@(<b>{0}</b> changed this file <b>{1}</b>.)'.format(response.user, Thelpers.time(response.updated)));
+					}
+				}
+				SET('code.current.lastmodified', response);
 			});
 		};
 
@@ -942,6 +955,7 @@
 
 			SETTER('loading', 'show');
 			AJAX('POST /api/files/{id}/ REPEAT'.arg(code.data), data, function(response) {
+
 				SETTER('loading', 'hide', 500);
 				if (close === true)
 					exports.closeforce();
@@ -950,6 +964,7 @@
 				FUNC.wssend({ TYPE: 'save', projectid: code.projectid, id: user.id, user: user.name });
 				FUNC.success((response.value === 'synchronized' ? '@(<b>{0}</b> saved and synchronized)' : '@(<b>{0}</b> saved)').format(data.path));
 				common.electron && code.data.repository && user.localsave && exports.savelocal();
+				SET('code.current.lastmodified', { user: user.name, updated: new Date() });
 			});
 		};
 

@@ -9,7 +9,7 @@
 				<div class="backupitem exec" data-path="{{ m.filename }}" data-exec="codebackups/restore">
 					<div class="photo">{{ m.user | initials }}</div>
 					<div class="meta">
-						<div class="date"><span>{{ m.date | format('[date]') }}</span><i class="fa fa-clock"></i>{{ m.date | time }}</div>
+						<div class="date"><span>{{ m.date | format('[date]') }}</span><i class="fa fa-clock"></i><span class="time" data-time="{{ m.date | utc }}">{{ m.date | time }}</span></div>
 						<div class="user">{{ m.user }}</div>
 					</div>
 				</div>

@@ -56,7 +56,16 @@ NEWSCHEMA('Files', function(schema) {
 			obj.projectid = $.id;
 			obj.path = model.path;
 		});
+	});
 
+	schema.addWorkflow('changelog', function($) {
+		TABLE('changelog').one().fields('user', 'updated').where('projectid', $.id).where('path', $.query.path).callback(function(err, response) {
+			if (response) {
+				var tmp = MAIN.users.findItem('id', response.user);
+				response.user = tmp ? tmp.name : response.user;
+			}
+			$.callback(response || null);
+		});
 	});
 });
 

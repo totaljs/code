@@ -208,8 +208,8 @@ header .tools .external { color: #a2a286; }
 
 .status-modified { position: relative; display: inline-block; vertical-align: top; border-left: 1px solid #E0E0E0; margin-left: 10px; }
 .status .status-modified > .initials { margin: 7px 0 0 10px; width: 23px; height: 22px; font-size: 11px; padding-top: 3px; }
-.status-modified > div { padding: 8px 0 0 0; font-size: 12px; position: relative; display: inline-block; margin-left: 10px; height: 34px; vertical-align: top; color: #bf7e7f; line-height: 20px; }
-.td .status-modified { border-left-color: #404040; color: white; }
+.status-modified > div { padding: 8px 0 0 0; font-size: 12px; position: relative; display: inline-block; margin-left: 10px; height: 34px; vertical-align: top; color: #bf7e7f; line-height: 20px; cursor: default; }
+.td .status-modified { border-left-color: #404040; color: white; c }
 
 
 @media(max-width: 767px) {
@@ -350,7 +350,7 @@ header .tools .external { color: #a2a286; }
 .backupitem .meta { margin-left: 40px; font-size: 12px; }
 .backupitem .user { font-size: 11px; }
 .backupitem .date { font-weight: bold; }
-.backupitem .date span { font-weight: normal; float: right; }
+.backupitem .date .raw { font-weight: normal; float: right; }
 .backupitem i { margin-right: 5px; }
 .td .backupitem { border-top: 1px solid #303030; }
 .td .backupitem:hover { background-color: #202020; }
@@ -361,7 +361,7 @@ header .tools .external { color: #a2a286; }
 .changeitem .meta { margin-left: 40px; font-size: 12px; }
 .changeitem .user { font-size: 11px; }
 .changeitem .date { color: gray; }
-.changeitem .date span { font-weight: normal; float: right; }
+.changeitem .date .raw { font-weight: normal; float: right; }
 .changeitem i { margin-right: 5px; }
 .changeitem .path { margin-top: 5px; font-weight: bold; }
 .td .changeitem { border-top: 1px solid #303030; }

@@ -238,11 +238,11 @@
 			if (minutes <= 1) {
 				var seconds = (diff / 1000) >> 0;
 				if (seconds < 60)
-					return @(seconds + ' ' + Tangular.helpers.pluralize(seconds >> 0, 'seconds', 'second', 'seconds', 'seconds') + ' ago');
+					return seconds ? (@(seconds + ' ' + Tangular.helpers.pluralize(seconds >> 0, 'seconds', 'second', 'seconds', 'seconds') + ' ago')) : '@(now)';
 			}
 
 			if (minutes < 60)
-				return minutes < 3 ? '@(now)' : @(minutes + ' minutes ago');
+				return minutes < 3 ? '@(a moment ago)' : @(minutes + ' minutes ago');
 
 			var hours = (minutes / 60) >> 0;
 			if (hours < 24)
