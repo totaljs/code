@@ -153,6 +153,10 @@ FUNC.warning = function(msg) {
 	SETTER('snackbar', 'warning', msg instanceof Array ? msg[0].error : msg);
 };
 
+FUNC.info = function(msg) {
+	SETTER('snackbar', 'show', msg);
+};
+
 FUNC.editor_reload = function() {
 
 	if (!window.code || !window.code.current)
