@@ -52,7 +52,7 @@
 		<div data-bind="code.errors__html b:value?value.length:0__.red:value && value.length>0" class="status-alerts exec" data-exec="code/warnings">
 			<i class="fa fa-warning"></i><b>0</b>
 		</div>
-		<div class="status-modified exec" data-bind="code.current.lastmodified__template__show" data-exec="code/changes">
+		<div class="status-modified exec" data-bind="code.current.lastmodified__template__show" data-path="common.form" data-value="'backups'">
 			<script type="text/html">
 				{{ if value }}
 					{{ value.user | initials }}
