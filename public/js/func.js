@@ -62,6 +62,10 @@ FUNC.mkdir = function(p) {
 	}
 };
 
+FUNC.path = function(val) {
+	return val.substring(val.length - 1) === '/' ? val : (val + '/');
+};
+
 FUNC.treeappend = function(tree, path, is) {
 
 	var filename;
@@ -80,7 +84,7 @@ FUNC.treeappend = function(tree, path, is) {
 	var item = tree.findItem('name', arr[0]);
 
 	if (item == null) {
-		item = { name: arr[0], children: [], path: '/' + arr[0] };
+		item = { name: arr[0], children: [], path: '/' + FUNC.path(arr[0]) };
 		tree.push(item);
 	}
 
@@ -96,7 +100,7 @@ FUNC.treeappend = function(tree, path, is) {
 
 		tmp = item.children.findItem('name', name);
 		if (tmp == null) {
-			tmp = { name: name, children: [], path: apath };
+			tmp = { name: name, children: [], path: FUNC.path(apath) };
 			item.children.push(tmp);
 		}
 		item = tmp;
