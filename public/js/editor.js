@@ -955,10 +955,9 @@ WAIT('CodeMirror.defineMode', function() {
 			this.completion.pick(this.data, this.selectedHint);
 		},
 
-		changeActive: function(i, avoidWrap) {
+		changeActive: function(i) {
 			if (i >= this.data.list.length) {
 				this.completion.close();
-				// i = avoidWrap ? this.data.list.length - 1 : 0;
 				this.data.from.line++;
 				this.completion.cm.setCursor(this.data.from);
 				return;
@@ -966,7 +965,6 @@ WAIT('CodeMirror.defineMode', function() {
 				this.completion.close();
 				this.data.from.line--;
 				this.completion.cm.setCursor(this.data.from);
-				// i = avoidWrap ? 0 : this.data.list.length - 1;
 				return;
 			}
 			if (this.selectedHint == i)
@@ -1122,6 +1120,8 @@ WAIT('CodeMirror.defineMode', function() {
 	mod(CodeMirror);
 })(function(CodeMirror) {
 
+	var reg_skip = (/[a-z'"`0-9]/);
+
 	var defaults = {
 		pairs: '()[]{}\'\'""',
 		triples: '',
@@ -1271,9 +1271,8 @@ WAIT('CodeMirror.defineMode', function() {
 					return CodeMirror.Pass;
 			} else if (opening) {
 				var n = cm.getRange(cur, Pos(cur.line, cur.ch + 1));
-				if ((/[a-z]/).test(n)) {
+				if (reg_skip.test(n))
 					return CodeMirror.Pass;
-				}
 				curType = 'both';
 			} else
 				return CodeMirror.Pass;

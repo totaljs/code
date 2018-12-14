@@ -188,6 +188,11 @@ function directories() {
 	var path = self.query.path || '/www/';
 	Fs.readdir(path, READDIROPTIONS, function(err, list) {
 
+		if (err) {
+			self.json(EMPTYARRAY);
+			return;
+		}
+
 		var arr = [];
 		for (var i = 0; i < list.length; i++) {
 			if (list[i].isDirectory())
