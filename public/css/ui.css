@@ -211,6 +211,7 @@ div.CodeMirror span.CodeMirror-matchingbracket { border-bottom: 2px solid blue; 
 .td .dg-scrollbar-container-v { background-color: #303030; }
 .td .dg-scrollbar-h { background-color: #151515; }
 .td .dg-scrollbar-v { background-color: #151515; }
+.td .dg-btn-columns:hover { color: white; }
 
 .ui-checkbox { margin-bottom: 5px; line-height: 10px; font-size: 12px; }
 .ui-checkbox span { cursor: pointer; vertical-align: middle; }
