@@ -198,3 +198,43 @@ FUNC.guid = function() {
 	}
 	return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
 };
+
+FUNC.comment = function(ext, sel) {
+	for (var j = 0; j < sel.length; j++) {
+
+		var line = sel[j].trimRight();
+		if (!line)
+			continue;
+
+		var index = line.lastIndexOf('\t');
+		switch (ext) {
+			case 'js':
+				if (line.indexOf('//') === -1) {
+					if (index !== -1)
+						index++;
+					line = line.substring(0, index) + '// ' + line.substring(index);
+				} else
+					line = line.replace(/\/\/(\s)/g, '');
+				break;
+
+			case 'html':
+				if (line.indexOf('<!--') === -1) {
+					if (index !== -1)
+						index++;
+					line = line.substring(0, index) + '<!-- ' + line.substring(index) + ' -->';
+				} else
+					line = line.replace(/<!--(\s)|(\s)-->/g, '');
+				break;
+			case 'css':
+				if (line.indexOf('/*') === -1) {
+					if (index !== -1)
+						index++;
+					line = line.substring(0, index) + '/* ' + line.substring(index) + ' */';
+				} else
+					line = line.replace(/\/\*(\s)|(\s)\*\//g, '');
+				break;
+		}
+		sel[j] = line;
+	}
+	return sel;
+};

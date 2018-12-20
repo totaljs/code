@@ -34,7 +34,7 @@
 	<div id="content" data-margin="36">
 		<div class="alert-saved hidden exec" data-bind="code.saved__show__html b" data-exec="code/syncsave"><i class="fa fa-warning"></i><b></b> @(has replaced content of this file on the server.)</div>
 		<div data-bind="code.editor.path__show">
-			<div data-jc="editor__code.editor.body__height:100%;shortcut:code/shortcut;contextmenu:code/contextmenu;cursor:code/cursorposition;sync:code/sync"></div>
+			<div data-jc="editor__code.editor.body__height:100%;shortcut:code/shortcut;contextmenu:code/contextmenu;cursor:code/cursorposition;sync:code/sync;todo:code/todo"></div>
 		</div>
 		<div class="messages">
 			<div class="alert hidden" data-bind="code.backup__show" data-name="backup"><i class="fa fa-times exec" data-exec="code/warning"></i><i class="fa fa-warning"></i>@(Content of this file wasn't be saved before. Do you want to restore it?) <span class="link exec" data-name="restore" data-exec="code/warning">@(Restore)</span> @(or) <span class="link exec" data-exec="code/warning">@(Cancel)</span>.</div>
@@ -78,7 +78,7 @@
 
 <div class="collaborators hidden" data-bind="code.editor.path__show">
 	<div class="tools">
-		<span title="@(Tasks)" class="exec" data-path="common.form" data-value="'tasks'"><b data-bind="codetasks.items --> code/codetasks_unsolved__show:value>0__html:value" class="hidden"></b><i class="fa fa-tasks"></i></span>
+		<span title="@(Tasks)" class="exec" data-path="common.form" data-value="'tasks'"><b class="hidden uncomplete" data-bind="codetasks.items --> code/codetasks_unsolved__show__html"></b><i class="fa fa-tasks"></i></span>
 	</div>
 	<section data-bind="code.usersfile__template">
 		<script type="text/html">
@@ -113,7 +113,12 @@
 		};
 
 		exports.statusinfo = function(value) {
-			return (value.fline || 0) + ':' + (value.fch || 0) + (value.fline === value.tline ? (':' + ((value.tch || 0) - (value.fch || 0))) : '');
+			return ((value.fline || 0) + 1) + ':' + (value.fch || 0) + (value.fline === value.tline ? (':' + ((value.tch || 0) - (value.fch || 0))) : '');
+		};
+
+		exports.todo = function(todo) {
+			SET('codetasks.todo', todo);
+			BIND('codetasks.items');
 		};
 
 		exports.codetasks_unsolved = function(value) {
@@ -124,6 +129,10 @@
 						count++;
 				}
 			}
+
+			if (W.codetasks && W.codetasks.todo)
+				count += codetasks.todo.length;
+
 			return count > 99 ? 99 : count;
 		};
 
@@ -232,6 +241,11 @@
 
 			if (can) {
 				items.push({ name: '@(Copy)', icon: 'copy', command: 'copy' });
+
+				if ((/js|css|html/).test(code.current.ext))
+					items.push({ name: '@(Comment)', icon: 'code', value: 'comment' });
+
+				items.push({ name: '@(Sort)', icon: 'sort-alpha-down', value: 'sort' });
 				items.push({ name: '@(Encode)', icon: 'code', value: 'encode' });
 				items.push({ name: '@(Decode)', icon: 'broom', value: 'decode' });
 				items.push({ name: '@(Minify code)', icon: 'compress', value: 'minify' });
@@ -239,7 +253,7 @@
 				items.push({ name: '@(Lower Case)', icon: 'font', value: 'lower' });
 			}
 
-			items.push({ name: '@(Insert)', icon: 'plus-circle', value: 'insert' });
+			items.push({ name: '@(Insert)', icon: 'plus-circle green', value: 'insert' });
 
 			SETTER('menu', 'showxy', e.pageX - 5, e.pageY - 15, items, function(value) {
 
@@ -256,6 +270,27 @@
 					var items = [];
 					var y = 0;
 					var x = 20;
+
+					if (value.value === 'sort') {
+
+						for (var i = 0; i < sel.length; i++) {
+							sel[i] = sel[i].split('\n');
+							sel[i].sort();
+							sel[i] = sel[i].join('\n');
+						}
+
+						editor.replaceSelections(sel);
+						return;
+					}
+
+					if (value.value === 'comment') {
+						for (var i = 0; i < sel.length; i++) {
+							sel[i] = sel[i].split('\n');
+							sel[i] = FUNC.comment(code.current.ext, sel[i]).join('\n');
+						}
+						editor.replaceSelections(sel);
+						return;
+					}
 
 					if (value.value === 'lower' || value.value === 'upper') {
 						for (var i = 0; i < sel.length; i++)
@@ -553,6 +588,7 @@
 
 				tab.loaded = true;
 				tab.body = response;
+				tab.ext = ext;
 
 				var cache = exports.cache_get(item.path);
 				SET('code.backup', cache && cache !== response);
@@ -850,6 +886,7 @@
 			}, 250);
 
 			// Refresh tasks
+			SET('codetasks.items', []);
 			AJAX('GET /api/projects/{id}/tasks/'.arg(code.data), { path: code.current.path }, 'codetasks.items');
 			exports.changelog();
 		};

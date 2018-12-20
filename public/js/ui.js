@@ -229,16 +229,23 @@ COMPONENT('editor', function(self, config) {
 		can['+input'] = can['+delete'] = can.undo = can.redo = can.paste = can.cut = can.clear = true;
 
 		var REGHEXCOLOR = /#[a-f0-9]{6}(;|"|'|>|<|\)|\(|$)/i;
+		var REGTODO = /@todo/i;
+		var REGTODOREPLACE = /^@todo(:)(\s)/i;
 		var cache_lines = null;
 
 		var prerender_colors = function() {
 			var mode = editor.getMode().name;
 			if (mode === 'totaljsresources' || mode === 'javascript' || mode === 'totaljs' || mode === 'css' || mode === 'sass' || mode === 'html') {
 				var lines = editor.getValue().split('\n');
+				var todos = [];
 				for (var i = 0; i < lines.length; i++) {
 					var color = lines[i].match(REGHEXCOLOR);
 					color && editor.setGutterMarker(i, 'GutterColor', GutterColor(color.toString().replace(/;|'|"|,/g, '')));
+					var m = lines[i].match(REGTODO);
+					if (m)
+						todos.push({ line: i + 1, ch: m.index, name: lines[i].substring(m.index, 200).replace(REGTODOREPLACE, '').trim() });
 				}
+				EXEC(config.todo, todos);
 			}
 		};
 

@@ -3,6 +3,22 @@
 -->
 
 <div data-jc="panel__common.form__if:tasks;width:500;title:@(File tasks);icon:tasks;reload:codetasks/reload;bg:false;autofocus:true" class="hidden">
+	<div data-bind="!codetasks.todo__template">
+		<script type="text/html">
+			{{ if value && value.length }}
+			<div class="todolist">
+				<div><i class="fa fa-clipboard-check"></i>@(To-Do list)</div>
+				<div>
+				{{ foreach m in value }}
+					<div class="todo">
+						<div class="exec" data-exec="codetasks/go" data-line="{{ m.line }}" data-ch="{{ m.ch }}"><span>:{{ m.line }}</span>{{ m.name }}</div>
+					</div>
+				{{ end }}
+				</div>
+			</div>
+			{{ fi }}
+		</script>
+	</div>
 	<br />
 	<div data-jc="tasks__codetasks.items__exec:codetasks/submit;solved:codetasks/solved;placeholder:@(Enter a new task)"></div>
 </div>
@@ -12,6 +28,12 @@
 
 		exports.reload = function() {
 			// nothing to do
+		};
+
+		exports.go = function(el) {
+			var editor = FIND('editor').editor;
+			editor.setCursor({ line: (+el.attrd('line')) - 1, ch: +el.attrd('ch') });
+			editor.focus();
 		};
 
 		exports.refresh = function() {
