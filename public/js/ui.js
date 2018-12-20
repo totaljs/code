@@ -247,6 +247,7 @@ COMPONENT('editor', function(self, config) {
 				}
 				EXEC(config.todo, todos);
 			}
+			setTimeout2(self.ID, self.rebuild_autocomplete, 5000);
 		};
 
 		var snippets = {};

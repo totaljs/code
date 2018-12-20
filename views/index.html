@@ -138,6 +138,7 @@
 				case 'syncdone':
 					if (msg.projectid === code.projectid) {
 						code.SYNC = true;
+						SET('code.backup', false);
 						SET('code.multiple', false);
 						SETTER('loading', 'hide');
 					}

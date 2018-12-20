@@ -1076,9 +1076,18 @@
 			}
 
 			if (msg.fileid === code.editor.path) {
+
 				editor && editor.clearmarkers();
 				$('#body').tclass('warning', code.usersfile && code.usersfile.length > 1);
-				SET('code.multiple', !!(code.usersfile && code.usersfile.length > 1));
+
+				var is = !!(code.usersfile && code.usersfile.length > 1);
+				SET('code.multiple', is);
+
+				// auto-sync
+				if (is && !code.current.modified && !code.backup) {
+					SETTER('loading', 'show');
+					setTimeout(exports.syncdata, 1000);
+				}
 			}
 
 		};
