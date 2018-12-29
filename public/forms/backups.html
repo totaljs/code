@@ -3,18 +3,20 @@
 -->
 
 <div data-jc="panel__common.form__if:backups;width:500;title:@(Backups);icon:history;reload:codebackups/reload;bg:false;autofocus:true" class="hidden">
-	<div data-bind="codebackups.items__template">
-		<script type="text/html">
-			{{ foreach m in value }}
-				<div class="backupitem exec" data-path="{{ m.filename }}" data-exec="codebackups/restore">
-					<div class="photo">{{ m.user | initials }}</div>
-					<div class="meta">
-						<div class="date"><span>{{ m.date | format('[date]') }}</span><i class="fa fa-clock"></i><span class="time" data-time="{{ m.date | utc }}">{{ m.date | time }}</span></div>
-						<div class="user">{{ m.user }}</div>
+	<div data-jc="viewbox__codebackups.items__height:100;margin:51;parent:window">
+		<div data-bind="codebackups.items__template">
+			<script type="text/html">
+				{{ foreach m in value }}
+					<div class="backupitem exec" data-path="{{ m.filename }}" data-exec="codebackups/restore">
+						<div class="photo">{{ m.user | initials }}</div>
+						<div class="meta">
+							<div class="date"><span>{{ m.date | format('[date]') }}</span><i class="fa fa-clock"></i><span class="time" data-time="{{ m.date | utc }}">{{ m.date | time }}</span></div>
+							<div class="user">{{ m.user }}</div>
+						</div>
 					</div>
-				</div>
-			{{ end }}
-		</script>
+				{{ end }}
+			</script>
+		</div>
 	</div>
 </div>
 

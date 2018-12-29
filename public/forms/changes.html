@@ -3,31 +3,33 @@
 -->
 
 <div data-jc="panel__common.form__if:changes;width:500;title:@(Changes);icon:history;reload:codechanges/reload;bg:false;autofocus:true" class="hidden">
-	<div data-bind="!codechanges__template">
-		<script type="text/html">
-			{{ if value.group.length }}
-			<div class="changedfiles">
-				<div><i class="far fa-clock-o"></i>@(Last changed files)</div>
-				<div>
-				{{ foreach m in value.group }}
-					<div class="changefile">
-						<div class="path"><i class="fa fa-file-alt"></i>{{ m }}</div>
+	<div data-jc="viewbox__codechanges__height:100;margin:51;parent:window">
+		<div data-bind="!codechanges__template">
+			<script type="text/html">
+				{{ if value.group.length }}
+				<div class="changedfiles">
+					<div><i class="far fa-clock-o"></i>@(Last changed files)</div>
+					<div>
+					{{ foreach m in value.group }}
+						<div class="changefile">
+							<div class="path"><i class="fa fa-file-alt"></i>{{ m }}</div>
+						</div>
+					{{ end }}
+					</div>
+				</div>
+				{{ fi }}
+				{{ foreach m in value.files }}
+					<div class="changeitem" data-path="{{ m.filename }}">
+						<div class="photo">{{ m.user | initials }}</div>
+						<div class="meta">
+							<div class="date"><span class="raw">{{ m.date | format('[date]') }}</span><i class="far fa-clock"></i><span class="time" data-time="{{ m.date | utc }}">{{ m.date | time }}</span></div>
+							<div class="user">{{ m.user }}</div>
+							<div class="path"><span class="badge badge-blue badge-small">{{ m.type }}</span>{{ m.path }}</div>
+						</div>
 					</div>
 				{{ end }}
-				</div>
-			</div>
-			{{ fi }}
-			{{ foreach m in value.files }}
-				<div class="changeitem" data-path="{{ m.filename }}">
-					<div class="photo">{{ m.user | initials }}</div>
-					<div class="meta">
-						<div class="date"><span class="raw">{{ m.date | format('[date]') }}</span><i class="far fa-clock"></i><span class="time" data-time="{{ m.date | utc }}">{{ m.date | time }}</span></div>
-						<div class="user">{{ m.user }}</div>
-						<div class="path"><span class="badge badge-blue badge-small">{{ m.type }}</span>{{ m.path }}</div>
-					</div>
-				</div>
-			{{ end }}
-		</script>
+			</script>
+		</div>
 	</div>
 </div>
 
