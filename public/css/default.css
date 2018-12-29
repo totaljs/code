@@ -340,7 +340,7 @@ header .tools .external { color: #a2a286; }
 .backupitem .user { font-size: 11px; }
 .backupitem .date { font-weight: bold; }
 .backupitem .date .raw { font-weight: normal; float: right; }
-.backupitem i { margin-right: 5px; }
+.backupitem i { margin: 0 5px; }
 .td .backupitem { border-top: 1px solid #303030; }
 .td .backupitem:hover { background-color: #202020; }
 
