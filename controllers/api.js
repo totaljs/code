@@ -5,44 +5,45 @@ const Fs = require('fs');
 exports.install = function() {
 	GROUP(['authorize'], function() {
 
-		ROUTE('GET     /api/{schema}/                          *{schema}     --> @query');
-		ROUTE('GET     /api/{schema}/{id}/                     *{schema}     --> @read');
-		ROUTE('POST    /api/{schema}/                          *{schema}     --> @save');
-		ROUTE('DELETE  /api/{schema}/{id}/                     *{schema}     --> @remove');
-		ROUTE('POST    /api/{schema}/{id}/                     *{schema}     --> @save');
+		ROUTE('GET     /api/{schema}/                         *{schema}     --> @query');
+		ROUTE('GET     /api/{schema}/{id}/                    *{schema}     --> @read');
+		ROUTE('POST    /api/{schema}/                         *{schema}     --> @save');
+		ROUTE('DELETE  /api/{schema}/{id}/                    *{schema}     --> @remove');
+		ROUTE('POST    /api/{schema}/{id}/                    *{schema}     --> @save');
 
 		// Files
-		ROUTE('POST    /api/files/{id}/rename/                 *FilesRename  --> @exec');
-		ROUTE('POST    /api/files/{id}/remove/                 *FilesRemove  --> @exec');
-		ROUTE('POST    /api/files/{id}/create/                 *FilesCreate  --> @exec');
+		ROUTE('POST    /api/files/{id}/rename/                *FilesRename  --> @exec');
+		ROUTE('POST    /api/files/{id}/remove/                *FilesRemove  --> @exec');
+		ROUTE('POST    /api/files/{id}/create/                *FilesCreate  --> @exec');
 
 		// Projects
-		ROUTE('POST    /api/projects/{id}/tasks/               *Tasks        --> @insert');
-		ROUTE('GET     /api/projects/{id}/tasks/               *Tasks        --> @query');
-		ROUTE('GET     /api/projects/{id}/tasks/{taskid}/      *Tasks        --> @solved');
-		ROUTE('GET     /api/projects/{id}/tasks/uncomplete/    *Tasks        --> @uncomplete');
-		ROUTE('GET     /api/projects/{id}/changelog/           *Files        --> @changelog');
-		ROUTE('POST    /api/projects/{id}/comments/            *Comments     --> @insert');
-		ROUTE('GET     /api/projects/{id}/comments/            *Comments     --> @query');
-		ROUTE('POST    /api/projects/{id}/upload/              *FilesUpload  --> @exec', ['upload'], 1024 * 50);
-		ROUTE('GET     /api/projects/{id}/files/               *Projects     --> @files');
-		ROUTE('GET     /api/projects/{id}/backups/             *Projects     --> @backups');
-		ROUTE('DELETE  /api/projects/{id}/backups/             *Projects     --> @backupsclear', [10000]);
-		ROUTE('GET     /api/projects/{id}/restore/             *Projects',   files_restore);
-		ROUTE('GET     /api/projects/{id}/edit/                *Projects',   files_open);
-		ROUTE('GET     /api/projects/{id}/changes/             *Projects',   files_changes);
+		ROUTE('POST    /api/projects/{id}/tasks/              *Tasks        --> @insert');
+		ROUTE('GET     /api/projects/{id}/tasks/              *Tasks        --> @query');
+		ROUTE('GET     /api/projects/{id}/tasks/{taskid}/     *Tasks        --> @solved');
+		ROUTE('GET     /api/projects/{id}/tasks/uncomplete/   *Tasks        --> @uncomplete');
+		ROUTE('GET     /api/projects/{id}/changelog/          *Files        --> @changelog');
+		ROUTE('POST    /api/projects/{id}/comments/           *Comments     --> @insert');
+		ROUTE('GET     /api/projects/{id}/comments/           *Comments     --> @query');
+		ROUTE('POST    /api/projects/{id}/upload/             *FilesUpload  --> @exec', ['upload'], 1024 * 50);
+		ROUTE('GET     /api/projects/{id}/files/              *Projects     --> @files');
+		ROUTE('GET     /api/projects/{id}/backups/            *Projects     --> @backups');
+		ROUTE('DELETE  /api/projects/{id}/backups/            *Projects     --> @backupsclear', [10000]);
+		ROUTE('GET     /api/projects/{id}/restore/            *Projects',   files_restore);
+		ROUTE('GET     /api/projects/{id}/edit/               *Projects',   files_open);
+		ROUTE('GET     /api/projects/{id}/changes/            *Projects',   files_changes);
 
 		// Other
-		ROUTE('GET     /api/download/{id}/',                                 files_download);
-		ROUTE('POST    /api/files/minify/                      *Minify',     files_minify);
+		ROUTE('GET     /api/download/{id}/',                                files_download);
+		ROUTE('POST    /api/files/minify/                     *Minify',     files_minify);
 		ROUTE('GET     /logout/', redirect_logout);
 
-		ROUTE('GET    /api/users/online/',                                   users_online);
-		ROUTE('GET    /api/users/refresh/',                                  users_refresh);
-		ROUTE('GET    /api/common/directories/',                             directories);
-		ROUTE('GET    /api/common/uid/',                                     custom_uid);
-		ROUTE('GET    /api/common/ip/',                                      custom_ip);
-		ROUTE('POST   /api/common/encrypt/                     *Encoder      --> @exec');
+		ROUTE('GET    /api/users/online/',                                  users_online);
+		ROUTE('GET    /api/users/refresh/',                                 users_refresh);
+		ROUTE('GET    /api/common/directories/',                            directories);
+		ROUTE('GET    /api/common/uid/',                                    custom_uid);
+		ROUTE('GET    /api/common/ip/',                                     custom_ip);
+		ROUTE('POST   /api/common/encrypt/                    *Encoder      --> @exec');
+		ROUTE('GET    /api/componenator/download/             *Componenator --> @download');
 
 	});
 

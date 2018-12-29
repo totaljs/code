@@ -378,3 +378,13 @@ header .tools .external { color: #a2a286; }
 .td .todolist { background-color: #303030; }
 .td .todo { color: #A0A0A0; border-color: #202020; }
 .td .todolist > div:first-child { color: silver; }
+
+.uicomponent { padding: 5px 20px; color: gray; border-top: 1px solid #E0E0E0; font-size: 12px; cursor: pointer; }
+.uicomponent i { margin-right: 5px; }
+.uicomponent:first-child { border-top: 0; }
+.uicomponent:hover { background-color: rgba(0,0,0,0.1); }
+.td .uicomponent { color: #A0A0A0; border-color: #202020; }
+
+.td .ui-scrollbar-y span, .td .ui-scrollbar-x span{ background-color: #505050; }
+.td .ui-scrollbar-y, .td .ui-scrollbar-x { background-color: #303030; }
+.td .ui-scrollbar-y span:hover, .td .ui-scrollbar-x span:hover { background-color: #606060; }

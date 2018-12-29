@@ -450,3 +450,7 @@ input:invalid { box-shadow: none; }
 .ui-suggestion .selected { background-color: #F0F0F0; color: black; }
 .ui-suggestion li { border-top: 1px solid #F0F0F0; font-size: 12px; padding: 3px 10px; background-color: white; cursor: pointer; margin: 0; line-height: 16px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .ui-suggestion li:first-child { border-top: 0; }
+
+.ui-viewbox { overflow: hidden; }
+.ui-viewbox-scroll { overflow: auto; }
+.ui-viewbox-disabled { z-index: 5; position: absolute; background-color: rgba(255,255,255,0.8); }

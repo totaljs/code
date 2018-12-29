@@ -179,6 +179,7 @@
 					arr.unshift({ name: '@(Changes)', id: 'changes', icon: 'clock-o' });
 
 				if (code.editor.path) {
+					arr.unshift({ name: '@(Insert UI components)', id: 'componentator', icon: 'puzzle-piece' });
 					arr.unshift({ name: '@(Save)', id: 'save', icon: 'floppy-o' });
 					arr.unshift({ name: '@(Reload)', id: 'reload', icon: 'refresh', keywords: 'refresh' });
 					arr.unshift({ name: '@(History &amp; Backups)', id: 'history', icon: 'history', keywords: 'backups' });
@@ -199,6 +200,9 @@
 						case 'changes':
 						case 'save':
 							EXEC('editor/' + value.id);
+							break;
+						case 'componentator':
+							SET('common.form', value.id);
 							break;
 					}
 				}

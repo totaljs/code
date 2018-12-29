@@ -92,6 +92,7 @@
 <div data-jc="importer__common.form__if:tasks;url:/forms/tasks.html;cleaner:10"></div>
 <div data-jc="importer__common.form__if:backups;url:/forms/backups.html;cleaner:10"></div>
 <div data-jc="importer__common.form__if:changes;url:/forms/changes.html;cleaner:10"></div>
+<div data-jc="importer__common.form__if:componentator;url:/forms/componentator.html;cleaner:10"></div>
 
 <script>
 
@@ -134,6 +135,10 @@
 				count += codetasks.todo.length;
 
 			return count > 99 ? 99 : count;
+		};
+
+		exports.append = function(val) {
+			editor.editor.replaceSelection(val + '\n');
 		};
 
 		exports.syncdata = function() {
@@ -300,8 +305,13 @@
 					}
 
 					if (value.value === 'insert') {
+
+						if ((/^(js|css|html)$/).test(code.current.ext))
+							items.push({ name: '@(UI components)', icon: 'chevron-right', value: 'ui' });
+
 						items.push({ name: '@(UID)', icon: 'chevron-right', value: 'uid' });
 						items.push({ name: '@(GUID)', icon: 'chevron-right', value: 'guid' });
+						items.push({ name: '@(Password)', icon: 'chevron-right', value: 'password' });
 						items.push({ name: '@(IP address)', icon: 'chevron-right', value: 'ip' });
 						items.push({ name: '@(Date / Time)', icon: 'chevron-right', value: 'date' });
 						y = -10;
@@ -343,6 +353,9 @@
 						}
 
 						switch (value.value) {
+							case 'ui':
+								SET('common.form', 'componentator');
+								break;
 							case 'uid':
 							case 'ip':
 								AJAX('GET /api/common/{0}/'.format(value.value), function(response) {
@@ -351,6 +364,14 @@
 								break;
 							case 'date':
 								editor.replaceSelection(new Date().format(null));
+								break;
+							case 'password':
+								var pwd = GUID(15);
+								for (var i = 0; i < pwd.length; i++) {
+									if (i % 2 === 0)
+										pwd = pwd.substring(0, i) + pwd.substring(i, i + 1).toUpperCase() + pwd.substring(i + 1);
+								}
+								editor.replaceSelection(pwd);
 								break;
 							case 'GUID':
 								editor.replaceSelection(GUID(50));
