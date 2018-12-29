@@ -1324,6 +1324,9 @@ WAIT('CodeMirror.defineMode', function() {
 });
 
 var SNIPPETS = [];
+SNIPPETS.push({ type: 'html', search: 'script', text: '<b>Script: JavaScript</b>', code: '<script></script>', ch: 9 });
+SNIPPETS.push({ type: 'html', search: 'script', text: '<b>Script: HTML</b>', code: '<script type="text/html"></script>', ch: 26 });
+SNIPPETS.push({ type: 'html', search: 'script', text: '<b>Script: Text</b>', code: '<script type="text/plain"></script>', ch: 27 });
 SNIPPETS.push({ type: 'html', search: 'fa', text: '<b>Font-Awesome Icon</b>', code: '<i class="fa fa-"></i>', ch: 17 });
 SNIPPETS.push({ type: 'html', search: 'jc', text: '<b>Component</b>', code: '<div data-jc="__"></div>', ch: 15 });
 SNIPPETS.push({ type: 'html', search: 'scope', text: '<b>Scope</b>', code: '<div data-jc-scope=""></div>', ch: 21 });
@@ -1344,7 +1347,7 @@ SNIPPETS.push({ type: 'javascript', search: 'schema.setRead', text: '<b>schema.s
 SNIPPETS.push({ type: 'javascript', search: 'schema.setGet', text: '<b>schema.setGet</b>', code: 'schema.setGet(function($) {\n\t{0}\n{0}});', ch: 2, line: 1 });
 SNIPPETS.push({ type: 'javascript', search: 'MERGE', text: '<b>MERGE</b>', code: 'MERGE(\'\', \'\');', ch: 8 });
 SNIPPETS.push({ type: 'javascript', search: 'ROUTE', text: '<b>ROUTE</b>', code: 'ROUTE(\'\', \'\');', ch: 8 });
-SNIPPETS.push({ type: 'javascript', search: 'WEBSOCKET', text: '<b>WEBSOCKET</b>', code: 'WEBSOCKET(\'\', \'\');', ch: 11 });
+SNIPPETS.push({ type: 'javascript', search: 'WEBSOCKET', text: '<b>WEBSOCKET</b>', code: 'WEBSOCKET(\'\', action, [\'json\']);', ch: 12 });
 SNIPPETS.push({ type: 'javascript', search: 'LOCALIZE', text: '<b>LOCALIZE</b>', code: 'LOCALIZE(\'\', \'\');', ch: 11 });
 SNIPPETS.push({ type: 'javascript', search: 'exports.install', text: '<b>exports.install</b>', code: 'exports.install = function() {\n\t{0}\n{0}};', ch: 2, line: 1 });
 
