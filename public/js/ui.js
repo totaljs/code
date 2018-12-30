@@ -231,22 +231,34 @@ COMPONENT('editor', function(self, config) {
 		var REGHEXCOLOR = /#[a-f0-9]{6}(;|"|'|>|<|\)|\(|$)/i;
 		var REGTODO = /@todo/i;
 		var REGTODOREPLACE = /^@todo(:)(\s)/i;
+		var REGCOMPONENT = /COMPONENT\(.*?\)/gi;
 		var cache_lines = null;
 
 		var prerender_colors = function() {
+			var todos = [];
+			var components = [];
 			var mode = editor.getMode().name;
 			if (mode === 'totaljsresources' || mode === 'javascript' || mode === 'totaljs' || mode === 'css' || mode === 'sass' || mode === 'html') {
 				var lines = editor.getValue().split('\n');
-				var todos = [];
 				for (var i = 0; i < lines.length; i++) {
 					var color = lines[i].match(REGHEXCOLOR);
 					color && editor.setGutterMarker(i, 'GutterColor', GutterColor(color.toString().replace(/;|'|"|,/g, '')));
 					var m = lines[i].match(REGTODO);
-					if (m)
-						todos.push({ line: i + 1, ch: m.index, name: lines[i].substring(m.index, 200).replace(REGTODOREPLACE, '').trim() });
+					m && todos.push({ line: i + 1, ch: m.index || 0, name: lines[i].substring(m.index, 200).replace(REGTODOREPLACE, '').trim() });
+					if (mode === 'javascript') {
+						m = lines[i].match(REGCOMPONENT);
+						if (m) {
+							var name = m[0].match(/('|").*?('|")/);
+							if (name) {
+								name = name[0].replace(/'|"/g, '');
+								components.push({ line: i, ch: m.index || 0, name: name.trim() });
+							}
+						}
+					}
 				}
-				EXEC(config.todo, todos);
 			}
+			EXEC(config.components, components);
+			EXEC(config.todo, todos);
 			setTimeout2(self.ID, self.rebuild_autocomplete, 5000);
 		};
 

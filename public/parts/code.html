@@ -34,7 +34,7 @@
 	<div id="content" data-margin="36">
 		<div class="alert-saved hidden exec" data-bind="code.saved__show__html b" data-exec="code/syncsave"><i class="fa fa-warning"></i><b></b> @(has replaced content of this file on the server.)</div>
 		<div data-bind="code.editor.path__show">
-			<div data-jc="editor__code.editor.body__height:100%;shortcut:code/shortcut;contextmenu:code/contextmenu;cursor:code/cursorposition;sync:code/sync;todo:code/todo"></div>
+			<div data-jc="editor__code.editor.body__height:100%;shortcut:code/shortcut;contextmenu:code/contextmenu;cursor:code/cursorposition;sync:code/sync;todo:code/todo;components:code/components"></div>
 		</div>
 		<div class="messages">
 			<div class="alert hidden" data-bind="code.backup__show" data-name="backup"><i class="fa fa-times exec" data-exec="code/warning"></i><i class="fa fa-warning"></i>@(Content of this file wasn't be saved before. Do you want to restore it?) <span class="link exec" data-name="restore" data-exec="code/warning">@(Restore)</span> @(or) <span class="link exec" data-exec="code/warning">@(Cancel)</span>.</div>
@@ -93,6 +93,7 @@
 <div data-jc="importer__common.form__if:backups;url:/forms/backups.html;cleaner:10"></div>
 <div data-jc="importer__common.form__if:changes;url:/forms/changes.html;cleaner:10"></div>
 <div data-jc="importer__common.form__if:componentator;url:/forms/componentator.html;cleaner:10"></div>
+<div data-jc="importer__common.form__if:components;url:/forms/components.html;cleaner:10"></div>
 
 <script>
 
@@ -117,6 +118,10 @@
 			return ((value.fline || 0) + 1) + ':' + (value.fch || 0) + (value.fline === value.tline ? (':' + ((value.tch || 0) - (value.fch || 0))) : '');
 		};
 
+		exports.components = function(components) {
+			SET('code.components', components);
+		};
+
 		exports.todo = function(todo) {
 			SET('codetasks.todo', todo);
 			BIND('codetasks.items');
@@ -139,6 +144,12 @@
 
 		exports.append = function(val) {
 			editor.editor.replaceSelection(val + '\n');
+		};
+
+		exports.move = function(line, ch) {
+			var e = editor.editor;
+			e.setCursor({ line: line || 0, ch: ch || 0 });
+			e.focus();
 		};
 
 		exports.syncdata = function() {
@@ -633,6 +644,7 @@
 			items.push({ value: 2, name: '@(Find)', icon: 'search', command: 'findPersistent' });
 			items.push({ value: 2, name: '@(Replace)', icon: 'search', command: 'replaceAll' });
 			items.push({ value: 3, name: '@(Convert to Tabs)', icon: 'align-right' });
+			code.components && code.components.length && items.push({ value: 8, name: '@(Used UI components)', icon: 'puzzle-piece' });
 			common.electron && code.data.repository && items.push({ value: 5, name: '@(Save locally)', icon: 'floppy-o' });
 			items.push({ value: 4, name: '@(Restore from backup)', icon: 'history' });
 			code.data.pathsync && items.push({ value: 6, name: '@(Save synchronized)', icon: 'sync green' });
@@ -666,6 +678,9 @@
 						break;
 					case 7:
 						exports.savelocalchanges();
+						break;
+					case 8:
+						SET('common.form', 'components');
 						break;
 				}
 			}, -5, -5);

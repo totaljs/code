@@ -1,0 +1,28 @@
+<!--
+	It depends on "code editor"
+-->
+
+<div data-jc="panel__common.form__if:components;width:500;title:@(Used UI components);icon:puzzle-piece;bg:false;autofocus:true" class="hidden">
+	<div class="padding">
+		<div data-jc="textbox__components.search__type:search;placeholder:@(Search UI component);$binding:1;$delay:50"></div>
+		<div class="help"><span class="link exec" data-path="common.form" data-value="'componentator'"><i class="fa fa-plus-circle"></i>@(Insert UI components)</span></div>
+	</div>
+	<div data-jc="viewbox__components.search__height:100;margin:144;parent:window">
+		<div data-bind="code.components__template" data-jc="search__components.search__selector:div">
+			<script type="text/html">
+				{{ foreach m in value }}
+					<div class="uicomponent exec" data-exec="components/find" data-search="{{ m.name }}" data-index="{{ $index }}" title="@(Line:) {{ m.line }}"><i class="fa fa-search"></i>{{ m.name }}</div>
+				{{ end }}
+			</script>
+		</div>
+	</div>
+</div>
+
+<script>
+	PLUGIN('components', function(exports) {
+		exports.find = function(el) {
+			var com = code.components[+el.attrd('index')];
+			EXEC('code/move', com.line, com.ch);
+		};
+	})
+</script>
