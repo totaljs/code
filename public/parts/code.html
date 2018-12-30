@@ -119,7 +119,16 @@
 		};
 
 		exports.components = function(components) {
+
+			var is = components.length > 0;
+
+			if (!is && common.form === 'components')
+				NULL('common.form');
+
 			SET('code.components', components);
+
+			if (is && !common.form)
+				SET('common.form', 'components');
 		};
 
 		exports.todo = function(todo) {
