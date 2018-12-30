@@ -636,6 +636,7 @@
 			common.electron && code.data.repository && items.push({ value: 5, name: '@(Save locally)', icon: 'floppy-o' });
 			items.push({ value: 4, name: '@(Restore from backup)', icon: 'history' });
 			code.data.pathsync && items.push({ value: 6, name: '@(Save synchronized)', icon: 'sync green' });
+			common.electron && code.data.repository && items.push({ value: 7, name: '@(Synchronize locally <strong>last changes</strong>)', icon: 'floppy-o' });
 
 			SETTER('menu', 'show', 'left', el, items, function(item) {
 				switch (item.value) {
@@ -662,6 +663,9 @@
 						break;
 					case 6:
 						exports.save(false, true);
+						break;
+					case 7:
+						exports.savelocalchanges();
 						break;
 				}
 			}, -5, -5);
@@ -991,6 +995,62 @@
 					else
 						FUNC.success('<b>{0}</b> saved.'.format(filename));
 				});
+			} else if (!nowarning)
+				FUNC.warning('@(You don\'t have defined repository path.)');
+		};
+
+		exports.savelocalchanges = function(nowarning) {
+			var electronpath = require('electron').ipcRenderer.sendSync('getPath', { url: location.protocol + '//' + location.hostname + (location.port ? ':' + location.port : '') });
+			if (electronpath) {
+
+				var Path = require('path');
+				var Https = require('https');
+				var Http = require('http');
+				var Fs = require('fs');
+
+				SETTER('loading', 'show');
+				AJAX('GET /api/projects/{id}/changelogs/'.arg(code.data), function(response) {
+
+					response.wait(function(item, next, index) {
+
+						SET('common.percentage', (index / response.length) * 100);
+						SETTER('loading', 'show', '<i class="fa fa-floppy-o"></i><b>@(Saving:)</b> ' + item.path + '<br /><b>{0}%</b>'.format(common.percentage >> 0));
+
+						var filename = Path.join(electronpath, FUNC.getName(code.data.repository).replace(/\.git$/i, ''), item.path);
+						FUNC.mkdir(Path.dirname(filename));
+
+						var resume = function() {
+							setTimeout(next, 300);
+						};
+
+						var url = location.protocol + '//' + location.hostname + (location.port ? ':' + location.port : '') + '/api/download/{id}/?path='.arg(code.data) + encodeURIComponent(item.path);
+						var res = function(res) {
+							res.on('error', resume);
+							res.on('end', resume);
+							res.pipe(Fs.createWriteStream(filename));
+						};
+
+						if (location.protocol === 'https:')
+							Https.get(url, res);
+						else
+							Http.get(url, res);
+
+					}, function() {
+						SET('common.percentage', 100);
+						SETTER('loading', 'hide');
+					});
+				});
+
+				//var filename = Path.join(electronpath, FUNC.getName(code.data.repository).replace(/\.git$/i, ''), code.editor.path);
+				//FUNC.mkdir(Path.dirname(filename));
+//
+//				//require('fs').writeFile(filename, FUNC.rtrim(editor.editor.getValue()), function(err) {
+//				//	if (err)
+//				//		FUNC.warning(err.toString());
+//				//	else
+//				//		FUNC.success('<b>{0}</b> saved.'.format(filename));
+				//});
+
 			} else if (!nowarning)
 				FUNC.warning('@(You don\'t have defined repository path.)');
 		};

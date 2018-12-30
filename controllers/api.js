@@ -31,6 +31,7 @@ exports.install = function() {
 		ROUTE('GET     /api/projects/{id}/restore/            *Projects',   files_restore);
 		ROUTE('GET     /api/projects/{id}/edit/               *Projects',   files_open);
 		ROUTE('GET     /api/projects/{id}/changes/            *Projects',   files_changes);
+		ROUTE('GET     /api/projects/{id}/changelogs/',                     changelogs);
 
 		// Other
 		ROUTE('GET     /api/download/{id}/',                                files_download);
@@ -202,4 +203,8 @@ function directories() {
 
 		self.json(arr);
 	});
+}
+
+function changelogs(id) {
+	TABLE('changelog').find().take(100).where('projectid', id).callback(this.callback());
 }

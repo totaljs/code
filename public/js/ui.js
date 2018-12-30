@@ -3265,11 +3265,12 @@ COMPONENT('loading', function(self) {
 
 	self.make = function() {
 		self.aclass('ui-loading');
-		self.append('<div></div>');
+		self.append('<div><div class="ui-loading-text"></div></div>');
 	};
 
-	self.show = function() {
+	self.show = function(text) {
 		clearTimeout(pointer);
+		self.find('.ui-loading-text').html(text || '');
 		self.rclass('hidden');
 		return self;
 	};
@@ -4636,5 +4637,34 @@ COMPONENT('viewbox', 'margin:0;scroll:true;delay:100', function(self, config) {
 
 	self.setter = function() {
 		setTimeout(self.resize, config.delay);
+	};
+});
+
+COMPONENT('mainprogress', function(self) {
+
+	var old = null;
+
+	self.singleton();
+	self.readonly();
+
+	self.make = function() {
+		self.aclass('ui-mainprogress hidden');
+	};
+
+	self.setter = function(value) {
+		!value && (value = 0);
+
+		if (old === value)
+			return;
+
+		if (value > 100)
+			value = 100;
+		else if (value < 0)
+			value = 0;
+
+		old = value >> 0;
+
+		self.element.stop().animate({ width: old + '%' }, 80).show();
+		self.tclass('hidden', old === 0 || old === 100);
 	};
 });
