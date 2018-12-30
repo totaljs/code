@@ -43,8 +43,8 @@ exports.install = function() {
 		ROUTE('GET    /api/common/directories/',                            directories);
 		ROUTE('GET    /api/common/uid/',                                    custom_uid);
 		ROUTE('GET    /api/common/ip/',                                     custom_ip);
-		ROUTE('POST   /api/common/encrypt/                    *Encoder      --> @exec');
-		ROUTE('GET    /api/componenator/download/             *Componenator --> @download');
+		ROUTE('POST   /api/common/encrypt/                   *Encoder       --> @exec');
+		ROUTE('GET    /api/componentator/download/           *Componentator --> @download');
 
 	});
 

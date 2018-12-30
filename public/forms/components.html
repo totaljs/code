@@ -2,7 +2,7 @@
 	It depends on "code editor"
 -->
 
-<div data-jc="panel__common.form__if:components;width:500;title:@(Used UI components);icon:puzzle-piece;bg:false;autofocus:true" class="hidden">
+<div data-jc="panel__common.form__if:components;width:500;title:@(Used UI components);icon:puzzle-piece;bg:false;autofocus:true;reload:components/reload" class="hidden">
 	<div class="padding">
 		<div data-jc="textbox__components.search__type:search;placeholder:@(Search UI component);$binding:1;$delay:50"></div>
 		<div class="help"><span class="link exec" data-path="common.form" data-value="'componentator'"><i class="fa fa-plus-circle"></i>@(Insert UI components)</span></div>
@@ -20,6 +20,11 @@
 
 <script>
 	PLUGIN('components', function(exports) {
+
+		exports.reload = function() {
+			SET('?.search', '');
+		};
+
 		exports.find = function(el) {
 			var com = code.components[+el.attrd('index')];
 			EXEC('code/move', com.line, com.ch);

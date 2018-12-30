@@ -1,4 +1,4 @@
-NEWSCHEMA('Componenator', function(schema) {
+NEWSCHEMA('Componentator', function(schema) {
 
 	schema.setQuery(function($) {
 		RESTBuilder.make(function(builder) {

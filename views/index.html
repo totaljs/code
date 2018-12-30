@@ -179,6 +179,9 @@
 				if (code.data && code.data.id)
 					arr.unshift({ name: '@(Changes)', id: 'changes', icon: 'clock-o' });
 
+				if (code.components && code.components.length)
+					arr.unshift({ name: '@(Used UI components)', id: 'components', icon: 'puzzle-piece' });
+
 				if (code.editor.path) {
 					arr.unshift({ name: '@(Insert UI components)', id: 'componentator', icon: 'puzzle-piece' });
 					arr.unshift({ name: '@(Save)', id: 'save', icon: 'floppy-o' });
@@ -203,6 +206,7 @@
 							EXEC('editor/' + value.id);
 							break;
 						case 'componentator':
+						case 'components':
 							SET('common.form', value.id);
 							break;
 					}

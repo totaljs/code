@@ -7,7 +7,7 @@
 		<div data-jc="textbox__componentator.search__type:search;placeholder:@(Search UI component);$binding:1;$delay:50"></div>
 	</div>
 	<div data-jc="viewbox__componentator.search__height:100;margin:124;parent:window">
-		<div data-bind="componenator.items__template" data-jc="search__componentator.search__selector:div">
+		<div data-bind="componentator.items__template" data-jc="search__componentator.search__selector:div">
 			<script type="text/html">
 				{{ foreach m in value }}
 					<div class="uicomponent exec" data-exec="componentator/append" data-search="{{ m }}"><i class="fa fa-caret-right"></i>{{ m }}</div>
@@ -20,13 +20,14 @@
 <script>
 	PLUGIN('componentator', function(exports) {
 		exports.reload = function() {
+			SET('?.search', '');
 			exports.refresh();
 		};
 
 		exports.refresh = function() {
-			AJAX('GET /api/componenator/', function(response) {
+			AJAX('GET /api/componentator/', function(response) {
 				response.quicksort();
-				SET('componenator.items', response);
+				SET('?.items', response);
 			});
 		};
 
