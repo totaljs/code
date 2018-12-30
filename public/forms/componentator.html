@@ -45,7 +45,7 @@
 
 			data.name = el.attrd('search');
 
-			AJAX('GET /api/componenator/download/', data, function(response) {
+			AJAX('GET /api/componentator/download/', data, function(response) {
 				EXEC('code/append', response);
 			});
 		};
