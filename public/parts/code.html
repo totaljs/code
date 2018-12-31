@@ -127,9 +127,16 @@
 
 			SET('code.components', components);
 
-			if (is && !common.form)
+			if (is && !common.form && !code.current.$components) {
 				SET('common.form', 'components');
+				code.current.$components = 0;
+			}
 		};
+
+		WATCH('common.form', function(path, value) {
+			if (value === '')
+				code.current.$components = 1;
+		});
 
 		exports.todo = function(todo) {
 			SET('codetasks.todo', todo);
@@ -649,11 +656,11 @@
 
 			var items = [];
 
+			code.components && code.components.length && items.push({ value: 8, name: '@(Used UI components)', icon: 'puzzle-piece', shortcut: 'F2' });
 			items.push({ value: 1, name: '@(Reload)', icon: 'refresh', shortcut: 'F5' });
 			items.push({ value: 2, name: '@(Find)', icon: 'search', command: 'findPersistent' });
 			items.push({ value: 2, name: '@(Replace)', icon: 'search', command: 'replaceAll' });
 			items.push({ value: 3, name: '@(Convert to Tabs)', icon: 'align-right' });
-			code.components && code.components.length && items.push({ value: 8, name: '@(Used UI components)', icon: 'puzzle-piece' });
 			common.electron && code.data.repository && items.push({ value: 5, name: '@(Save locally)', icon: 'floppy-o' });
 			items.push({ value: 4, name: '@(Restore from backup)', icon: 'history' });
 			code.data.pathsync && items.push({ value: 6, name: '@(Save synchronized)', icon: 'sync green' });

@@ -215,6 +215,14 @@
 
 		}, true);
 
+		SETTER(true, 'shortcuts', 'register', 'F2', function(e) {
+			code.current && (/js|css|html/).test(code.current.ext) && SET('common.form', 'components');
+		}, true);
+
+		SETTER(true, 'shortcuts', 'register', 'F3', function(e) {
+			code.current && (/js|css|html/).test(code.current.ext) && SET('common.form', 'componentator');
+		}, true);
+
 		SETTER(true, 'shortcuts', 'register', 'F5', function(e) {
 			EXEC('code/shortcut', 'F5');
 		}, true);
