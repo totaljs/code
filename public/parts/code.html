@@ -127,14 +127,14 @@
 
 			SET('code.components', components);
 
-			if (is && !common.form && && code.current && !code.current.$components) {
+			if (is && !common.form && code.current && !code.current.$components) {
 				SET('common.form', 'components');
 				code.current.$components = 0;
 			}
 		};
 
 		WATCH('common.form', function(path, value) {
-			if (value === '')
+			if (value === '' && code.current)
 				code.current.$components = 1;
 		});
 
