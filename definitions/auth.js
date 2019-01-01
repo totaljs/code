@@ -13,9 +13,11 @@ AUTH(function(req, res, flags, next) {
 		user.ip = req.ip;
 		user.logged = NOW;
 		user.blocked && res.cookie(CONF.cookie, '', '-1 day');
+		if (user.blocked)
+			user = null;
 	}
 
-	next(user && !user.blocked, user);
+	next(!!user, user);
 });
 
 ON('service', function(counter) {
