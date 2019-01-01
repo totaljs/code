@@ -127,7 +127,7 @@
 
 			SET('code.components', components);
 
-			if (is && !common.form && !code.current.$components) {
+			if (is && !common.form && && code.current && !code.current.$components) {
 				SET('common.form', 'components');
 				code.current.$components = 0;
 			}
