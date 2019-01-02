@@ -1061,6 +1061,10 @@
 							res.pipe(Fs.createWriteStream(filename));
 						};
 
+						url = require('url').parse(url);
+						url.headers = {};
+						url.headers.cookie = '@{config.cookie}=' + COOKIES.get('@{config.cookie}');
+
 						if (location.protocol === 'https:')
 							Https.get(url, res);
 						else

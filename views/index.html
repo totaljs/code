@@ -63,6 +63,9 @@
 		common.online = true;
 		common.name = document.title;
 
+		if (common.electron)
+			process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+
 		ENV('date', 'yyyy-MM-dd HH:mm');
 
 		NAV.clientside('.R');
