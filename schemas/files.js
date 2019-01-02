@@ -52,10 +52,7 @@ NEWSCHEMA('Files', function(schema) {
 		} else
 			$.success();
 
-		TABLE('changelog').modify({ user: $.user.id, updated: new Date() }, true).where('projectid', $.id).where('path', model.path).insert(function(obj) {
-			obj.projectid = $.id;
-			obj.path = model.path;
-		});
+		MAIN.changelog(user, $.id, model.path);
 	});
 
 	schema.addWorkflow('changelog', function($) {
@@ -141,6 +138,7 @@ NEWSCHEMA('FilesRemove', function(schema) {
 		var filename = Path.join(project.path, model.path);
 		MAIN.log($.user, 'files_remove', project, model.path);
 		MAIN.change('remove', $.user, project, model.path);
+		MAIN.changelog(user, $.id, model.path, true);
 
 		try {
 			var stats = Fs.lstatSync(filename);
@@ -187,6 +185,7 @@ NEWSCHEMA('FilesUpload', function(schema) {
 			var filename = Path.join(project.path, model.path, file.filename);
 			MAIN.log($.user, 'files_upload', project, model.path + file.filename);
 			MAIN.change('upload', $.user, project, model.path + file.filename);
+			MAIN.changelog(user, $.id, model.path + file.filename);
 			file.move(filename, next);
 		}, $.done());
 
@@ -225,6 +224,7 @@ NEWSCHEMA('FilesCreate', function(schema) {
 		var filename = Path.join(project.path, model.path);
 
 		MAIN.change('create', $.user, project, model.path);
+		MAIN.changelog($.user, $.id, model.path);
 
 		Fs.lstat(filename, function(err) {
 

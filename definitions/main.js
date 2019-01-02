@@ -95,6 +95,13 @@ MAIN.change = function(type, user, project, path) {
 	NOSQL(project.id + '_changes').insert({ type: type, userid: user.id, path: path, ip: user.ip, date: new Date() });
 };
 
+MAIN.changelog = function(user, project, path, removed) {
+	TABLE('changelog').modify({ user: user.id, updated: new Date(), removed: removed === true }, true).where('projectid', project).where('path', path).insert(function(obj) {
+		obj.projectid = project;
+		obj.path = path;
+	});
+};
+
 MAIN.send = function(msg) {
 	MAIN.ws && MAIN.ws.send(msg);
 };
