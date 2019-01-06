@@ -1381,3 +1381,10 @@ FUNC.snippets = function(type, text, tabs, line, words, chplus) {
 
 	return arr;
 };
+
+
+CodeMirror.defineExtension('centerLine', function(line) {
+	var h = this.getScrollInfo().clientHeight;
+	var coords = this.charCoords({ line: line, ch: 0 }, 'local');
+	this.scrollTo(null, (coords.top + coords.bottom - h) / 2);
+});
