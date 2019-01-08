@@ -51,7 +51,7 @@ COMPONENT('editor', function(self, config) {
 
 		switch (key) {
 			case 'mode':
-				editor.setOption('mode', value === 'totaljs' ? { name: 'totaljs', base: 'htmlmixed' } : value);
+				editor.setOption('mode', value);
 				editor.setOption('lint', value === 'javascript' || value === 'xml' || value === 'totaljs' || value === 'html' ? { esversion: 6, expr: true, evil: true, unused: true } : false);
 				break;
 			case 'disabled':
