@@ -473,6 +473,8 @@ COMPONENT('editor', function(self, config) {
 		self.find('.ui-editor').tclass('ui-editor-invalid', invalid);
 	};
 
+	var BL = { 'data--': 1, 'data---': 1 };
+
 	self.rebuild_autocomplete = function() {
 		var words = editor.getValue();
 		var max = 100000;
@@ -482,6 +484,10 @@ COMPONENT('editor', function(self, config) {
 		if (words) {
 			var unique = {};
 			for (var i = 0; i < words.length; i++) {
+
+				if (BL[words[i]])
+					continue;
+
 				var index = words[i].indexOf('__');
 				if (index !== -1)
 					words[i] = words[i].substring(0, index);

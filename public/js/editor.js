@@ -1329,7 +1329,8 @@ SNIPPETS.push({ type: 'html', search: 'script', text: '<b>Script: HTML</b>', cod
 SNIPPETS.push({ type: 'html', search: 'script', text: '<b>Script: Text</b>', code: '<script type="text/plain"></script>', ch: 27 });
 SNIPPETS.push({ type: 'html', search: 'fa', text: '<b>Font-Awesome Icon</b>', code: '<i class="fa fa-"></i>', ch: 17 });
 SNIPPETS.push({ type: 'html', search: 'jc', text: '<b>Component</b>', code: '<div data-jc="__"></div>', ch: 15 });
-SNIPPETS.push({ type: 'html', search: 'scope', text: '<b>Scope</b>', code: '<div data-jc-scope=""></div>', ch: 21 });
+SNIPPETS.push({ type: 'html', search: '--', text: '<b>Component</b>', code: '<div data---="__"></div>', ch: 15 });
+SNIPPETS.push({ type: 'html', search: 'scope', text: '<b>Scope</b>', code: '<div data-scope=""></div>', ch: 18 });
 SNIPPETS.push({ type: 'html', search: 'data-bind', text: '<b>Binder</b>', code: 'data-bind="__"', ch: 12 });
 SNIPPETS.push({ type: 'javascript', search: 'COMPONENT', text: '<b>COMPONENT</b>', code: 'COMPONENT(\'\', \'\', function(self, config) {\n\t{0}\n{0}});', ch: 12 });
 SNIPPETS.push({ type: 'javascript', search: 'NEWSCHEMA', text: '<b>NEWSCHEMA</b>', code: 'NEWSCHEMA(\'\', function(schema) {\n\t{0}schema.define(\'key\', String, true);\n{0}});', ch: 12 });
