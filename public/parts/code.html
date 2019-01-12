@@ -105,6 +105,7 @@
 
 		var editor;
 		var cache_scrollpos = {};
+		var reg_number = /^\d+$/;
 
 		FIND('editor', function(com) {
 			exports.editor = editor = com;
@@ -115,7 +116,18 @@
 		};
 
 		exports.statusinfo = function(value) {
-			return ((value.fline || 0) + 1) + ':' + (value.fch || 0) + (value.fline === value.tline ? (':' + ((value.tch || 0) - (value.fch || 0))) : '');
+			var sel = ((value.tch || 0) - (value.fch || 0));
+			var plus = '';
+
+			if (sel && editor) {
+				var text = editor.editor.getSelection();
+				var l = text.length - 1;
+				plus = text.charAt(l) + ' = <code>{0}</code>'.format(text.charCodeAt(l));
+				if (reg_number.test(text) && (+text) > 32)
+					plus += (plus ? ' &nbsp; ' : '') + text + ' = <code>{0}</code>'.format(String.fromCharCode(text));
+			}
+
+			return ((value.fline || 0) + 1) + ':' + (value.fch || 0) + (value.fline === value.tline ? (':' + sel) : '') + (plus ? (' &nbsp; ' + plus) : '');
 		};
 
 		exports.components = function(components) {
@@ -273,6 +285,7 @@
 			var can = sel.join('').length > 0;
 
 			if (can) {
+
 				items.push({ name: '@(Copy)', icon: 'copy', command: 'copy' });
 
 				if ((/js|css|html/).test(code.current.ext))
