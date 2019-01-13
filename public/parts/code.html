@@ -97,7 +97,7 @@
 
 <script>
 
-	var code = { SYNC: false, changes: {} };
+	var code = { SYNC: false, changes: {}, NOTRIM: { nosql: 1, table: 1 }};
 
 	PLUGIN('code', function(exports) {
 
@@ -1034,7 +1034,8 @@
 				var Path = require('path');
 				var filename = Path.join(electronpath, FUNC.getName(code.data.repository).replace(/\.git$/i, ''), code.editor.path);
 				FUNC.mkdir(Path.dirname(filename));
-				require('fs').writeFile(filename, FUNC.rtrim(editor.editor.getValue()), function(err) {
+				var val = editor.editor.getValue();
+				require('fs').writeFile(filename, code.NOTRIM[code.current.ext] ? val : FUNC.rtrim(val), function(err) {
 					if (err)
 						FUNC.warning(err.toString());
 					else
@@ -1108,8 +1109,9 @@
 				return;
 
 			var data = {};
+			var val = editor.editor.getValue();
 			data.path = code.editor.path;
-			data.body = FUNC.rtrim(editor.editor.getValue());
+			data.body = code.NOTRIM[code.current.ext] ? val : FUNC.rtrim(val);
 
 			if (sync)
 				data.sync = sync;
