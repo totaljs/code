@@ -264,6 +264,7 @@ header .tools .external { color: #a2a286; }
 .td .CodeMirror-activeline-background { background-color: rgba(0,0,0,0.1); }
 
 .td .cm-s-default .cm-qualifier { color: gray; }
+.td .cm-s-default .cm-meta { color: #ae81ff; }
 .td .CodeMirror { color: #A0A0A0; }
 .td div.CodeMirror-selected { background: #49483E; }
 .td .CodeMirror-line::selection, .td .CodeMirror-line > span::selection, .td .CodeMirror-line > span > span::selection { background: rgba(73, 72, 62, .99); }
