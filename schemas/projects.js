@@ -50,8 +50,16 @@ NEWSCHEMA('Projects', function(schema) {
 		}
 
 		var model = $.clean();
+		var users = [];
 
 		model.path = U.path(model.path);
+
+		for (var i = 0; i < model.users.length; i++) {
+			if (MAIN.users.findItem('id', model.users[i]))
+				users.push(model.users[i]);
+		}
+
+		model.users = users;
 
 		if (model.id) {
 			var item = MAIN.projects.findItem('id', model.id);

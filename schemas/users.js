@@ -79,12 +79,18 @@ NEWSCHEMA('Users', function(schema) {
 		var index = MAIN.users.findIndex('id', $.id);
 		var item = MAIN.users[index];
 
-		item.blocked = true;
-		MAIN.ws.send2(WSBLOCKED, client => client.user.id === item.id);
+		if (item) {
 
-		if (index !== -1) {
+			for (var i = 0; i < MAIN.projects.length; i++) {
+				var pro = MAIN.projects[i];
+				if (pro.users)
+					pro.users = pro.users.remove(item.id);
+			}
+
+			item.blocked = true;
+			MAIN.ws.send2(WSBLOCKED, client => client.user.id === item.id);
 			MAIN.users.splice(index, 1);
-			MAIN.save(1);
+			MAIN.save();
 		}
 
 		$.success();

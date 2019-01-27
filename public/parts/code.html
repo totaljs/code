@@ -1,11 +1,3 @@
-<div data-bind="%projectsvisible__show" class="projectslist hidden">
-	<ul data-jc="listmenu__code.data.id__datasource:code.projects;selector:li">
-		<script type="text/html">
-			<li class="exec" data-exec="code/project" data-id="{{ id }}">{{ if online }}<span>{{ online }}</span>{{ fi }}<i class="fa fa-project-diagram"></i>{{ name }}</li>
-		</script>
-	</ul>
-</div>
-
 <div id="panel">
 	<section class="project exec" data-exec="code/projects" data-bind="!code.data__html b:value.name__title:value.name"><i class="fa fa-caret-down"></i><b>@(Choose project)</b></section>
 	<div class="panel-scroller fullheight" data-margin="36">
@@ -258,6 +250,7 @@
 
 			AJAX('GET /api/projects/', function(response) {
 
+				response.quicksort('name');
 				SET('code.projects', response);
 
 				var keys = Object.keys(localStorage);
@@ -1019,13 +1012,28 @@
 			});
 		};
 
-		exports.project = function(el) {
-			var id = el.attrd('id');
-			REDIRECT('/?id=' + id);
-		};
+		exports.projects = function(el) {
 
-		exports.projects = function() {
-			TOGGLE('%projectsvisible', true);
+			var opt = {};
+			opt.element = el;
+			opt.items = code.projects;
+
+			for (var i = 0; i < opt.items.length; i++) {
+				var item = opt.items[i];
+				item.template = '<i class="fa fa-project-diagram"></i>{{ if online }}<span>{{ online }}</span>{{ fi }}{{ name }}';
+				item.classname = code.data && code.data.id === item.id ? 'ui-directory-current' : '';
+			}
+
+			opt.offsetWidth = 100;
+			opt.offsetY = 10;
+			opt.offsetX = 10;
+			opt.class = 'ui-directory-projects';
+			opt.callback = function(item) {
+				REDIRECT('/?id=' + item.id);
+			};
+
+			SETTER('directory', 'show', opt);
+			//TOGGLE('%projectsvisible', true);
 		};
 
 		exports.savelocal = function(nowarning) {
