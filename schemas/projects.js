@@ -1,4 +1,5 @@
-const SKIP = /\/\.git\//;
+const IS_WINDOWS = require('os').platform().substring(0, 3).toLowerCase() === 'win';
+const SKIP = (IS_WINDOWS ? /\\\.git\// : /\/\.git\// );
 const Path = require('path');
 const Fs = require('fs');
 
@@ -140,13 +141,13 @@ NEWSCHEMA('Projects', function(schema) {
 		var skip = '';
 
 		if (item.skiptmp)
-			skip += (skip ? '|' : '') + '\\/tmp\\/';
+			skip += (skip ? '|' : '') + (IS_WINDOWS ? '\\\\tmp\\/' : '\\/tmp\\/');
 
 		if (item.skipsrc)
-			skip += (skip ? '|' : '') + '\\/\\.src\\/';
+			skip += (skip ? '|' : '') + (IS_WINDOWS ? '\\\\.src\\/' : '\\/\\.src\\/');
 
 		if (item.skipnm)
-			skip += (skip ? '|' : '') + '\\/node_modules\\/';
+			skip += (skip ? '|' : '') + (IS_WINDOWS ? '\\\\node_modules\\/' : '\\/node_modules\\/');
 
 		if (skip)
 			skip = new RegExp(skip);
