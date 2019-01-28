@@ -15,7 +15,7 @@ function realtime() {
 		var old = self.find(conn => conn.user === client.user && conn.id !== client.id);
 		if (old) {
 			old.send(MSG_CLOSE);
-			setTimeout(() => old.close, 1000);
+			setTimeout(() => old.close(), 1000);
 		}
 
 		client.user.online = true;
