@@ -121,6 +121,7 @@ COMPONENT('editor', function(self, config) {
 				return '';
 			});
 
+
 			if (loremcount) {
 				var builder = lorem.slice(0, loremcount).join(' ');
 				cm.replaceRange(builder, { line: cur.line, ch: cur.ch }, { line: cur.line, ch: cur.cr });
@@ -135,7 +136,7 @@ COMPONENT('editor', function(self, config) {
 					return CodeMirror.Pass;
 
 				var html = line.substring(index, cur.ch);
-				if ((/(div|span|table|b|i|a|img|td|tr|thead|tfoot|tbody|section|figure|section)+(\.[a-z0-9-_])*/).test(html) || (/(^|\s)\.[a-z0-9-_]*/).test(html)) {
+				if ((/(div|span|table|b|i|a|h|img|td|tr|thead|tfoot|tbody|section|figure|section)+(\.[a-z0-9-_])*/).test(html) || (/(^|\s)\.[a-z0-9-_]*/).test(html)) {
 					var cls = html.split('.');
 					if (!cls[0]) {
 						if (cls[1].substring(0, 2) === 'fa')
