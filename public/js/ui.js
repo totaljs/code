@@ -5,6 +5,7 @@ COMPONENT('editor', function(self, config) {
 	var markers = {};
 	var fn = {};
 	var autocomplete;
+	var lorem = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'.split(' ');
 
 	fn.lastIndexOf = function(str, chfrom) {
 		for (var i = chfrom; i > 0; i--) {
@@ -109,13 +110,27 @@ COMPONENT('editor', function(self, config) {
 
 		var tabulator = function() {
 
+			var cm = editor;
+			var cur = cm.getCursor();
+			var line = cm.getLine(cur.line);
+			var loremcount = 0;
+
+			line = line.replace(/lorem\d+$/i, function(text) {
+				loremcount = +text.match(/\d+/)[0];
+				cur.ch -= text.length;
+				return '';
+			});
+
+			if (loremcount) {
+				var builder = lorem.slice(0, loremcount).join(' ');
+				cm.replaceRange(builder, { line: cur.line, ch: cur.ch }, { line: cur.line, ch: cur.cr });
+				cm.doc.setCursor({ line: cur.line, ch: cur.ch + builder.length });
+				return;
+			}
+
 			if (config.mode === 'totaljs' || config.mode === 'html') {
 
-				var cm = editor;
-				var cur = cm.getCursor();
-				var line = cm.getLine(cur.line);
 				var index = fn.lastIndexOf(line, cur.ch, '\t', '>', ' ');
-
 				if (index === -1)
 					return CodeMirror.Pass;
 
@@ -134,6 +149,7 @@ COMPONENT('editor', function(self, config) {
 					return;
 				}
 			}
+
 			return CodeMirror.Pass;
 		};
 
