@@ -64,18 +64,20 @@
 
 	<div class="panel">
 		<h1><i class="fa fa-lock"></i>@{'%name'}</h1>
-		<div class="padding">
-			<div class="m" data-jc="textbox__form.email__icon2:user;type:email;required:true;autofocus:true;autofill:true">@(Login name)</div>
-			<div class="m" data-jc="textbox__form.password__icon2:lock;required:true;type:password;autofill:true">@(Password)</div>
-			<div data-jc="error__form.response"></div>
-			<div data-jc="validation__form">
-				<button name="submit" disabled="disabled"><i class="fa fa-lock"></i>@(Login)</button>
+		<form method="POST" onsubmit="return false">
+			<div class="padding">
+				<div class="m" data-jc="textbox__form.email__icon2:user;type:email;required:true;autofocus:true;autofill:true">@(Login name)</div>
+				<div class="m" data-jc="textbox__form.password__icon2:lock;required:true;type:password;autofill:true">@(Password)</div>
+				<div data-jc="error__form.response"></div>
+				<div data-jc="validation__form">
+					<button name="submit" disabled="disabled"><i class="fa fa-lock"></i>@(Login)</button>
+				</div>
+				<footer>
+					<div>All rights reserved &copy; 2018-2019</div>
+					<a href="https://www.totaljs.com" target="_blank">www.totaljs.com</a>
+				</footer>
 			</div>
-			<footer>
-				<div>All rights reserved &copy; 2018</div>
-				<a href="https://www.totaljs.com" target="_blank">www.totaljs.com</a>
-			</footer>
-		</div>
+		</form>
 	</div>
 
 	<script>
@@ -208,7 +210,11 @@
 				config.error && attrs.attr('error');
 				attrs.attr('data-jc-bind', '');
 
-				config.autofill && attrs.attr('name', self.path.replace(/\./g, '_'));
+				if (config.autofill) {
+					attrs.attr('name', self.path.replace(/\./g, '_'));
+					self.autofill();
+				}
+
 				config.align && attrs.attr('class', 'ui-' + config.align);
 				config.autofocus && attrs.attr('autofocus');
 
