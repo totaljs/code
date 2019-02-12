@@ -356,6 +356,7 @@
 						y = 60;
 					} else if (value.value === 'encode') {
 						items.push({ name: '@(Base64)', icon: 'chevron-right', value: 'btoa' });
+						items.push({ name: '@(Hex)', icon: 'chevron-right', value: 'hexe', server: true });
 						items.push({ name: '@(Encode URI)', icon: 'chevron-right', value: 'encodeURIComponent' });
 						items.push({ name: '@(Escape)', icon: 'chevron-right', value: 'escape' });
 						items.push({ name: '@(Slug)', icon: 'chevron-right', value: 'slug' });
@@ -369,6 +370,7 @@
 						y = -10;
 					} else {
 						y = 40;
+						items.push({ name: '@(Hex)', icon: 'chevron-right', value: 'hexd', server: true });
 						items.push({ name: '@(Base64)', icon: 'chevron-right', value: 'atob' });
 						items.push({ name: '@(Decode URI)', icon: 'chevron-right', value: 'decodeURIComponent' });
 						items.push({ name: '@(Unescape)', icon: 'chevron-right', value: 'unescape' });
