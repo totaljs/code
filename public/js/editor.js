@@ -1114,14 +1114,14 @@ WAIT('CodeMirror.defineMode', function() {
 		var cur = cm.getCursor();
 		var token = cm.getTokenAt(cur);
 		var term;
-		var from = CodeMirror.Pos(cur.line, token.start);
+		var f = CodeMirror.Pos(cur.line, token.start);
 		var to = cur;
 
 		if (token.start < cur.ch && /\w/.test(token.string.charAt(cur.ch - token.start - 1))) {
 			term = token.string.substr(0, cur.ch - token.start);
 		} else {
 			term = '';
-			from = cur;
+			f = cur;
 		}
 
 		var found = [];
@@ -1132,7 +1132,7 @@ WAIT('CodeMirror.defineMode', function() {
 		}
 
 		if (found.length)
-			return { list: found, from: from, to: to };
+			return { list: found, from: f, to: to };
 	});
 
 	CodeMirror.commands.autocomplete = CodeMirror.showHint;
