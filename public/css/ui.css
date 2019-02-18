@@ -22,10 +22,11 @@ button { outline: 0; }
 .CodeMirror-overlayscroll-horizontal div { bottom: 0; height: 100%; }
 .CodeMirror-overlayscroll-vertical { right: 0; top: 0; width: 6px; }
 .CodeMirror-overlayscroll-vertical div { right: 0; width: 100%; }
-.cm-variable-T { background-color: rgba(104, 178, 91, 0.3); color: black; }
-.cm-variable-L { background-color: rgba(104, 178, 191, 0.3); color: black; }
-.cm-variable-A { background-color: rgba(191, 61, 162, 0.3); color: black; }
-.cm-variable-J { background-color: rgba(228,228,228,0.35); color: #0004ff; font-weight: bold; }
+.cm-variable-T { background-color: rgba(104,178,91,.3); color: black; }
+.cm-variable-L { background-color: rgba(104,178,191,.3); color: black; }
+.cm-variable-A { background-color: rgba(191,61,162,.3); color: black; }
+.cm-variable-S { background-color: rgba(255,59,231,.26); color: #ce1ad6; font-weight: bold; }
+.cm-variable-J { background-color: rgba(228,228,228,.35); color: #0004ff; font-weight: bold; }
 .cm-variable-B { border-bottom: 1px solid red; }
 .cm-trailingspace { background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAACCAYAAAB/qH1jAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH3QUXCToH00Y1UgAAACFJREFUCNdjPMDBUc/AwNDAAAFMTAwMDA0OP34wQgX/AQBYgwYEx4f9lQAAAABJRU5ErkJggg==); background-position: bottom left; background-repeat: repeat-x; }
 .CodeMirror-matchingtag { background-color: rgba(200,200,200,0.1); }
@@ -35,7 +36,8 @@ button { outline: 0; }
 .CodeMirror-selection-highlight-scrollbar { background-color: yellow; }
 .CodeMirror-gutters { width: 60px; }
 div.CodeMirror span.CodeMirror-matchingbracket { border-bottom: 2px solid blue; color: inherit; }
-.td .cm-variable-J { background-color: rgba(27,27,27,0.35); color: #90ff2f; }
+.td .cm-variable-S { background-color: rgba(255,59,231,.15); color: #f546fd; }
+.td .cm-variable-J { background-color: rgba(27,27,27,.35); color: #90ff2f; }
 
 .cm-uname { position: absolute; font-size: 11px; margin: -19px 0 0 4px; height: 22px; }
 .cm-uname b { color: black; padding: 2px 5px; line-height: 12px; display: block; font-family: Arial; }
