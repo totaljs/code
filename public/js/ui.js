@@ -4236,7 +4236,7 @@ COMPONENT('validation', 'delay:100;flags:visible', function(self, config) {
 	};
 });
 
-COMPONENT('infopanel', '', function(self, config) {
+COMPONENT('infopanel', '', function(self) {
 
 	var is = false;
 	var cache;

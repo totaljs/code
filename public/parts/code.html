@@ -462,13 +462,13 @@
 						exports.element.find('section.tabs').find('span[data-value="{0}"]'.format(code.current.path)).rclass('modified');
 					}
 					exports.tablocked();
-				}, 500);
+				}, 250);
 			}
 
 			if (code.current && code.current.path.substring(code.current.path.length - 3) === '.js') {
 				setTimeout2('jshint', function() {
 					SET('code.errors', JSHINT.errors.slice(0));
-				}, 1000);
+				}, 800);
 			}
 		});
 
@@ -1118,31 +1118,35 @@
 			if (BLOCKED('code_saving', 1000))
 				return;
 
-			var data = {};
-			var val = editor.editor.getValue();
-			data.path = code.editor.path;
-			data.body = code.NOTRIM[code.current.ext] ? val : FUNC.rtrim(val);
-
-			if (sync)
-				data.sync = sync;
-
-			code.current.modified = false;
-			exports.cache_rem(code.current.path);
-			exports.element.find('section.tabs').find('span[data-value="{0}"]'.format(code.current.path)).rclass('modified');
-
 			SETTER('loading', 'show');
-			AJAX('POST /api/files/{id}/ REPEAT'.arg(code.data), data, function(response) {
 
-				SETTER('loading', 'hide', 500);
-				if (close === true)
-					exports.closeforce();
+			setTimeout(function() {
+				var data = {};
+				var val = editor.editor.getValue();
+				data.path = code.editor.path;
+				data.body = code.NOTRIM[code.current.ext] ? val : FUNC.rtrim(val);
 
-				editor.diffgutterclear();
-				FUNC.wssend({ TYPE: 'save', projectid: code.projectid, id: user.id, user: user.name });
-				FUNC.success((response.value === 'synchronized' ? '@(<b>{0}</b> saved and synchronized)' : '@(<b>{0}</b> saved)').format(data.path));
-				common.electron && code.data.repository && user.localsave && exports.savelocal();
-				SET('code.current.lastmodified', { user: user.name, updated: new Date() });
-			});
+				if (sync)
+					data.sync = sync;
+
+				code.current.modified = false;
+				exports.cache_rem(code.current.path);
+				exports.element.find('section.tabs').find('span[data-value="{0}"]'.format(code.current.path)).rclass('modified');
+
+				AJAX('POST /api/files/{id}/ REPEAT'.arg(code.data), data, function(response) {
+
+					SETTER('loading', 'hide', 500);
+					if (close === true)
+						exports.closeforce();
+
+					editor.diffgutterclear();
+					FUNC.wssend({ TYPE: 'save', projectid: code.projectid, id: user.id, user: user.name });
+					FUNC.success((response.value === 'synchronized' ? '@(<b>{0}</b> saved and synchronized)' : '@(<b>{0}</b> saved)').format(data.path));
+					common.electron && code.data.repository && user.localsave && exports.savelocal();
+					SET('code.current.lastmodified', { user: user.name, updated: new Date() });
+				});
+
+			}, 300);
 		};
 
 		exports.savetabs = function() {
