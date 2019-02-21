@@ -229,6 +229,9 @@ WAIT('CodeMirror.defineMode', function() {
 				if (stream.match(/data-scope=/, true))
 					return 'variable-S';
 
+				if (stream.match(/data-released=/, true))
+					return 'variable-R';
+
 				if (stream.match(/data-jc=|data-{2,4}=|data-bind=/, true))
 					return 'variable-J';
 
