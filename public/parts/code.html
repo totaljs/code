@@ -1074,11 +1074,11 @@
 						var filename = Path.join(electronpath, FUNC.getName(code.data.repository).replace(/\.git$/i, ''), item.path);
 
 						if (item.removed) {
-							SETTER('loading', 'show', '<i class="fa fa-floppy-o"></i><b>@(Removing:)</b> ' + item.path + '<br /><b>{0}%</b>'.format(common.percentage >> 0));
+							SETTER('loading', 'show', ('<i class="fa fa-floppy-o"></i><b style="font-size:18px">{0}%</b><br /><b>@(Removing:)</b> ' + item.path).format(common.percentage >> 0));
 							Fs.unlink(filename, next);
 						} else {
 
-							SETTER('loading', 'show', '<i class="fa fa-floppy-o"></i><b>@(Saving:)</b> ' + item.path + '<br /><b>{0}%</b>'.format(common.percentage >> 0));
+							SETTER('loading', 'show', ('<i class="fa fa-floppy-o"></i><b style="font-size:18px">{0}%</b><br /><b>@(Saving:)</b> ' + item.path).format(common.percentage >> 0));
 
 							FUNC.mkdir(Path.dirname(filename));
 
@@ -1088,6 +1088,12 @@
 
 							var url = location.protocol + '//' + location.hostname + (location.port ? ':' + location.port : '') + '/api/download/{id}/?path='.arg(code.data) + encodeURIComponent(item.path);
 							var res = function(res) {
+
+								if (res.statusCode !== 200) {
+									resume();
+									return;
+								}
+
 								res.on('error', resume);
 								res.on('end', resume);
 								res.pipe(Fs.createWriteStream(filename));

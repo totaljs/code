@@ -88,6 +88,7 @@ function files_download(id) {
 	var item = MAIN.projects.findItem('id', id);
 
 	if (!item) {
+		self.status = 400;
 		self.invalid('error-project');
 		return;
 	}
@@ -99,6 +100,7 @@ function files_download(id) {
 		Fs.lstat(filename, function(err, stats) {
 
 			if (err || stats.isDirectory()) {
+				self.status = 400;
 				self.invalid('error-file');
 				return;
 			}
@@ -126,8 +128,10 @@ function files_download(id) {
 				self.stream(U.getContentType(ext), Fs.createReadStream(filename, meta));
 
 		});
-	} else
+	} else {
+		self.status = 401;
 		self.invalid('error-permissions');
+	}
 }
 
 function users_online() {
