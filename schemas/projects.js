@@ -13,7 +13,7 @@ NEWSCHEMA('Projects', function(schema) {
 	schema.define('permissions', String);
 	schema.define('documentation', 'String(200)');
 	schema.define('support', 'String(200)');
-	schema.define('logfile', 'String(100)', true);
+	schema.define('logfile', 'String(100)');
 	schema.define('url', 'String(100)');
 	schema.define('icon', 'String(30)');
 	schema.define('users', '[Lower(30)]');
