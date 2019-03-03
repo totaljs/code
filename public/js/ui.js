@@ -3617,9 +3617,9 @@ COMPONENT('menu', function(self) {
 			opt.offsetY = arguments[5];
 		}
 
-		var tmp = opt.element instanceof jQuery ? opt.element[0] : opt.element.element ? opt.element.dom : opt.element;
+		var tmp = opt.element ? opt.element instanceof jQuery ? opt.element[0] : opt.element.element ? opt.element.dom : opt.element : null;
 
-		if (is && self.target === tmp) {
+		if (is && tmp && self.target === tmp) {
 			self.hide();
 			return;
 		}
@@ -3635,13 +3635,14 @@ COMPONENT('menu', function(self) {
 		}
 
 		var css = {};
-		css.left = 0;
-		css.top = 0;
-		self.element.css(css);
 
 		ul.html(builder.join(''));
 
-		if (!is) {
+		if (is) {
+			css.left = 0;
+			css.top = 0;
+			self.element.css(css);
+		} else {
 			self.rclass('hidden');
 			self.aclass(cls + '-visible', 100);
 			is = true;
@@ -3665,15 +3666,17 @@ COMPONENT('menu', function(self) {
 					css.left = offset.left;
 					break;
 			}
+			css.top = offset.top + target.innerHeight() + 10;
 		} else {
 			css.left = opt.x;
 			css.top = opt.y;
 		}
 
-		css.top = offset.top + target.innerHeight() + 10 + (opt.offsetY || 0);
-
 		if (opt.offsetX)
 			css.left += opt.offsetX;
+
+		if (opt.offsetY)
+			css.top += opt.offsetY;
 
 		self.element.css(css);
 	};
