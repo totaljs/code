@@ -139,7 +139,7 @@ NEWSCHEMA('Projects', function(schema) {
 		else
 			allowed = null;
 
-		var skip = '.git';
+		var skip = '';
 
 		if (item.skiptmp)
 			skip += (skip ? '|' : '') + (IS_WINDOWS ? '\\\\tmp\\\\' : '\\/tmp\\/');
