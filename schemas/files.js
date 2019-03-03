@@ -40,7 +40,7 @@ NEWSCHEMA('Files', function(schema) {
 		F.path.mkdir(filename.substring(0, filename.length - name.length));
 
 		if (project.backup)
-			MAIN.backup(user, filename, () => Fs.writeFile(filename, model.body, ERROR('files.write')));
+			MAIN.backup(user, filename, () => Fs.writeFile(filename, model.body, ERROR('files.write')), project);
 		else
 			Fs.writeFile(filename, model.body, ERROR('files.write'));
 
@@ -143,7 +143,7 @@ NEWSCHEMA('FilesRemove', function(schema) {
 		try {
 			var stats = Fs.lstatSync(filename);
 			if (stats.isFile() && project.backup)
-				MAIN.backup(user, filename, () => Fs.unlink(filename, ERROR('files.remove')));
+				MAIN.backup(user, filename, () => Fs.unlink(filename, ERROR('files.remove')), project);
 			else {
 				if (stats.isDirectory())
 					F.path.rmdir(filename);
