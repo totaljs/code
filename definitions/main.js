@@ -63,12 +63,17 @@ MAIN.authorize = function(project, user) {
 	return true;
 };
 
-MAIN.backup = function(user, path, callback) {
+MAIN.backup = function(user, path, callback, project) {
 
 	var name = U.getName(path);
 	var target = path.substring(0, path.length - name.length);
 
-	var dir = Path.join(CONF.backup, target);
+	var dir;
+
+	if (F.isWindows)
+		dir = Path.join(CONF.backup, project.name, target.replace(project.path.replace('/', ''), ''));
+	else
+		dir = Path.join(CONF.backup, target);
 
 	// Creates directories
 	F.path.mkdir(dir);

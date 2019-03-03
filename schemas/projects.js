@@ -142,13 +142,13 @@ NEWSCHEMA('Projects', function(schema) {
 		var skip = '';
 
 		if (item.skiptmp)
-			skip += (skip ? '|' : '') + (IS_WINDOWS ? '\\\\tmp\\/' : '\\/tmp\\/');
+			skip += (skip ? '|' : '') + (IS_WINDOWS ? '\\\\tmp\\\\' : '\\/tmp\\/');
 
 		if (item.skipsrc)
-			skip += (skip ? '|' : '') + (IS_WINDOWS ? '\\\\.src\\/' : '\\/\\.src\\/');
+			skip += (skip ? '|' : '') + (IS_WINDOWS ? '\\\\.src\\\\' : '\\/\\.src\\/');
 
 		if (item.skipnm)
-			skip += (skip ? '|' : '') + (IS_WINDOWS ? '\\\\node_modules\\/' : '\\/node_modules\\/');
+			skip += (skip ? '|' : '') + (IS_WINDOWS ? '\\\\node_modules\\\\' : '\\/node_modules\\/');
 
 		if (skip)
 			skip = new RegExp(skip);
@@ -167,6 +167,14 @@ NEWSCHEMA('Projects', function(schema) {
 				var cleaner = (path) => MAIN.can(allowed, path) == false;
 				files = files.remove(cleaner);
 				directories = directories.remove(cleaner);
+			}
+
+			if (F.isWindows) {
+				for (let i = 0; i < files.length; i++)
+					files[i] = files[i].replace(/\\/g, '/');
+
+				for (let i = 0; i < directories.length; i++)
+					directories[i] = directories[i].replace(/\\/g, '/');
 			}
 
 			$.callback({ files: files, directories: directories, url: item.url, name: item.name, icon: item.icon, repository: item.repository, id: item.id, documentation: item.documentation, support: item.support, pathsync: item.pathsync });
