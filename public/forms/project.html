@@ -32,8 +32,16 @@
 					</div>
 				</div>
 
-				<div data-jc="textbox__repository__placeholder:cms__''">@(Folder name)</div>
-				<div class="help m">@(Electron version of Code app can store files locally in this folder name.)</div>
+				<div class="row">
+					<div class="col-sm-6 m">
+						<div data-jc="textbox__repository__placeholder:cms__''">@(Folder name)</div>
+						<div class="help">@(Electron version of Code app can store files locally in this folder name.)</div>
+					</div>
+					<div class="col-sm-6 m">
+						<div data-jc="textbox__logfile__maxlength:100__''">@(A path to log file)</div>
+						<div class="help">@(A default log file is <code>current_app_dir/logs/debug.log</code>)</div>
+					</div>
+				</div>
 
 				<div data-jc="checkbox__backup__null__true">@(Backup all modified files)</div>
 				<div data-jc="checkbox__skiptmp__null__true">@(Skip <b>tmp</b> directory)</div>

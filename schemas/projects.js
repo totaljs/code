@@ -13,6 +13,7 @@ NEWSCHEMA('Projects', function(schema) {
 	schema.define('permissions', String);
 	schema.define('documentation', 'String(200)');
 	schema.define('support', 'String(200)');
+	schema.define('logfile', 'String(100)', true);
 	schema.define('url', 'String(100)');
 	schema.define('icon', 'String(30)');
 	schema.define('users', '[Lower(30)]');
@@ -322,6 +323,30 @@ NEWSCHEMA('Projects', function(schema) {
 				$.invalid(err);
 			else
 				$.callback(data.toString('utf8'));
+		});
+	});
+
+	schema.addWorkflow('logfile', function($) {
+
+		var project = MAIN.projects.findItem('id', $.id);
+		if (project == null) {
+			$.invalid('error-project');
+			return;
+		}
+
+		var filename = project.logfile ? project.logfile : Path.join(project.path, 'logs/debug.log');
+
+		Fs.stat(filename, function(err, stats) {
+			if (stats) {
+				var start = stats.size - (1024 * 4); // Max 4 kb
+				if (start < 0)
+					start = 0;
+				Fs.createReadStream(filename, { start: start }).once('data', function(chunk) {
+					$.callback(chunk.toString('utf8'));
+				});
+
+			} else
+				$.callback('');
 		});
 	});
 });

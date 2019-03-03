@@ -39,6 +39,7 @@
 			@{if user.sa}
 			<a href="@{#}/projects/" title="@(Projects)" class="R" data-if="projects"><i class="fab fa-app-store-ios"></i></a>
 			<a href="@{#}/users/" title="@(Users)" class="R" data-if="users"><i class="fa fa-users"></i></a>
+			<a href="@{#}/snippets/" title="@(Snippets)" class="R" data-if="snippets"><i class="fa fa-paste"></i></a>
 			@{fi}
 			<a href="@{#}/settings/" title="@(Settings)" class="R" data-if="settings"><i class="fa fa-cog"></i></a>
 			<a href="@{#}/logout/" title="@(Sign out)"><i class="fa fa-sign-out"></i></a>
@@ -46,6 +47,7 @@
 	</header>
 
 	<div data-jc="part__common.page__if:code;url:/parts/code.html;reload:code/reload"></div>
+	<div data-jc="part__common.page__if:snippets;url:/parts/snippets.html;reload:snippets/reload;cleaner:10"></div>
 	<div data-jc="part__common.page__if:projects;url:/parts/projects.html;reload:projects/reload;cleaner:10"></div>
 	<div data-jc="part__common.page__if:users;url:/parts/users.html;reload:users/reload;cleaner:10"></div>
 	<div data-jc="part__common.page__if:settings;url:/parts/settings.html;reload:settings/reload;cleaner:10"></div>
@@ -73,22 +75,32 @@
 
 		ROUTE('/', function() {
 			SET('common.form', '');
+			SET('common.debug', false);
 			SET('common.page', 'code');
 		});
 
 		ROUTE('/settings/', function() {
 			SET('common.form', '');
+			SET('common.debug', false);
 			SET('common.page', 'settings');
 		});
 
 		ROUTE('/users/', function() {
 			SET('common.form', '');
+			SET('common.debug', false);
 			SET('common.page', 'users');
 		});
 
 		ROUTE('/projects/', function() {
 			SET('common.form', '');
+			SET('common.debug', false);
 			SET('common.page', 'projects');
+		});
+
+		ROUTE('/snippets/', function() {
+			SET('common.debug', false);
+			SET('common.form', '');
+			SET('common.page', 'snippets');
 		});
 
 		ON('online', function(is) {
@@ -96,6 +108,7 @@
 			if (is && window.code && window.code.data && !common.online)
 				FUNC.wsopen(code.data.id, code.editor ? code.editor.path : '', code.projectid);
 			SET('common.online', is);
+			!is && SET('common.debug', false);
 		});
 
 		ON('message', function(msg) {
@@ -186,6 +199,8 @@
 				if (code.components && code.components.length)
 					arr.unshift({ name: '@(Used UI components)', id: 'components', icon: 'puzzle-piece' });
 
+				arr.unshift({ name: '@(Show logfile)', id: 'logfile', icon: 'bug' });
+
 				if (code.editor.path) {
 					arr.unshift({ name: '@(Insert UI components)', id: 'componentator', icon: 'puzzle-piece' });
 					arr.unshift({ name: '@(Save)', id: 'save', icon: 'floppy-o' });
@@ -213,6 +228,9 @@
 						case 'components':
 							SET('common.form', value.id);
 							break;
+						case 'logfile':
+							TOGGLE('common.debug');
+							break;
 					}
 				}
 			});
@@ -227,8 +245,16 @@
 			code.current && (/js|css|html/).test(code.current.ext) && SET('common.form', 'componentator');
 		}, true);
 
+		SETTER(true, 'shortcuts', 'register', 'F4', function(e) {
+			code.current && (/js|css|html/).test(code.current.ext) && SET('common.form', 'snippets');
+		}, true);
+
 		SETTER(true, 'shortcuts', 'register', 'F5', function(e) {
 			EXEC('code/shortcut', 'F5');
+		}, true);
+
+		SETTER(true, 'shortcuts', 'register', 'F10', function(e) {
+			code.editor && TOGGLE('common.debug');
 		}, true);
 
 		SETTER(true, 'shortcuts', 'register', 'ctrl+s,cmd+s', function(e) {

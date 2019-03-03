@@ -28,6 +28,7 @@ exports.install = function() {
 		ROUTE('GET     /api/projects/{id}/files/              *Projects     --> @files');
 		ROUTE('GET     /api/projects/{id}/backups/            *Projects     --> @backups');
 		ROUTE('DELETE  /api/projects/{id}/backups/            *Projects     --> @backupsclear', [10000]);
+		ROUTE('GET     /api/projects/{id}/logfile/            *Projects',   files_logfile);
 		ROUTE('GET     /api/projects/{id}/restore/            *Projects',   files_restore);
 		ROUTE('GET     /api/projects/{id}/edit/               *Projects',   files_open);
 		ROUTE('GET     /api/projects/{id}/changes/            *Projects',   files_changes);
@@ -64,6 +65,17 @@ function files_open(id) {
 	var self = this;
 	self.id = id;
 	self.$workflow('edit', self.query, function(err, data) {
+		if (err)
+			self.invalid(err);
+		else
+			self.plain(data);
+	});
+}
+
+function files_logfile(id) {
+	var self = this;
+	self.id = id;
+	self.$workflow('logfile', self.query, function(err, data) {
 		if (err)
 			self.invalid(err);
 		else

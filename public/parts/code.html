@@ -6,17 +6,24 @@
 	<section class="status invisible" data-bind="code.data__invisible:!value">
 		<button title="@(Create file)" class="exec" data-name="file" data-exec="code/statusform"><i class="fa fa-file-text-o"></i></button>
 		<button title="@(Create folder)" class="exec" data-name="directory" data-exec="code/statusform"><i class="fa fa-folder"></i></button>
+		<button title="@(Refresh directories and files)" class="exec" data-exec="code/refresh"><i class="fa fa-refresh"></i></button>
 		<button title="@(All uncomplete tasks)" class="exec" data-name="directory" data-exec="code/tasks_uncomplete"><i class="fa fa-tasks"></i></button>
 		<button title="@(All tracked changes)" class="exec" data-exec="code/changes"><i class="fa fa-history"></i></button>
-		<button title="@(Refresh directories and files)" class="exec" data-exec="code/refresh"><i class="fa fa-refresh"></i></button>
 		<button title="@(Users)" class="exec" data-name="directory" data-exec="code/usersonline"><i class="fa fa-users"></i></button>
 	</section>
+</div>
+
+<div id="realtimewindow" data-bind="common.debug__show" class="hidden">
+	<div class="titlebar"><i class="fa fa-times exec" data-exec="code/debug"></i><i class="fa fa-pulse fa-spinner"></i>@(Logs)</div>
+	<div class="body-scrollbar">
+		<div id="realtimewindowbody" class="body"></div>
+	</div>
 </div>
 
 <div id="body">
 	<section class="tabs">
 		<a data-bind="code.data.url__href__show" target="_blank" class="preview" title="@(Preview)"><i class="fa fa-globe"></i></a>
-		<span class="options exec hidden" data-exec="code/options_editor" data-bind="code.editor.path__show"><i class="fa fa-cog"></i></span>
+		<span class="options exec hidden" data-bind="code.editor__show" data-exec="code/options_editor"><i class="fa fa-cog"></i></span>
 		<nav data-jc="tabmenu__code.editor.path__datasource:code.open;selector:span;exec:code/opentab;reorder:code/savetabs">
 			<script type="text/html">
 				<span data-value="{{ path }}" class="{{ if !skip }}nolocked{{ fi }}{{ if modified }} modified{{ fi }}" title="{{ path }}"><i class="fa exec" data-exec="code/close"></i>{{ name }}</span>
@@ -86,6 +93,7 @@
 <div data-jc="importer__common.form__if:changes;url:/forms/changes.html;cleaner:10"></div>
 <div data-jc="importer__common.form__if:componentator;url:/forms/componentator.html;cleaner:10"></div>
 <div data-jc="importer__common.form__if:components;url:/forms/components.html;cleaner:10"></div>
+<div data-jc="importer__common.form__if:snippets;url:/forms/snippets.html;cleaner:10"></div>
 
 <script>
 
@@ -137,6 +145,25 @@
 			}
 		};
 
+		exports.debug = function() {
+			TOGGLE('common.debug');
+		};
+
+		function watchlogfile() {
+			AJAX('GET /api/projects/{id}/logfile/'.arg(code.data), function(response) {
+				common.debug && setTimeout(watchlogfile, 3000);
+				if (response === common.debugprev)
+					return;
+				common.debugprev = response;
+				var el = $('#realtimewindowbody').html(Thelpers.encode(response).replace(/\n/g, '<br />'));
+				el[0].scrollTop = el[0].scrollHeight || 0;
+			});
+		}
+
+		WATCH('common.debug', function(path, value) {
+			value && watchlogfile();
+		});
+
 		WATCH('common.form', function(path, value) {
 			if (value === '' && code.current)
 				code.current.$components = 1;
@@ -166,11 +193,16 @@
 			editor.editor.replaceSelection(val + '\n');
 		};
 
-		exports.move = function(line, ch) {
+		exports.move = function(line, ch, lineto) {
 			var e = editor.editor;
+
+			var cur = e.getCursor();
 			e.setCursor({ line: line || 0, ch: ch || 0 });
 			e.centerLine(line);
 			e.focus();
+
+			if (lineto && line === cur.line)
+				e.setSelection(e.getCursor(), { line: lineto });
 		};
 
 		exports.syncdata = function() {
@@ -243,7 +275,7 @@
 
 			EMIT('resize', exports.element);
 
-			var id = READPARAMS().id;
+			var id = NAV.query.id;
 			id && exports.load(id);
 
 			SET('%projectsvisible', false);
@@ -290,6 +322,7 @@
 				items.push({ name: '@(Minify code)', icon: 'compress', value: 'minify' });
 				items.push({ name: '@(Upper Case)', icon: 'font', value: 'upper' });
 				items.push({ name: '@(Lower Case)', icon: 'font', value: 'lower' });
+				items.push('-');
 			}
 
 			items.push({ name: '@(Insert)', icon: 'plus-circle green', value: 'insert' });
@@ -340,8 +373,10 @@
 
 					if (value.value === 'insert') {
 
-						if ((/^(js|css|html)$/).test(code.current.ext))
+						if ((/^(js|css|html)$/).test(code.current.ext)) {
 							items.push({ name: '@(UI components)', icon: 'chevron-right', value: 'ui' });
+							items.push({ name: '@(Snippet)', icon: 'chevron-right', value: 'snippet' });
+						}
 
 						items.push({ name: '@(UID)', icon: 'chevron-right', value: 'uid' });
 						items.push({ name: '@(GUID)', icon: 'chevron-right', value: 'guid' });
@@ -391,6 +426,9 @@
 						switch (value.value) {
 							case 'ui':
 								SET('common.form', 'componentator');
+								break;
+							case 'snippet':
+								SET('common.form', 'snippets');
 								break;
 							case 'uid':
 							case 'ip':
@@ -664,16 +702,21 @@
 		exports.options_editor = function(el) {
 
 			var items = [];
+			var is = !!code.editor.path;
 
-			code.components && code.components.length && items.push({ value: 8, name: '@(Used UI components)', icon: 'puzzle-piece', shortcut: 'F2' });
-			items.push({ value: 1, name: '@(Reload)', icon: 'refresh', shortcut: 'F5' });
-			items.push({ value: 2, name: '@(Find)', icon: 'search', command: 'findPersistent' });
-			items.push({ value: 2, name: '@(Replace)', icon: 'search', command: 'replaceAll' });
-			items.push({ value: 3, name: '@(Convert to Tabs)', icon: 'align-right' });
-			common.electron && code.data.repository && items.push({ value: 5, name: '@(Save locally)', icon: 'floppy-o' });
-			items.push({ value: 4, name: '@(Restore from backup)', icon: 'history' });
-			code.data.pathsync && items.push({ value: 6, name: '@(Save synchronized)', icon: 'sync green' });
-			common.electron && code.data.repository && items.push({ value: 7, name: '@(Synchronize locally <strong>last changes</strong>)', icon: 'floppy-o' });
+			is && code.components && code.components.length && items.push({ value: 8, name: '@(Used UI components)', icon: 'puzzle-piece', shortcut: 'F2' });
+			is && items.push({ value: 10, name: '@(Insert snippet)', icon: 'paste', shortcut: 'F4' });
+			is && items.push('-');
+			is && items.push({ value: 1, name: '@(Reload)', icon: 'refresh', shortcut: 'F5' });
+			is && items.push({ value: 2, name: '@(Find)', icon: 'search', command: 'findPersistent' });
+			is && items.push({ value: 2, name: '@(Replace)', icon: 'search', command: 'replaceAll' });
+			is && items.push({ value: 3, name: '@(Convert to Tabs)', icon: 'align-right' });
+			is && common.electron && code.data.repository && items.push({ value: 5, name: '@(Save locally)', icon: 'floppy-o' });
+			is && items.push({ value: 4, name: '@(Restore from backup)', icon: 'history' });
+			is && code.data.pathsync && items.push({ value: 6, name: '@(Save synchronized)', icon: 'sync green' });
+			is && common.electron && code.data.repository && items.push({ value: 7, name: '@(Synchronize locally <strong>last changes</strong>)', icon: 'floppy-o' });
+			is && items.push('-');
+			items.push({ value: 9, name: '@(Show log file)', icon: 'bug red' });
 
 			SETTER('menu', 'show', 'left', el, items, function(item) {
 				switch (item.value) {
@@ -706,6 +749,12 @@
 						break;
 					case 8:
 						SET('common.form', 'components');
+						break;
+					case 9:
+						exports.debug();
+						break;
+					case 10:
+						SET('common.form', 'snippets');
 						break;
 				}
 			}, -5, -5);
@@ -1030,6 +1079,7 @@
 			opt.offsetY = 10;
 			opt.offsetX = 10;
 			opt.class = 'ui-directory-projects';
+
 			opt.callback = function(item) {
 				REDIRECT('/?id=' + item.id);
 			};

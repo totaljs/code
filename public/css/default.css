@@ -10,6 +10,17 @@ html,body { margin: 0; padding: 0; overflow: hidden; }
 .ml5 { margin-left: 5px; }
 .mb10 { margin-bottom: 10px; }
 
+#realtimewindow { position: absolute; right: 30px; bottom: 65px; border: 1px solid #D0D0D0; background-color: rgba(255,255,255,0.94); z-index: 10; width: 640px; box-shadow: 1px 1px 5px rgba(0,0,0,0.02); border-radius: 3px; }
+#realtimewindow .titlebar { height: 30px; border-bottom: 1px solid #D0D0D0; line-height: 30px; padding: 0 10px; font-size: 12px; font-weight: bold; }
+#realtimewindow .titlebar .fa-times { float: right; color: red; cursor: pointer; height: 30px; line-height: 30px; }
+#realtimewindow .titlebar .fa-spinner { margin-right: 5px; color: #8CC152; }
+#realtimewindow .body { width: 670px; height: 220px; white-space: pre-wrap; font-family: Menlo,Consolas,monospace; overflow-y: scroll; overflow-x: hidden; color: black; font-size: 11px; margin-right: 40px; padding: 10px 30px 10px 10px; overflow-scrolling: touch; }
+#realtimewindow .body-scrollbar { width: 640px; overflow: hidden; }
+
+.td #realtimewindow { border-color: #404040; background-color: rgba(40,40,40,0.94); }
+.td #realtimewindow .titlebar { border-bottom-color: #404040; }
+.td #realtimewindow .body { color: white; }
+
 .centered { width: 100%; display: table; }
 .centered > div { display: table-cell; vertical-align: middle; }
 
@@ -355,14 +366,14 @@ header .tools .external { color: #a2a286; }
 .changeitem .date { color: gray; }
 .changeitem .date .raw { font-weight: normal; float: right; }
 .changeitem i { margin-right: 5px; }
-.changeitem .path { margin-top: 5px; font-weight: bold; }
+.changeitem .path { margin-top: 5px; font-weight: bold; cursor: pointer; }
 .td .changeitem { border-top: 1px solid #303030; }
 .td .changeitem .path { color: white; }
 
 .changedfiles { background-color: #FFFFD5; padding: 10px 0; }
 .changedfiles > div:first-child { padding: 5px 18px; color: black; font-weight: bold; font-size: 12px; }
 .changedfiles i { margin-right: 5px; }
-.changefile { padding: 5px 20px; color: gray; border-top: 1px solid #E0E0E0; font-size: 12px; }
+.changefile { padding: 5px 20px; color: gray; border-top: 1px solid #E0E0E0; font-size: 12px; cursor: pointer; }
 .changefile:first-child { border-top: 0; }
 .changefile .path { text-overflow: ellipsis; white-space: nowrap; overflow: hidden; }
 
@@ -382,11 +393,14 @@ header .tools .external { color: #a2a286; }
 .td .todo { color: #A0A0A0; border-color: #202020; }
 .td .todolist > div:first-child { color: silver; }
 
+.uicomponentgroup { font-size: 14px; color: black; margin: 10px 0 2px; padding: 5px 20px; font-weight: bold; }
+.uicomponentgroup:first-child { margin-top: 0; }
 .uicomponent { padding: 5px 20px; color: gray; border-top: 1px solid #E0E0E0; font-size: 12px; cursor: pointer; }
 .uicomponent i { margin-right: 5px; }
 .uicomponent:first-child { border-top: 0; }
 .uicomponent:hover { background-color: rgba(0,0,0,0.1); }
 .td .uicomponent { color: #A0A0A0; border-color: #202020; }
+.td .uicomponentgroup { color: white; }
 
 .td .ui-scrollbar-y span, .td .ui-scrollbar-x span{ background-color: #505050; }
 .td .ui-scrollbar-y, .td .ui-scrollbar-x { background-color: #303030; }
