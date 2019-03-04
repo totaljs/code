@@ -114,17 +114,17 @@ COMPONENT('editor', function(self, config) {
 			var cur = cm.getCursor();
 			var line = cm.getLine(cur.line);
 			var loremcount = 0;
+			var end = line.substring(cur.ch);
 
-			line = line.replace(/lorem\d+$/i, function(text) {
+			line.substring(0, cur.ch).replace(/lorem\d+$/i, function(text) {
 				loremcount = +text.match(/\d+/)[0];
 				cur.ch -= text.length;
 				return '';
 			});
 
-
 			if (loremcount) {
-				var builder = lorem.slice(0, loremcount).join(' ');
-				cm.replaceRange(builder, { line: cur.line, ch: cur.ch }, { line: cur.line, ch: cur.cr });
+				var builder = lorem.slice(0, loremcount).join(' ').replace(/(,|\.)$/, '');
+				cm.replaceRange(builder + (end || ''), { line: cur.line, ch: cur.ch }, { line: cur.line, ch: cur.cr });
 				cm.doc.setCursor({ line: cur.line, ch: cur.ch + builder.length });
 				return;
 			}
@@ -192,7 +192,7 @@ COMPONENT('editor', function(self, config) {
 		options.phrases = {};
 		// options.showTrailingSpace = true;
 		options.matchTags = { bothTags: true };
-		// options.autoCloseTags = true;
+		options.autoCloseTags = true;
 		options.scrollPastEnd = true;
 		options.lint = true;
 		options.autoCloseBrackets = true;
