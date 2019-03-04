@@ -749,7 +749,7 @@ COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 					var val = input.val().replace(/[^a-z0-9.\-_]/gi, '');
 					var index = +input.closest('.item').attrd('index');
 					var item = cache[index];
-					var newname = item.path.substring(0, item.path.length - item.name.length) + val;
+					var newname = item.path.substring(0, item.path.length - item.name.length - 1) + val;
 					EXEC(config.rename, cache[index], newname, function(is) {
 						el.html(is ? val : el[0].$def);
 						if (is) {
