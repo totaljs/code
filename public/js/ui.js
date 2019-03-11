@@ -746,7 +746,7 @@ COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 					el.html(el[0].$def);
 					el[0].$def = null;
 				} else {
-					var val = input.val().replace(/[^a-z0-9.\-_]/gi, '');
+					var val = input.val().replace(/[^a-z0-9.\-_\\]/gi, '');
 					var index = +input.closest('.item').attrd('index');
 					var item = cache[index];
 					var newname = item.path.substring(0, item.path.length - item.name.length - 1) + val;
@@ -5231,7 +5231,7 @@ COMPONENT('directory', 'minwidth:200', function(self, config) {
 			}
 		});
 
-		self.event('touchstart mousedown', 'li', function(e) {
+		self.event('click', 'li', function(e) {
 			self.opt.callback && self.opt.callback(self.opt.items[+this.getAttribute('data-index')], self.opt.element);
 			self.hide();
 			e.preventDefault();
@@ -5290,16 +5290,14 @@ COMPONENT('directory', 'minwidth:200', function(self, config) {
 					selectedindex--;
 					if (selectedindex < 0)
 						selectedindex = 0;
-					else
-						self.move();
+					self.move();
 					break;
 				case 40: // down
 					o = true;
-					selectedindex++ ;
+					selectedindex++;
 					if (selectedindex >= resultscount)
 						selectedindex = resultscount;
-					else
-						self.move();
+					self.move();
 					break;
 			}
 
