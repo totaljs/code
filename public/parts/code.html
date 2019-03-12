@@ -988,7 +988,7 @@
 			code.editor.loaded = true;
 			!tab.doc && setTimeout(function() {
 				editor.editor.refresh();
-				var cache = exports.cache_getscroll(code.current.path);
+				var cache = code.current ? exports.cache_getscroll(code.current.path) : null;
 				if (cache) {
 					editor.editor.setCursor({ line: cache.line || 0, ch: cache.ch || 0 });
 					editor.editor.scrollTo(cache.x || 0, cache.y || 0);
