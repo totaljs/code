@@ -16,19 +16,20 @@
 	<script src="/js/cdn.min.js"></script>
 	@{import('meta', 'head', 'default.css', 'default.js', 'favicon.ico')}
 </head>
-<body data-jc="exec" class="@{if user.darkmode}td @{fi}invisible" data-jc-class="invisible">
+<body data---="exec" class="@{if user.darkmode}td @{fi}invisible" data-jc-class="invisible">
 
-	<div data-jc="loading" class="ui-loading"><div></div></div>
-	<div data-jc="LAZY suggestion__null__placeholder:@(Search)"></div>
-	<div data-jc="LAZY autocomplete__null__height:200"></div>
-	<div data-jc="LAZY snackbar__null__button:@(OK)"></div>
-	<div data-jc="LAZY features__null__placeholder:@(What are you looking for?)"></div>
-	<div data-jc="directory__null__placeholder:@(Search)"></div>
-	<div data-jc="infopanel"></div>
-	<div data-jc="menu" class="hidden"></div>
-	<div data-jc="confirm"></div>
-	<div data-jc="shortcuts__null"></div>
-	<div data-jc="mainprogress__common.percentage"></div>
+	<div data---="loading" class="ui-loading"><div></div></div>
+	<div data---="LAZY suggestion__null__placeholder:@(Search)"></div>
+	<div data---="LAZY autocomplete__null__height:200"></div>
+	<div data---="LAZY snackbar__null__button:@(OK)"></div>
+	<div data---="LAZY features__null__placeholder:@(What are you looking for?)"></div>
+	<div data---="clipboard"></div>
+	<div data---="directory__null__placeholder:@(Search)"></div>
+	<div data---="infopanel"></div>
+	<div data---="menu" class="hidden"></div>
+	<div data---="confirm"></div>
+	<div data---="shortcuts__null"></div>
+	<div data---="mainprogress__common.percentage"></div>
 
 	<header>
 		<button class="exec" data-exec="mainmenu"><i class="fa fa-navicon"></i></button>
@@ -46,13 +47,12 @@
 		</div>
 	</header>
 
-	<div data-jc="part__common.page__if:code;url:/parts/code.html;reload:code/reload"></div>
-	<div data-jc="part__common.page__if:snippets;url:/parts/snippets.html;reload:snippets/reload;cleaner:10"></div>
-	<div data-jc="part__common.page__if:projects;url:/parts/projects.html;reload:projects/reload;cleaner:10"></div>
-	<div data-jc="part__common.page__if:users;url:/parts/users.html;reload:users/reload;cleaner:10"></div>
-	<div data-jc="part__common.page__if:settings;url:/parts/settings.html;reload:settings/reload;cleaner:10"></div>
-
-	<div data-jc="websocket__null__url:/"></div>
+	<div data---="part__common.page__if:code;url:/parts/code.html;reload:code/reload"></div>
+	<div data---="part__common.page__if:snippets;url:/parts/snippets.html;reload:snippets/reload;cleaner:10"></div>
+	<div data---="part__common.page__if:projects;url:/parts/projects.html;reload:projects/reload;cleaner:10"></div>
+	<div data---="part__common.page__if:users;url:/parts/users.html;reload:users/reload;cleaner:10"></div>
+	<div data---="part__common.page__if:settings;url:/parts/settings.html;reload:settings/reload;cleaner:10"></div>
+	<div data---="websocket__null__url:/"></div>
 
 	@{json(user, 'userdata')}
 
@@ -247,6 +247,10 @@
 
 		SETTER(true, 'shortcuts', 'register', 'F4', function(e) {
 			code.current && (/js|css|html/).test(code.current.ext) && SET('common.form', 'snippets');
+		}, true);
+
+		SETTER(true, 'shortcuts', 'register', 'F6', function(e) {
+			code.current && (/js|css|html/).test(code.current.ext) && SET('common.form', 'icons');
 		}, true);
 
 		SETTER(true, 'shortcuts', 'register', 'F5', function(e) {

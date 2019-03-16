@@ -1192,7 +1192,7 @@ WAIT('CodeMirror.defineMode', function() {
 	mod(CodeMirror);
 })(function(CodeMirror) {
 
-	var reg_skip = (/[a-zA-Z'"`0-9/$-]/);
+	var reg_skip = (/[a-zA-Z'"`0-9/$-{@]/);
 
 	var defaults = {
 		pairs: '()[]{}\'\'""',
@@ -1318,6 +1318,7 @@ WAIT('CodeMirror.defineMode', function() {
 		var ranges = cm.listSelections();
 		var opening = pos % 2 == 0;
 		var type;
+		var left = pos % 2 ? pairs.charAt(pos - 1) : ch;
 
 		for (var i = 0; i < ranges.length; i++) {
 			var range = ranges[i], cur = range.head, curType;
@@ -1325,25 +1326,28 @@ WAIT('CodeMirror.defineMode', function() {
 			if (opening && !range.empty()) {
 				curType = 'surround';
 			} else if ((identical || !opening) && next == ch) {
-				if (identical && stringStartsAfter(cm, cur)) {
-					curType = 'both';
-				} else if (triples.indexOf(ch) >= 0 && cm.getRange(cur, Pos(cur.line, cur.ch + 3)) == ch + ch + ch)
-					curType = 'skipThree';
-				else
-					curType = 'skip';
+				// if (identical && stringStartsAfter(cm, cur)) {
+				// 	curType = 'both';
+				// } else if (triples.indexOf(ch) >= 0 && cm.getRange(cur, Pos(cur.line, cur.ch + 3)) == ch + ch + ch)
+				// 	curType = 'skipThree';
+				// else
+				// 	curType = 'skip';
+				cm.replaceSelection(left, null);
+				return CodeMirror.pass;
 			} else if (identical && cur.ch > 1 && triples.indexOf(ch) >= 0 && cm.getRange(Pos(cur.line, cur.ch - 2), cur) == ch + ch) {
 				if (cur.ch > 2 && /\bstring/.test(cm.getTokenTypeAt(Pos(cur.line, cur.ch - 2))))
 					return CodeMirror.Pass;
 				curType = 'addFour';
 			} else if (identical) {
 				var prev = cur.ch == 0 ? ' ' : cm.getRange(Pos(cur.line, cur.ch - 1), cur);
+				if (reg_skip.test(next) || reg_skip.test(prev))
+					return CodeMirror.Pass;
 				if (!CodeMirror.isWordChar(next) && prev != ch && !CodeMirror.isWordChar(prev))
 					curType = 'both';
 				else
 					return CodeMirror.Pass;
 			} else if (opening) {
-				var n = cm.getRange(cur, Pos(cur.line, cur.ch + 1));
-				if (reg_skip.test(n))
+				if (reg_skip.test(next))
 					return CodeMirror.Pass;
 				curType = 'both';
 			} else
@@ -1354,7 +1358,6 @@ WAIT('CodeMirror.defineMode', function() {
 				return CodeMirror.Pass;
 		}
 
-		var left = pos % 2 ? pairs.charAt(pos - 1) : ch;
 		var right = pos % 2 ? ch : pairs.charAt(pos + 1);
 
 		cm.operation(function() {
@@ -1432,9 +1435,15 @@ WAIT('CodeMirror.defineMode', function() {
 		for (var i = 0; i < ranges.length; i++) {
 			if (!ranges[i].empty())
 				return CodeMirror.Pass;
+
 			var pos = ranges[i].head, tok = cm.getTokenAt(pos);
 			var inner = CodeMirror.innerMode(cm.getMode(), tok.state), state = inner.state;
 			if (inner.mode.name != 'xml' || !state.tagName)
+				return CodeMirror.Pass;
+
+			var anchor = ranges[i].anchor;
+			var n = cm.getRange({ line: anchor.line, ch: anchor.ch }, { line: anchor.line, ch: anchor.ch + 1 });
+			if (!(!n || n === ' ' || n === '\t' || n === '\n'))
 				return CodeMirror.Pass;
 
 			var html = inner.mode.configuration == 'html';
@@ -1446,7 +1455,6 @@ WAIT('CodeMirror.defineMode', function() {
 				tagName = tagName.slice(0, tagName.length - tok.end + pos.ch);
 
 			var lowerTagName = tagName.toLowerCase();
-
 			// Don't process the '>' at the end of an end-tag or self-closing tag
 			if (!tagName || tok.type == 'string' && (tok.end != pos.ch || !/["']/.test(tok.string.charAt(tok.string.length - 1)) || tok.string.length == 1) || tok.type == 'tag' && state.type == 'closeTag' || tok.string.indexOf('/') == (tok.string.length - 1) || dontCloseTags && indexOf(dontCloseTags, lowerTagName) > -1 || closingTagExists(cm, tagName, pos, state, true))
 				return CodeMirror.Pass;

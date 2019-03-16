@@ -94,11 +94,19 @@ NEWSCHEMA('FilesRename', function(schema) {
 			}
 		}
 
-		MAIN.log($.user, 'files_rename', project, model.oldpath, model.newpath);
-		MAIN.change('rename', $.user, project, model.oldpath + ' --> ' + model.newpath);
-
 		model.oldpath = Path.join(project.path, model.oldpath);
 		model.newpath = Path.join(project.path, model.newpath);
+
+		if (model.newpath.substring(0, project.path.length) !== project.path) {
+			// out of directory
+			$.invalid('error-permissions');
+			return;
+		}
+
+		F.path.mkdir(Path.dirname(model.newpath));
+
+		MAIN.log($.user, 'files_rename', project, model.oldpath, model.newpath);
+		MAIN.change('rename', $.user, project, model.oldpath + ' --> ' + model.newpath);
 
 		Fs.rename(model.oldpath, model.newpath, function(err) {
 			if (err)

@@ -2,6 +2,7 @@ const IS_WINDOWS = require('os').platform().substring(0, 3).toLowerCase() === 'w
 const SKIP = (IS_WINDOWS ? /\\\.git\// : /\/\.git\// );
 const Path = require('path');
 const Fs = require('fs');
+const Internal = require('total.js/internal');
 
 NEWSCHEMA('Projects', function(schema) {
 
@@ -41,6 +42,47 @@ NEWSCHEMA('Projects', function(schema) {
 				$.invalid(err);
 			else
 				$.callback(data.toString('utf8'));
+		});
+	});
+
+	schema.addWorkflow('translate', function($) {
+
+		var item = MAIN.projects.findItem('id', $.id);
+		var filename = Path.join(item.path, $.query.path);
+
+		MAIN.log($.user, 'files_translate', item, filename);
+		Fs.readFile(filename, function(err, data) {
+
+			if (err) {
+				$.invalid(err);
+				return;
+			}
+
+			var content = data.toString('utf8');
+			var command = Internal.findLocalization(content, 0);
+			var text = {};
+			var max = 0;
+			while (command !== null) {
+
+				// Skip for direct reading
+				if (command.command[0] === '#' && command.command[1] !== ' ') {
+					command = Internal.findLocalization(content, command.end);
+					continue;
+				}
+
+				var key = 'T' + command.command.hash();
+				text[key] = command.command;
+				max = Math.max(max, key.length);
+				command = Internal.findLocalization(content, command.end);
+			}
+
+			var output = [];
+			var keys = Object.keys(text);
+
+			for (var i = 0, length = keys.length; i < length; i++)
+				output.push(keys[i].padRight(max + 5, ' ') + ': ' + text[keys[i]]);
+
+			$.callback(output.join('\n'));
 		});
 	});
 
@@ -347,12 +389,7 @@ NEWSCHEMA('Projects', function(schema) {
 		Fs.stat(filename, function(err, stats) {
 			if (stats) {
 				var start = stats.size - (1024 * 4); // Max 4 kb
-				if (start < 0)
-					start = 0;
-				Fs.createReadStream(filename, { start: start }).once('data', function(chunk) {
-					$.callback(chunk.toString('utf8'));
-				});
-
+				Fs.createReadStream(filename, { start: start < 0 ? 0 : start }).once('data', chunk => $.callback(chunk.toString('utf8')));
 			} else
 				$.callback('');
 		});

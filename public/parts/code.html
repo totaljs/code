@@ -1,7 +1,7 @@
 <div id="panel">
 	<section class="project exec" data-exec="code/projects" data-bind="!code.data__html b:value.name__title:value.name"><i class="fa fa-caret-down"></i><b>@(Choose project)</b></section>
-	<div class="panel-scroller fullheight" data-margin="36">
-		<div data-jc="tree__code.tree__exec:code/open;options:code/options;rename:code/rename;first:false;upload:code/upload"></div>
+	<div class="panel-scroller fullheight noscrollbar" data-margin="36">
+		<div data---="tree__code.tree__exec:code/open;options:code/options;rename:code/rename;first:false;upload:code/upload;pk:path"></div>
 	</div>
 	<section class="status invisible" data-bind="code.data__invisible:!value">
 		<button title="@(Create file)" class="exec" data-name="file" data-exec="code/statusform"><i class="fa fa-file-text-o"></i></button>
@@ -24,7 +24,7 @@
 	<section class="tabs">
 		<a data-bind="code.data.url__href__show" target="_blank" class="preview" title="@(Preview)"><i class="fa fa-globe"></i></a>
 		<span class="options exec hidden" data-bind="code.editor__show" data-exec="code/options_editor"><i class="fa fa-cog"></i></span>
-		<nav data-jc="tabmenu__code.editor.path__datasource:code.open;selector:span;exec:code/opentab;reorder:code/savetabs">
+		<nav data---="tabmenu__code.editor.path__datasource:code.open;selector:span;exec:code/opentab;reorder:code/savetabs">
 			<script type="text/html">
 				<span data-value="{{ path }}" class="{{ if !skip }}nolocked{{ fi }}{{ if modified }} modified{{ fi }}" title="{{ path }}"><i class="fa exec" data-exec="code/close"></i>{{ name }}</span>
 			</script>
@@ -33,11 +33,11 @@
 	<div id="content" data-margin="36">
 		<div class="alert-saved hidden exec" data-bind="code.saved__show__html b" data-exec="code/syncsave"><i class="fa fa-warning"></i><b></b> @(has replaced content of this file on the server.)</div>
 		<div data-bind="code.editor.path__show">
-			<div data-jc="editor__code.editor.body__height:100%;shortcut:code/shortcut;contextmenu:code/contextmenu;cursor:code/cursorposition;sync:code/sync;todo:code/todo;components:code/components"></div>
+			<div data---="editor__code.editor.body__height:100%;shortcut:code/shortcut;contextmenu:code/contextmenu;cursor:code/cursorposition;sync:code/sync;todo:code/todo;components:code/components"></div>
 		</div>
 		<div class="messages">
 			<div class="alert hidden" data-bind="code.backup__show" data-name="backup"><i class="fa fa-times exec" data-exec="code/warning"></i><i class="fa fa-warning"></i>@(Content of this file wasn't be saved before. Do you want to restore it?) <span class="link exec" data-name="restore" data-exec="code/warning">@(Restore)</span> @(or) <span class="link exec" data-exec="code/warning">@(Cancel)</span>.</div>
-			<div class="alert hidden" data-bind="code.multiple__show" data-name="multiple"><i class="fa fa-times exec" data-exec="code/warning"></i><i class="fa fa-users"></i>@(Be careful because another user is editing content of this file.) <span class="link exec b ml5" data-exec="code/syncdata"><i class="fa fa-refresh fa-spin mr5"></i>@(Synchronize)</span> @(or) <span class="link exec" data-exec="code/warning">@(Cancel)</span>.</div>
+			<div class="alert hidden" data-bind="code.multiple__show" data-name="multiple" style="z-index:1001"><i class="fa fa-times exec" data-exec="code/warning"></i><i class="fa fa-users"></i>@(Be careful because another user is editing content of this file.) <span class="link exec b ml5" data-exec="code/syncdata"><i class="fa fa-refresh fa-spin mr5"></i>@(Synchronize)</span> @(or) <span class="link exec" data-exec="code/warning">@(Cancel)</span>.</div>
 		</div>
 	</div>
 	<section class="status invisible" data-bind="code.data__invisible:!value">
@@ -63,7 +63,7 @@
 	</section>
 </div>
 
-<div data-jc="statusform__code.statusform.name__exec:code/statusform" class="statusform hidden">
+<div data---="statusform__code.statusform.name__exec:code/statusform" class="statusform hidden">
 	<div class="statusform-item hidden" data-name="file">
 		<input type="text" placeholder="@(Enter relative filename.js)" />
 	</div>
@@ -88,12 +88,14 @@
 	</section>
 </div>
 
-<div data-jc="importer__common.form__if:tasks;url:/forms/tasks.html;cleaner:10"></div>
-<div data-jc="importer__common.form__if:backups;url:/forms/backups.html;cleaner:10"></div>
-<div data-jc="importer__common.form__if:changes;url:/forms/changes.html;cleaner:10"></div>
-<div data-jc="importer__common.form__if:componentator;url:/forms/componentator.html;cleaner:10"></div>
-<div data-jc="importer__common.form__if:components;url:/forms/components.html;cleaner:10"></div>
-<div data-jc="importer__common.form__if:snippets;url:/forms/snippets.html;cleaner:10"></div>
+<div data---="importer__common.form__if:tasks;url:/forms/tasks.html;cleaner:10"></div>
+<div data---="importer__common.form__if:backups;url:/forms/backups.html;cleaner:10"></div>
+<div data---="importer__common.form__if:changes;url:/forms/changes.html;cleaner:10"></div>
+<div data---="importer__common.form__if:componentator;url:/forms/componentator.html;cleaner:10"></div>
+<div data---="importer__common.form__if:components;url:/forms/components.html;cleaner:10"></div>
+<div data---="importer__common.form__if:snippets;url:/forms/snippets.html;cleaner:10"></div>
+<div data---="importer__common.form__if:snippets;url:/forms/snippets.html;cleaner:10"></div>
+<div data---="importer__common.form__if:icons;url:/forms/icons.html;cleaner:10"></div>
 
 <script>
 
@@ -191,6 +193,14 @@
 
 		exports.append = function(val) {
 			editor.editor.replaceSelection(val + '\n');
+		};
+
+		exports.appendspecial = function(val) {
+			var cur = editor.editor.getCursor();
+			var c = editor.editor.getRange({ line: cur.line, ch: cur.ch - 1 }, { line: cur.line, ch: cur.ch });
+			if ((/[a-z0-9]/i).test(c))
+				val = ' ' + val;
+			editor.editor.replaceSelection(val);
 		};
 
 		exports.move = function(line, ch, lineto) {
@@ -396,6 +406,7 @@
 						items.push({ name: '@(Escape)', icon: 'chevron-right', value: 'escape' });
 						items.push({ name: '@(Slug)', icon: 'chevron-right', value: 'slug' });
 						items.push({ name: '@(HASH)', icon: 'chevron-right', value: 'HASH' });
+						items.push({ name: '@(Translate)', icon: 'chevron-right', value: 'translate' });
 						items.push({ name: '@(MD5)', icon: 'chevron-right', value: 'md5', server: true });
 						items.push({ name: '@(SHA-1)', icon: 'chevron-right', value: 'sha1', server: true });
 						items.push({ name: '@(SHA-256)', icon: 'chevron-right', value: 'sha256', server: true });
@@ -462,6 +473,11 @@
 							case 'HASH':
 								for (var i = 0; i < sel.length; i++)
 									sel[i] = window[value.value](sel[i]).toString();
+								editor.replaceSelections(sel);
+								break;
+							case 'translate':
+								for (var i = 0; i < sel.length; i++)
+									sel[i] = 'T' + HASH(sel[i]).toString();
 								editor.replaceSelections(sel);
 								break;
 							case 'slug':
@@ -706,10 +722,12 @@
 
 			is && code.components && code.components.length && items.push({ value: 8, name: '@(Used UI components)', icon: 'puzzle-piece', shortcut: 'F2' });
 			is && items.push({ value: 10, name: '@(Insert snippet)', icon: 'paste', shortcut: 'F4' });
+			is && items.push({ value: 12, name: '@(Insert icon)', icon: 'camera-retro', shortcut: 'F6' });
 			is && items.push('-');
 			is && items.push({ value: 1, name: '@(Reload)', icon: 'refresh', shortcut: 'F5' });
 			is && items.push({ value: 2, name: '@(Find)', icon: 'search', command: 'findPersistent' });
 			is && items.push({ value: 2, name: '@(Replace)', icon: 'search', command: 'replaceAll' });
+			is && items.push({ value: 11, name: '@(Translate)', icon: 'language' });
 			is && items.push({ value: 3, name: '@(Convert to Tabs)', icon: 'align-right' });
 			is && common.electron && code.data.repository && items.push({ value: 5, name: '@(Save locally)', icon: 'floppy-o' });
 			is && items.push({ value: 4, name: '@(Restore from backup)', icon: 'history' });
@@ -738,6 +756,9 @@
 					case 4:
 						SET('common.form', 'backups');
 						break;
+					case 12:
+						SET('common.form', 'icons');
+						break;
 					case 5:
 						exports.savelocal();
 						break;
@@ -755,6 +776,16 @@
 						break;
 					case 10:
 						SET('common.form', 'snippets');
+						break;
+					case 11:
+						AJAX('GET /api/projects/{id}/translate/'.arg(code.data), { path: code.current.path }, function(response) {
+							if (typeof(response) === 'string') {
+								setTimeout(function() {
+									SETTER('clipboard', 'copy', response);
+								}, 1000);
+								FUNC.success('@(Localized dictionary has been copied into the clipboard)');
+							}
+						});
 						break;
 				}
 			}, -5, -5);
@@ -877,14 +908,14 @@
 				SET('common.form', '');
 
 			var prev = GET('code.editor.path');
-			if (prev && prev !== tab.path) {
+			if (prev && prev !== tab.path && editor) {
 				prev = code.open.findItem('path', prev);
 				if (prev)
 					prev.doc = editor.copy(true);
 			}
 
 			code.editor.loaded = false;
-			editor.clear(true);
+			editor && editor.clear(true);
 
 			var ext = tab.path.substring(tab.path.lastIndexOf('.') + 1).toLowerCase();
 			var mode;
@@ -1009,8 +1040,14 @@
 			AJAX('GET /api/projects/{id}/changelog/'.arg(code.data), { path: code.current.path }, function(response) {
 				if (code.current && code.current.lastmodified && response) {
 					var tmp = code.current.lastmodified;
-					if (response.user !== user.name && (tmp.user !== response.user || tmp.updated.getTime() !== response.updated.getTime()))
+					if (response.user !== user.name && (tmp.user !== response.user || tmp.updated.getTime() !== response.updated.getTime())) {
 						FUNC.info('@(<b>{0}</b> changed this file <b>{1}</b>.)'.format(response.user, Thelpers.time(response.updated)));
+						if (!code.SYNC && code.usersfile && code.usersfile.length === 1) {
+							SETTER('loading', 'show');
+							SETTER('loading', 'hide', 1000);
+							FUNC.editor_reload();
+						}
+					}
 				}
 				SET('code.current.lastmodified', response);
 			});
@@ -1085,7 +1122,6 @@
 			};
 
 			SETTER('directory', 'show', opt);
-			//TOGGLE('%projectsvisible', true);
 		};
 
 		exports.savelocal = function(nowarning) {
@@ -1284,7 +1320,8 @@
 				SET('code.multiple', is);
 
 				// auto-sync
-				if (is && !code.current.modified && !code.backup) {
+				// if (is && !code.current.modified && !code.backup) {
+				if (is) {
 					SETTER('loading', 'show');
 					if (user.id === msg.userid)
 						setTimeout(exports.syncdata, 1000);
