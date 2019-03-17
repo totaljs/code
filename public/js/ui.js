@@ -248,7 +248,7 @@ COMPONENT('editor', function(self, config) {
 		var REGHEXCOLOR = /#[a-f0-9]{6}(;|"|'|>|<|\)|\(|$)/i;
 		var REGTODO = /@todo/i;
 		var REGTODOREPLACE = /^@todo(:)(\s)/i;
-		var REGPART = /COMPONENT\(.*?\)|NEWSCHEMA\(.*?\)|NEWOPERATION\(.*?\)|NEWTASK\(.*?\)|ON\(.*?\)/g;
+		var REGPART = /(COMPONENT|NEWSCHEMA|NEWOPERATION|NEWTASK|ROUTE|ON)+\(.*?\)/g;
 		var REGHELPER = /Thelpers\..*?=/g;
 		var cache_lines = null;
 
@@ -266,7 +266,7 @@ COMPONENT('editor', function(self, config) {
 					color && editor.setGutterMarker(i, 'GutterColor', GutterColor(color.toString().replace(/;|'|"|,/g, '')));
 					var m = lines[i].match(REGTODO);
 					m && todos.push({ line: i + 1, ch: m.index || 0, name: lines[i].substring(m.index, 200).replace(REGTODOREPLACE, '').trim() });
-					if (mode === 'javascript') {
+					if (mode === 'javascript' || mode === 'totaljs' || mode === 'html') {
 
 						if (is != null && lines[i].substring(is, 3) === '});') {
 							components[components.length - 1].lineto = i;
@@ -280,7 +280,7 @@ COMPONENT('editor', function(self, config) {
 							if (name) {
 								name = name[0].replace(/'|"/g, '');
 								var beg = m.index || 0;
-								components.push({ line: i, ch: beg, name: name.trim(), type: type.substring(0, 3) === 'on(' ? 'event' : type === 'compo' ? 'component' : type === 'newsc' ? 'schema' : type === 'newop' ? 'operation' : type === 'newta' ? 'task' : 'undefined' });
+								components.push({ line: i, ch: beg, name: name.trim(), type: type.substring(0, 3) === 'on(' ? 'event' : type === 'compo' ? 'component' : type === 'newsc' ? 'schema' : type === 'newop' ? 'operation' : type === 'newta' ? 'task' : type === 'route' ? 'route' : 'undefined' });
 								is = beg;
 							}
 						}
