@@ -1192,7 +1192,7 @@ WAIT('CodeMirror.defineMode', function() {
 	mod(CodeMirror);
 })(function(CodeMirror) {
 
-	var reg_skip = (/[a-zA-Z'"`0-9/$-{@]/);
+	var reg_skip = (/[a-zA-Z'"`0-9/$\-{@]/);
 
 	var defaults = {
 		pairs: '()[]{}\'\'""',
