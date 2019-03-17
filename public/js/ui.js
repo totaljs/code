@@ -145,7 +145,7 @@ COMPONENT('editor', function(self, config) {
 							cls[0] = 'div';
 					}
 					var tag = cls[0] === 'hr' || cls[0] === 'br' ? '<{0} />'.format(cls[0]) : cls[0] === 'img' ? '<img src="" alt="" />' : ('<{0}{1}></{0}>'.format(cls[0], cls[1] ? (' class="' + cls[1] + '"') : ''));
-					cm.replaceRange(line.substring(0, index) + tag, { line: cur.line, ch: 0 }, { line: cur.line, ch: cur.cr });
+					cm.replaceRange(line.substring(0, index) + tag + line.substring(cur.ch), { line: cur.line, ch: 0 }, { line: cur.line, ch: cur.cr });
 					cm.doc.setCursor({ line: cur.line, ch: index + (cls[0] === 'img' ? (tag.indexOf('"') + 1) : (tag.indexOf('>') + 1)) });
 					return;
 				}
@@ -248,7 +248,8 @@ COMPONENT('editor', function(self, config) {
 		var REGHEXCOLOR = /#[a-f0-9]{6}(;|"|'|>|<|\)|\(|$)/i;
 		var REGTODO = /@todo/i;
 		var REGTODOREPLACE = /^@todo(:)(\s)/i;
-		var REGCOMPONENT = /COMPONENT\(.*?\)/gi;
+		var REGPART = /COMPONENT\(.*?\)|NEWSCHEMA\(.*?\)|NEWOPERATION\(.*?\)|NEWTASK\(.*?\)|ON\(.*?\)/g;
+		var REGHELPER = /Thelpers\..*?=/g;
 		var cache_lines = null;
 
 		var prerender_colors = function() {
@@ -256,6 +257,8 @@ COMPONENT('editor', function(self, config) {
 			var components = [];
 			var mode = editor.getMode().name;
 			var is = null;
+			var name;
+
 			if (mode === 'totaljsresources' || mode === 'javascript' || mode === 'totaljs' || mode === 'css' || mode === 'sass' || mode === 'html') {
 				var lines = editor.getValue().split('\n');
 				for (var i = 0; i < lines.length; i++) {
@@ -270,14 +273,24 @@ COMPONENT('editor', function(self, config) {
 							is = null;
 						}
 
-						m = lines[i].match(REGCOMPONENT);
+						m = lines[i].match(REGPART);
 						if (m) {
-							var name = m[0].match(/('|").*?('|")/);
+							name = m[0].match(/('|").*?('|")/);
+							var type = m[0].toLowerCase().substring(0, 5);
 							if (name) {
 								name = name[0].replace(/'|"/g, '');
 								var beg = m.index || 0;
-								components.push({ line: i, ch: beg, name: name.trim() });
+								components.push({ line: i, ch: beg, name: name.trim(), type: type.substring(0, 3) === 'on(' ? 'event' : type === 'compo' ? 'component' : type === 'newsc' ? 'schema' : type === 'newop' ? 'operation' : type === 'newta' ? 'task' : 'undefined' });
 								is = beg;
+							}
+						}
+
+						m = lines[i].match(REGHELPER);
+						if (m) {
+							name = m[0].substring(9, m[0].indexOf('=')).trim();
+							if (name) {
+								var beg = m.index || 0;
+								components.push({ line: i, ch: beg, name: name.trim(), type: 'helper' });
 							}
 						}
 					}

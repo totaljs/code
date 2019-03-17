@@ -626,6 +626,11 @@
 			});
 		};
 
+		exports.modified = function() {
+			code.current.modified = true;
+			exports.element.find('section.tabs').find('span[data-value="{0}"]'.format(code.current.path)).aclass('modified');
+		};
+
 		exports.open = function(item) {
 
 			if (!item || item.children)
@@ -720,7 +725,7 @@
 			var items = [];
 			var is = !!code.editor.path;
 
-			is && code.components && code.components.length && items.push({ value: 8, name: '@(Used UI components)', icon: 'puzzle-piece', shortcut: 'F2' });
+			is && code.components && code.components.length && items.push({ value: 8, name: '@(Used parts)', icon: 'puzzle-piece', shortcut: 'F2' });
 			is && items.push({ value: 10, name: '@(Insert snippet)', icon: 'paste', shortcut: 'F4' });
 			is && items.push({ value: 12, name: '@(Insert icon)', icon: 'camera-retro', shortcut: 'F6' });
 			is && items.push('-');
@@ -750,8 +755,10 @@
 					case 3:
 						if (code.SYNC)
 							FUNC.warning('@(You can\'t replace all spaces to tabs in collaboration mode.)');
-						else
+						else {
 							editor.editor.setValue(FUNC.spaces_to_tabs(editor.editor.getValue()));
+							exports.modified();
+						}
 						break;
 					case 4:
 						SET('common.form', 'backups');
@@ -780,10 +787,14 @@
 					case 11:
 						AJAX('GET /api/projects/{id}/translate/'.arg(code.data), { path: code.current.path }, function(response) {
 							if (typeof(response) === 'string') {
-								setTimeout(function() {
-									SETTER('clipboard', 'copy', response);
-								}, 1000);
-								FUNC.success('@(Localized dictionary has been copied into the clipboard)');
+
+								if (response) {
+									setTimeout(function() {
+										SETTER('clipboard', 'copy', response);
+									}, 1000);
+									FUNC.success('@(Localized dictionary has been copied into the clipboard)');
+								} else
+									FUNC.warning('@(This file doesn\'t contain any localization markup.)');
 							}
 						});
 						break;

@@ -393,14 +393,21 @@ header .tools .external { color: #a2a286; }
 .td .todo { color: #A0A0A0; border-color: #202020; }
 .td .todolist > div:first-child { color: silver; }
 
-.uicomponentgroup { font-size: 14px; color: black; margin: 10px 0 2px; padding: 5px 20px; font-weight: bold; }
-.uicomponentgroup:first-child { margin-top: 0; }
-.uicomponent { padding: 5px 20px; color: gray; border-top: 1px solid #E0E0E0; font-size: 12px; cursor: pointer; }
-.uicomponent i { margin-right: 5px; }
-.uicomponent:first-child { border-top: 0; }
-.uicomponent:hover { background-color: rgba(0,0,0,0.1); }
-.td .uicomponent { color: #A0A0A0; border-color: #202020; }
-.td .uicomponentgroup { color: white; }
+.partgroup { font-size: 14px; color: black; margin: 10px 0 2px; padding: 5px 20px; font-weight: bold; }
+.partgroup:first-child { margin-top: 0; }
+.part { padding: 5px 20px; color: gray; border-top: 1px solid #E0E0E0; font-size: 12px; cursor: pointer; }
+.part i { width: 18px; }
+.part b { color: #606060; float: right; }
+.part:first-child { border-top: 0; }
+.part:hover { background-color: rgba(0,0,0,0.1); }
+.td .part { color: #A0A0A0; border-color: #202020; }
+.td .partgroup { color: white; }
+.part .fa-align-left { color: #C8059B; }
+.part .fa-bolt { color: #047CA5; }
+.part .fa-drafting-compass { color: #C0C832; }
+.part .fa-code-branch { color: #70C832; }
+.part .fa-plug { color: #32C8C8; }
+.part .fa-check-circle { color: #C0C832; }
 
 .td .ui-scrollbar-y span, .td .ui-scrollbar-x span{ background-color: #505050; }
 .td .ui-scrollbar-y, .td .ui-scrollbar-x { background-color: #303030; }
