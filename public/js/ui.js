@@ -136,7 +136,7 @@ COMPONENT('editor', function(self, config) {
 					return CodeMirror.Pass;
 
 				var html = line.substring(index, cur.ch);
-				if ((/(div|span|table|strong|em|b|i|a|h|p|img|td|tr|th|hr|br|thead|tfoot|tbody|section|figure|section)+(\.[a-z0-9-_])*/).test(html) || (/(^|\s)\.[a-z0-9-_]*/).test(html)) {
+				if ((/(div|ul|address|li|span|table|strong|em|b|i|a|h|p|img|td|tr|th|hr|br|thead|tfoot|tbody|section|figure|section)+(\.[a-z0-9-_])*/).test(html) || (/(^|\s)\.[a-z0-9-_]*/).test(html)) {
 					var cls = html.split('.');
 					if (!cls[0]) {
 						if (cls[1].substring(0, 2) === 'fa')
