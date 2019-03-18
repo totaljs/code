@@ -1369,7 +1369,7 @@ WAIT('CodeMirror.defineMode', function() {
 						cm.replaceSelection(right, 'before');
 						cm.triggerElectric(right);
 					});
-				}, 300);
+				}, 250);
 			});
 		}
 	}
