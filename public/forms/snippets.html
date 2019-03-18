@@ -2,19 +2,19 @@
 	It depends on "code editor"
 -->
 
-<div data-jc="panel__common.form__if:snippets;width:500;title:@(Insert snippet);icon:paste;reload:codesnippets/reload;bg:false;autofocus:true" class="hidden">
+<div data---="panel__common.form__if:snippets;width:500;title:@(Insert snippet);icon:paste;reload:codesnippets/reload;bg:false;autofocus:true" class="hidden">
 	<div class="padding">
-		<div data-jc="textbox__codesnippets.search__type:search;placeholder:@(Search snippets);$binding:1;$delay:50"></div>
+		<div data---="textbox__codesnippets.search__type:search;placeholder:@(Search snippets);$binding:1;$delay:50"></div>
 	</div>
-	<div data-jc="viewbox__codesnippets.search__height:100;margin:124;parent:window">
-		<div data-bind="codesnippets.items__template" data-jc="search__codesnippets.search__selector:.uicomponent">
+	<div data---="viewbox__codesnippets.search__height:100;margin:124;parent:.ui-panel">
+		<div data-bind="codesnippets.items__template" data---="search__codesnippets.search__selector:.uicomponent">
 			<script type="text/html">
 				{{ foreach m in value }}
 					{{ if m.name }}
-						<div class="uicomponentgroup">{{ m.name }}</div>
+						<div class="partgroup">{{ m.name }}</div>
 					{{ fi }}
 					{{ foreach n in m.items }}
-						<div class="uicomponent exec" data-exec="codesnippets/append" data-id="{{ n.id }}" data-search="{{ n.name }}"><i class="fa fa-caret-right"></i>{{ n.name }}</div>
+						<div class="part exec" data-exec="codesnippets/append" data-id="{{ n.id }}" data-search="{{ n.name }}"><i class="fa fa-paste"></i><b>snippet</b>{{ n.name }}</div>
 					{{ end }}
 				{{ end }}
 			</script>
