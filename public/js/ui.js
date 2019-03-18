@@ -248,7 +248,7 @@ COMPONENT('editor', function(self, config) {
 		var REGHEXCOLOR = /#[a-f0-9]{6}(;|"|'|>|<|\)|\(|$)/i;
 		var REGTODO = /@todo/i;
 		var REGTODOREPLACE = /^@todo(:)(\s)/i;
-		var REGPART = /(COMPONENT|NEWSCHEMA|NEWOPERATION|NEWTASK|ROUTE|ON)+\(.*?\)/g;
+		var REGPART = /(COMPONENT|NEWSCHEMA|NEWOPERATION|NEWTASK|WATCH|ROUTE|ON|PLUGIN)+\(.*?\)/g;
 		var REGHELPER = /Thelpers\..*?=/g;
 		var cache_lines = null;
 
@@ -280,7 +280,7 @@ COMPONENT('editor', function(self, config) {
 							if (name) {
 								name = name[0].replace(/'|"/g, '');
 								var beg = m.index || 0;
-								components.push({ line: i, ch: beg, name: name.trim(), type: type.substring(0, 3) === 'on(' ? 'event' : type === 'compo' ? 'component' : type === 'newsc' ? 'schema' : type === 'newop' ? 'operation' : type === 'newta' ? 'task' : type === 'route' ? 'route' : 'undefined' });
+								components.push({ line: i, ch: beg, name: name.trim(), type: type.substring(0, 3) === 'on(' ? 'event' : type === 'compo' ? 'component' : type === 'newsc' ? 'schema' : type === 'newop' ? 'operation' : type === 'newta' ? 'task' : type === 'watch' ? 'watcher' : type === 'plugi' ? 'plugin' : type === 'route' ? 'route' : 'undefined' });
 								is = beg;
 							}
 						}
