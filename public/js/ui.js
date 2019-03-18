@@ -2966,7 +2966,8 @@ COMPONENT('panel', 'width:350;icon:circle-o;zindex:12;bg:true', function(self, c
 
 	self.resize = function() {
 		var el = self.element.find('.ui-panel-body');
-		el.height(WH - self.find('.ui-panel-header').height());
+		el.height(WH - self.find('.ui-panel-header').height() - (config.bottom || 0));
+		config.top && self.element.css('top', config.top + 'px');
 	};
 
 	self.icon = function(value) {
@@ -3038,7 +3039,7 @@ COMPONENT('panel', 'width:350;icon:circle-o;zindex:12;bg:true', function(self, c
 		container.scrollTop(0);
 		self.rclass('hidden');
 		self.release(false);
-		setTimeout(self.resize, 100);
+		setTimeout(self.resize, 50);
 
 		config.reload && EXEC(config.reload, self);
 		config.default && DEFAULT(config.default, true);
@@ -3051,7 +3052,7 @@ COMPONENT('panel', 'width:350;icon:circle-o;zindex:12;bg:true', function(self, c
 		setTimeout(function() {
 			container.scrollTop(0);
 			self.aclass('ui-panel-animate');
-		}, 300);
+		}, 100);
 
 		// Fixes a problem with freezing of scrolling in Chrome
 		setTimeout2(self.id, function() {
