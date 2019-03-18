@@ -141,7 +141,7 @@
 
 			SET('code.components', components);
 
-			if (is && !common.form && code.current && !code.current.$components) {
+			if (is && !common.form && code.current && !code.current.$components && common.showparts) {
 				SET('common.form', 'components');
 				code.current.$components = 0;
 			}
@@ -762,6 +762,7 @@
 			is && code.data.pathsync && items.push({ value: 6, name: '@(Save synchronized)', icon: 'sync green' });
 			is && common.electron && code.data.repository && items.push({ value: 7, name: '@(Synchronize locally <strong>last changes</strong>)', icon: 'floppy-o' });
 			is && items.push('-');
+			items.push({ value: 13, name: common.showparts ? '@(Disable parts panel)' : '<strong>@(Enable parts panel)</strong>', icon: 'puzzle-piece' + (common.showparts ? ' red' : ' green') });
 			items.push({ value: 9, name: '@(Show log file)', icon: 'bug red' });
 
 			SETTER('menu', 'show', 'left', el, items, function(item) {
@@ -788,6 +789,9 @@
 						break;
 					case 12:
 						SET('common.form', 'icons');
+						break;
+					case 13:
+						TOGGLE('common.showparts');
 						break;
 					case 5:
 						exports.savelocal();

@@ -61,10 +61,16 @@
 		var common = {};
 		var user = PARSE('#userdata');
 
-		common.id = GUID(5);
-		common.electron = navigator.userAgent.indexOf('Electron') !== -1 && window.require != null;
-		common.online = true;
-		common.name = document.title;
+		MAKE('common', function(common) {
+			common.id = GUID(5);
+			common.electron = navigator.userAgent.indexOf('Electron') !== -1 && window.require != null;
+			common.online = true;
+			common.name = document.title;
+			if (common.showparts == null)
+				common.showparts = true;
+		});
+
+		CACHEPATH('common.showparts', '1 year');
 
 		if (common.electron)
 			process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
