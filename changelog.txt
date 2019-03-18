@@ -4,6 +4,7 @@
 - added debug window, shortcut `F10`
 - added `translate` feature
 - added a panel with Font-Awesome icons
+- added align function
 - replaced `UI components` to `Used parts`
 - improved auto-close-brackets
 - improved auto-close-tags

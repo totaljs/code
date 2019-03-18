@@ -238,3 +238,36 @@ FUNC.comment = function(ext, sel) {
 	}
 	return sel;
 };
+
+FUNC.aligntext = function(sel) {
+
+	var align = { ':': 1, '|': 1, '=': 1, '\'': 1, '"': 1, '{': 1 };
+	var max = 0;
+	var line, c, p;
+
+	for (var j = 0; j < sel.length; j++) {
+		var line = sel[j];
+		for (var i = 1; i < line.length; i++) {
+			c = line.charAt(i);
+			p = line.charAt(i - 1);
+			if (align[c] && (p === '\t' || p === ' '))
+				max = Math.max(i, max);
+		}
+	}
+
+	for (var j = 0; j < sel.length; j++) {
+		var line = sel[j];
+		for (var i = 1; i < line.length; i++) {
+			c = line.charAt(i);
+			p = line.charAt(i - 1);
+			if (align[c] && (p === '\t' || p === ' ')) {
+				if (i < max) {
+					var plus = ''.padLeft(max - i, p);
+					sel[j] = sel[j].substring(0, i) + plus + sel[j].substring(i);
+				}
+			}
+		}
+	}
+
+	return sel;
+};

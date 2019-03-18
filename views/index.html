@@ -199,6 +199,9 @@
 				if (code.components && code.components.length)
 					arr.unshift({ name: '@(Used parts)', id: 'components', icon: 'puzzle-piece' });
 
+				if (code.data && code.data.id)
+					arr.unshift({ name: '@(Translate)', id: 'translate', icon: 'language' });
+
 				arr.unshift({ name: '@(Show logfile)', id: 'logfile', icon: 'bug' });
 
 				if (code.editor.path) {
@@ -223,6 +226,9 @@
 						case 'changes':
 						case 'save':
 							EXEC('editor/' + value.id);
+							break;
+						case 'translate':
+							EXEC('code/translate');
 							break;
 						case 'componentator':
 						case 'components':

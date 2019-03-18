@@ -482,9 +482,9 @@ input:invalid { box-shadow: none; }
 .ui-suggestion li { border-top: 1px solid #F0F0F0; font-size: 12px; padding: 3px 10px; background-color: white; cursor: pointer; margin: 0; line-height: 16px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .ui-suggestion li:first-child { border-top: 0; }
 
-.ui-viewbox { overflow: hidden; }
-.ui-viewbox-scroll { overflow: auto; }
+.ui-viewbox { overflow: hidden; -ms-overflow-style: none; box-sizing: content-box }
 .ui-viewbox-disabled { z-index: 5; position: absolute; background-color: rgba(255,255,255,0.8); }
+.ui-viewbox-hidden { visibility: hidden; }
 .ui-mainprogress { position: fixed; left: 0; top: 0; height: 2px; z-index: 1000; background-color: #4285F4; box-shadow: 0 2px 10px rgba(66,130,244,0.8); }
 
 .ui-directory { position: absolute; opacity: 0; transition: 0.25s transform cubic-bezier(0.23, 1, 0.32, 1); left: -100; top: -100; z-index: 100; box-shadow: 0 1px 20px rgba(0,0,0,0.1); background-color: white; border-radius: 3px; border: 1px solid #E0E0E0; overflow: hidden; }

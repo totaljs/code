@@ -322,6 +322,7 @@
 			if (can) {
 
 				items.push({ name: '@(Copy)', icon: 'copy', command: 'copy' });
+				items.push({ name: '@(Align)', icon: 'align-left', value: 'align' });
 
 				if ((/js|css|html/).test(code.current.ext))
 					items.push({ name: '@(Comment)', icon: 'code', value: 'comment' });
@@ -362,6 +363,7 @@
 						}
 
 						editor.replaceSelections(sel);
+						exports.modified();
 						return;
 					}
 
@@ -371,6 +373,17 @@
 							sel[i] = FUNC.comment(code.current.ext, sel[i]).join('\n');
 						}
 						editor.replaceSelections(sel);
+						exports.modified();
+						return;
+					}
+
+					if (value.value === 'align') {
+						for (var i = 0; i < sel.length; i++) {
+							sel[i] = sel[i].split('\n');
+							sel[i] = FUNC.aligntext(sel[i]).join('\n');
+						}
+						editor.replaceSelections(sel);
+						exports.modified();
 						return;
 					}
 
@@ -378,6 +391,7 @@
 						for (var i = 0; i < sel.length; i++)
 							sel[i] = value.value === 'lower' ? sel[i].toLowerCase() : sel[i].toUpperCase();
 						editor.replaceSelections(sel);
+						exports.modified();
 						return;
 					}
 
@@ -430,6 +444,7 @@
 							model.body = sel;
 							AJAX('POST /api/common/encrypt/', model, function(response) {
 								editor.replaceSelections(response);
+								exports.modified();
 							});
 							return;
 						}
@@ -445,6 +460,7 @@
 							case 'ip':
 								AJAX('GET /api/common/{0}/'.format(value.value), function(response) {
 									editor.replaceSelection(response);
+									exports.modified();
 								});
 								break;
 							case 'date':
@@ -457,12 +473,15 @@
 										pwd = pwd.substring(0, i) + pwd.substring(i, i + 1).toUpperCase() + pwd.substring(i + 1);
 								}
 								editor.replaceSelection(pwd);
+								exports.modified();
 								break;
 							case 'GUID':
 								editor.replaceSelection(GUID(50));
+								exports.modified();
 								break;
 							case 'guid':
 								editor.replaceSelection(FUNC.guid());
+								exports.modified();
 								break;
 							case 'encodeURIComponent':
 							case 'decodeURIComponent':
@@ -474,22 +493,26 @@
 								for (var i = 0; i < sel.length; i++)
 									sel[i] = window[value.value](sel[i]).toString();
 								editor.replaceSelections(sel);
+								exports.modified();
 								break;
 							case 'translate':
 								for (var i = 0; i < sel.length; i++)
 									sel[i] = 'T' + HASH(sel[i]).toString();
 								editor.replaceSelections(sel);
+								exports.modified();
 								break;
 							case 'slug':
 								for (var i = 0; i < sel.length; i++)
 									sel[i] = sel[i][value.value]();
 								editor.replaceSelections(sel);
+								exports.modified();
 								break;
 							case 'js':
 							case 'css':
 							case 'html':
 								AJAX('POST /api/files/minify/', { body: editor.getSelection(), type: value.value }, function(response) {
 									editor.replaceSelection(response);
+									exports.modified();
 								});
 								break;
 						}
@@ -785,21 +808,24 @@
 						SET('common.form', 'snippets');
 						break;
 					case 11:
-						AJAX('GET /api/projects/{id}/translate/'.arg(code.data), { path: code.current.path }, function(response) {
-							if (typeof(response) === 'string') {
-
-								if (response) {
-									setTimeout(function() {
-										SETTER('clipboard', 'copy', response);
-									}, 1000);
-									FUNC.success('@(Localized dictionary has been copied into the clipboard)');
-								} else
-									FUNC.warning('@(This file doesn\'t contain any localization markup.)');
-							}
-						});
+						exports.translate();
 						break;
 				}
 			}, -5, -5);
+		};
+
+		exports.translate = function() {
+			AJAX('GET /api/projects/{id}/translate/'.arg(code.data), { path: code.current.path }, function(response) {
+				if (typeof(response) === 'string') {
+					if (response) {
+						setTimeout(function() {
+							SETTER('clipboard', 'copy', response);
+						}, 1000);
+						FUNC.success('@(Localized dictionary has been copied into the clipboard)');
+					} else
+						FUNC.warning('@(This file doesn\'t contain any localization markup.)');
+				}
+			});
 		};
 
 		exports.options = function(node, el) {
