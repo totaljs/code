@@ -11,7 +11,7 @@
 		<div data-bind="code.components__template" data---="search__components.search__selector:div">
 			<script type="text/html">
 				{{ foreach m in value }}
-					<div class="part exec" data-exec="components/find" data-search="{{ m.name }}" data-index="{{ $index }}" title="@(Line:) {{ m.line }}"><i class="fa fa-{{ if m.type === 'helper' }}align-left{{ else if m.type === 'FUNC' }}code{{ else if m.type === 'REPO' }}box{{ else if m.type === 'plugin' }}plug{{ else if m.type === 'route' }}link{{ else if m.type === 'watcher' }}eye{{ else if m.type === 'event' }}bolt{{ else if m.type === 'component' }}drafting-compass{{ else if m.type === 'schema' }}code-branch{{ else if m.type === 'operation' }}plug{{ else }}check-circle{{ fi }}"></i><b>{{ m.type }}</b>{{ m.name }}</div>
+					<div class="part exec" data-exec="components/find" data-search="{{ m.name }}" data-index="{{ $index }}" title="@(Line:) {{ m.line }}"><i class="fa fa-{{ if m.type === 'helper' }}align-left{{ else if m.type === 'FUNC' }}code{{ else if m.type === 'REPO' }}box{{ else if m.type === 'plugin' }}plug{{ else if m.type === 'route' }}link{{ else if m.type === 'watcher' }}eye{{ else if m.type === 'event' }}bolt{{ else if m.type === 'middleware' }}filter{{ else if m.type === 'component' }}drafting-compass{{ else if m.type === 'schema' }}code-branch{{ else if m.type === 'operation' }}plug{{ else }}check-circle{{ fi }}"></i><b>{{ m.type }}</b>{{ m.name }}</div>
 				{{ end }}
 			</script>
 		</div>
