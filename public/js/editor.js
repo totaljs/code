@@ -1194,7 +1194,7 @@ WAIT('CodeMirror.defineMode', function() {
 })(function(CodeMirror) {
 
 	var reg_skip = (/[a-zA-Z'"`0-9/$\-{@]/);
-
+	var delay;
 	var defaults = {
 		pairs: '()[]{}\'\'""',
 		triples: '',
@@ -1204,6 +1204,13 @@ WAIT('CodeMirror.defineMode', function() {
 	var Pos = CodeMirror.Pos;
 
 	CodeMirror.defineOption('autoCloseBrackets', false, function(cm, val, old) {
+
+		cm.on('keydown', function() {
+			if (delay) {
+				clearTimeout(delay);
+				delay = 0;
+			}
+		});
 
 		if (old && old != CodeMirror.Init) {
 			cm.removeKeyMap(keyMap);
@@ -1299,12 +1306,10 @@ WAIT('CodeMirror.defineMode', function() {
 		});
 	}
 
-	function contractSelection(sel) {
-		var inverted = CodeMirror.cmpPos(sel.anchor, sel.head) > 0;
-		return { anchor: new Pos(sel.anchor.line, sel.anchor.ch + (inverted ? -1 : 1)), head: new Pos(sel.head.line, sel.head.ch + (inverted ? 1 : -1)) };
-	}
-
 	function handleChar(cm, ch) {
+
+		delay && clearTimeout(delay);
+
 		var conf = getConfig(cm);
 		if (!conf || cm.getOption('disableInput'))
 			return CodeMirror.Pass;
@@ -1327,12 +1332,6 @@ WAIT('CodeMirror.defineMode', function() {
 			if (opening && !range.empty()) {
 				curType = 'surround';
 			} else if ((identical || !opening) && next == ch) {
-				// if (identical && stringStartsAfter(cm, cur)) {
-				// 	curType = 'both';
-				// } else if (triples.indexOf(ch) >= 0 && cm.getRange(cur, Pos(cur.line, cur.ch + 3)) == ch + ch + ch)
-				// 	curType = 'skipThree';
-				// else
-				// 	curType = 'skip';
 				cm.replaceSelection(left, null);
 				return CodeMirror.pass;
 			} else if (identical && cur.ch > 1 && triples.indexOf(ch) >= 0 && cm.getRange(Pos(cur.line, cur.ch - 2), cur) == ch + ch) {
@@ -1361,41 +1360,24 @@ WAIT('CodeMirror.defineMode', function() {
 
 		var right = pos % 2 ? ch : pairs.charAt(pos + 1);
 
-		cm.operation(function() {
-			if (type == 'skip') {
-				cm.execCommand('goCharRight');
-			} else if (type == 'skipThree') {
-				for (var i = 0; i < 3; i++)
-					cm.execCommand('goCharRight');
-			} else if (type == 'surround') {
-				var sels = cm.getSelections();
-				for (var i = 0; i < sels.length; i++)
-					sels[i] = left + sels[i] + right;
-				cm.replaceSelections(sels, 'around');
-				sels = cm.listSelections().slice();
-				for (var i = 0; i < sels.length; i++)
-					sels[i] = contractSelection(sels[i]);
-				cm.setSelections(sels);
-			} else if (type == 'both') {
-				cm.replaceSelection(left + right, null);
-				cm.triggerElectric(left + right);
-				cm.execCommand('goCharLeft');
-			} else if (type == 'addFour') {
-				cm.replaceSelection(left + left + left + left, 'before');
-				cm.execCommand('goCharRight');
-			}
-		});
+		if (type == 'both') {
+			cm.operation(function() {
+				cm.replaceSelection(left, null);
+				delay && clearTimeout(delay);
+				delay = setTimeout(function() {
+					cm.operation(function() {
+						cm.replaceSelection(right, 'before');
+						cm.triggerElectric(right);
+					});
+				}, 300);
+			});
+		}
 	}
 
 	function charsAround(cm, pos) {
 		var str = cm.getRange(Pos(pos.line, pos.ch - 1),
 			Pos(pos.line, pos.ch + 1));
 		return str.length == 2 ? str : null;
-	}
-
-	function stringStartsAfter(cm, pos) {
-		var token = cm.getTokenAt(Pos(pos.line, pos.ch + 1));
-		return /\bstring/.test(token.type) && token.start == pos.ch && (pos.ch == 0 || !/\bstring/.test(cm.getTokenTypeAt(pos)));
 	}
 });
 
@@ -1616,7 +1598,7 @@ FUNC.snippets = function(type, text, tabs, line, words, chplus) {
 	var arr = [];
 	for (var i = 0; i < SNIPPETS.length; i++) {
 		var snip = SNIPPETS[i];
-		if (snip.type === type && snip.search.indexOf(text) !== -1) {
+		if (snip.type === type && snip.search.indexOf(text) !== -1 && snip.search !== text) {
 			arr.push({ displayText: snip.text, text: snip.code.format(tabs || ''), ch: (snip.line ? snip.ch + tabs.length : tabs.length === 0 ? snip.ch - 1 : snip.ch + tabs.length - 1) + chplus, line: line + (snip.line || 0) });
 		}
 	}
@@ -1624,7 +1606,7 @@ FUNC.snippets = function(type, text, tabs, line, words, chplus) {
 	if (words && words.length) {
 		for (var i = 0; i < words.length; i++) {
 			var snip = words[i];
-			if (snip.search.indexOf(text) !== -1)
+			if (snip.search.indexOf(text) !== -1 && snip.search !== text)
 				arr.push({ displayText: snip.code, text: snip.code, ch: snip.code.length + tabs.length + chplus, line: line });
 		}
 	}

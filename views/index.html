@@ -250,19 +250,23 @@
 		}, true);
 
 		SETTER(true, 'shortcuts', 'register', 'F2', function(e) {
-			code.current && (/js|css|html/).test(code.current.ext) && SET('common.form', 'components');
+			var n = 'components';
+			code.current && (/js|css|html/).test(code.current.ext) && SET('common.form', common.form === n ? '' : n);
 		}, true);
 
 		SETTER(true, 'shortcuts', 'register', 'F3', function(e) {
-			code.current && (/js|css|html/).test(code.current.ext) && SET('common.form', 'componentator');
+			var n = 'componentator';
+			code.current && (/js|css|html/).test(code.current.ext) && SET('common.form', common.form === n ? '' : n);
 		}, true);
 
 		SETTER(true, 'shortcuts', 'register', 'F4', function(e) {
-			code.current && (/js|css|html/).test(code.current.ext) && SET('common.form', 'snippets');
+			var n = 'snippets';
+			code.current && (/js|css|html/).test(code.current.ext) && SET('common.form', common.form === n ? '' : n);
 		}, true);
 
 		SETTER(true, 'shortcuts', 'register', 'F6', function(e) {
-			code.current && (/js|css|html/).test(code.current.ext) && SET('common.form', 'icons');
+			var n = 'icons';
+			code.current && (/js|css|html/).test(code.current.ext) && SET('common.form', common.form === n ? '' : n);
 		}, true);
 
 		SETTER(true, 'shortcuts', 'register', 'F5', function(e) {

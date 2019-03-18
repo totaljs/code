@@ -534,7 +534,7 @@ COMPONENT('editor', function(self, config) {
 				var index = words[i].indexOf('__');
 				if (index !== -1)
 					words[i] = words[i].substring(0, index);
-				unique[words[i].toLowerCase()] = words[i];
+				unique[words[i]] = words[i];
 			}
 
 			autocomplete = Object.keys(unique);
