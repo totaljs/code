@@ -577,19 +577,26 @@ WAIT('CodeMirror.defineMode', function() {
 		if (old && old != CodeMirror.Init) {
 			cm.off('change', onChange);
 			cm.off('refresh', updateBottomMargin);
+			cm.off('refresh', updateRightMargin);
 			cm.display.lineSpace.parentNode.style.paddingBottom = '';
+			cm.display.lineSpace.parentNode.style.paddingRight = '';
 			cm.state.scrollPastEndPadding = null;
+			cm.state.scrollPastEndPaddingRight = null;
 		}
 		if (val) {
 			cm.on('change', onChange);
 			cm.on('refresh', updateBottomMargin);
+			cm.on('refresh', updateRightMargin);
 			updateBottomMargin(cm);
+			updateRightMargin(cm);
 		}
 	});
 
 	function onChange(cm, change) {
-		if (CodeMirror.changeEnd(change).line == cm.lastLine())
+		if (CodeMirror.changeEnd(change).line == cm.lastLine()) {
 			updateBottomMargin(cm);
+			updateRightMargin(cm);
+		}
 	}
 
 	function updateBottomMargin(cm) {
@@ -607,6 +614,17 @@ WAIT('CodeMirror.defineMode', function() {
 			cm.off('refresh', updateBottomMargin);
 			cm.setSize();
 			cm.on('refresh', updateBottomMargin);
+		}
+	}
+
+	function updateRightMargin(cm) {
+		var padding = (cm.display.scroller.scrollWidth + 500) + 'px';
+		if (cm.state.scrollPastEndPaddingRight != padding) {
+			cm.state.scrollPastEndPaddingRight = padding;
+			cm.display.lineSpace.parentNode.style.paddingRight = padding;
+			cm.off('refresh', updateRightMargin);
+			cm.setSize();
+			cm.on('refresh', updateRightMargin);
 		}
 	}
 });

@@ -586,7 +586,7 @@ input:invalid { box-shadow: none; }
 .ui-fontawesomebox-icons { overflow: hidden; }
 .ui-fontawesomebox-icons ul { list-style-type: none; margin: 0; padding: 10px 15px 0 15px; }
 .ui-fontawesomebox .selected { background-color: #3BAFDA !important; color: white; }
-.ui-fontawesomebox li { position: relative; display: inline-block; width: 28px; height: 25px; text-align: center; cursor: pointer; margin: 2px 1px 1px; padding: 4px 0 0 0; border-radius: 4px; color: black; }
+.ui-fontawesomebox li { position: relative; display: inline-block; width: 28px; height: 25px; text-align: center; cursor: pointer; margin: 2px 2px 1px; padding: 4px 0 0 0; border-radius: 4px; color: black; }
 .ui-fontawesomebox li:hover { background-color: #F8F7DD; }
 .ui-fontawesomebox-search { border-bottom: 1px solid #E0E0E0; height: 34px; background-color: white; position: absolute; width: 100%; box-shadow: 0 5px 10px rgba(0,0,0,0.05); border-radius: 3px 3px 0 0; }
 .ui-fontawesomebox-search-empty { height: 34px; }
