@@ -249,7 +249,7 @@ COMPONENT('editor', function(self, config) {
 		var REGTODO = /@todo/i;
 		var REGTODOREPLACE = /^@todo(:)(\s)/i;
 		var REGPART = /(COMPONENT|NEWSCHEMA|NEWOPERATION|NEWTASK|WATCH|ROUTE|ON|PLUGIN)+\(.*?\)/g;
-		var REGHELPER = /Thelpers\..*?=/g;
+		var REGHELPER = /(Thelpers|FUNC|REPO)\..*?=/g;
 		var cache_lines = null;
 
 		var prerender_colors = function() {
@@ -257,7 +257,7 @@ COMPONENT('editor', function(self, config) {
 			var components = [];
 			var mode = editor.getMode().name;
 			var is = null;
-			var name;
+			var name, type;
 
 			if (mode === 'totaljsresources' || mode === 'javascript' || mode === 'totaljs' || mode === 'css' || mode === 'sass' || mode === 'html') {
 				var lines = editor.getValue().split('\n');
@@ -276,7 +276,7 @@ COMPONENT('editor', function(self, config) {
 						m = lines[i].match(REGPART);
 						if (m) {
 							name = m[0].match(/('|").*?('|")/);
-							var type = m[0].toLowerCase().substring(0, 5);
+							type = m[0].toLowerCase().substring(0, 5);
 							if (name) {
 								name = name[0].replace(/'|"/g, '');
 								var beg = m.index || 0;
@@ -287,10 +287,14 @@ COMPONENT('editor', function(self, config) {
 
 						m = lines[i].match(REGHELPER);
 						if (m) {
-							name = m[0].substring(9, m[0].indexOf('=')).trim();
+							var end = m[0].indexOf('=');
+							if (end === -1)
+								continue;
+							type = m[0].substring(0, 4);
+							name = m[0].substring(type === 'Thel' ? 9 : 5, end).trim();
 							if (name) {
 								var beg = m.index || 0;
-								components.push({ line: i, ch: beg, name: name.trim(), type: 'helper' });
+								components.push({ line: i, ch: beg, name: name.trim(), type: type === 'Thel' ? 'helper' : type.toUpperCase() });
 							}
 						}
 					}
