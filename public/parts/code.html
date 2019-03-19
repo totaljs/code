@@ -32,7 +32,7 @@
 	</section>
 	<div id="content" data-margin="36">
 		<div class="alert-saved hidden exec" data-bind="code.saved__show__html b" data-exec="code/syncsave"><i class="fa fa-warning"></i><b></b> @(has replaced content of this file on the server.)</div>
-		<div data-bind="code.editor.path__show__|__common.form__change:code/autoresize">
+		<div data-bind="code.editor.path__show" class="codeeditor">
 			<div data---="editor__code.editor.body__height:100%;shortcut:code/shortcut;contextmenu:code/contextmenu;cursor:code/cursorposition;sync:code/sync;todo:code/todo;components:code/components"></div>
 		</div>
 		<div class="messages">
@@ -1496,9 +1496,9 @@
 			}, 300, null, editor);
 		};
 
-		exports.autoresize = function(path, value, el) {
-			el.css('margin-right', common.form ? '350px' : '0');
-		};
+		WATCH('common.form', function(path, value) {
+			$(document.body).tclass('codepanel', !!value);
+		});
 
 		exports.tablocked = function() {
 			if (!code.current.skip) {

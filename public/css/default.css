@@ -418,3 +418,6 @@ header .tools .external { color: #a2a286; }
 .td .ui-scrollbar-y span, .td .ui-scrollbar-x span{ background-color: #505050; }
 .td .ui-scrollbar-y, .td .ui-scrollbar-x { background-color: #303030; }
 .td .ui-scrollbar-y span:hover, .td .ui-scrollbar-x span:hover { background-color: #606060; }
+
+.codepanel .codeeditor { margin-right: 350px; }
+.codepanel #realtimewindow { right: 380px; }
