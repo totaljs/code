@@ -65,14 +65,16 @@
 				switch (item.value) {
 					case 1:
 						SETTER('confirm', 'show', '@(Are you sure you want to remove all backups for selected projects?)', ['"trash-o"@(Remove)', '@(Cancel)'], function(index) {
-							SETTER('loading', 'show');
-							projects.checked.wait(function(item, next) {
-								AJAX('DELETE /api/projects/{id}/backups/'.arg(item), next);
-							}, function() {
-								SETTER('loading', 'hide', 100);
-								SETTER('snackbar', 'success', '@(All backups of selected projects have been removed.)');
-								exports.refresh();
-							});
+							if (!index) {
+								SETTER('loading', 'show');
+								projects.checked.wait(function(item, next) {
+									AJAX('DELETE /api/projects/{id}/backups/'.arg(item), next);
+								}, function() {
+									SETTER('loading', 'hide', 100);
+									SETTER('snackbar', 'success', '@(All backups of selected projects have been removed.)');
+									exports.refresh();
+								});
+							}
 						});
 						break;
 
