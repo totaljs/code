@@ -467,6 +467,7 @@
 								break;
 							case 'date':
 								editor.replaceSelection(new Date().format(null));
+								exports.modified();
 								break;
 							case 'password':
 								var pwd = GUID(15);
@@ -492,8 +493,11 @@
 							case 'escape':
 							case 'unescape':
 							case 'HASH':
-								for (var i = 0; i < sel.length; i++)
-									sel[i] = window[value.value](sel[i]).toString();
+									for (var i = 0; i < sel.length; i++) {
+										try {
+											sel[i] = window[value.value](sel[i]).toString();
+										} catch(e) {}
+									}
 								editor.replaceSelections(sel);
 								exports.modified();
 								break;
