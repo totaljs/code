@@ -118,11 +118,14 @@ NEWSCHEMA('Login', function(schema) {
 			return;
 		}
 
-		var cookie = {};
-		cookie.id = user.id;
-		cookie.ip = $.ip;
-		$.controller.cookie(CONF.cookie, F.encrypt(cookie, CONF.authkey), '1 week');
-		$.success();
+		var opt = {};
+		opt.name = CONF.cookie;
+		opt.key = CONF.authkey;
+		opt.expire = '1 month';
+		opt.data = user;
+		opt.note = ($.headers['user-agent'] || '').parseUA();
+		opt.options = { security: 'lax' };
+		MAIN.session.setcookie($.controller, opt, $.done());
 	});
 
 });

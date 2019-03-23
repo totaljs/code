@@ -60,10 +60,10 @@ div.CodeMirror span.CodeMirror-matchingbracket { border-bottom: 2px solid blue; 
 .ui-tree .children { display: none; }
 .ui-tree .item i { width: 16px; margin-right: 3px; }
 .ui-tree .item { cursor: pointer; padding: 7px 18px; font-size: 13px; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; border-bottom: 1px solid #E8E8E8; position: relative; user-select: none; line-height: 0; color: gray; }
-.ui-tree .item span { position: absolute; right: 5px; color: black; cursor: pointer; font-size: 12px; margin: 2px 0 0 0; top: 6px; display: none; }
+.ui-tree .item span { position: absolute; right: 5px; color: black; cursor: pointer; font-size: 12px; padding: 2px 0 0 0; top: 6px; height: 16px; width: 16px; z-index: 10px; display: none; }
 .ui-tree .expand { font-weight: bold; color: black; }
 .ui-tree .icon { color: #777777; }
-.ui-tree .item > div { position: relative; display: inline-block; }
+.ui-tree .item > div { display: inline-block; }
 .ui-tree .item:hover span { display: block; }
 .ui-tree .item:hover { background-color: #F0F0F0; }
 .ui-tree .show > .children { display: block; }

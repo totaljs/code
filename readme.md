@@ -16,6 +16,7 @@ Online collaboration tool for __Total Developers__. We recommend to use [__bundl
 - download example
 - run `$ node debug.js`
 - open browser `http://127.0.0.1:8000`
+- __IMPORTANT__: new version works with Total.js `+3.3.0` only
 
 ## Default credentials
 

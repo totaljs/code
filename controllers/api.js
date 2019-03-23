@@ -58,7 +58,8 @@ exports.install = function() {
 
 function redirect_logout() {
 	var self = this;
-	self.cookie(F.config.cookie, '', '-1 day');
+	MAIN.session.remove(self.sessionid);
+	self.cookie(CONF.cookie, '', '-1 day');
 	self.redirect('/');
 }
 

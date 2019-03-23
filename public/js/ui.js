@@ -699,12 +699,6 @@ COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 	self.make = function() {
 		self.aclass('ui-tree');
 
-		self.event('click', '.item', function() {
-			var el = $(this);
-			var index = +el.attr('data-index');
-			self.select(index);
-		});
-
 		var ddfile = null;
 		var ddtarget = null;
 
@@ -780,13 +774,19 @@ COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 			}
 		});
 
-		self.event('click', '.options', function(e) {
-			e.preventDefault();
-			e.stopPropagation();
+		self.event('click', '.item', function(e) {
 			var el = $(this);
-			var index = +el.closest('.item').attrd('index');
-			config.options && EXEC(config.options, cache[index], el);
+			var target = $(e.target);
+			var index;
+			if (target.hclass('options') || target.parent().hclass('options')) {
+				index = +el.closest('.item').attrd('index');
+				config.options && EXEC(config.options, cache[index], el);
+			} else {
+				index = +el.attr('data-index');
+				self.select(index);
+			}
 		});
+
 	};
 
 	self.select = function(index, noeval) {

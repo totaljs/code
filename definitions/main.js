@@ -11,6 +11,12 @@ MAIN.projectsonline = {};
 MAIN.users = [];
 MAIN.usersonline = {};
 
+MAIN.session = SESSION();
+MAIN.session.ondata = function(meta, next) {
+	var user = MAIN.users.findItem('id', meta.id);
+	next(null, !user || user.blocked ? null : user);
+};
+
 MAIN.save = function(type) {
 
 	MAIN.projects.quicksort('created', false);
