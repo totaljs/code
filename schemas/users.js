@@ -121,9 +121,10 @@ NEWSCHEMA('Login', function(schema) {
 		var opt = {};
 		opt.name = CONF.cookie;
 		opt.key = CONF.authkey;
+		opt.id = user.id;
 		opt.expire = '1 month';
 		opt.data = user;
-		opt.note = ($.headers['user-agent'] || '').parseUA();
+		opt.note = ($.headers['user-agent'] || '').parseUA() + ' ({0})'.format($.ip);
 		opt.options = { security: 'lax' };
 		MAIN.session.setcookie($.controller, opt, $.done());
 	});
