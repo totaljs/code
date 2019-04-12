@@ -110,9 +110,15 @@
 		});
 
 		ON('online', function(is) {
+
 			SETTER('loading', is ? 'hide' : 'show');
-			if (is && window.code && window.code.data && !common.online)
+
+			if (is && window.code && window.code.data) {
+				// maybe sleeping computer
 				FUNC.wsopen(code.data.id, code.editor ? code.editor.path : '', code.projectid);
+				common.online && EXEC('code/refresh');
+			}
+
 			SET('common.online', is);
 			!is && SET('common.debug', false);
 		});
@@ -142,6 +148,8 @@
 					if (msg.projectid === code.projectid && msg.connid !== common.id) {
 						SETTER('loading', 'show');
 						code.SYNC = false;
+						clearTimeout(common.synctimeout);
+						common.synctimeout = null;
 						if (msg.fromid === user.id) {
 							var editor = FIND('editor').editor;
 							msg.TYPE = 'syncbody';
@@ -152,6 +160,8 @@
 					break;
 				case 'syncbody':
 					if (msg.projectid === code.projectid && msg.connid === common.id) {
+						clearTimeout(common.synctimeout);
+						common.synctimeout = null;
 						code.SYNC = false;
 						msg.TYPE = 'syncdone';
 						FIND('editor').editor.setValue(msg.body);
@@ -161,6 +171,8 @@
 					break;
 				case 'syncdone':
 					if (msg.projectid === code.projectid) {
+						clearTimeout(common.synctimeout);
+						common.synctimeout = null;
 						code.SYNC = true;
 						SET('code.backup', false);
 						SET('code.multiple', false);

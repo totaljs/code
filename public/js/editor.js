@@ -1256,26 +1256,8 @@ WAIT('CodeMirror.defineMode', function() {
 		return cm.getModeAt(cm.getCursor()).closeBrackets || deflt;
 	}
 
-	function handleBackspace(cm) {
-		var conf = getConfig(cm);
-		if (!conf || cm.getOption('disableInput'))
-			return CodeMirror.Pass;
-
-		var pairs = getOption(conf, 'pairs');
-		var ranges = cm.listSelections();
-
-		for (var i = 0; i < ranges.length; i++) {
-			if (!ranges[i].empty())
-				return CodeMirror.Pass;
-			var around = charsAround(cm, ranges[i].head);
-			if (!around || pairs.indexOf(around) % 2 != 0)
-				return CodeMirror.Pass;
-		}
-
-		for (var i = ranges.length - 1; i >= 0; i--) {
-			var cur = ranges[i].head;
-			cm.replaceRange('', Pos(cur.line, cur.ch - 1), Pos(cur.line, cur.ch + 1), '+delete');
-		}
+	function handleBackspace() {
+		return CodeMirror.Pass;
 	}
 
 	function handleEnter(cm) {

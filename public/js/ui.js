@@ -3894,7 +3894,7 @@ COMPONENT('websocket', 'reconnect:3000', function(self, config) {
 
 	self.online = false;
 	self.readonly();
-	self.nocompile && self.nocompile();
+	self.nocompile();
 
 	self.make = function() {
 		url = (config.url || '').env(true);
@@ -3912,16 +3912,22 @@ COMPONENT('websocket', 'reconnect:3000', function(self, config) {
 
 	self.process = function(callback) {
 
-		if (!ws || sending || !queue.length || ws.readyState !== 1) {
+		if (!ws || !ws.send || sending || !queue.length || ws.readyState !== 1) {
 			callback && callback();
 			return;
 		}
 
 		sending = true;
 		var async = queue.splice(0, 3);
+
 		async.wait(function(item, next) {
-			ws.send(item);
-			setTimeout(next, 5);
+			if (ws) {
+				ws.send(item);
+				setTimeout(next, 5);
+			} else {
+				queue.unshift(item);
+				next();
+			}
 		}, function() {
 			callback && callback();
 			sending = false;
@@ -3942,8 +3948,10 @@ COMPONENT('websocket', 'reconnect:3000', function(self, config) {
 
 	function onClose(e) {
 
+		SETTER('lodaing', 'show');
+
 		if (e.code === 4001) {
-			location.href = location.href;
+			location.href = location.href + '';
 			return;
 		}
 

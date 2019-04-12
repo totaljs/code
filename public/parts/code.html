@@ -169,8 +169,6 @@
 		WATCH('common.form', function(path, value) {
 			if (value === '' && code.current)
 				code.current.$components = 1;
-
-
 		});
 
 		exports.todo = function(todo) {
@@ -239,6 +237,14 @@
 				SET('code.multiple', false);
 				SETTER('loading', 'show');
 				FUNC.wssend({ TYPE: 'syncsend', projectid: code.projectid, connid: common.id, fromid: min.id });
+				common.synctimeout = setTimeout(function() {
+					// 5 seconds
+					// Maybe zombie connection
+					SETTER('loading', 'hide');
+					common.synctimeout = null;
+					$('#body').rclass('warning');
+					FUNC.warning('@(Unable to synchronize code between users, because the main user may be offline.)');
+				}, 5000);
 			}
 
 			exports.tablocked();
