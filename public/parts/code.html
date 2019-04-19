@@ -337,6 +337,7 @@
 			}
 
 			items.push({ name: '@(Insert)', icon: 'plus-circle green', value: 'insert' });
+			items.push({ name: '@(Insert emoji)', icon: 'smile yellow', value: 'emoji' });
 
 			SETTER('menu', 'showxy', e.pageX - 5, e.pageY - 15, items, function(value) {
 
@@ -344,6 +345,19 @@
 					editor.focus();
 					setTimeout(function() {
 						document.execCommand(value.command, true);
+					}, 100);
+					return;
+				}
+
+				if (value.value === 'emoji') {
+					var opt = {};
+					opt.x = e.pageX - 10;
+					opt.y = e.pageY - 20;
+					opt.callback = function(selected) {
+						editor.replaceSelection(selected);
+					};
+					setTimeout(function() {
+						SETTER('emoji', 'show', opt);
 					}, 100);
 					return;
 				}

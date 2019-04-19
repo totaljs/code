@@ -6,6 +6,7 @@
 - added a panel with Font-Awesome icons
 - added align function
 - added code review
+- added emojis
 - replaced `UI components` to `Used parts`
 - improved auto-close-brackets
 - improved auto-close-tags
