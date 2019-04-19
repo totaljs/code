@@ -30,6 +30,7 @@
 	<div data---="confirm"></div>
 	<div data---="shortcuts__null"></div>
 	<div data---="mainprogress__common.percentage"></div>
+	<div data---="message__null__button:@(OK)"></div>
 
 	<header>
 		<button class="exec" data-exec="mainmenu"><i class="fa fa-navicon"></i></button>
@@ -226,6 +227,7 @@
 					arr.unshift({ name: '@(Insert UI components)', id: 'componentator', icon: 'puzzle-piece' });
 					arr.unshift({ name: '@(Save)', id: 'save', icon: 'floppy-o' });
 					arr.unshift({ name: '@(Reload)', id: 'reload', icon: 'refresh', keywords: 'refresh' });
+					code.data.review && arr.unshift({ name: '@(Code review)', id: 'review', icon: 'check-circle green' });
 					arr.unshift({ name: '@(History &amp; Backups)', id: 'history', icon: 'history', keywords: 'backups' });
 				}
 			}
@@ -243,10 +245,9 @@
 							break;
 						case 'changes':
 						case 'save':
-							EXEC('editor/' + value.id);
-							break;
+						case 'review':
 						case 'translate':
-							EXEC('code/translate');
+							EXEC('code/' + value.id);
 							break;
 						case 'componentator':
 						case 'components':

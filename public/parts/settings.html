@@ -6,24 +6,29 @@
 		<div class="col-md-4 col-md-offset-4">
 			<div class="panel">
 				<label><i class="fa fa-cog"></i>@(Settings)</label>
-				<div class="body" data-jc-scope="settings">
+				<div class="body" data-scope="settings">
 
-					<div data-jc="textbox__name__required:true;disabled:true" class="m">@(Account name)</div>
-					<div data-jc="textbox__email__required:true;type:email" class="m">@(Email address)</div>
-					<div data-jc="textbox__phone__type:phone" class="m">@(Phone number)</div>
+					<div data---="textbox__?.name__required:true;disabled:true" class="m">@(Account name)</div>
+					<div data---="textbox__?.email__required:true;type:email" class="m">@(Email address)</div>
+					<div data---="textbox__?.phone__type:phone" class="m">@(Phone number)</div>
 
-					<div data-jc="checkbox__localsave">@(Always local storing files in Electron version)</div>
-					<div data-jc="checkbox__darkmode">@(Dark mode)</div>
-					<div data-jc="checkbox__ispassword" class="b m">@(Change password)</div>
-
-					<div bind="?.ispassword__show" class="hidden m">
-						<div data-jc="textbox__password__type:password;required:true">@(New password)</div>
+					<div data-bind="user.sa__show" class="hidden m">
+						<div data---="textbox__?.token__maxlength:100;placeholder:@(Enter a token)">@(Token for code review)</div>
+						<div class="help">@(Total.js Team offers a professional code review. You can obtain a token on) <a href="https://my.totaljs.com" target="_blank">https://my.totaljs.com</a></div>
 					</div>
 
-					<div data-jc="error__response"></div>
+					<div data---="checkbox__?.localsave">@(Always local storing files in Electron version)</div>
+					<div data---="checkbox__?.darkmode">@(Dark mode)</div>
+					<div data---="checkbox__?.ispassword" class="b m">@(Change password)</div>
 
-					<div data-jc="validation__?">
-						<button name="submit" class="button b exec" data-exec="settings/submit" disabled="disabled"><i class="fa fa-floppy-o"></i>@(Save)</button>
+					<div bind="?.ispassword__show" class="hidden m">
+						<div data---="textbox__?.password__type:password;required:true">@(New password)</div>
+					</div>
+
+					<div data---="error__?.response"></div>
+
+					<div data---="validation__?">
+						<button name="submit" class="button b exec" data-exec="?/submit" disabled="disabled"><i class="fa fa-floppy-o"></i>@(Save)</button>
 					</div>
 
 				</div>
@@ -42,15 +47,14 @@
 		exports.submit = function() {
 			var data = GETR('settings');
 			AJAX('POST /api/accounts/', data, function(response) {
-
 				if (response.success) {
 					SETTER('snackbar', 'show', '@(Account has been updated successfully.)');
 					user.darkmode = data.darkmode;
 					user.email = data.email;
 					user.localsave = data.localsave;
 					$('body').tclass('td', user.darkmode);
+					SET('code.data.review', !!data.token);
  				}
-
  				SET('settings.response', response);
 			});
 		};

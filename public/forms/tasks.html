@@ -2,13 +2,12 @@
 	It depends on "code editor"
 -->
 
-<div data---="panel__common.form__if:tasks;width:350;title:@(File tasks);icon:tasks;reload:codetasks/reload;bg:false;autofocus:true;bottom:84;top:49" class="hidden">
+<div data---="panel__common.form__if:tasks;width:350;title:@(To-Do List);icon:tasks;reload:codetasks/reload;bg:false;autofocus:true;bottom:84;top:49" class="hidden">
 	<div data---="viewbox__codetasks__height:100;margin:51;parent:.ui-panel">
 		<div data-bind="!codetasks.todo__template">
 			<script type="text/html">
 				{{ if value && value.length }}
 				<div class="todolist">
-					<div><i class="fa fa-clipboard-check"></i>@(To-Do list)</div>
 					<div>
 					{{ foreach m in value }}
 						<div class="todo">
@@ -20,8 +19,6 @@
 				{{ fi }}
 			</script>
 		</div>
-		<br />
-		<div data---="tasks__codetasks.items__exec:codetasks/submit;solved:codetasks/solved;placeholder:@(Enter a new task)"></div>
 	</div>
 </div>
 
@@ -36,41 +33,6 @@
 			var editor = FIND('editor').editor;
 			editor.setCursor({ line: (+el.attrd('line')) - 1, ch: +el.attrd('ch') });
 			editor.focus();
-		};
-
-		exports.refresh = function() {
-			var qs = {};
-			qs.path = code.editor.path;
-			AJAX('GET /api/projects/{id}/tasks/'.arg(code.data), qs, 'codetasks.items');
-		};
-
-		exports.submit = function(body) {
-
-			var data = {};
-
-			data.path = code.editor.path;
-			data.body = body;
-
-			SETTER('loading', 'show');
-
-			AJAX('POST /api/projects/{id}/tasks/'.arg(code.data), data, function(response) {
-
-				SETTER('loading', 'hide', 1000);
-
-				// prepares data
-				exports.refresh();
-			});
-		};
-
-		exports.solved = function(item) {
-			SETTER('loading', 'show');
-			AJAX('GET /api/projects/{id}/tasks/{0}/'.format(item.id).arg(code.data), function(response) {
-				SETTER('loading', 'hide', 1500);
-				if (response.success) {
-					item.solved = !item.solved;
-					UPDATE('codetasks.items');
-				}
-			});
 		};
 	})
 </script>

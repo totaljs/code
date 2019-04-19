@@ -5,10 +5,12 @@
 - added `translate` feature
 - added a panel with Font-Awesome icons
 - added align function
+- added code review
 - replaced `UI components` to `Used parts`
 - improved auto-close-brackets
 - improved auto-close-tags
 - improved UI
 - improved editor
 - improved file browser
+- improved tasks
 - fixed tab tag completion

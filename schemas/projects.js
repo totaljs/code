@@ -219,7 +219,7 @@ NEWSCHEMA('Projects', function(schema) {
 					directories[i] = directories[i].replace(/\\/g, '/');
 			}
 
-			$.callback({ files: files, directories: directories, url: item.url, name: item.name, icon: item.icon, repository: item.repository, id: item.id, documentation: item.documentation, support: item.support, pathsync: item.pathsync });
+			$.callback({ review: !!PREF.token, files: files, directories: directories, url: item.url, name: item.name, icon: item.icon, repository: item.repository, id: item.id, documentation: item.documentation, support: item.support, pathsync: item.pathsync });
 
 		}, n => !SKIP.test(n) && (!skip || !skip.test(n)));
 	});

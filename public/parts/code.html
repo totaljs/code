@@ -7,7 +7,6 @@
 		<button title="@(Create file)" class="exec" data-name="file" data-exec="code/statusform"><i class="fa fa-file-text-o"></i></button>
 		<button title="@(Create folder)" class="exec" data-name="directory" data-exec="code/statusform"><i class="fa fa-folder"></i></button>
 		<button title="@(Refresh directories and files)" class="exec" data-exec="code/refresh"><i class="fa fa-refresh"></i></button>
-		<button title="@(All uncomplete tasks)" class="exec" data-name="directory" data-exec="code/tasks_uncomplete"><i class="fa fa-tasks"></i></button>
 		<button title="@(All tracked changes)" class="exec" data-exec="code/changes"><i class="fa fa-history"></i></button>
 		<button title="@(Users)" class="exec" data-name="directory" data-exec="code/usersonline"><i class="fa fa-users"></i></button>
 	</section>
@@ -77,7 +76,8 @@
 
 <div class="collaborators hidden" data-bind="code.editor.path__show">
 	<div class="tools">
-		<span title="@(Tasks)" class="exec" data-path="common.form" data-value="'tasks'"><b class="hidden uncomplete" data-bind="codetasks.items --> code/codetasks_unsolved__show__html"></b><i class="fa fa-tasks"></i></span>
+		<span title="@(To-Do list)" class="exec" data-path="common.form" data-value="'tasks'" data-bind="codetasks.items --> code/codetasks_unsolved__show__html b"><b class="uncomplete"></b><i class="fa fa-tasks"></i></span>
+		<span title="@(Code review)" data-bind="code.editor.path__show" class="hidden exec review" data-exec="code/review"><i class="fa fa-check"></i></span>
 	</div>
 	<section data-bind="code.usersfile__template">
 		<script type="text/html">
@@ -178,16 +178,8 @@
 
 		exports.codetasks_unsolved = function(value) {
 			var count = 0;
-			if (value && value.length) {
-				for (var i = 0; i < value.length; i++) {
-					if (!value[i].solved)
-						count++;
-				}
-			}
-
 			if (W.codetasks && W.codetasks.todo)
 				count += codetasks.todo.length;
-
 			return count > 99 ? 99 : count;
 		};
 
@@ -762,7 +754,7 @@
 
 			is && code.components && code.components.length && items.push({ value: 8, name: '@(Used parts)', icon: 'puzzle-piece', shortcut: 'F2' });
 			is && items.push({ value: 10, name: '@(Insert snippet)', icon: 'paste', shortcut: 'F4' });
-			is && items.push({ value: 12, name: '@(Insert icon)', icon: 'camera-retro', shortcut: 'F6' });
+			is && (/js|css|html/).test(code.current.ext) && items.push({ value: 12, name: '@(Insert icon)', icon: 'images', shortcut: 'F6' });
 			is && items.push('-');
 			is && items.push({ value: 1, name: '@(Reload)', icon: 'refresh', shortcut: 'F5' });
 			is && items.push({ value: 2, name: '@(Find)', icon: 'search', command: 'findPersistent' });
@@ -773,6 +765,7 @@
 			is && items.push({ value: 4, name: '@(Restore from backup)', icon: 'history' });
 			is && code.data.pathsync && items.push({ value: 6, name: '@(Save synchronized)', icon: 'sync green' });
 			is && common.electron && code.data.repository && items.push({ value: 7, name: '@(Synchronize locally <strong>last changes</strong>)', icon: 'floppy-o' });
+			is && items.push({ value: 99, name: '<strong>@(Code review)</strong>', icon: 'check-circle green' });
 			is && items.push('-');
 			items.push({ value: 13, name: common.showparts ? '@(Disable parts panel)' : '<strong>@(Enable parts panel)</strong>', icon: 'puzzle-piece' + (common.showparts ? '' : ' green') });
 			items.push({ value: 9, name: '@(Show log file)', icon: 'bug red' });
@@ -825,6 +818,9 @@
 						break;
 					case 11:
 						exports.translate();
+						break;
+					case 99:
+						exports.review();
 						break;
 				}
 			}, -5, -5);
@@ -1085,7 +1081,6 @@
 
 			// Refresh tasks
 			SET('codetasks.items', []);
-			AJAX('GET /api/projects/{id}/tasks/'.arg(code.data), { path: code.current.path }, 'codetasks.items');
 			exports.changelog();
 		};
 
@@ -1434,25 +1429,6 @@
 			SET('common.form', 'tasks', 1000);
 		};
 
-		exports.tasks_uncomplete = function(el, e) {
-			AJAX('GET /api/projects/{id}/tasks/uncomplete/'.arg(code.data), function(response) {
-				SETTER('infopanel', 'show', el, function(el) {
-					var keys = Object.keys(response);
-					var builder = [];
-					for (var i = 0; i < 10; i++) {
-						var key = keys[i];
-						if (key == null)
-							break;
-						var value = response[key];
-						builder.push('<div class="infopanel-line exec" data-exec="code/opentab2" data-path="{0}"><b>{1}</b><span>{0}</span></div>'.format(key, value));
-					}
-
-					!builder.length && FUNC.warning('@(Project doesn\'t contain any tasks.)');
-					el.html(builder.join(''));
-				}, 0, -10);
-			});
-		};
-
 		exports.warnings = function(el, e) {
 			SETTER('infopanel', 'show', el, function(el) {
 				var builder = [];
@@ -1546,6 +1522,23 @@
 				var key = code.data.id + '_' + HASH(code.editor.path);
 				localStorage.removeItem(key);
 			}
+		};
+
+		exports.review = function(el) {
+
+			if (!code.data.review) {
+				SETTER('message', 'warning', '@(You do not have defined a <b>token</b> for code review. Click on the <b>Settings</b> button and set the token.)');
+				return;
+			}
+
+			SETTER('confirm', 'show', '@(Are you sure you want to send this file for <b>code review</b>?)', ['@(Review code)', '@(Cancel)'], function(index) {
+				!index && AJAX('GET /api/projects/{id}/review/?path='.arg(code.data) + encodeURIComponent(code.editor.path), function(response) {
+					if (response.success)
+						FUNC.success('@(File has been sent for code review successfully.)');
+					else
+						FUNC.warning(response);
+				});
+			});
 		};
 	});
 

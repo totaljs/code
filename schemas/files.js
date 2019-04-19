@@ -64,6 +64,35 @@ NEWSCHEMA('Files', function(schema) {
 			$.callback(response || null);
 		});
 	});
+
+	schema.addWorkflow('review', function($) {
+
+		var project = MAIN.projects.findItem('id', $.id);
+		if (project == null) {
+			$.invalid('error-project');
+			return;
+		}
+
+		var filename = Path.join(project.path, $.query.path);
+		var builder = RESTBuilder.url('https://review.totaljs.com/api/upload/review/');
+		var data = {};
+
+		data.path = $.query.path;
+		data.token = PREF.token;
+		data.project = project.name;
+		data.id = project.id;
+		data.version = 1;
+		data.ip = $.ip;
+		data.email = $.user.email;
+		data.userid = $.user.id;
+
+		builder.post(data);
+		builder.file('file', filename);
+		builder.exec($.callback);
+
+		MAIN.log($.user, 'files_review', project, filename);
+	});
+
 });
 
 NEWSCHEMA('FilesRename', function(schema) {

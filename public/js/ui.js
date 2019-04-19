@@ -248,6 +248,7 @@ COMPONENT('editor', function(self, config) {
 		var REGHEXCOLOR = /#[a-f0-9]{6}(;|"|'|>|<|\)|\(|$)/i;
 		var REGTODO = /@todo/i;
 		var REGTODOREPLACE = /^@todo(:)(\s)/i;
+		var REGTODOCLEAN = /-->|\*\//g;
 		var REGPART = /(COMPONENT|NEWSCHEMA|NEWOPERATION|NEWTASK|MIDDLEWARE|WATCH|ROUTE|ON|PLUGIN)+\(.*?\)/g;
 		var REGHELPER = /(Thelpers|FUNC|REPO)\..*?=/g;
 		var cache_lines = null;
@@ -265,7 +266,7 @@ COMPONENT('editor', function(self, config) {
 					var color = lines[i].match(REGHEXCOLOR);
 					color && editor.setGutterMarker(i, 'GutterColor', GutterColor(color.toString().replace(/;|'|"|,/g, '')));
 					var m = lines[i].match(REGTODO);
-					m && todos.push({ line: i + 1, ch: m.index || 0, name: lines[i].substring(m.index, 200).replace(REGTODOREPLACE, '').trim() });
+					m && todos.push({ line: i + 1, ch: m.index || 0, name: lines[i].substring(m.index, 200).replace(REGTODOREPLACE, '').replace(REGTODOCLEAN, '').trim() });
 					if (mode === 'javascript' || mode === 'totaljs' || mode === 'html') {
 
 						if (is != null && lines[i].substring(is, 3) === '});') {
@@ -4190,6 +4191,8 @@ COMPONENT('shortcuts', function(self) {
 
 COMPONENT('features', 'height:37', function(self, config) {
 
+	var cls = 'ui-features';
+	var cls2 = '.' + cls;
 	var container, timeout, input, search, scroller = null;
 	var is = false, results = false, selectedindex = 0, resultscount = 0;
 
@@ -4213,13 +4216,13 @@ COMPONENT('features', 'height:37', function(self, config) {
 
 	self.make = function() {
 
-		self.aclass('ui-features-layer hidden');
-		self.append('<div class="ui-features"><div class="ui-features-search"><span><i class="fa fa-search"></i></span><div><input type="text" placeholder="{0}" class="ui-features-search-input" /></div></div><div class="ui-features-container"><ul></ul></div></div>'.format(config.placeholder));
+		self.aclass(cls + '-layer hidden');
+		self.append('<div class="{1}"><div class="{1}-search"><span><i class="fa fa-search"></i></span><div><input type="text" placeholder="{0}" class="{1}-search-input" /></div></div><div class="{1}-container noscrollbar"><ul></ul></div></div>'.format(config.placeholder, cls));
 
 		container = self.find('ul');
 		input = self.find('input');
-		search = self.find('.ui-features');
-		scroller = self.find('.ui-features-container');
+		search = self.find(cls2);
+		scroller = self.find(cls2 + '-container');
 
 		self.event('touchstart mousedown', 'li[data-index]', function(e) {
 			self.callback && self.callback(self.items[+this.getAttribute('data-index')]);
@@ -4229,7 +4232,7 @@ COMPONENT('features', 'height:37', function(self, config) {
 		});
 
 		$(document).on('touchstart mousedown', function(e) {
-			is && !$(e.target).hclass('ui-features-search-input') && self.hide(0);
+			is && !$(e.target).hclass(cls + '-search-input') && self.hide(0);
 		});
 
 		$(window).on('resize', function() {
@@ -4247,7 +4250,7 @@ COMPONENT('features', 'height:37', function(self, config) {
 					o = true;
 					var sel = self.find('li.selected');
 					if (sel.length && self.callback)
-						self.callback(self.items[+sel.attr('data-index')]);
+						self.callback(self.items[+sel.attrd('index')]);
 					self.hide();
 					break;
 				case 38: // up
@@ -4304,7 +4307,7 @@ COMPONENT('features', 'height:37', function(self, config) {
 
 		container.find('li').each(function() {
 			var el = $(this);
-			var val = el.attr('data-search');
+			var val = el.attrd('search');
 			var h = false;
 
 			for (var i = 0; i < value.length; i++) {
@@ -4398,7 +4401,7 @@ COMPONENT('features', 'height:37', function(self, config) {
 		self.rclass('hidden');
 
 		setTimeout(function() {
-			self.aclass('ui-features-visible');
+			self.aclass(cls + '-visible');
 		}, 100);
 
 		!isMOBILE && setTimeout(function() {
@@ -4406,7 +4409,7 @@ COMPONENT('features', 'height:37', function(self, config) {
 		}, 500);
 
 		is = true;
-		$('html,body').aclass('ui-features-noscroll');
+		$('html,body').aclass(cls + '-noscroll');
 	};
 
 	self.hide = function(sleep) {
@@ -4414,11 +4417,11 @@ COMPONENT('features', 'height:37', function(self, config) {
 			return;
 		clearTimeout(timeout);
 		timeout = setTimeout(function() {
-			self.aclass('hidden').rclass('ui-features-visible');
+			self.aclass('hidden').rclass(cls + '-visible');
 			self.callback = null;
 			self.target = null;
 			is = false;
-			$('html,body').rclass('ui-features-noscroll');
+			$('html,body').rclass(cls + '-noscroll');
 		}, sleep ? sleep : 100);
 	};
 });
@@ -6605,5 +6608,105 @@ COMPONENT('fontawesomebox', 'height:300', function(self, config) {
 
 		skip = false;
 		refresh = true;
+	};
+});
+
+COMPONENT('message', function(self, config) {
+
+	var cls = 'ui-message';
+	var cls2 = '.' + cls;
+	var is, visible = false;
+
+	self.readonly();
+	self.singleton();
+	self.nocompile && self.nocompile();
+
+	self.make = function() {
+		self.aclass(cls + ' hidden');
+
+		self.event('click', 'button', function() {
+			self.hide();
+		});
+
+		$(window).on('keyup', function(e) {
+			visible && e.which === 27 && self.hide();
+		});
+	};
+
+	self.warning = function(message, icon, fn) {
+		if (typeof(icon) === 'function') {
+			fn = icon;
+			icon = undefined;
+		}
+		self.callback = fn;
+		self.content(cls + '-warning', message, icon || 'warning');
+	};
+
+	self.info = function(message, icon, fn) {
+		if (typeof(icon) === 'function') {
+			fn = icon;
+			icon = undefined;
+		}
+		self.callback = fn;
+		self.content(cls + '-info', message, icon || 'info-circle');
+	};
+
+	self.success = function(message, icon, fn) {
+
+		if (typeof(icon) === 'function') {
+			fn = icon;
+			icon = undefined;
+		}
+
+		self.callback = fn;
+		self.content(cls + '-success', message, icon || 'check-circle');
+	};
+
+	FUNC.messageresponse = function(success, callback) {
+		return function(response, err) {
+			if (err || response instanceof Array) {
+
+				var msg = [];
+				var template = '<div class="' + cls + '-error"><i class="fa fa-warning"></i>{0}</div>';
+
+				if (response instanceof Array) {
+					for (var i = 0; i < response.length; i++)
+						msg.push(template.format(response[i].error));
+					msg = msg.join('');
+				} else
+					msg = template.format(err.toString());
+
+				self.warning(msg);
+			} else {
+				self.success(success);
+				callback && callback(response);
+			}
+		};
+	};
+
+	self.hide = function() {
+		self.callback && self.callback();
+		self.aclass('hidden');
+		visible = false;
+	};
+
+	self.content = function(classname, text, icon) {
+		!is && self.html('<div><div class="ui-message-icon"><i class="fa fa-' + icon + '"></i></div><div class="ui-message-body"><div class="text"></div><hr /><button>' + (config.button || 'OK') + '</button></div></div>');
+		visible = true;
+		self.rclass2(cls + '-').aclass(classname);
+		self.find(cls2 + '-body').rclass().aclass(cls + '-body');
+
+		if (is)
+			self.find(cls2 + '-icon').find('.fa').rclass2('fa-').aclass('fa-' + icon);
+
+		self.find('.text').html(text);
+		self.rclass('hidden');
+		is = true;
+		setTimeout(function() {
+			self.aclass(cls + '-visible');
+			setTimeout(function() {
+				self.find(cls2 + '-icon').aclass(cls + '-icon-animate');
+			}, 300);
+		}, 100);
 	};
 });
