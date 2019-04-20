@@ -73,18 +73,33 @@ NEWSCHEMA('Files', function(schema) {
 			return;
 		}
 
+		if (!user.sa) {
+			if (project.users.indexOf(user.id) === -1) {
+				$.invalid('error-permissions');
+				return;
+			}
+
+			if (!MAIN.authorize(project, $.user, $.query.path)) {
+				$.invalid('error-permissions');
+				return;
+			}
+		}
+
 		var filename = Path.join(project.path, $.query.path);
 		var builder = RESTBuilder.url('https://review.totaljs.com/api/upload/review/');
 		var data = {};
+		var user = $.user;
 
+		data.ip = $.ip;
+		data.version = 1;
 		data.path = $.query.path;
 		data.token = PREF.token;
 		data.project = project.name;
-		data.id = project.id;
-		data.version = 1;
-		data.ip = $.ip;
-		data.email = $.user.email;
-		data.userid = $.user.id;
+		data.projectid = project.id;
+		data.userid = user.id;
+		data.userposition = user.position;
+		data.useremail = user.email;
+		data.user = user.name;
 
 		builder.post(data);
 		builder.file('file', filename);
