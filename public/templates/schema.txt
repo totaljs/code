@@ -1,0 +1,25 @@
+NEWSCHEMA('SCHEMA_NAME', function(schema) {
+
+	schema.define('name', 'String(50)', true);
+
+	schema.setQuery(function($) {
+		$.success();
+	});
+
+	schema.setGet(function($) {
+		$.success();
+	});
+
+	schema.setInsert(function($) {
+		$.success();
+	});
+
+	schema.setUpdate(function($) {
+		$.success();
+	});
+
+	schema.setRemove(function($) {
+		$.success();
+	});
+
+});

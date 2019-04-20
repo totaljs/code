@@ -33,6 +33,7 @@ exports.install = function() {
 		ROUTE('GET     /api/projects/{id}/changelogs/',                     changelogs);
 
 		// Other
+		ROUTE('GET     /api/templates/{id}/',                               template);
 		ROUTE('GET     /api/download/{id}/',                                files_download);
 		ROUTE('POST    /api/files/minify/                     *Minify',     files_minify);
 		ROUTE('GET     /logout/', redirect_logout);
@@ -233,4 +234,14 @@ function directories() {
 
 function changelogs(id) {
 	TABLE('changelog').find().take(100).where('projectid', id).callback(this.callback());
+}
+
+function template(id) {
+	var self = this;
+	Fs.readFile(PATH.public('templates/' + id + '.txt'), function(err, response) {
+		if (err)
+			self.invalid(err);
+		else
+			self.binary(response, 'text/plain');
+	});
 }

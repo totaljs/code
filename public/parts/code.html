@@ -339,6 +339,9 @@
 			items.push({ name: '@(Insert)', icon: 'plus-circle green', value: 'insert' });
 			items.push({ name: '@(Insert emoji)', icon: 'smile yellow', value: 'emoji' });
 
+			if ((/js|json|html/).test(code.current.ext))
+				items.push({ name: '@(Insert template)', icon: 'plus-circle', value: 'template' });
+
 			SETTER('menu', 'showxy', e.pageX - 5, e.pageY - 15, items, function(value) {
 
 				if (value.command) {
@@ -422,6 +425,24 @@
 						items.push({ name: '@(IP address)', icon: 'chevron-right', value: 'ip' });
 						items.push({ name: '@(Date / Time)', icon: 'chevron-right', value: 'date' });
 						y = -10;
+					} else if (value.value === 'template') {
+
+						if (code.current.ext === 'js') {
+							items.push({ name: '@(Controller)', icon: 'code', value: 'template', id: 'controller' });
+							items.push({ name: '@(Schema)', icon: 'code', value: 'template', id: 'schema' });
+							items.push({ name: '@(Operation)', icon: 'code', value: 'template', id: 'operation' });
+						} else if (code.current.ext === 'json') {
+							items.push({ name: '@(openplatform.json)', icon: 'code', value: 'template', id: 'openplatform' });
+							items.push({ name: '@(package.json)', icon: 'code', value: 'template', id: 'package' });
+						} else {
+							items.push({ name: '@(HTML template)', icon: 'code', value: 'template', id: 'html' });
+							items.push({ name: '@(j-Modal)', icon: 'code', value: 'template', id: 'modal' });
+							items.push({ name: '@(j-Panel)', icon: 'code', value: 'template', id: 'panel' });
+							items.push({ name: '@(j-Window)', icon: 'code', value: 'template', id: 'window' });
+						}
+
+						y = 40;
+
 					} else if (value.value === 'minify') {
 						items.push({ name: '@(JavaScript)', icon: 'chevron-right', value: 'js' });
 						items.push({ name: '@(HTML)', icon: 'chevron-right', value: 'html' });
@@ -464,6 +485,12 @@
 						}
 
 						switch (value.value) {
+							case 'template':
+								AJAX('GET /api/templates/' + value.id, function(response) {
+									editor.replaceSelection(response);
+									exports.modified();
+								});
+								break;
 							case 'ui':
 								SET('common.form', 'componentator');
 								break;

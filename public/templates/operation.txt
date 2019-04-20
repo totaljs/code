@@ -1,0 +1,8 @@
+NEWOPERATION('OPERATION_NAME', function($) {
+
+	var query = $.query;
+	var user = $.user;
+
+	$.success();
+
+});

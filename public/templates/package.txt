@@ -1,0 +1,19 @@
+{
+	"name": "NAME",
+	"description": "DESCRIPTION",
+	"version": "1.0.0",
+	"main": "release.js",
+	"repository": {
+		"type": "git",
+		"url": "REPOSITORY"
+	},
+	"dependencies": {
+		"total.js": "latest"
+	},
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"keywords": ["KEYWORD"],
+	"author": "AUTHOR",
+	"license":"MIT"
+}
