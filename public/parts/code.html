@@ -317,17 +317,21 @@
 		exports.contextmenu = function(e, editor) {
 			var items = [];
 			var sel = editor.getSelections();
-			var can = sel.join('').length > 0;
+			var text = sel.join('');
+			var can = text.length > 0;
 
 			if (can) {
-
 				items.push({ name: '@(Copy)', icon: 'copy', command: 'copy' });
-				items.push({ name: '@(Align)', icon: 'align-left', value: 'align' });
+
+				if ((/[:\|\='"\{]/).test(text))
+					items.push({ name: '@(Align)', icon: 'align-left', value: 'align' });
 
 				if ((/js|css|html/).test(code.current.ext))
 					items.push({ name: '@(Comment)', icon: 'code', value: 'comment' });
 
-				items.push({ name: '@(Sort)', icon: 'sort-alpha-down', value: 'sort' });
+				if (text.indexOf('\n') !== -1)
+					items.push({ name: '@(Sort)', icon: 'sort-alpha-down', value: 'sort' });
+
 				items.push({ name: '@(Encode)', icon: 'code', value: 'encode' });
 				items.push({ name: '@(Decode)', icon: 'broom', value: 'decode' });
 				items.push({ name: '@(Minify code)', icon: 'compress', value: 'minify' });
@@ -398,6 +402,14 @@
 						return;
 					}
 
+					if (value.value === 'upper' || value.value === 'lower') {
+						for (var i = 0; i < sel.length; i++)
+							sel[i] = value.value === 'lower' ? sel[i].toLowerCase() : sel[i].toUpperCase();
+						editor.replaceSelections(sel);
+						exports.modified();
+						return;
+					}
+
 					if (value.value === 'comment') {
 						for (var i = 0; i < sel.length; i++) {
 							sel[i] = sel[i].split('\n');
@@ -413,14 +425,6 @@
 							sel[i] = sel[i].split('\n');
 							sel[i] = FUNC.aligntext(sel[i]).join('\n');
 						}
-						editor.replaceSelections(sel);
-						exports.modified();
-						return;
-					}
-
-					if (value.value === 'lower' || value.value === 'upper') {
-						for (var i = 0; i < sel.length; i++)
-							sel[i] = value.value === 'lower' ? sel[i].toLowerCase() : sel[i].toUpperCase();
 						editor.replaceSelections(sel);
 						exports.modified();
 						return;
@@ -476,6 +480,7 @@
 						items.push({ name: '@(SHA-512)', icon: 'chevron-right', value: 'sha512', server: true });
 						items.push({ name: '@(CRC-32)', icon: 'chevron-right', value: 'crc32', server: true });
 						items.push({ name: '@(CRC-32 unsigned)', icon: 'chevron-right', value: 'crc32unsigned', server: true });
+						items.push({ name: '@(Optimize for search)', icon: 'search', value: 'search' });
 						y = -10;
 					} else {
 						y = 40;
@@ -499,6 +504,12 @@
 						}
 
 						switch (value.value) {
+							case 'search':
+								for (var i = 0; i < sel.length; i++)
+									sel[i] = sel[i].toSearch();
+								editor.replaceSelections(sel);
+								exports.modified();
+								break;
 							case 'template':
 								AJAX('GET /api/templates/' + value.id, function(response) {
 									editor.replaceSelection(response);
