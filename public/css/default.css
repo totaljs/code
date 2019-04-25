@@ -423,3 +423,14 @@ header .tools .external { color: #a2a286; }
 .codepanel .codeeditor { margin-right: 350px; }
 .codepanel #realtimewindow { right: 380px; }
 .codepanel .preview { margin-right: 370px; }
+.colorize { animation: colorize 1.3s infinite alternate; }
+
+@keyframes colorize {
+	0% { color: #d7cd17; }
+	15% { color: #83c83c; }
+	30% { color: #2e67c5; }
+	45% { color: #b92865; }
+	60% { color: #62c9ca; }
+	75% { color: white; }
+	100% { color: #8c42f6; }
+}
