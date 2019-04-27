@@ -626,6 +626,8 @@ COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 		ext = ext.substring(ext.lastIndexOf('/') + 1);
 
 		switch (ext) {
+			case 'api':
+				return 'fa fa-broadcast-tower';
 			case 'htm':
 			case 'html':
 				return 'fab fa-html5';

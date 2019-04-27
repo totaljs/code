@@ -271,3 +271,69 @@ FUNC.aligntext = function(sel) {
 
 	return sel;
 };
+
+FUNC.request = function(text, body) {
+
+
+	// Find variables
+	var REG_VARIABLE = /^\$(\$)?[a-z0-9_\-.#]+/i;
+	var variables = {};
+
+	body = body.split('\n');
+	for (var i = 0; i < body.length; i++) {
+		var line = body[i];
+		if (!REG_VARIABLE.test(line))
+			continue;
+		var index = line.indexOf(':');
+		var key = line.substring(0, index).trim();
+		var val = line.substring(index + 1).trim();
+		variables[key] = val;
+		variables['$' + key] = encodeURIComponent(val);
+	}
+
+	text = text.replace(/\$(\$)?[a-z0-9_\-.#]+/ig, function(text) {
+		return variables[text] == null ? text : variables[text];
+	});
+
+	AJAX('POST /api/request/', { body: text }, function(response, err) {
+
+		if (err) {
+			SETTER('message', 'warning', err.toString());
+			return;
+		}
+
+		if (response instanceof Array) {
+			SETTER('message', 'warning', response[0].error);
+			return;
+		}
+
+		var builder = [];
+		var keys = Object.keys(response.headers);
+		var skip = { server: 1, date: 1, 'transfer-encoding': 1, connection: 1, vary: 1, expires: 1, 'cache-control': 1 };
+		var template = '<div class="output-response-header">{0}:</div><div class="output-response-header-value">{1}</div>';
+
+		for (var i = 0; i < keys.length; i++) {
+			var key = keys[i];
+			if (skip[key])
+				continue;
+			var val = response.headers[key];
+
+			key = key.charAt(0).toUpperCase() + key.substring(1);
+
+			var index = key.indexOf('-');
+			if (index !== -1)
+				key = key.substring(0, index + 1) + key.substring(index + 1, index + 2).toUpperCase() + key.substring(index + 2);
+
+			if (val instanceof Array) {
+				for (var j = 0; j < val.length; j++)
+					builder.push(template.format(key, Thelpers.encode(val[j])));
+			} else
+				builder.push(template.format(key, Thelpers.encode(val)));
+		}
+
+		builder.push(template.format('Response', Thelpers.encode(response.response)));
+
+		PUSH('^output', '<div class="output-response"><div class="output-response-caption" title="{0}">{0}</div>{1}</div>'.format(Thelpers.encode(response.url), builder.join('')));
+		SET('common.form', 'output');
+	});
+};

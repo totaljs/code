@@ -305,6 +305,65 @@ WAIT('CodeMirror.defineMode', function() {
 		};
 	});
 
+	CodeMirror.defineMode('codeapi', function() {
+
+		var REG_KEY = /^\$[a-z0-9_\-.#]+(\s)+:\s/i;
+		var REG_HEADER = /^[a-z0-9_\-.#]+:\s/i;
+		var REG_METHOD = /^(GET|POST|PUT|DELETE|PATCH|OPTIONS|HEADER)\s?.*?/i;
+		var REG_VARIABLE = /^\$(\$)?[a-z0-9_\-.#]+/i;
+
+		return {
+
+			startState: function() {
+				return { type: 0, keyword: 0 };
+			},
+
+			token: function(stream, state) {
+
+				var m;
+
+				if (stream.sol()) {
+
+					var line = stream.string.trim();
+					if (line.substring(0, 2) === '//') {
+						stream.skipToEnd();
+						return 'comment';
+					}
+
+					var tmp = line.substring(0, 3);
+
+					if (tmp === '===' || tmp === '---') {
+						stream.skipToEnd();
+						return 'type';
+					}
+
+					state.type = 0;
+				}
+
+				m = stream.match(REG_METHOD, true);
+				if (m) {
+					stream.skipToEnd();
+					return 'variable-API';
+				}
+
+				m = stream.match(REG_HEADER, true);
+				if (m)
+					return 'def';
+
+				m = stream.match(REG_VARIABLE, true);
+				if (m)
+					return 'variable-A';
+
+				m = stream.match(REG_KEY, true);
+				if (m)
+					return 'atom';
+
+				stream.next();
+				return '';
+			}
+		};
+	});
+
 });
 
 (function(mod) {

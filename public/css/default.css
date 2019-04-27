@@ -317,6 +317,7 @@ header .tools .external { color: #a2a286; }
 .td .CodeMirror-gutters { background-color: #181a1f !important; }
 
 .td span.cm-variable-T { color: #61afef; background-color: rgba(97,175,239,0.1); }
+.td span.cm-variable-API { color: #61afef; background-color: rgba(97,175,239,0.1); }
 .td span.cm-variable-L { color: #56b6c2; background-color: rgba(86,182,194,0.1); }
 .td span.cm-variable-A { color: #c678dd; background-color: rgba(198,120,221,0.1); }
 
@@ -420,6 +421,9 @@ header .tools .external { color: #a2a286; }
 .td .ui-scrollbar-y, .td .ui-scrollbar-x { background-color: #303030; }
 .td .ui-scrollbar-y span:hover, .td .ui-scrollbar-x span:hover { background-color: #606060; }
 
+.ui-panel-toolbar { padding: 5px 15px 0; height: 40px; border-bottom: 1px solid #E0E0E0; }
+.td .ui-panel-toolbar { border-bottom-color: #404040; }
+
 .codepanel .codeeditor { margin-right: 350px; }
 .codepanel #realtimewindow { right: 380px; }
 .codepanel .preview { margin-right: 370px; }
@@ -434,3 +438,13 @@ header .tools .external { color: #a2a286; }
 	75% { color: white; }
 	100% { color: #8c42f6; }
 }
+
+.output-response { font-size: 12px; }
+.output-response-caption { font-weight: bold; margin-bottom: 5px; font-size: 12px; color: white; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; color: #c678dd; background-color: rgba(198,120,221,0.1); }
+.output-response-header { font-weight: bold; color: silver; }
+.output-response-header-value { font-size: 10px; margin-bottom: 5px; color: gray; line-height: 12px; word-wrap: break-word; border-bottom: 1px dotted #404040; padding-bottom: 5px; }
+
+.output { border-top: 1px solid #E0E0E0; padding: 10px 15px; }
+.output:first-child { border-top: 0; }
+.td .output { border-top-color: #303030; }
+

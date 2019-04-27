@@ -46,6 +46,8 @@ exports.install = function() {
 		ROUTE('POST   /api/common/encrypt/                   *Encoder       --> @exec');
 		ROUTE('GET    /api/componentator/download/           *Componentator --> @download');
 
+		ROUTE('POST   /api/request/', 										makerequest);
+
 	});
 
 	GROUP(['unauthorize'], function() {
@@ -243,5 +245,70 @@ function template(id) {
 			self.invalid(err);
 		else
 			self.binary(response, 'text/plain');
+	});
+}
+
+function makerequest() {
+
+	var self = this;
+	var lines = (self.body.body || '').split('\n');
+	var builder = new RESTBuilder();
+	var regmethod = /^(GET|POST|PUT|DELETE|PATCH|OPTIONS|HEADER)\s?.*?/i;
+	var regheader = /^[a-z0-9_\-.#]+:\s/i;
+	var skip = { '//': 1, '==': 1, '--': 1 };
+	var index = -1;
+	var method = 'GET';
+	var url = '';
+	var data = '';
+
+	for (var i = 0; i < lines.length; i++) {
+
+		var line = lines[i].trim();
+
+		if (skip[line.substring(0, 2)])
+			continue;
+
+		// Method + URL address
+		if (regmethod.test(line)) {
+			index = line.indexOf(' ');
+			method = line.substring(0, index);
+			url = line.substring(index + 1).trim();
+			continue;
+		}
+
+		// Header
+		if (regheader.test(line)) {
+			index = line.indexOf(':');
+			builder.header(line.substring(0, index).trim(), line.substring(index + 1).trim());
+			continue;
+		}
+
+		if (line)
+			data += (data ? '\n' : '') + line;
+	}
+
+	if (!url || !method) {
+		self.invalid('error-invalid');
+		return;
+	}
+
+	builder.url(url);
+	builder.method(method);
+
+	if (data && method !== 'GET') {
+		if (data[0] === '{' || data[0] === '[' || data[0] === '"')
+			builder.json(data);
+		else
+			builder.urlencoded(data);
+	}
+
+	builder.exec(function(err, response, output) {
+		if (err)
+			self.invalid(err);
+		else {
+			output.url = method + ' ' + url;
+			output.value = undefined;
+			self.json(output);
+		}
 	});
 }

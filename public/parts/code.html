@@ -96,6 +96,7 @@
 <div data---="importer__common.form__if:snippets;url:/forms/snippets.html;cleaner:10"></div>
 <div data---="importer__common.form__if:snippets;url:/forms/snippets.html;cleaner:10"></div>
 <div data---="importer__common.form__if:icons;url:/forms/icons.html;cleaner:10"></div>
+<div data---="importer__common.form__if:output;url:/forms/output.html"></div>
 
 <script>
 
@@ -321,6 +322,10 @@
 			var can = text.length > 0;
 
 			if (can) {
+
+				if ((/api/).test(code.current.ext))
+					items.push({ name: '@(Run)', icon: 'play-circle red', value: 'run' });
+
 				items.push({ name: '@(Copy)', icon: 'copy', command: 'copy' });
 
 				if ((/[:\|\='"\{]/).test(text))
@@ -354,6 +359,11 @@
 					setTimeout(function() {
 						document.execCommand(value.command, true);
 					}, 100);
+					return;
+				}
+
+				if (value.value === 'run') {
+					FUNC.request(text, editor.getValue());
 					return;
 				}
 
@@ -465,6 +475,7 @@
 						items.push({ name: '@(JavaScript)', icon: 'chevron-right', value: 'js' });
 						items.push({ name: '@(HTML)', icon: 'chevron-right', value: 'html' });
 						items.push({ name: '@(CSS)', icon: 'chevron-right', value: 'css' });
+						items.push({ name: '@(JSON)', icon: 'chevron-right', value: 'json' });
 						y = 60;
 					} else if (value.value === 'encode') {
 						items.push({ name: '@(Base64)', icon: 'chevron-right', value: 'btoa' });
@@ -575,6 +586,11 @@
 								for (var i = 0; i < sel.length; i++)
 									sel[i] = sel[i][value.value]();
 								editor.replaceSelections(sel);
+								exports.modified();
+								break;
+							case 'json':
+								var tmp = PARSE(editor.getSelection().trim());
+								editor.replaceSelection(JSON.stringify(tmp));
 								exports.modified();
 								break;
 							case 'js':
@@ -834,6 +850,7 @@
 			is && items.push({ value: 99, name: '<strong>@(Code review)</strong>', icon: 'check-circle green' });
 			is && items.push('-');
 			items.push({ value: 13, name: common.showparts ? '@(Disable parts panel)' : '<strong>@(Enable parts panel)</strong>', icon: 'puzzle-piece' + (common.showparts ? '' : ' green') });
+			items.push({ value: 14, name: '@(Output panel)', icon: 'rss' });
 			items.push({ value: 9, name: '@(Show log file)', icon: 'bug red' });
 
 			SETTER('menu', 'show', 'left', el, items, function(item) {
@@ -863,6 +880,9 @@
 						break;
 					case 13:
 						TOGGLE('common.showparts');
+						break;
+					case 14:
+						SET('common.form', 'output');
 						break;
 					case 5:
 						exports.savelocal();
@@ -1059,6 +1079,9 @@
 					break;
 				case 'js':
 					mode = 'javascript';
+					break;
+				case 'api':
+					mode = 'codeapi';
 					break;
 				case 'json':
 				case 'nosql':
