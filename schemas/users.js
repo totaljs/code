@@ -125,7 +125,7 @@ NEWSCHEMA('Login', function(schema) {
 		opt.expire = '1 month';
 		opt.data = user;
 		opt.note = ($.headers['user-agent'] || '').parseUA() + ' ({0})'.format($.ip);
-		opt.options = { security: 'lax' };
+		opt.options = {};
 		MAIN.session.setcookie($.controller, opt, $.done());
 	});
 

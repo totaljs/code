@@ -6,6 +6,7 @@ COMPONENT('editor', function(self, config) {
 	var fn = {};
 	var autocomplete;
 	var lorem = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'.split(' ');
+	var HSM = { annotateScrollbar: true, delay: 100 };
 
 	fn.lastIndexOf = function(str, chfrom) {
 		for (var i = chfrom; i > 0; i--) {
@@ -54,6 +55,8 @@ COMPONENT('editor', function(self, config) {
 			case 'mode':
 				editor.setOption('mode', value);
 				editor.setOption('lint', value === 'javascript' || value === 'xml' || value === 'totaljs' || value === 'html' ? { esversion: 6, expr: true, evil: true, unused: true, shadow: true } : false);
+				editor.setOption('matchBrackets', value !== 'todo');
+				editor.setOption('highlightSelectionMatches', value !== 'todo' ? HSM : false);
 				break;
 			case 'disabled':
 				self.tclass('ui-disabled', value);
@@ -154,7 +157,30 @@ COMPONENT('editor', function(self, config) {
 			return CodeMirror.Pass;
 		};
 
+		self.todo_done = function() {
+
+			var cursor = editor.getCursor();
+			var current = editor.getLine(cursor.line);
+
+			if (!current.match(/^(\s)*-\s/))
+				return;
+
+			var done = current.match(/@done(\(.*?\))?/gi);
+			if (done)
+				editor.doc.replaceRange(current.replace(done, '').replace(/\s+$/, ''), { line: cursor.line, ch: 0 }, { line: cursor.line, ch: current.length });
+			else
+				editor.doc.replaceRange(current.replace(/@(canceled|working)(\(.*?\))?/gi, '').replace(/\s+$/, '') + ' @done' + (user.istimestamp ? ('(' + NOW.format(user.format || 'yyyy-MM-dd') + ')') : ''), { line: cursor.line, ch: 0 }, { line: cursor.line, ch: current.length });
+
+			return false;
+		};
+
 		var findmatch = function() {
+
+			if (config.mode === 'todo') {
+				self.todo_done();
+				return;
+			}
+
 			var sel = editor.getSelections()[0];
 			var cur = editor.getCursor();
 			var count = editor.lineCount();
@@ -188,14 +214,14 @@ COMPONENT('editor', function(self, config) {
 		options.rulers = [{ column: 130, lineStyle: 'dashed' }];
 		options.gutters = ['CodeMirror-lint-markers', 'GutterColor', 'GutterDiff'];
 		options.foldGutter = true;
-		options.highlightSelectionMatches = { annotateScrollbar: true, delay: 100 };
+		options.highlightSelectionMatches = HSM;
 		options.phrases = {};
 		options.matchTags = { bothTags: true };
 		options.autoCloseTags = true;
 		options.scrollPastEnd = true;
 		options.lint = true;
 		options.autoCloseBrackets = true;
-		options.extraKeys = { 'Alt-F': 'findPersistent', 'Esc': clearsearch, 'Cmd-D': findmatch, 'Ctrl-D': findmatch, 'Cmd-S': shortcut('save'), 'Ctrl-S': shortcut('save'), 'Alt-W': shortcut('close'), 'Cmd-W': shortcut('close'), Tab: tabulator, 'Alt-Tab': shortcut('nexttab') };
+		options.extraKeys = { 'Alt-F': 'findPersistent', 'Esc': clearsearch, 'Cmd-D': findmatch, 'Ctrl-D': findmatch, 'Cmd-S': shortcut('save'), 'Ctrl-S': shortcut('save'), 'Alt-W': shortcut('close'), 'Cmd-W': shortcut('close'), Enter: 'newlineAndIndentContinue', Tab: tabulator, 'Alt-Tab': shortcut('nexttab') };
 
 		if (common.electron) {
 			options.extraKeys['Cmd-Tab'] = shortcut('nexttab');
@@ -668,6 +694,8 @@ COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 				return 'fa fa-database';
 			case 'json':
 				return 'fa fa-toolbox';
+			case 'todo':
+				return 'fa fa-check';
 			case 'gif':
 			case 'ico':
 			case 'jpeg':

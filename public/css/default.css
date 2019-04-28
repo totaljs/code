@@ -246,6 +246,64 @@ header .tools .external { color: #a2a286; }
 .statusform-item input { width: 100%; outline: 0; border: 0; background-color: #F0F0F0; }
 
 /* THEME DARK */
+
+.cm-s-default .cm-header { padding: 5px 0 0; font-size: 16px; }
+.cm-s-default .cm-headersub { font-weight: bold; color: black; line-height: 30px; }
+
+.td .cm-s-default .cm-headersub { color: white; }
+
+.CodeMirror .cm-bold { font-weight: bold; color: #b1b06f; }
+.td .CodeMirror .cm-bold { color: #fffea6; }
+
+.CodeMirror .cm-canceled { background-color: #E0E0E0; color: gray !important; border-radius: 100px; padding: 1px 3px; text-decoration: none !important; }
+.td .CodeMirror .cm-canceled { background-color: #505050; }
+
+.CodeMirror .cm-code { color: #505050; }
+.td .CodeMirror .cm-code { color: #CCD0C8; }
+
+.CodeMirror .cm-completed { background-color: rgba(131,176,90,0.5); color: #cbcccb; border-radius: 100px; padding: 1px 3px; text-decoration: none !important; }
+.CodeMirror .cm-date { border-bottom: 2px solid white; }
+.CodeMirror .cm-date-expired { color: red; border-color: red; }
+.CodeMirror .cm-date-soon-expire { border-color: yellow; }
+.CodeMirror .cm-date-today-expire { border-color: red; }
+.CodeMirror .cm-date-tomorrow-expire { border-color: orange; }
+.CodeMirror .cm-estimate { color: #808080; background-color: rgba(0,0,0,0.2); }
+.CodeMirror .cm-estimate { color: #808080; background-color: rgba(0,0,0,0.2); }
+.CodeMirror .cm-estimate { text-decoration: none !important; }
+.CodeMirror .cm-high { font-weight: bold; color: #ffcfff; }
+
+.CodeMirror .cm-highpriority { color: #c75b5d; }
+.td .CodeMirror .cm-highpriority { color: #ffa9aa; }
+
+.CodeMirror .cm-line { color: #404040; }
+.CodeMirror .cm-minutes { color: #d0a028; }
+.td .CodeMirror .cm-minutes { color: #FFCE54; }
+
+.CodeMirror .cm-minutes { text-decoration: none !important; }
+.CodeMirror .cm-priority { color: red; }
+.CodeMirror .cm-quote { color: #68963e; }
+.td .CodeMirror .cm-quote { color: #83b05a; }
+.CodeMirror .cm-special { border: 1.3px solid rgba(0,0,0,0.2); border-radius: 2px; background-color: rgba(0,0,0,0.15); }
+.CodeMirror .cm-strike { text-decoration: line-through; color: gray; }
+.CodeMirror .cm-strong.cm-attribute { text-decoration: none !important; }
+.CodeMirror .cm-strong.cm-canceled2 { font-weight: normal !important; }
+
+.CodeMirror .cm-canceled2 { color: #C0C0C0; }
+.td .CodeMirror .cm-canceled2 { color: #505050; }
+
+.CodeMirror .cm-canceled2.cm-tag { color: #505050 !important; }
+.CodeMirror .cm-canceled2.cm-bold { color: #505050 !important; }
+.CodeMirror .cm-canceled2.cm-date { border-width: 0; }
+.CodeMirror .cm-strong.cm-quote { font-weight: normal !important; }
+.CodeMirror .cm-strong.cm-special { border-color: rgba(100, 100, 100, 0.7) !important; }
+.CodeMirror .cm-strong.cm-strike { color: gray; }
+.CodeMirror .cm-sum { color: #737366; background-color: rgba(0,0,0,0.1); border-radius: 2px; padding: 2px 5px 2px 5px; border: 1px solid #101010; }
+.CodeMirror .cm-tag { color: #69a8dc; }
+.CodeMirror .cm-user { color: #a2a227; font-weight: bold !important; }
+.td .CodeMirror .cm-user { color: yellow; }
+
+.CodeMirror .cm-working { background-color: #1C88BB; color: white; border-radius: 100px; padding: 1px 3px; text-decoration: none !important; }
+
 .td { background-color: #202020; color: gray; }
 .td #body { border-left-color: #353535; }
 .td .tabs { border-bottom-color: #22242b; background-color: #181a1f; }

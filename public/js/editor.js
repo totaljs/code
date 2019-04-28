@@ -1,4 +1,40 @@
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
+// Distributed under an MIT license: http://codemirror.net/LICENSE
+(function(mod) {
+	mod(CodeMirror);
+})(function(CodeMirror) {
+	var listRE = /^(\s*)(>[> ]*|[*+-]\s|(\d+)([.)]))(\s*)/;
+	var emptyListRE = /^(\s*)(>[> ]*|[*+-]|(\d+)[.)])(\s*)$/;
+	var unorderedListRE = /[*+-]\s/;
+	CodeMirror.commands.newlineAndIndentContinue = function(cm) {
+		if (cm.getOption('disableInput'))
+			return CodeMirror.Pass;
+		var ranges = cm.listSelections(), replacements = [];
+		for (var i = 0; i < ranges.length; i++) {
+			var pos = ranges[i].head;
+			var eolState = cm.getStateAfter(pos.line);
+			var inList = eolState.list !== false;
+			var inQuote = eolState.quote !== 0;
+			var line = cm.getLine(pos.line), match = listRE.exec(line);
+			if (!ranges[i].empty() || (!inList && !inQuote) || !match) {
+				cm.execCommand('newlineAndIndent');
+				return;
+			}
+
+			if (emptyListRE.test(line)) {
+				cm.replaceRange('', { line: pos.line, ch: 0 }, { line: pos.line, ch: pos.ch + 1 });
+				replacements[i] = '\n';
+			} else {
+				var indent = match[1], after = match[5];
+				var bullet = unorderedListRE.test(match[2]) || match[2].indexOf('>') >= 0 ? match[2] : (parseInt(match[3], 10) + 1) + match[4];
+				replacements[i] = '\n' + indent + bullet + after;
+			}
+		}
+		cm.replaceSelections(replacements);
+	};
+});
+
+// CodeMirror, copyright (c) by Marijn Haverbeke and others
 // Distributed under an MIT license: https://codemirror.net/LICENSE
 (function(mod) {
 	mod(CodeMirror);
@@ -1702,5 +1738,253 @@ CodeMirror.defineExtension('centerLine', function(line) {
 				output.push(hint);
 			}
 		}
+	}
+});
+
+(function(mod) {
+	mod(CodeMirror);
+})(function(CodeMirror) {
+	CodeMirror.defineMode('todo', function() {
+
+		var REG_MINUTES = /\[\d+(\s)(minutes|minute|min|m|hours|hour|h|hod)?(.)?\]?/i;
+		var REG_ESTIMATE = /\{\d+(\s)(minutes|minute|hours|hour|h|hod)?(.)?\}?/i;
+		var REG_ESTIMATE2 = /(^|\s)\{\d+(\s)(minutes|minute|hours|hour|h|hod)?(.)?\}?/i;
+		var REG_KEYWORD = /@(working|canceled|done|priority|important|date)(\(.*?\))?/i;
+		var REG_SPECIAL = /(^|\s)`.*?`/;
+		var REG_BOLD = /\*.*?\*/;
+		var REG_HIGH = /_{1,}.*?_{1,}/;
+		var REG_STRIKE = /~.*?~/;
+		var REG_USER = /<.*?>/;
+		var REG_HEADER_SUB = /[^-].*?:(\s)?$/;
+		var REG_HEADER = /.*?:(\s)?$/;
+		var REG_TAG = /#[a-z0-9]+/;
+		var REG_UTF8 = new RegExp('(' + String.fromCharCode(9989) + '|' + String.fromCharCode(10060) + ')', 'g');
+
+		function remove(line, editor) {
+			setTimeout(function(line, editor) {
+				editor.removeLineClass(line, 'text', 'cm-header-bg');
+			}, 5, line, editor);
+		}
+
+		return {
+
+			startState: function() {
+				return { type: 0, keyword: 0 };
+			},
+
+			token: function(stream, state) {
+
+				var style = [];
+				var m;
+				var ora = stream.lineOracle;
+
+				if (stream.sol()) {
+
+					state.next = '';
+
+					var line = stream.string;
+					var c = line.charCodeAt(0);
+
+					if (c > 45 && line.match(REG_HEADER)) {
+						state.type = 0;
+						state.keyword = false;
+						stream.skipToEnd();
+						setTimeout(function(line, editor) {
+							editor.addLineClass(line, 'text', 'cm-header-bg');
+						}, 5, ora.line, ora.doc.getEditor());
+						return 'header';
+					} else if (line.trim().charCodeAt(0) > 45 && line.match(REG_HEADER_SUB)) {
+						state.type = 0;
+						state.keyword = false;
+						stream.skipToEnd();
+						// remove(ora.line, ora.doc.getEditor());
+						return 'headersub';
+					}
+
+					if (line.match(/^(\s)*=.*?$/)) {
+						if (line.substring(0, 1) === '=') {
+							stream.skipToEnd();
+							return 'sum';
+						}
+						state.type = 99;
+						state.next = stream.next();
+						return '';
+					}
+
+					if (line.match(/^-{3,}$/g)) {
+						// line
+						stream.skipToEnd();
+						return 'line';
+					}
+
+					if (line.match(/^(\s)*-/)) {
+						state.type = 1;
+
+						if (line.indexOf('@done') !== -1)
+							state.type = 2;
+						if (line.indexOf('@canceled') !== -1)
+							state.type = 3;
+						if (line.indexOf('@working') !== -1)
+							state.type = 4;
+
+						if (state.type === 1 && (line.indexOf('@priority') !== -1 || line.indexOf('@important') !== -1))
+							state.type = 6;
+						else if (state.type === 1 && line.indexOf('@high') !== -1)
+							state.type = 5;
+
+						state.next = stream.next();
+						return find_style(state.type);
+					}
+
+					state.type = 0;
+				}
+
+				if (state.type === 100) {
+					state.type = 0;
+					return stream.match(/=.*?$/, true) ? 'sum' : '';
+				}
+
+				if (state.type === 99) {
+					stream.eatSpace();
+					state.type = 100;
+					return 'summarize';
+				}
+
+				m = stream.match(REG_UTF8, true);
+				if (m) {
+					style.push(find_style(state.type));
+					style.push('utf8');
+					return style.join(' ');
+				}
+
+				if (state.type) {
+					m = stream.match(REG_KEYWORD, true);
+					if (m) {
+						var a = m.toString().toLowerCase();
+						style.push(find_style(state.type));
+						if (a.indexOf('@done') !== -1) {
+							state.keyword = 1;
+							style.push('completed');
+						} else if (a.indexOf('@canceled') !== -1) {
+							state.keyword = 2;
+							style.push('canceled');
+						} else if (a.indexOf('@working') !== -1) {
+							state.keyword = 3;
+							style.push('working');
+						} else if (a.indexOf('@priority') !== -1 || a.indexOf('@important') !== -1) {
+							state.keyword = 4;
+							style.push('priority');
+						} else if (a.indexOf('@high') !== -1) {
+							state.keyword = 5;
+							style.push('high');
+						} else if (a.indexOf('@date') !== -1) {
+							state.keyword = 6;
+							if (a.indexOf('(') !== -1) {
+								style.push('date');
+								if (state.type !== 2 && state.type !== 3) {
+									if (m[2]) {
+										var date = +m[2].replace(/\(|\)/g, '').parseDate().format('yyyyMMdd');
+										if (date < (+NOW.format('yyyyMMdd')))
+											style.push('date-expired');
+										else if (date === (+NOW.format('yyyyMMdd')))
+											style.push('date-today-expire');
+										else if (date === (+NOW.add('1 day').format('yyyyMMdd')))
+											style.push('date-tomorrow-expire');
+										else if (date === (+NOW.add('2 day').format('yyyyMMdd')))
+											style.push('date-soon-expire');
+									}
+								}
+							}
+						}
+						return style.join(' ');
+					}
+
+					m = stream.match(REG_MINUTES, true);
+					if (m) {
+						style.push(find_style(state.type));
+						style.push('minutes');
+						return style.join(' ');
+					}
+
+					m = stream.match(REG_TAG, true);
+					if (m) {
+						style.push(find_style(state.type));
+						style.push('tag');
+						return style.join(' ');
+					}
+
+					m = stream.match(REG_USER, true);
+					if (m) {
+						style.push(find_style(state.type));
+						style.push('user');
+						return style.join(' ');
+					}
+				}
+
+				if (!state.next || state.next === ' ' || state.next === '\t') {
+					m = stream.match(REG_ESTIMATE2);
+					if (m) {
+						m = stream.match(REG_ESTIMATE, true);
+						style.push(find_style(state.type));
+						style.push('estimate');
+						return style.join(' ');
+					}
+
+					m = stream.match(REG_SPECIAL, true);
+					if (m) {
+						style.push(find_style(state.type));
+						style.push('special');
+						return style.join(' ');
+					}
+
+					m = stream.match(REG_STRIKE, true);
+					if (m) {
+						style.push(find_style(state.type));
+						style.push('strike');
+						return style.join(' ');
+					}
+
+					m = stream.match(REG_BOLD, true);
+					if (m) {
+						style.push(find_style(state.type));
+						style.push('bold');
+						return style.join(' ');
+					}
+
+					m = stream.match(REG_HIGH, true);
+					if (m) {
+						style.push(find_style(state.type));
+						style.push('high');
+						return style.join(' ');
+					}
+				}
+
+				if (stream.eol()) {
+					state.next = '';
+					state.type = 0;
+					state.keyword = 0;
+				}
+
+				// remove(ora.line, ora.doc.getEditor());
+				state.next = stream.next();
+				return find_style(state.type);
+			}
+		};
+	});
+
+	function find_style(type) {
+		if (type === 1)
+			return 'code';
+		if (type === 2)
+			return 'strong quote';
+		if (type === 3)
+			return 'strong canceled2';
+		if (type === 4)
+			return 'strong attribute';
+		if (type === 5)
+			return 'high';
+		if (type === 6)
+			return 'highpriority';
+		return '';
 	}
 });

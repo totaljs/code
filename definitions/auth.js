@@ -1,4 +1,4 @@
-const SESSIONOPTIONS = { name: CONF.cookie, key: CONF.authkey, expire: '1 month' };
+const SESSIONOPTIONS = { name: CONF.cookie, key: CONF.authkey, expire: '1 month', options: {} };
 
 AUTH(function($) {
 	MAIN.session.getcookie($, SESSIONOPTIONS, $.done());
