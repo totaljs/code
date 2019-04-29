@@ -31,6 +31,11 @@
 
 		exports.refresh = function() {
 
+			if (!code.data.time) {
+				NULL('timespent');
+				return;
+			}
+
 			var years = {};
 			var keys = Object.keys(code.data.time);
 
