@@ -19,6 +19,15 @@
 	</div>
 </div>
 
+<div id="combo" data---="combo__editor.combo">
+	<div style="width:80px">
+		<div>@(COMBO)</div>
+		<b>0</b>
+		<div class="progress"></div>
+	</div>
+	<div class="rating"></div>
+</div>
+
 <div id="body">
 	<section class="tabs">
 		<a data-bind="code.data.url__href__show" target="_blank" class="preview" title="@(Preview)"><i class="fa fa-globe"></i></a>
@@ -32,7 +41,7 @@
 	<div id="content" data-margin="36">
 		<div class="alert-saved hidden exec" data-bind="code.saved__show__html b" data-exec="code/syncsave"><i class="fa fa-warning"></i><b></b> @(has replaced content of this file on the server.)</div>
 		<div data-bind="code.editor.path__show" class="codeeditor">
-			<div data---="editor__code.editor.body__height:100%;shortcut:code/shortcut;contextmenu:code/contextmenu;cursor:code/cursorposition;sync:code/sync;todo:code/todo;components:code/components"></div>
+			<div data---="editor__code.editor.body__height:100%;shortcut:code/shortcut;contextmenu:code/contextmenu;cursor:code/cursorposition;sync:code/sync;todo:code/todo;components:code/components;combo:code/combo"></div>
 		</div>
 		<div class="messages">
 			<div class="alert hidden" data-bind="code.backup__show" data-name="backup"><i class="fa fa-times exec" data-exec="code/warning"></i><i class="fa fa-warning"></i>@(Content of this file wasn't be saved before. Do you want to restore it?) <span class="link exec" data-name="restore" data-exec="code/warning">@(Restore)</span> @(or) <span class="link exec" data-exec="code/warning">@(Cancel)</span>.</div>
@@ -113,6 +122,10 @@
 		FIND('editor', function(com) {
 			exports.editor = editor = com;
 		});
+
+		exports.combo = function() {
+			FIND('combo').combo();
+		};
 
 		exports.refresh = function() {
 			exports.load(code.data.id, true);
@@ -850,6 +863,7 @@
 			is && items.push({ value: 99, name: '<strong>@(Code review)</strong>', icon: 'check-circle green' });
 			is && items.push('-');
 			items.push({ value: 13, name: common.showparts ? '@(Disable parts panel)' : '<strong>@(Enable parts panel)</strong>', icon: 'puzzle-piece' + (common.showparts ? '' : ' green') });
+			items.push({ value: 15, name: common.powermode ? '@(Disable power mode)' : '<strong>@(Enable power mode)</strong>', icon: 'flask' + (common.powermode ? '' : ' green') });
 			items.push({ value: 14, name: '@(Output panel)', icon: 'rss' });
 			items.push({ value: 9, name: '@(Show log file)', icon: 'bug red' });
 
@@ -880,6 +894,9 @@
 						break;
 					case 13:
 						TOGGLE('common.showparts');
+						break;
+					case 15:
+						TOGGLE('common.powermode');
 						break;
 					case 14:
 						SET('common.form', 'output');
@@ -1632,6 +1649,11 @@
 				});
 			});
 		};
+
+		WATCH('common.powermode', function(path, value) {
+			SETTER(true, 'editor', 'reconfigure', 'powermode:' + (value ? '1' : '0'));
+		}, true);
+
 	});
 
 </script>

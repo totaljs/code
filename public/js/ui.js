@@ -52,6 +52,9 @@ COMPONENT('editor', function(self, config) {
 			return;
 
 		switch (key) {
+			case 'powermode':
+				editor.setOption('blastCode', value ? true : false);
+				break;
 			case 'mode':
 				editor.setOption('mode', value);
 				editor.setOption('lint', value === 'javascript' || value === 'xml' || value === 'totaljs' || value === 'html' ? { esversion: 6, expr: true, evil: true, unused: true, shadow: true } : false);
@@ -211,6 +214,7 @@ COMPONENT('editor', function(self, config) {
 		options.lineWrapping = false;
 		options.matchBrackets = true;
 		options.scrollbarStyle = 'simple';
+
 		options.rulers = [{ column: 130, lineStyle: 'dashed' }];
 		options.gutters = ['CodeMirror-lint-markers', 'GutterColor', 'GutterDiff'];
 		options.foldGutter = true;
@@ -220,6 +224,7 @@ COMPONENT('editor', function(self, config) {
 		options.autoCloseTags = true;
 		options.scrollPastEnd = true;
 		options.lint = true;
+		options.blastCode = true;
 		options.autoCloseBrackets = true;
 		options.extraKeys = { 'Alt-F': 'findPersistent', 'Esc': clearsearch, 'Cmd-D': findmatch, 'Ctrl-D': findmatch, 'Cmd-S': shortcut('save'), 'Ctrl-S': shortcut('save'), 'Alt-W': shortcut('close'), 'Cmd-W': shortcut('close'), Enter: 'newlineAndIndentContinue', Tab: tabulator, 'Alt-Tab': shortcut('nexttab') };
 
@@ -401,6 +406,7 @@ COMPONENT('editor', function(self, config) {
 		});
 
 		var cache_sync = { from: {}, to: {} };
+		var combo = GET(config.combo);
 
 		editor.on('change', function(a, b) {
 
@@ -420,6 +426,8 @@ COMPONENT('editor', function(self, config) {
 				for (var i = b.from.line; i < (b.from.line + b.text.length); i++)
 					self.diffgutter(i, cache_lines && cache_lines[i] === editor.getLine(i));
 
+				if (b.origin.charAt(1) !== 'd')
+					combo && combo();
 			}
 
 			setTimeout2('EditorGutterColor', prerender_colors, 500);
@@ -7219,5 +7227,74 @@ COMPONENT('colorpicker', function(self) {
 			self.unbindevents();
 			self.aclass('hidden');
 		}
+	};
+});
+
+COMPONENT('combo', function(self) {
+
+	var rating, progress, count, sum = 0;
+
+	self.singleton();
+	self.readonly();
+
+	self.make = function() {
+		count = self.find('b');
+		rating = self.find('.rating');
+		progress = self.find('.progress');
+	};
+
+	function random() {
+		return arguments[(Math.random() * arguments.length) >> 0];
+	}
+
+	self.text = function() {
+		return random('Brutal', 'Awesome', 'Fantastic', 'Extreme', 'Stupendous', 'OMG', 'Impressive', 'Nice', 'Wild', 'Stupendous', 'Grand', 'Super', 'Splendid', 'Whoah', 'Nice', 'Total');
+	};
+
+	self.combo = function() {
+
+		sum++;
+		// max = sum;
+
+		var color = '';
+
+		setTimeout2('comborating', function() {
+			rating.html(self.text() + '!');
+			rating.stop().css({ 'margin-top': 10, 'font-size': 20, opacity: 1 });
+			setTimeout(function() {
+				rating.animate({ 'margin-top': 25, opacity: 0, 'font-size': 12 }, 500);
+			}, 200);
+		}, 800, 20);
+
+		if (sum > 80)
+			color = '#E45A5A';
+		else if (sum > 50)
+			color = '#8CC152';
+		else if (sum > 40)
+			color = '#3BAFDA';
+		else if (sum > 30)
+			color = '#F6BB42';
+		else if (sum > 20)
+			color = '#FC6E51';
+		else if (sum > 10)
+			color = '#AAB2BD';
+		else
+			color = '';
+
+		progress.css('background-color', color);
+		rating.css('color', color);
+		count.css('color', color);
+		count.html(sum + '');
+
+		count.stop().css('font-size', 24).animate({ 'font-size': 20 }, 300);
+
+		progress.stop().animate({ width: '100%' }, 100, function() {
+			progress.stop().animate({ width: '5%' }, 8000, function() {
+				count.css('color', '').html('0');
+				progress.css('background-color', '');
+				rating.css('color', '');
+				sum = 0;
+			});
+		});
 	};
 });

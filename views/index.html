@@ -69,11 +69,16 @@
 			common.electron = navigator.userAgent.indexOf('Electron') !== -1 && window.require != null;
 			common.online = true;
 			common.name = document.title;
+
+			if (common.powermode == null)
+				common.powermode = true;
+
 			if (common.showparts == null)
 				common.showparts = true;
 		});
 
 		CACHEPATH('common.showparts', '1 year');
+		CACHEPATH('common.powermode', '1 year');
 
 		if (common.electron)
 			process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
