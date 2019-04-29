@@ -1,0 +1,25 @@
+// METHOD URL_ADDRESS
+// HEADER1: VALUE
+// HEADER2: VALUE
+// BODY DATA (valid JSON or form-urlencoded)
+
+// Custom variables
+$cookie        : YOUR_COOKIE_VALUE
+
+================================================================================
+
+// Sign-in
+POST https://domain.com/api/login/
+{"email":"petersirka@gmail.com","password":"123456"}
+
+================================================================================
+
+// Codelist
+GET https://domain.com/api/cl/
+Cookie: session=$cookie
+
+================================================================================
+
+// List of products
+GET https://domain.com/api/products/
+Cookie: session=$cookie

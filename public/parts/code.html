@@ -364,7 +364,7 @@
 			items.push({ name: '@(Insert emoji)', icon: 'smile yellow', value: 'emoji' });
 			items.push({ name: '@(Insert color)', icon: 'fill-drip colorize', value: 'colorpicker' });
 
-			if ((/js|json|html/).test(code.current.ext))
+			if ((/js|json|html|todo|api/).test(code.current.ext))
 				items.push({ name: '@(Insert template)', icon: 'plus-circle', value: 'template' });
 
 			SETTER('menu', 'showxy', e.pageX - 5, e.pageY - 15, items, function(value) {
@@ -477,6 +477,10 @@
 						} else if (code.current.ext === 'json') {
 							items.push({ name: '@(openplatform.json)', icon: 'code', value: 'template', id: 'openplatform' });
 							items.push({ name: '@(package.json)', icon: 'code', value: 'template', id: 'package' });
+						} else if (code.current.ext === 'todo') {
+							items.push({ name: '@(TO-DO example)', icon: 'code', value: 'template', id: 'todo' });
+						} else if (code.current.ext === 'api') {
+							items.push({ name: '@(API example)', icon: 'code', value: 'template', id: 'restapi' });
 						} else {
 							items.push({ name: '@(HTML template)', icon: 'code', value: 'template', id: 'html' });
 							items.push({ name: '@(j-Modal)', icon: 'code', value: 'template', id: 'modal' });

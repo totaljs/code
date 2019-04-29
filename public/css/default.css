@@ -309,11 +309,11 @@ header .tools .external { color: #a2a286; }
 .CodeMirror .cm-strong.cm-special { border-color: rgba(100, 100, 100, 0.7) !important; }
 .CodeMirror .cm-strong.cm-strike { color: gray; }
 .CodeMirror .cm-sum { color: #737366; background-color: rgba(0,0,0,0.1); border-radius: 2px; padding: 2px 5px 2px 5px; border: 1px solid #101010; }
-.CodeMirror .cm-tag { color: #69a8dc; }
+.CodeMirror .cm-tag2 { color: #69a8dc !important; }
 .CodeMirror .cm-user { color: #a2a227; font-weight: bold !important; }
 .td .CodeMirror .cm-user { color: yellow; }
 
-.CodeMirror .cm-working { background-color: #1C88BB; color: white; border-radius: 100px; padding: 1px 3px; text-decoration: none !important; }
+.CodeMirror .cm-working { background-color: #1C88BB; color: white !important; border-radius: 100px; padding: 1px 3px; text-decoration: none !important; }
 
 .td { background-color: #202020; color: gray; }
 .td #body { border-left-color: #353535; }
@@ -357,6 +357,7 @@ header .tools .external { color: #a2a286; }
 .td .CodeMirror-linenumber { color: gray; }
 .td .CodeMirror-cursor { border-left: 1px solid #f8f8f0; }
 .CodeMirror-linenumber { font-size: 12px; }
+.CodeMirror .cm-working2 { color: #1C88BB; }
 
 .td span.cm-comment { color: #6f6f6e; }
 .td span.cm-atom { color: #ae81ff; }
@@ -381,6 +382,9 @@ header .tools .external { color: #a2a286; }
 .td span.cm-header { color: #ae81ff; }
 .td span.cm-link { color: #ae81ff; }
 .td span.cm-error { background: #f92672; color: #f8f8f0; }
+
+.CodeMirror .cm-high { color: black; }
+.td .CodeMirror .cm-high { color: white; }
 
 .td .CodeMirror-matchingbracket { text-decoration: underline; color: white !important }
 .td .CodeMirror-gutters { background-color: #181a1f !important; }

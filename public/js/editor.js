@@ -1760,12 +1760,6 @@ CodeMirror.defineExtension('centerLine', function(line) {
 		var REG_TAG = /#[a-z0-9]+/;
 		var REG_UTF8 = new RegExp('(' + String.fromCharCode(9989) + '|' + String.fromCharCode(10060) + ')', 'g');
 
-		function remove(line, editor) {
-			setTimeout(function(line, editor) {
-				editor.removeLineClass(line, 'text', 'cm-header-bg');
-			}, 5, line, editor);
-		}
-
 		return {
 
 			startState: function() {
@@ -1909,7 +1903,7 @@ CodeMirror.defineExtension('centerLine', function(line) {
 					m = stream.match(REG_TAG, true);
 					if (m) {
 						style.push(find_style(state.type));
-						style.push('tag');
+						style.push('tag2');
 						return style.join(' ');
 					}
 
@@ -1980,7 +1974,7 @@ CodeMirror.defineExtension('centerLine', function(line) {
 		if (type === 3)
 			return 'strong canceled2';
 		if (type === 4)
-			return 'strong attribute';
+			return 'strong working2';
 		if (type === 5)
 			return 'high';
 		if (type === 6)

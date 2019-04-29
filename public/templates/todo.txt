@@ -1,0 +1,18 @@
+Header:
+
+	Subheader 1:
+	- task 1
+	- task 2 @done
+	- task 3 @canceled
+
+	Subheader 2:
+	- task for <user_name>
+	- task with @priority
+	- formatting ~task~ or *high* or __special__ or `keyword` or #tag1 #tag2 #tag3
+	- work time [2 hours]
+	- estimate time {2 hours}
+	- task with @date(2019-11-06)
+	- @working on task
+
+	Quick shortcut:
+	- CMD+D or CTRL+D adds @done keyword
