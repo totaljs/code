@@ -2072,9 +2072,10 @@ https://twitter.com/JoelBesada/status/670343885655293952
 		particle.vy += Math.cos(particle.theta) * 0.1;
 		particle.size *= 0.96;
 		ctx.fillStyle = particle.color;
-		ctx.beginPath();
-		ctx.arc(Math.round(particle.x - 1), Math.round(particle.y - 1), particle.size, 0, 2 * Math.PI);
-		ctx.fill();
+		ctx.fillRect(Math.round(particle.x - 1), Math.round(particle.y - 1), particle.size, particle.size);
+		// ctx.beginPath();
+		// ctx.arc(Math.round(particle.x - 1), Math.round(particle.y - 1), particle.size, 0, 2 * Math.PI);
+		// ctx.fill();
 	}
 
 	function drawParticles(timeDelta) {
