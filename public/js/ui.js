@@ -426,7 +426,7 @@ COMPONENT('editor', function(self, config) {
 				for (var i = b.from.line; i < (b.from.line + b.text.length); i++)
 					self.diffgutter(i, cache_lines && cache_lines[i] === editor.getLine(i));
 
-				if (b.origin.charAt(1) !== 'd')
+				if (b.origin && b.origin.charAt(1) !== 'd')
 					combo && combo();
 			}
 
