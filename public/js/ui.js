@@ -7254,7 +7254,6 @@ COMPONENT('combo', function(self) {
 	self.combo = function() {
 
 		sum++;
-		// max = sum;
 
 		var color = '';
 
