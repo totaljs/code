@@ -4780,12 +4780,13 @@ COMPONENT('validation', 'delay:100;flags:visible', function(self, config) {
 	};
 });
 
-COMPONENT('infopanel', '', function(self) {
+COMPONENT('infopanel', function(self) {
 
 	var is = false;
 	var cache;
 	var tsshow;
 	var tshide;
+	var closing = false;
 
 	// self.singleton();
 	self.readonly();
@@ -4810,21 +4811,23 @@ COMPONENT('infopanel', '', function(self) {
 		}
 	};
 
-	self.show = function(el, render, offsetX, offsetY) {
+	self.show = function(el, render, offsetX, offsetY, top) {
 
 		var main = self.element;
 
 		if (!(el instanceof jQuery))
 			el = $(el);
 
-		clearTimeout(tshide);
-
 		if (cache === el[0]) {
+			is = true;
 			self.hide(true);
 			return;
 		}
 
+		clearTimeout(tshide);
 		clearTimeout(tsshow);
+		is = false;
+
 		cache = el[0];
 		self.rclass('hidden');
 		tsshow = setTimeout(function() {
@@ -4842,7 +4845,7 @@ COMPONENT('infopanel', '', function(self) {
 			var h = main.height();
 			var off = el.offset();
 
-			main.css({ left: off.left - (offsetX || 0), top: off.top - h - (offsetY || 0) - el.height() });
+			main.css({ left: off.left - (offsetX || 0), top: top ? (off.top + offsetY) : (off.top - h - (offsetY || 0) - el.height()) });
 			main.rclass('invisible');
 		}, 50);
 	};
@@ -7241,6 +7244,30 @@ COMPONENT('combo', function(self) {
 		count = self.find('b');
 		rating = self.find('.rating');
 		progress = self.find('.progress');
+
+		self.event('click', function() {
+			var combo = GET('code.data.combo');
+			combo && SETTER('infopanel', 'show', self.element, function(el) {
+
+				// @ULTRA BAD HACK
+				var builder = [];
+				var keys = Object.keys(combo);
+				var users = GET('code.usersproject');
+				var votes = [];
+
+				for (var i = 0; i < keys.length; i++) {
+					var key = keys[i];
+					votes.push({ name: users.findValue('id', key, 'name', key), combo: combo[key].max });
+				}
+
+				votes.quicksort('combo', true);
+
+				for (var i = 0; i < votes.length; i++)
+					builder.push('<div class="infopanel-combo"><b>{1}</b><span>{0}</span></div>'.format(votes[i].name, votes[i].combo));
+
+				el.html(builder.join(''));
+			}, 90, 50, true);
+		});
 	};
 
 	function random() {
@@ -7249,6 +7276,10 @@ COMPONENT('combo', function(self) {
 
 	self.text = function() {
 		return random('Brutal', 'Awesome', 'Fantastic', 'Extreme', 'Stupendous', 'OMG', 'Impressive', 'Nice', 'Wild', 'Stupendous', 'Grand', 'Super', 'Splendid', 'Whoah', 'Nice', 'Total');
+	};
+
+	self.summarize = function() {
+		return sum;
 	};
 
 	self.combo = function() {
@@ -7276,7 +7307,7 @@ COMPONENT('combo', function(self) {
 		else if (sum > 20)
 			color = '#FC6E51';
 		else if (sum > 10)
-			color = '#AAB2BD';
+			color = '#BD3BA5';
 		else
 			color = '';
 

@@ -8,6 +8,7 @@
 		<button title="@(Create folder)" class="exec" data-name="directory" data-exec="code/statusform"><i class="fa fa-folder"></i></button>
 		<button title="@(Refresh directories and files)" class="exec" data-exec="code/refresh"><i class="fa fa-refresh"></i></button>
 		<button title="@(All tracked changes)" class="exec" data-exec="code/changes"><i class="fa fa-history"></i></button>
+		<button title="@(Spent time)" class="exec" data-exec="code/timespent"><i class="fa fa-calendar"></i></button>
 		<button title="@(Users)" class="exec" data-name="directory" data-exec="code/usersonline"><i class="fa fa-users"></i></button>
 	</section>
 </div>
@@ -19,7 +20,7 @@
 	</div>
 </div>
 
-<div id="combo" data---="combo__editor.combo" data-bind="code.editor.path__show" class="hidden">
+<div id="combo" data---="combo__editor.combo" data-bind="code.editor.path__show" class="hidden" title="@(Scoreboard for the project)">
 	<div class="info">
 		<div>@(COMBO)</div>
 		<b>0</b>
@@ -106,6 +107,7 @@
 <div data---="importer__common.form__if:snippets;url:/forms/snippets.html;cleaner:10"></div>
 <div data---="importer__common.form__if:icons;url:/forms/icons.html;cleaner:10"></div>
 <div data---="importer__common.form__if:output;url:/forms/output.html"></div>
+<div data---="importer__common.form__if:timespent;url:/forms/timespent.html"></div>
 
 <script>
 
@@ -770,6 +772,7 @@
 				exports.tablocked();
 				tab.skip = true;
 				exports.element.SETTER('tree', 'selectpath', tab.path, true);
+				tab.time = Date.now();
 				return;
 			}
 
@@ -827,6 +830,7 @@
 				tab.loaded = true;
 				tab.body = response;
 				tab.ext = ext;
+				tab.time = Date.now();
 
 				var cache = exports.cache_get(item.path);
 				SET('code.backup', cache && cache !== response);
@@ -1240,6 +1244,7 @@
 					exports.element.SETTER('tree', 'clear');
 
 				document.title = common.name + ': ' + response.name;
+
 				SET('code.data', response);
 				SET('code.tree', tree);
 
@@ -1374,6 +1379,9 @@
 				var val = editor.editor.getValue();
 				data.path = code.editor.path;
 				data.body = code.NOTRIM[code.current.ext] ? val : FUNC.rtrim(val);
+				data.combo = FIND('combo').summarize();
+				data.time = Math.ceil((Date.now() - code.current.time) / 1000); // seconds
+				code.current.time = 0;
 
 				if (sync)
 					data.sync = sync;
@@ -1385,6 +1393,7 @@
 				AJAX('POST /api/files/{id}/ REPEAT'.arg(code.data), data, function(response) {
 
 					SETTER('loading', 'hide', 500);
+
 					if (close === true)
 						exports.closeforce();
 
@@ -1484,7 +1493,6 @@
 						setTimeout(exports.syncdata, 1000);
 				}
 			}
-
 		};
 
 		exports.statusform = function(name, value, type) {
@@ -1631,6 +1639,10 @@
 				var key = code.data.id + '_' + HASH(code.editor.path);
 				localStorage.removeItem(key);
 			}
+		};
+
+		exports.timespent = function() {
+			SET('common.form', 'timespent');
 		};
 
 		exports.review = function(el) {

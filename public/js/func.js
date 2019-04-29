@@ -167,9 +167,11 @@ FUNC.editor_reload = function() {
 		return;
 
 	var tab = code.open.findItem('path', code.current.path);
-	tab.loaded = false;
-	tab.doc = null;
-	EXEC('code/open', tab);
+	if (tab) {
+		tab.loaded = false;
+		tab.doc = null;
+		EXEC('code/open', tab);
+	}
 };
 
 FUNC.spaces_to_tabs = function(value) {

@@ -316,7 +316,7 @@
 			EXEC('code/close');
 		});
 
-		Tangular.register('time', function(value) {
+		Thelpers.time = function(value) {
 
 			if (!value)
 				return;
@@ -347,7 +347,24 @@
 
 			var years = (months / 12) >> 0;
 			return @(years + ' ' + Tangular.helpers.pluralize(years, 'years', 'year', 'years', 'years') + ' ago');
-		});
+		};
+
+		Thelpers.timespent = function(value, onlymin) {
+
+			if (onlymin == true)
+				return Math.ceil(value / 60) + '@(m)';
+
+			var minutes = Math.round(value / 60);
+
+
+			if (minutes > 0) {
+				var hours = Math.round(minutes / 60);
+				if (hours)
+					return hours + '@(h)';
+				return minutes + '@(m)';
+			}
+			return value + '@(s)';
+		};
 
 	</script>
 

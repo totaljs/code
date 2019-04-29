@@ -10,12 +10,13 @@ html,body { margin: 0; padding: 0; overflow: hidden; }
 .ml5 { margin-left: 5px; }
 .mb10 { margin-bottom: 10px; }
 
-#combo { position: absolute; font-size: 10px; right: 58px; top: 50px; z-index: 100; line-height: 18px; text-align: center; color: black; }
+#combo { position: absolute; font-size: 10px; right: 58px; top: 50px; z-index: 2; line-height: 18px; text-align: center; color: black; cursor: pointer; }
 #combo .rating { font-size: 20px; text-align: center; font-family: Arial; position: absolute; width: 140px; margin-left: -34px; text-align: center; text-transform: uppercase; font-weight: bold; }
 #combo .progress { height: 3px; margin: 0 auto; background-color: #505050; border-radius: 10px; width: 5%; }
 #combo b { font-size: 20px; display: block; height: 26px; }
 #combo .rating-animate { margin-top: 20px; opacity: 0; }
-#combo .info { height: 50px; border-right: 1px solid #303030; width: 80px; padding: 4px 0 0; }
+#combo .info { height: 50px; border-right: 1px solid #E0E0E0; width: 80px; padding: 4px 0 0; }
+.td #combo .info { border-right-color: #303030; }
 
 .td #combo { color: white; }
 .codepanel #combo { right: 410px; }
@@ -70,7 +71,7 @@ h3 i { margin-right: 5px; color: $color; }
 #panel .project b { margin-right: 40px; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 #panel .project:hover { background-color: #fef9e3; }
 #panel .status { padding: 0; }
-#panel .status button { float: left; border: 0; background-color: white; border-left: 1px solid #D0D0D0; height: 35px; width: 48px; outline: 0; }
+#panel .status button { float: left; border: 0; background-color: white; border-left: 1px solid #D0D0D0; height: 35px; width: 40px; outline: 0; }
 #panel .status button i { margin-right: 0; }
 #panel .status button:hover { background-color: #fffbed; }
 #panel .status > span { float: right; margin: 11px 10px 0 0; font-size: 11px; width: 60px; text-align: center; }
@@ -417,6 +418,13 @@ header .tools .external { color: #a2a286; }
 .td .infopanel-online { color: #A0A0A0; border-top-color: #353535; }
 .td .infopanel-online b { color: white; }
 
+.infopanel-combo { font-size: 11px; color: #666666; height: 15px; border-top: 1px solid #E0E0E0; line-height: 14px; }
+.infopanel-combo b { float: right; width: 40px; text-align: right; color: black; }
+.infopanel-combo span { display: block; width: 120px; margin-right: 40px; }
+.infopanel-combo:first-child { border-top: 0; }
+.td .infopanel-combo { color: #A0A0A0; border-top-color: #353535; }
+.td .infopanel-combo b { color: white; }
+
 .backupitem { padding: 11px 20px; border-top: 1px solid #E0E0E0; cursor: pointer; user-select: none; }
 .backupitem:hover { background-color: #F0F0F0; }
 .backupitem:first-child { border-top: 0; }
@@ -430,6 +438,7 @@ header .tools .external { color: #a2a286; }
 .td .backupitem:hover { background-color: #202020; }
 
 .changeitem { padding: 11px 20px; border-top: 1px solid #E0E0E0; user-select: none; }
+.changeitem .spent b { color: #9a9a35; }
 .changeitem:first-child { border-top: 0; }
 .changeitem .photo { float: left; width: 31px; }
 .changeitem .meta { margin-left: 40px; font-size: 12px; }
@@ -451,6 +460,7 @@ header .tools .external { color: #a2a286; }
 .td .changedfiles { background-color: #303030; }
 .td .changefile { color: #A0A0A0; border-color: #202020; }
 .td .changedfiles > div:first-child { color: silver; }
+.td .changeitem .spent b { color: yellow; }
 
 .todolist { padding: 10px 0; }
 .todolist i { margin-right: 5px; }
@@ -515,4 +525,14 @@ header .tools .external { color: #a2a286; }
 .output { border-top: 1px solid #E0E0E0; padding: 10px 15px; }
 .output:first-child { border-top: 0; }
 .td .output { border-top-color: #303030; }
+
+.timespent { padding: 0 20px; }
+.timespent .date { font-size: 20px; color: #9e9e32; font-weight: bold; margin: 15px 0 10px; }
+.timespent .date i { margin-right: 10px; }
+.timespent .items > div { height: 26px; border-bottom: 1px solid #505050; margin: 2px 0 0; color: gray; }
+.timespent .items > div:last-child { color: black; }
+.timespent .items > div b { float: right; width: 40px; text-align: right; }
+
+.td .timespent .date { color: yellow; }
+.td .timespent .items > div:last-child { color: white !important; }
 

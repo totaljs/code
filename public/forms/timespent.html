@@ -1,0 +1,70 @@
+<!--
+	It depends on "code editor"
+-->
+
+<div data---="panel__common.form__if:timespent;width:350;title:@(Time spent);icon:calendar;reload:timespent/reload;bg:false;autofocus:true;bottom:84;top:50" class="hidden">
+	<div data---="viewbox__timespent__height:100;margin:51;parent:.ui-panel">
+		<div data-bind="!timespent__template">
+			<script type="text/html">
+				{{ foreach m in value }}
+					<div class="timespent">
+						<div class="date">{{ m.date }}</div>
+						<div class="items">
+							{{ foreach n in m.items }}
+								<div><b>{{ n.count | timespent(true) }}</b><span>{{ n.name }}</span></div>
+							{{ end }}
+							<div><b>{{ m.sum | timespent(true) }}</b><span class="b">@(Summarize)</span></div>
+						</div>
+					</div>
+				{{ end }}
+			</script>
+		</div>
+	</div>
+</div>
+
+<script>
+	PLUGIN('timespent', function(exports) {
+
+		exports.reload = function() {
+			exports.refresh();
+		};
+
+		exports.refresh = function() {
+
+			var years = {};
+			var keys = Object.keys(code.data.time);
+
+			for (var i = 0; i < keys.length; i++) {
+				var key = keys[i];
+				var name = code.usersproject.findValue('id', key, 'name', key);
+				var item = code.data.time[key];
+				var keys2 = Object.keys(item);
+				for (var j = 0; j < keys2.length; j++) {
+					var y = keys2[j];
+					if (years[y])
+						years[y].push({ name: name, count: item[y] });
+					else
+						years[y] = [{ name: name, count: item[y] }];
+				}
+			}
+
+			keys = Object.keys(years);
+			keys.sort();
+			keys.reverse();
+
+			var arr = [];
+
+			for (var i = 0; i < keys.length; i++) {
+				var sum = 0;
+				var items = years[keys[i]];
+				for (var j = 0; j < items.length; j++)
+					sum += items[j].count;
+				var y = keys[i];
+				arr.push({ date: y.substring(0, 4) + ' / ' + y.substring(4), month: MONTHS[(+y.substring(4)) - 1], items: years[keys[i]], sum: sum });
+			}
+
+			SET('timespent', arr);
+		};
+
+	})
+</script>

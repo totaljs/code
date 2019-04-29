@@ -6,6 +6,8 @@ NEWSCHEMA('Files', function(schema) {
 	schema.define('body', String);
 	schema.define('path', 'String(500)', true);
 	schema.define('sync', Boolean);
+	schema.define('combo', Number); // Max. combo
+	schema.define('time', Number);  // Spent time
 
 	schema.setSave(function($) {
 
@@ -32,9 +34,46 @@ NEWSCHEMA('Files', function(schema) {
 
 		var filename = Path.join(project.path, model.path);
 		var name = U.getName(filename);
+		var is = false;
 
-		MAIN.log($.user, 'files_save', project, filename);
-		MAIN.change('save', $.user, project, model.path);
+		var count = model.combo;
+		if (count) {
+
+			var combo = project.combo ? project.combo[user.id] : null;
+			if (combo) {
+				var max = Math.max(count, combo.max);
+				if (max !== combo.max) {
+					combo = { max: max, date: NOW };
+					is = true;
+				}
+			} else {
+				if (!project.combo)
+					combo = project.combo = {};
+				combo[user.id] = { max: count, date: NOW };
+				is = true;
+			}
+		}
+
+		if (model.time) {
+			if (!project.time)
+				project.time = {};
+
+			if (!project.time[user.id])
+				project.time[user.id] = {};
+
+			var time = project.time[user.id];
+			var ym = NOW.format('yyyyMM');
+			if (time[ym])
+				time[ym] += model.time;
+			else
+				time[ym] = model.time;
+			is = true;
+		}
+
+		is && setTimeout2('combo', MAIN.save, 2000, null, 2);
+
+		MAIN.log($.user, 'files_save', project, filename, count, model.time);
+		MAIN.change('save', $.user, project, model.path, count, model.time);
 
 		// Tries to create a folder
 		F.path.mkdir(filename.substring(0, filename.length - name.length));
