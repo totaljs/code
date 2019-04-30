@@ -11,15 +11,23 @@ html,body { margin: 0; padding: 0; overflow: hidden; }
 .mb10 { margin-bottom: 10px; }
 
 .timespent { padding: 20px 0; }
-.timespent-date { font-size: 18px; color: white; margin-bottom: 20px; }
-.timespent-date b { color: yellow; }
-.timespent-item { border-bottom: 1px solid #303030; height: 24px; font-size: 12px; line-height: 24px; color: #C0C0C0; }
+.timespent-date { font-size: 18px; color: black; margin-bottom: 20px; }
+.timespent-date b { color: black; }
+.timespent-item { border-bottom: 1px solid #E0E0E0; height: 24px; font-size: 12px; line-height: 24px; color: gray; }
 .timespent-item i { width: 16px; color: #505050; }
-.timespent-item b { float: right; color: white; }
-.timespent-item.b { color: #E0E0E0; margin-bottom: 3px; }
+.timespent-item b { float: right; color: black; }
+.timespent-item.b { color: black; margin-bottom: 3px; }
 .timespent-user { margin-left: 20px; border-bottom-width: 0; font-size: 11px; height: 19px; line-height: 19px; }
 .timespent-user:last-child { margin-bottom: 5px; }
 .timespent-user b { color: gray; }
+
+.td .timespent-date { color: white; }
+.td .timespent-item { border-bottom-color: #404040; color: gray; }
+.td .timespent-date b { color: yellow; }
+.td .timespent-item b { color: white; }
+.td .timespent-item i { color: #505050; }
+.td .timespent-item.b { color: #E0E0E0; }
+.td .timespent-user b { color: gray; }
 
 #combo { position: absolute; font-size: 10px; right: 58px; top: 50px; z-index: 2; line-height: 18px; text-align: center; color: black; cursor: pointer; }
 #combo .rating { font-size: 20px; text-align: center; font-family: Arial; position: absolute; width: 140px; margin-left: -34px; text-align: center; text-transform: uppercase; font-weight: bold; }
