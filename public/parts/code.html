@@ -120,14 +120,26 @@
 		var editor;
 		var cache_scrollpos = {};
 		var reg_number = /^\d+$/;
-		var changetimeout;
+		var maxtyping = 0;
 
 		FIND('editor', function(com) {
 			exports.editor = editor = com;
 		});
 
 		exports.combo = function() {
+
+			var old = code.lastchange;
 			code.lastchange = Date.now();
+
+			if (old) {
+				old = code.lastchange - old;
+				if (old && old < 150) {
+					if (maxtyping++ > 15)
+						return;
+				} else if (old > 1000) // 1 second delay
+					maxtyping = 0;
+			}
+
 			FIND('combo').combo();
 		};
 
