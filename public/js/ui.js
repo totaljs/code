@@ -7275,7 +7275,7 @@ COMPONENT('combo', function(self) {
 	}
 
 	self.text = function() {
-		return random('Brutal', 'Awesome', 'Fantastic', 'Extreme', 'Stupendous', 'OMG', 'Impressive', 'Nice', 'Wild', 'Stupendous', 'Grand', 'Super', 'Splendid', 'Whoah', 'Nice', 'Total');
+		return random('Brutal', 'Awesome', 'Fantastic', 'Extreme', 'Stupendous', 'OMG', 'Impressive', 'Nice', 'Wild', 'Stupendous', 'Grand', 'Super', 'Splendid', 'Whoah', 'Nice', 'Total', 'Fatality');
 	};
 
 	self.summarize = function() {
