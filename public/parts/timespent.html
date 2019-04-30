@@ -103,18 +103,20 @@
 				for (var i = 0; i < output.length; i++) {
 					item = output[i];
 					builder.push('<div class="timespent-date"><b>{date}</b> - {month}</div>'.arg(item));
-					builder.push('<div class="row"><div class="col-sm-6">');
+					builder.push('<div class="row"><div class="col-sm-6 m">');
 
 					for (var j = 0; j < item.projects.length; j++) {
 						var project = item.projects[j];
 						builder.push('<div class="timespent-item b"><b>{1}</b><i class="fab fa-app-store"></i>{0}</div>'.format(project.name, hours(project.sum)));
+						builder.push('<div class="timespent-users">');
 						for (var k = 0; k < project.time.length; k++) {
 							tmp = project.time[k];
 							builder.push('<div class="timespent-user timespent-item"><b>{1}</b>{0}</div>'.format(tmp.name, hours(tmp.count)));
 						}
+						builder.push('</div>');
 					}
 
-					builder.push('</div><div class="col-sm-6">');
+					builder.push('</div><div class="col-sm-6 m">');
 
 					for (var j = 0; j < item.users.length; j++) {
 						var user = item.users[j];
