@@ -42,7 +42,7 @@
 	<div id="content" data-margin="36">
 		<div class="alert-saved hidden exec" data-bind="code.saved__show__html b" data-exec="code/syncsave"><i class="fa fa-warning"></i><b></b> @(has replaced content of this file on the server.)</div>
 		<div data-bind="code.editor.path__show" class="codeeditor">
-			<div data---="editor__code.editor.body__height:100%;shortcut:code/shortcut;contextmenu:code/contextmenu;cursor:code/cursorposition;sync:code/sync;todo:code/todo;components:code/components;combo:code/combo"></div>
+			<div data---="editor__code.editor.body__height:100%;pk:path;shortcut:code/shortcut;contextmenu:code/contextmenu;cursor:code/cursorposition;sync:code/sync;todo:code/todo;components:code/components;combo:code/combo"></div>
 		</div>
 		<div class="messages">
 			<div class="alert hidden" data-bind="code.backup__show" data-name="backup"><i class="fa fa-times exec" data-exec="code/warning"></i><i class="fa fa-warning"></i>@(Content of this file wasn't be saved before. Do you want to restore it?) <span class="link exec" data-name="restore" data-exec="code/warning">@(Restore)</span> @(or) <span class="link exec" data-exec="code/warning">@(Cancel)</span>.</div>
