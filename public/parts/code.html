@@ -1390,10 +1390,16 @@
 				data.combo = FIND('combo').summarize();
 
 				var diff = Math.ceil((now - code.lastchange) / 1000);
-				if ((diff / 60) < 40)  // minutes
+				var max = 40; // minutes
+
+				if ((diff / 60) < max)  // minutes
 					data.time = Math.ceil((now - code.current.time) / 1000);
 				else
 					data.time = Math.ceil((code.lastchange - code.current.time) / 1000);
+
+				// Limit
+				if (data.time > ((max + 1) * 60))
+					data.time = (max + 1) * 60;
 
 				code.current.time = now;
 				code.lastchange = now;

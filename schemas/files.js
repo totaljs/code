@@ -54,6 +54,9 @@ NEWSCHEMA('Files', function(schema) {
 			}
 		}
 
+		if (model.time > 2700)
+			model.time = 0;
+
 		if (model.time) {
 			if (!project.time)
 				project.time = {};
