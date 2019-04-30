@@ -200,11 +200,13 @@
 						EXEC('code/synccursor', msg);
 					break;
 				case 'save':
-					if (msg.projectid === code.projectid && msg.id !== user.id)
-						EXEC('code/syncsave', msg);
-					else if (code) {
-						msg.date = new Date();
-						code.changes[msg.projectid] = msg;
+					if (window.code) {
+						if (msg.projectid === code.projectid && msg.id !== user.id)
+							EXEC('code/syncsave', msg);
+						else if (code) {
+							msg.date = new Date();
+							code.changes[msg.projectid] = msg;
+						}
 					}
 
 					break;

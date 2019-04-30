@@ -11,8 +11,8 @@
 			exports.refresh();
 		};
 
-		function hours(val) {
-			return Math.ceil(val / 60 / 60) + 'h';
+		function hours(val, count) {
+			return (count ? (Math.ceil(val / 60 / 60)) : val) + 'h';
 		}
 
 		exports.refresh = function() {
@@ -64,7 +64,8 @@
 								item.time.push(usr);
 							}
 
-							usr.count += ppi[key2];
+							//usr.count += Math.ceil(ppi[key2] / 60 / 60);
+							usr.count += Math.ceil(ppi[key2] / 60 / 60);
 
 							arr = du[key2];
 							usr2 = arr.findItem('id', usr.id);
@@ -120,7 +121,7 @@
 
 					for (var j = 0; j < item.users.length; j++) {
 						var user = item.users[j];
-						builder.push('<div class="timespent-item"><b>{1}</b><i class="fa fa-user"></i>{0}</div>'.format(user.name, hours(user.count)));
+						builder.push('<div class="timespent-item"><b>{1}</b><i class="fa fa-user"></i>{0}</div>'.format(user.name, hours(user.count, true)));
 					}
 
 					builder.push('</div></div><br />');
