@@ -10,6 +10,16 @@ html,body { margin: 0; padding: 0; overflow: hidden; }
 .ml5 { margin-left: 5px; }
 .mb10 { margin-bottom: 10px; }
 
+.timespent { padding: 20px 0; }
+.timespent-date { font-size: 18px; color: white; margin-bottom: 20px; }
+.timespent-date b { color: yellow; }
+.timespent-item { border-bottom: 1px solid #303030; height: 24px; font-size: 12px; line-height: 24px; color: #C0C0C0; }
+.timespent-item i { width: 16px; color: #505050; }
+.timespent-item b { float: right; color: white; }
+.timespent-item.b { color: #E0E0E0; }
+.timespent-user { margin-left: 20px; border-bottom-width: 0; font-size: 11px; }
+.timespent-user b { color: gray; }
+
 #combo { position: absolute; font-size: 10px; right: 58px; top: 50px; z-index: 2; line-height: 18px; text-align: center; color: black; cursor: pointer; }
 #combo .rating { font-size: 20px; text-align: center; font-family: Arial; position: absolute; width: 140px; margin-left: -34px; text-align: center; text-transform: uppercase; font-weight: bold; }
 #combo .progress { height: 3px; margin: 0 auto; background-color: #505050; border-radius: 10px; width: 5%; }
@@ -59,6 +69,11 @@ h2 i { margin-right: 10px; color: $color; }
 h3 { margin: 0 0 10px; font-family: $font; font-size: 16px; padding: 0; color: black; line-height: 22px; }
 h3 i { margin-right: 5px; color: $color; }
 .td h3 { color: white; }
+
+.h { font-size: 20px; color: white; height: 50px; line-height: 50px; font-weight: bold; border-bottom: 1px solid #303030; margin-bottom: 10px; }
+.h i { margin-right: 8px; }
+.timespent pre { font-family: Menlo,Consolas,monospace; font-size: 14px; color: #C0C0C0; }
+.timespent pre b { color: yellow; }
 
 .m { margin-bottom: 20px; }
 
@@ -320,6 +335,7 @@ header .tools .external { color: #a2a286; }
 .td .tabs { border-bottom-color: #22242b; background-color: #181a1f; }
 .td header { border-bottom-color: #353535; }
 .td header .tools a { color: white; border-right-color: #353535; }
+.td header .tools a:last-child { color: #CA6D6D; }
 .td header .tools a:hover { background-color: #282828; }
 .td header .tools .selected { background-color: #303030; }
 .td header .tools .external { color: #e8d68f; }
@@ -530,13 +546,13 @@ header .tools .external { color: #a2a286; }
 .output:first-child { border-top: 0; }
 .td .output { border-top-color: #303030; }
 
-.timespent { padding: 0 20px; }
-.timespent .date { font-size: 20px; color: #9e9e32; font-weight: bold; margin: 15px 0 10px; }
-.timespent .date i { margin-right: 10px; }
-.timespent .items > div { height: 26px; border-bottom: 1px solid #505050; margin: 2px 0 0; color: gray; }
-.timespent .items > div:last-child { color: black; }
-.timespent .items > div b { float: right; width: 40px; text-align: right; }
+.timespentform { padding: 0 20px; }
+.timespentform .date { font-size: 20px; color: #9e9e32; font-weight: bold; margin: 15px 0 10px; }
+.timespentform .date i { margin-right: 10px; }
+.timespentform .items > div { height: 26px; border-bottom: 1px solid #505050; margin: 2px 0 0; color: gray; }
+.timespentform .items > div:last-child { color: black; }
+.timespentform .items > div b { float: right; width: 40px; text-align: right; }
 
-.td .timespent .date { color: yellow; }
-.td .timespent .items > div:last-child { color: white !important; }
+.td .timespentform .date { color: yellow; }
+.td .timespentform .items > div:last-child { color: white !important; }
 

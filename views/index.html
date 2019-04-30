@@ -43,6 +43,7 @@
 			@{if user.sa}
 			<a href="@{#}/projects/" title="@(Projects)" class="R" data-if="projects"><i class="fab fa-app-store-ios"></i></a>
 			<a href="@{#}/users/" title="@(Users)" class="R" data-if="users"><i class="fa fa-users"></i></a>
+			<a href="@{#}/timespent/" title="@(Time spent)" class="R" data-if="timespent"><i class="fa fa-calendar"></i></a>
 			<a href="@{#}/snippets/" title="@(Snippets)" class="R" data-if="snippets"><i class="fa fa-paste"></i></a>
 			@{fi}
 			<a href="@{#}/settings/" title="@(Settings)" class="R" data-if="settings"><i class="fa fa-cog"></i></a>
@@ -55,6 +56,7 @@
 	<div data---="part__common.page__if:projects;url:/parts/projects.html;reload:projects/reload;cleaner:10"></div>
 	<div data---="part__common.page__if:users;url:/parts/users.html;reload:users/reload;cleaner:10"></div>
 	<div data---="part__common.page__if:settings;url:/parts/settings.html;reload:settings/reload;cleaner:10"></div>
+	<div data---="part__common.page__if:timespent;url:/parts/timespent.html;reload:timespent/reload;cleaner:10"></div>
 	<div data---="websocket__null__url:/"></div>
 
 	@{json(user, 'userdata')}
@@ -109,6 +111,12 @@
 			SET('common.form', '');
 			SET('common.debug', false);
 			SET('common.page', 'projects');
+		});
+
+		ROUTE('/timespent/', function() {
+			SET('common.form', '');
+			SET('common.debug', false);
+			SET('common.page', 'timespent');
 		});
 
 		ROUTE('/snippets/', function() {

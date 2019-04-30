@@ -38,7 +38,6 @@ NEWSCHEMA('Files', function(schema) {
 
 		var count = model.combo;
 		if (count) {
-
 			var combo = project.combo ? project.combo[user.id] : null;
 			if (combo) {
 				var max = Math.max(count, combo.max);
@@ -49,6 +48,8 @@ NEWSCHEMA('Files', function(schema) {
 			} else {
 				if (!project.combo)
 					combo = project.combo = {};
+				else
+					combo = project.combo;
 				combo[user.id] = { max: count, date: NOW };
 				is = true;
 			}

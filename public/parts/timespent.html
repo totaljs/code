@@ -1,0 +1,133 @@
+<div class="container timespent">
+	<div data---="viewbox__null__height:100;parent:window;margin:120">
+		<div data-bind="timespent__html" style="padding:0;margin:0"></div>
+	</div>
+</div>
+
+<script>
+
+	PLUGIN('timespent', function(exports) {
+		exports.reload = function() {
+			exports.refresh();
+		};
+
+		function hours(val) {
+			return Math.ceil(val / 60 / 60) + 'h';
+		}
+
+		exports.refresh = function() {
+			AJAX('GET /api/projects/timespent/', function(response) {
+
+				// Piece of shit code, but works
+
+				var p = response.projects;
+				var u = response.users;
+				var d = {}; // date
+				var du = {}; // date users
+				var tmp, keys, key, item, usr2;
+
+				for (var i = 0; i < p.length; i++) {
+
+					var pp = p[i];
+					keys = Object.keys(pp.time);
+
+					for (var j = 0; j < keys.length; j++) {
+						key = keys[j];
+						var ppi = pp.time[key];
+						var ddd = Object.keys(ppi);
+
+						for (var k = 0; k < ddd.length; k++) {
+							var key2 = ddd[k];
+
+							if (d[key2] == null)
+								d[key2] = [];
+
+							if (du[key2] == null)
+								du[key2] = [];
+
+							var arr = d[key2];
+							item = arr.findItem('id', pp.id);
+							if (item == null) {
+								item = {};
+								item.id = pp.id;
+								item.time = [];
+								item.name = pp.name;
+								arr.push(item);
+							}
+
+							var usr = item.time.findItem('id', key);
+							if (usr == null) {
+								usr = {};
+								usr.id = key;
+								usr.name = u.findValue('id', key, 'name', key);
+								usr.count = 0;
+								item.time.push(usr);
+							}
+
+							usr.count += ppi[key2];
+
+							arr = du[key2];
+							usr2 = arr.findItem('id', usr.id);
+							if (usr2 == null) {
+								usr2 = {};
+								usr2.id = usr.id;
+								usr2.name = usr.name;
+								usr2.count = ppi[key2];
+								arr.push(usr2);
+							} else
+								usr2.count += ppi[key2];
+						}
+					}
+				}
+
+				keys = Object.keys(d);
+
+				var output = [];
+				for (var i = 0; i < keys.length; i++) {
+					key = keys[i];
+					item = d[key];
+					for (var j = 0; j < item.length; j++) {
+						var p = item[j];
+						if (!p.sum)
+							p.sum = 0;
+						for (var k = 0; k < p.time.length; k++)
+							p.sum += p.time[k].count;
+						p.time.quicksort('name');
+					}
+					item.quicksort('name');
+					output.push({ sort: +key, date: key.substring(0, 4) + '/' + key.substring(4), month: MONTHS[(+key.substring(4)) - 1], projects: item, users: du[key] });
+				}
+
+				var builder = [];
+
+				for (var i = 0; i < output.length; i++) {
+					item = output[i];
+					builder.push('<div class="timespent-date"><b>{date}</b> - {month}</div>'.arg(item));
+					builder.push('<div class="row"><div class="col-sm-6">');
+
+					for (var j = 0; j < item.projects.length; j++) {
+						var project = item.projects[j];
+						builder.push('<div class="timespent-item b"><b>{1}</b><i class="fab fa-app-store"></i>{0}</div>'.format(project.name, hours(project.sum)));
+						for (var k = 0; k < project.time.length; k++) {
+							tmp = project.time[k];
+							builder.push('<div class="timespent-user timespent-item"><b>{1}</b>{0}</div>'.format(tmp.name, hours(tmp.count)));
+						}
+					}
+
+					builder.push('</div><div class="col-sm-6">');
+
+					for (var j = 0; j < item.users.length; j++) {
+						var user = item.users[j];
+						builder.push('<div class="timespent-item"><b>{1}</b><i class="fa fa-user"></i>{0}</div>'.format(user.name, hours(user.count)));
+					}
+
+					builder.push('</div></div><br />');
+				}
+
+				output.quicksort('sort', true);
+				SET('timespent', builder.join('\n'));
+			});
+		};
+	});
+
+</script>

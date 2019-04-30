@@ -31,6 +31,7 @@ exports.install = function() {
 		ROUTE('GET     /api/projects/{id}/translate/          *Projects',   files_translate);
 		ROUTE('GET     /api/projects/{id}/changes/            *Projects',   files_changes);
 		ROUTE('GET     /api/projects/{id}/changelogs/',                     changelogs);
+		ROUTE('GET     /api/projects/timespent/',                           timespent);
 
 		// Other
 		ROUTE('GET     /api/templates/{id}/',                               template);
@@ -311,4 +312,27 @@ function makerequest() {
 			self.json(output);
 		}
 	});
+}
+
+function timespent() {
+	var self = this;
+	if (!self.user.sa) {
+		self.invalid('error-permissions');
+		return;
+	}
+
+	var projects = [];
+	var users = [];
+
+	for (var i = 0; i < MAIN.projects.length; i++) {
+		var project = MAIN.projects[i];
+		project.time && projects.push({ id: project.id, name: project.name, time: project.time });
+	}
+
+	for (var i = 0; i < MAIN.users.length; i++) {
+		var user = MAIN.users[i];
+		users.push({ id: user.id, name: user.name });
+	}
+
+	self.json({ projects: projects, users: users });
 }

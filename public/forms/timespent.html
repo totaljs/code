@@ -2,12 +2,12 @@
 	It depends on "code editor"
 -->
 
-<div data---="panel__common.form__if:timespent;width:350;title:@(Time spent);icon:calendar;reload:timespent/reload;bg:false;autofocus:true;bottom:84;top:50" class="hidden">
-	<div data---="viewbox__timespent__height:100;margin:51;parent:.ui-panel">
-		<div data-bind="!timespent__template">
+<div data---="panel__common.form__if:timespentform;width:350;title:@(Time spent);icon:calendar;reload:timespentform/reload;bg:false;autofocus:true;bottom:84;top:50" class="hidden">
+	<div data---="viewbox__timespentform__height:100;margin:51;parent:.ui-panel">
+		<div data-bind="!timespentform__template">
 			<script type="text/html">
 				{{ foreach m in value }}
-					<div class="timespent">
+					<div class="timespentform">
 						<div class="date">{{ m.date }}</div>
 						<div class="items">
 							{{ foreach n in m.items }}
@@ -23,7 +23,7 @@
 </div>
 
 <script>
-	PLUGIN('timespent', function(exports) {
+	PLUGIN('timespentform', function(exports) {
 
 		exports.reload = function() {
 			exports.refresh();
@@ -32,7 +32,7 @@
 		exports.refresh = function() {
 
 			if (!code.data.time) {
-				NULL('timespent');
+				SET('timespentform', EMPTYARRAY);
 				return;
 			}
 
@@ -68,7 +68,7 @@
 				arr.push({ date: y.substring(0, 4) + ' / ' + y.substring(4), month: MONTHS[(+y.substring(4)) - 1], items: years[keys[i]], sum: sum });
 			}
 
-			SET('timespent', arr);
+			SET('timespentform', arr);
 		};
 
 	})
