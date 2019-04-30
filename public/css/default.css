@@ -17,7 +17,7 @@ html,body { margin: 0; padding: 0; overflow: hidden; }
 .timespent-item i { width: 16px; color: #505050; }
 .timespent-item b { float: right; color: black; }
 .timespent-item.b { color: black; margin-bottom: 3px; }
-.timespent-user { margin-left: 20px; border-bottom-width: 0; font-size: 11px; height: 19px; line-height: 19px; }
+.timespent-user { margin-left: 12px; border-bottom-width: 0; font-size: 11px; height: 19px; line-height: 19px; }
 .timespent-user:last-child { margin-bottom: 5px; }
 .timespent-user b { color: gray; }
 
@@ -59,15 +59,15 @@ html,body { margin: 0; padding: 0; overflow: hidden; }
 .alert .fa-times { float: right; cursor: pointer; margin: 2px 0 0; }
 .fs11 { font-size: 11px; }
 
-.alert-saved { position: absolute; right: 20px; top: 120px; background-color: yellow; color: black; width: 250px; z-index: 10; border-radius: 3px; padding: 10px; font-size: 12px; line-height: 16px; cursor: pointer; box-shadow: 0 5px 20px rgba(0,0,0,0.05); }
+.alert-saved { position: absolute; right: 20px; top: 120px; background-color: yellow; color: black; width: 250px; z-index: 30; border-radius: 3px; padding: 10px; font-size: 12px; line-height: 16px; cursor: pointer; box-shadow: 0 5px 20px rgba(0,0,0,0.05); }
 .alert-saved i { margin-right: 5px; color: red; }
 .td .alert-saved { box-shadow: 0 5px 20px rgba(0,0,0,0.3); }
 
 .logo { display: block; margin: 17px 20px 0; float: left; color: #505050; font-weight: bold; font-size: 18px; }
 .logo i { margin-right: 10px; }
 
-header { height: 50px; background-color: linear-gradient(white,#F0F0F0); border-bottom: 1px solid #E0E0E0; }
-header > button { display: none; position: absolute; right: 0; top: 0; width: 50px; height: 49px; border: 0; color: white; background-color: #e93223; font-size: 24px; }
+header { height: 50px; background-color: linear-gradient(white,#F0F0F0); border-bottom: 1px solid #E0E0E0; -webkit-app-region: drag; user-select: none; }
+header > button { display: none; position: absolute; right: 0; top: 0; width: 50px; height: 49px; border: 0; color: white; background-color: #e93223; font-size: 24px; user-select: none; }
 
 h1 { margin: 0 0 20px; font-family: $font; font-size: 25px; padding: 0; color: black; }
 h1 i { margin-right: 10px; }
@@ -104,7 +104,7 @@ h3 i { margin-right: 5px; color: $color; }
 .bg-yellow { background-color: #FFFFD5; }
 .bg-smoke { background-color: #F8F8F8; }
 
-#content .alert { padding: 7px 15px 5px; position: absolute; left: 241px; right: 0; z-index: 5; border-radius: 0; border-top: 1px solid #dddbaf; bottom: 44px; }
+#content .alert { padding: 7px 15px 5px; position: absolute; left: 241px; right: 0; z-index: 15; border-radius: 0; border-top: 1px solid #dddbaf; bottom: 44px; }
 #content .messages {}
 
 .projectslist { position: absolute; background-color: white; z-index: 7; top: 99px; width: 301px; border: 1px solid #E0E0E0; box-shadow: 5px 5px 10px rgba(0,0,0,0.1); }

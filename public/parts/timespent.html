@@ -108,7 +108,7 @@
 
 					for (var j = 0; j < item.projects.length; j++) {
 						var project = item.projects[j];
-						builder.push('<div class="timespent-item b"><b>{1}</b><i class="fab fa-app-store"></i>{0}</div>'.format(project.name, hours(project.sum)));
+						builder.push('<div class="timespent-item b"><b>{1}</b>{0}</div>'.format(project.name, hours(project.sum)));
 						builder.push('<div class="timespent-users">');
 						for (var k = 0; k < project.time.length; k++) {
 							tmp = project.time[k];

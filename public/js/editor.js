@@ -2077,7 +2077,6 @@ https://twitter.com/JoelBesada/status/670343885655293952
 		for (var i = particles.length; i--;) {
 			particle = particles[i];
 			if (!particle || particle.alpha < 0.01 || particle.size <= 0.5) { continue; }
-
 			if (effect === 1) { effect1(particle); }
 			else if (effect === 2) { effect2(particle); }
 		}
@@ -2097,7 +2096,7 @@ https://twitter.com/JoelBesada/status/670343885655293952
 		return min + ~~(Math.random() * (max - min + 1));
 	}
 
-	function throttle (callback, limit) {
+	function throttle(callback, limit) {
 		var wait = false;
 		return function () {
 			if (!wait) {
@@ -2133,7 +2132,7 @@ https://twitter.com/JoelBesada/status/670343885655293952
 	}
 
 	function onCodeMirrorChange(editor, a) {
-		if (a.origin !== 'setValue') {
+		if (a.origin !== 'setValue' && a.origin) {
 			if (editor.getOption('blastCode') === true || editor.getOption('blastCode').shake === undefined)
 				throttledShake(editor, 0.1);
 			throttledSpawnParticles(editor);

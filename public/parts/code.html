@@ -111,7 +111,7 @@
 
 <script>
 
-	var code = { SYNC: false, changes: {}, NOTRIM: { nosql: 1, table: 1 }};
+	var code = { SYNC: false, changes: {}, NOTRIM: { nosql: 1, table: 1, issyncing: false }};
 
 	PLUGIN('code', function(exports) {
 
@@ -266,6 +266,7 @@
 					common.synctimeout = null;
 					$('#body').rclass('warning');
 					FUNC.warning('@(Unable to synchronize code between users, because the main user may be offline.)');
+					code.issyncing = false;
 				}, 5000);
 			}
 
@@ -1199,20 +1200,26 @@
 			code.editor.loaded = true;
 			!tab.doc && setTimeout(function() {
 				editor.editor.refresh();
-				var cache = code.current ? exports.cache_getscroll(code.current.path) : null;
-				if (cache) {
-					editor.editor.setCursor({ line: cache.line || 0, ch: cache.ch || 0 });
-					editor.editor.scrollTo(cache.x || 0, cache.y || 0);
-					editor.editor.focus();
-				} else {
-					editor.editor.scrollTo(0, 0);
-					editor.editor.setCursor(0);
-				}
+				exports.restoreposition();
 			}, 250);
 
 			// Refresh tasks
 			SET('codetasks.items', []);
 			exports.changelog();
+		};
+
+		exports.restoreposition = function(cursoronly) {
+			var cache = code.current ? exports.cache_getscroll(code.current.path) : null;
+			if (cache) {
+				editor.editor.setCursor({ line: cache.line || 0, ch: cache.ch || 0 });
+				if (!cursoronly)
+					editor.editor.scrollTo(cache.x || 0, cache.y || 0);
+				editor.editor.focus();
+			} else {
+				if (!cursoronly)
+					editor.editor.scrollTo(0, 0);
+				editor.editor.setCursor(0);
+			}
 		};
 
 		exports.changelog = function() {
@@ -1521,9 +1528,11 @@
 				// auto-sync
 				// if (is && !code.current.modified && !code.backup) {
 				if (is) {
-					SETTER('loading', 'show');
-					if (user.id === msg.userid)
+					if (user.id === msg.userid) {
+						code.issyncing = true;
+						SETTER('loading', 'show');
 						setTimeout(exports.syncdata, 1000);
+					}
 				}
 			}
 		};
@@ -1617,7 +1626,7 @@
 			BIND('code.cursor');
 
 			setTimeout2('savescrollposition', function(editor) {
-				if (!code.editor.loaded)
+				if (!code.editor.loaded || code.issyncing)
 					return;
 				var info = editor.getScrollInfo();
 				var key = code.projectid + '_scroll';

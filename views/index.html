@@ -79,6 +79,9 @@
 				common.showparts = true;
 		});
 
+		if (common.electron)
+			$('body').aclass('electron');
+
 		CACHEPATH('common.showparts', '1 year');
 		CACHEPATH('common.powermode', '1 year');
 
@@ -162,7 +165,7 @@
 					break;
 				case 'syncsend':
 					if (msg.projectid === code.projectid && msg.connid !== common.id) {
-						SETTER('loading', 'show');
+						// SETTER('loading', 'show');
 						code.SYNC = false;
 						clearTimeout(common.synctimeout);
 						common.synctimeout = null;
@@ -180,7 +183,10 @@
 						common.synctimeout = null;
 						code.SYNC = false;
 						msg.TYPE = 'syncdone';
-						FIND('editor').editor.setValue(msg.body);
+						code.issyncing = false;
+						var editor = FIND('editor').editor;
+						editor.replaceRange(msg.body, { line: 0, ch: 0 }, { line: editor.lineCount() + 1, ch: 0 });
+						EXEC('code/restoreposition', true);
 						msg.body = null;
 						FUNC.wssend(msg);
 					}
@@ -190,6 +196,7 @@
 						clearTimeout(common.synctimeout);
 						common.synctimeout = null;
 						code.SYNC = true;
+						code.issyncing = false;
 						SET('code.backup', false);
 						SET('code.multiple', false);
 						SETTER('loading', 'hide');
