@@ -120,12 +120,14 @@
 		var editor;
 		var cache_scrollpos = {};
 		var reg_number = /^\d+$/;
+		var changetimeout;
 
 		FIND('editor', function(com) {
 			exports.editor = editor = com;
 		});
 
 		exports.combo = function() {
+			code.lastchange = Date.now();
 			FIND('combo').combo();
 		};
 
@@ -776,7 +778,7 @@
 				exports.tablocked();
 				tab.skip = true;
 				exports.element.SETTER('tree', 'selectpath', tab.path, true);
-				tab.time = Date.now();
+				tab.time = code.lastchange = Date.now();
 				return;
 			}
 
@@ -834,7 +836,7 @@
 				tab.loaded = true;
 				tab.body = response;
 				tab.ext = ext;
-				tab.time = Date.now();
+				tab.time = code.lastchange = Date.now();
 
 				var cache = exports.cache_get(item.path);
 				SET('code.backup', cache && cache !== response);
@@ -1382,11 +1384,19 @@
 			setTimeout(function() {
 				var data = {};
 				var val = editor.editor.getValue();
+				var now = Date.now();
 				data.path = code.editor.path;
 				data.body = code.NOTRIM[code.current.ext] ? val : FUNC.rtrim(val);
 				data.combo = FIND('combo').summarize();
-				data.time = Math.ceil((Date.now() - code.current.time) / 1000); // seconds
-				code.current.time = 0;
+
+				var diff = Math.ceil((now - code.lastchange) / 1000);
+				if ((diff / 60) < 40)  // minutes
+					data.time = Math.ceil((now - code.current.time) / 1000);
+				else
+					data.time = Math.ceil((code.lastchange - code.current.time) / 1000);
+
+				code.current.time = now;
+				code.lastchange = now;
 
 				if (sync)
 					data.sync = sync;
