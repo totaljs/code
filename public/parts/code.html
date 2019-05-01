@@ -89,12 +89,12 @@
 	</div>
 </div>
 
-<div class="collaborators hidden" data-bind="code.editor.path__show">
+<div class="collaborators" data-bind="code.editor.path__show .onlyopen__|__code.data__show">
 	<div class="tools">
 		<span title="@(To-Do list)" class="exec" data-path="common.form" data-value="'tasks'"><b class="uncomplete" data-bind="code.data.todo --> code/codetasks_unsolved__show__html"></b><i class="fa fa-tasks"></i></span>
-		<span title="@(Code review)" data-bind="code.editor.path__show" class="hidden exec review" data-exec="code/review"><i class="fa fa-check"></i></span>
+		<span title="@(Code review)" data-bind="code.editor.path__show" class="hidden exec review onlyopen" data-exec="code/review"><i class="fa fa-check"></i></span>
 	</div>
-	<section data-bind="code.usersfile__template">
+	<section data-bind="code.usersfile__template" class="onlyopen">
 		<script type="text/html">
 			{{ foreach m in value }}
 				{{ m.name | initials }}

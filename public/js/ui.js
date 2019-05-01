@@ -284,9 +284,12 @@ COMPONENT('editor', function(self, config) {
 
 		var REGHEXCOLOR = /#[a-f0-9]{6}(;|"|'|>|<|\)|\(|$)/i;
 		var REGTODO = /@todo/i;
-		var REGTODOREPLACE = /^@todo(:)(\s)/i;
+		var REGTODO2 = /^(\s)+-\s.*?/;
+		var REGTODOREPLACE = /^@todo(:)(\s)|(\s)+-(\s)/i;
 		var REGTODOCLEAN = /-->|\*\//g;
+		var REGCOLORCLEAN = /;|'|"|,/g;
 		var REGPART = /(COMPONENT|NEWSCHEMA|NEWOPERATION|NEWTASK|MIDDLEWARE|WATCH|ROUTE|ON|PLUGIN)+\(.*?\)/g;
+		var REGPARTCLEAN = /('|").*?('|")/;
 		var REGHELPER = /(Thelpers|FUNC|REPO)\..*?=/g;
 		var cache_lines = null;
 
@@ -298,15 +301,21 @@ COMPONENT('editor', function(self, config) {
 			var components = [];
 			var mode = editor.getMode().name;
 			var is = null;
-			var name, type;
+			var name, type, color;
 
-			if (mode === 'totaljsresources' || mode === 'javascript' || mode === 'totaljs' || mode === 'css' || mode === 'sass' || mode === 'html') {
+			if (mode === 'totaljsresources' || mode === 'javascript' || mode === 'totaljs' || mode === 'css' || mode === 'sass' || mode === 'html' || mode === 'todo') {
 				var lines = editor.getValue().split('\n');
 				for (var i = 0; i < lines.length; i++) {
-					var color = lines[i].match(REGHEXCOLOR);
-					color && editor.setGutterMarker(i, 'GutterColor', GutterColor(color.toString().replace(/;|'|"|,/g, '')));
-					var m = lines[i].match(REGTODO);
+
+					if (mode !== 'todo') {
+						color = lines[i].match(REGHEXCOLOR);
+						color && editor.setGutterMarker(i, 'GutterColor', GutterColor(color.toString().replace(REGCOLORCLEAN, '')));
+					}
+
+					var m = mode === 'todo' ? lines[i].match(REGTODO2) : lines[i].match(REGTODO);
+
 					m && todos.push({ line: i + 1, ch: m.index || 0, name: lines[i].substring(m.index, 200).replace(REGTODOREPLACE, '').replace(REGTODOCLEAN, '').trim() });
+
 					if (mode === 'javascript' || mode === 'totaljs' || mode === 'html') {
 
 						if (is != null && lines[i].substring(is, 3) === '});') {
@@ -316,7 +325,7 @@ COMPONENT('editor', function(self, config) {
 
 						m = lines[i].match(REGPART);
 						if (m) {
-							name = m[0].match(/('|").*?('|")/);
+							name = m[0].match(REGPARTCLEAN);
 							type = m[0].toLowerCase().substring(0, 5);
 							if (name) {
 								name = name[0].replace(/'|"/g, '');
@@ -3054,7 +3063,7 @@ COMPONENT('panel', 'width:350;icon:circle-o;zindex:12;bg:true', function(self, c
 	self.resize = function() {
 		var el = self.element.find('.ui-panel-body');
 		el.height(WH - self.find('.ui-panel-header').height() - (config.bottom || 0));
-		config.top && self.element.css('top', (config.top + (common.META ? 22 : 0) + 'px'));
+		config.top && self.element.css('top', (config.top + (common.META ? 23 : 1) + 'px'));
 	};
 
 	self.icon = function(value) {

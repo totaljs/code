@@ -19,10 +19,10 @@
 		</div>
 		<div data-bind="code.data.todo__template__show:value && value.length" class="hidden">
 			<script type="text/html">
-				<div class="todolist">
+				<div class="todolist nmt">
 					<div>
 					{{ foreach m in value }}
-						<div class="todopath">{{ m.path }}</div>
+						<div class="todopath{{ m.path | todoextension }}"><i class="far fa-file-alt"></i>{{ m.path }}</div>
 						<div>
 							{{ foreach n in m.items }}
 							<div class="todo">
@@ -66,5 +66,10 @@
 				editor.focus();
 			}, 1000);
 		};
-	})
+	});
+
+	Thelpers.todoextension = function(val) {
+		return val.substring(val.length - 4) === 'todo' ? ' green' : '';
+	};
+
 </script>

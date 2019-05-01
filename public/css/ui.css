@@ -524,7 +524,7 @@ input:invalid { box-shadow: none; }
 .ui-directory-projects .ui-directory-container { height: 250px; }
 .ui-directory-projects li i { margin-right: 5px; font-size: 12px; }
 .ui-directory-projects li span { float: right; font-size: 11px; background-color: red; color: white; width: 22px; text-align: center; padding: 3px 0; border-radius: 3px; margin-right: 40px; line-height: 11px; }
-.ui-directory-current { background-color: rgba(100,100,100,0.2) !important; }
+.ui-directory-current { background-color: rgba(100,100,100,0.1) !important; font-weight: bold; }
 
 .ui-input { position: relative; font-size: 13px; }
 .ui-input-required .ui-input-control { border-color: #D0D0D0; }
