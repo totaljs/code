@@ -91,7 +91,7 @@
 
 <div class="collaborators hidden" data-bind="code.editor.path__show">
 	<div class="tools">
-		<span title="@(To-Do list)" class="exec" data-path="common.form" data-value="'tasks'" data-bind="codetasks.items --> code/codetasks_unsolved__show__html b"><b class="uncomplete"></b><i class="fa fa-tasks"></i></span>
+		<span title="@(To-Do list)" class="exec" data-path="common.form" data-value="'tasks'"><b class="uncomplete" data-bind="code.data.todo --> code/codetasks_unsolved__show__html"></b><i class="fa fa-tasks"></i></span>
 		<span title="@(Code review)" data-bind="code.editor.path__show" class="hidden exec review" data-exec="code/review"><i class="fa fa-check"></i></span>
 	</div>
 	<section data-bind="code.usersfile__template">
@@ -209,14 +209,31 @@
 		});
 
 		exports.todo = function(todo) {
-			SET('codetasks.todo', todo);
-			BIND('codetasks.items');
+
+			if (!code.data || !code.editor.path)
+				return;
+
+			var item = code.data.todo.findItem('path', code.editor.path);
+			if (item == null) {
+				item = { path: code.editor.path, items: [] };
+				code.data.todo.push(item);
+			}
+
+			if (todo.length)
+				item.items = todo;
+			else
+				code.data.todo = code.data.todo.remove('path', code.editor.path);
+
+			SET('code.data.todocurrent', todo);
+			UPD('code.data.todo');
 		};
 
 		exports.codetasks_unsolved = function(value) {
 			var count = 0;
-			if (W.codetasks && W.codetasks.todo)
-				count += codetasks.todo.length;
+			if (code.data && code.data.todo) {
+				for (var i = 0; i < code.data.todo.length; i++)
+					count += code.data.todo[i].items.length;
+			}
 			return count > 99 ? 99 : count;
 		};
 
@@ -883,9 +900,10 @@
 			is && items.push('-');
 			items.push({ value: 13, name: common.showparts ? '@(Disable parts panel)' : '<strong>@(Enable parts panel)</strong>', icon: 'puzzle-piece' + (common.showparts ? '' : ' green') });
 			items.push({ value: 15, name: common.powermode ? '@(Disable power mode)' : '<strong>@(Enable power mode)</strong>', icon: 'flask' + (common.powermode ? '' : ' green') });
+			items.push({ value: 17, name: '@(To-Do list)', icon: 'check' });
 			items.push({ value: 14, name: '@(Output panel)', icon: 'rss' });
 			items.push({ value: 9, name: '@(Show log file)', icon: 'bug red', shortcut: 'F10' });
-			items.push({ value: 16, name: '@(Clipboard)', icon: 'clipboard green', shortcut: 'F11' });
+			items.push({ value: 16, name: '@(Clipboard)', icon: 'clipboard', shortcut: 'F11' });
 
 			SETTER('menu', 'show', 'left', el, items, function(item) {
 				switch (item.value) {
@@ -918,6 +936,9 @@
 						break;
 					case 16:
 						EXEC('code/clipboard');
+						break;
+					case 17:
+						SET('common.form', 'tasks');
 						break;
 					case 14:
 						SET('common.form', 'output');
@@ -1202,7 +1223,6 @@
 			}, 250);
 
 			// Refresh tasks
-			SET('codetasks.items', []);
 			exports.changelog();
 		};
 
@@ -1266,7 +1286,31 @@
 				if (!skip)
 					exports.element.SETTER('tree', 'clear');
 
-				document.title = common.name + ': ' + response.name;
+				var todo = {};
+
+				if (response.todo) {
+					for (var i = 0; i < response.todo.length; i++) {
+						var item = response.todo[i];
+						if (todo[item.path])
+							todo[item.path].push(item);
+						else
+							todo[item.path] = [item];
+					}
+				}
+
+				var keys = Object.keys(todo);
+
+				response.todo = [];
+				keys.sort();
+
+				for (var i = 0; i < keys.length; i++) {
+					var obj = {};
+					obj.path = keys[i];
+					obj.items = todo[obj.path];
+					response.todo.push(obj);
+				}
+
+				SET('document.title', common.name + ': ' + response.name);
 
 				SET('code.data', response);
 				SET('code.tree', tree);
@@ -1401,10 +1445,11 @@
 			setTimeout(function() {
 				var data = {};
 				var val = editor.editor.getValue();
-				var now = Date.now();
+				var now = window.NOW = Date.now();
 				data.path = code.editor.path;
 				data.body = code.NOTRIM[code.current.ext] ? val : FUNC.rtrim(val);
 				data.combo = FIND('combo').summarize();
+				data.todo = code.data.todocurrent && code.data.todocurrent.length ? code.data.todocurrent : null;
 
 				var diff = Math.ceil((now - code.lastchange) / 1000);
 				var max = 40; // minutes
@@ -1579,11 +1624,6 @@
 					el.html(builder.join(''));
 				}, 0, -10);
 			});
-		};
-
-		exports.opentab2 = function(el) {
-			exports.element.SETTER('tree', 'selectpath', el.attrd('path'));
-			SET('common.form', 'tasks', 1000);
 		};
 
 		exports.warnings = function(el, e) {

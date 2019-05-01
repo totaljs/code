@@ -2,11 +2,10 @@
 	It depends on "code editor"
 -->
 
-<div data---="panel__common.form__if:tasks;width:350;title:@(To-Do List);icon:tasks;reload:codetasks/reload;bg:false;autofocus:true;bottom:84;top:49" class="hidden">
+<div data---="panel__common.form__if:tasks;width:350;title:@(To-Do list);icon:tasks;reload:codetasks/reload;bg:false;autofocus:true;bottom:84;top:49" class="hidden">
 	<div data---="viewbox__codetasks__height:100;margin:51;parent:.ui-panel">
-		<div data-bind="!codetasks.todo__template">
+		<div data-bind="code.data.todocurrent__template__show:value&&value.length" class="todocurrent hidden">
 			<script type="text/html">
-				{{ if value && value.length }}
 				<div class="todolist">
 					<div>
 					{{ foreach m in value }}
@@ -16,7 +15,24 @@
 					{{ end }}
 					</div>
 				</div>
-				{{ fi }}
+			</script>
+		</div>
+		<div data-bind="code.data.todo__template__show:value && value.length" class="hidden">
+			<script type="text/html">
+				<div class="todolist">
+					<div>
+					{{ foreach m in value }}
+						<div class="todopath">{{ m.path }}</div>
+						<div>
+							{{ foreach n in m.items }}
+							<div class="todo">
+								<div class="exec" data-exec="codetasks/open" data-line="{{ n.line }}" data-ch="{{ n.ch }}" data-path="{{ m.path }}"><span>:{{ n.line }}</span>{{ n.name }}</div>
+							</div>
+							{{ end }}
+						</div>
+					{{ end }}
+					</div>
+				</div>
 			</script>
 		</div>
 	</div>
@@ -33,6 +49,22 @@
 			var editor = FIND('editor').editor;
 			editor.setCursor({ line: (+el.attrd('line')) - 1, ch: +el.attrd('ch') });
 			editor.focus();
+		};
+
+		exports.open = function(el) {
+			var path = el.attrd('path');
+
+			if (code.editor.path === path) {
+				exports.go(el);
+				return;
+			}
+
+			PLUGIN('code').element.SETTER('tree', 'selectpath', path);
+			setTimeout2('codetasksopen', function() {
+				var editor = FIND('editor').editor;
+				editor.setCursor({ line: (+el.attrd('line')) - 1, ch: +el.attrd('ch') });
+				editor.focus();
+			}, 1000);
 		};
 	})
 </script>

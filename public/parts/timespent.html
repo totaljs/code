@@ -1,4 +1,4 @@
-<div class="container timespent">
+<div class="timespent">
 	<div data---="viewbox__null__height:100;parent:window;margin:120">
 		<div data-bind="timespent__html" style="padding:10px 0 0;margin:0"></div>
 	</div>
@@ -108,7 +108,7 @@
 						builder.push('<hr class="nmt" /><br />');
 
 					item = output[i];
-					builder.push('<div class="timespent-date"><i class="far fa-calendar"></i><b>{date}</b> - {month}</div>'.arg(item));
+					builder.push('<div class="container"><div class="timespent-date"><i class="far fa-calendar"></i><b>{date}</b> - {month}</div>'.arg(item));
 					builder.push('<div class="row"><div class="col-sm-6 m">');
 
 					for (var j = 0; j < item.projects.length; j++) {
@@ -129,7 +129,7 @@
 						builder.push('<div class="timespent-item"><b>{1}</b><i class="fa fa-user"></i>{0}</div>'.format(user.name, hours(user.count, true)));
 					}
 
-					builder.push('</div></div><br />');
+					builder.push('</div></div></div><br />');
 				}
 
 				SET('timespent', builder.join('\n'));

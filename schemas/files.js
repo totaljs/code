@@ -1,11 +1,18 @@
 const Path = require('path');
 const Fs = require('fs');
 
+NEWSCHEMA('FilesTodo', function(schema) {
+	schema.define('line', Number);
+	schema.define('ch', Number);
+	schema.define('name', 'String(50)');
+});
+
 NEWSCHEMA('Files', function(schema) {
 
 	schema.define('body', String);
 	schema.define('path', 'String(500)', true);
 	schema.define('sync', Boolean);
+	schema.define('todo', '[FilesTodo]');
 	schema.define('combo', Number); // Max. combo
 	schema.define('time', Number);  // Spent time
 
@@ -72,6 +79,20 @@ NEWSCHEMA('Files', function(schema) {
 			else
 				time[ym] = model.time;
 			is = true;
+		}
+
+		if (project.todo)
+			project.todo = project.todo.remove('path', model.path);
+		else
+			project.todo = [];
+
+		if (model.todo && model.todo.length) {
+			for (var i = 0; i < model.todo.length; i++) {
+				var todo = model.todo[i].$clean();
+				todo.path = model.path;
+				project.todo.push(todo);
+				is = true;
+			}
 		}
 
 		is && setTimeout2('combo', MAIN.save, 2000, null, 2);

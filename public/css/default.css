@@ -85,11 +85,11 @@ html,body { margin: 0; padding: 0; overflow: hidden; }
 .logo { display: block; margin: 17px 20px 0; float: left; color: #505050; font-weight: bold; font-size: 18px; }
 .logo i { margin-right: 10px; }
 
-.windowtitlebar { -webkit-app-region: drag; display: none; }
-.electron .windowtitlebar { height: 22px; border-bottom: 1px solid #E0E0E0; user-select: none; display: block; }
+.windowtitlebar { -webkit-app-region: drag; display: none; text-align: right; font-size: 11px; line-height: 22px; }
+.electron .windowtitlebar { height: 22px; border-bottom: 1px solid #E0E0E0; user-select: none; display: block; color: black; }
 .electron .collaborators { top: 22px; }
 .electron #combo { top: 72px; }
-.td .windowtitlebar { height: 22px; border-bottom-color: #303030; user-select: none; }
+.td .windowtitlebar { height: 22px; border-bottom-color: #303030; user-select: none; color: white; }
 
 header { height: 50px; background-color: linear-gradient(white,#F0F0F0); border-bottom: 1px solid #E0E0E0; -webkit-app-region: drag; user-select: none; }
 header > button { display: none; position: absolute; right: 0; top: 0; width: 50px; height: 49px; border: 0; color: white; background-color: #e93223; font-size: 24px; user-select: none; }
@@ -517,15 +517,20 @@ header .tools .external { color: #a2a286; }
 .td .changedfiles > div:first-child { color: silver; }
 .td .changeitem .spent b { color: yellow; }
 
+.todocurrent { background-color: #FFFFD5; padding: 10px 0; }
+.todocurrent { background-color: #303030; }
+
 .todolist { padding: 10px 0; }
 .todolist i { margin-right: 5px; }
 .todo { padding: 5px 20px; color: gray; border-top: 1px solid #E0E0E0; font-size: 12px; cursor: pointer; }
-.todo span { width: 30px; float: left; font-size: 10px; color: gray; font-family: monospace; }
 .todo:first-child { border-top: 0; }
+.todo span { width: 30px; float: left; font-size: 10px; color: gray; font-family: monospace; }
 .todo:hover { background-color: rgba(0,0,0,0.1); }
+.todopath { padding: 5px 20px; font-weight: bold; color: black; margin: 15px 0 0; }
 
 .td .todo { color: #A0A0A0; border-color: #202020; }
 .td .todolist > div:first-child { color: silver; }
+.td .todopath { color: white; }
 
 .partgroup { font-size: 14px; color: black; margin: 10px 0 2px; padding: 5px 20px; font-weight: bold; }
 .partgroup:first-child { margin-top: 0; }
