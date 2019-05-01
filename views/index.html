@@ -42,6 +42,7 @@
 			<a href="@{#}/" title="@(Code)" class="R" data-if="code"><i class="fa fa-laptop-code"></i></a>
 			<a href="#" data-bind="code.data.documentation__show__href" title="@(Documentation)" target="_blank" class="external hidden"><i class="fa fa-book-open"></i></a>
 			<a href="#" data-bind="code.data.support__show__href" title="@(Support)" target="_blank" class="external hidden"><i class="far fa-comments"></i></a>
+			<a href="@{#}/notes/" title="@(Code)" class="R" data-if="code"><i class="fa fa-laptop-code"></i></a>
 			@{if user.sa}
 			<a href="@{#}/projects/" title="@(Projects)" class="R" data-if="projects"><i class="fa fa-code-branch"></i></a>
 			<a href="@{#}/users/" title="@(Users)" class="R" data-if="users"><i class="fa fa-users"></i></a>
@@ -90,6 +91,7 @@
 
 		CACHEPATH('common.showparts', '1 year');
 		CACHEPATH('common.powermode', '1 year');
+		CACHEPATH('common.clipboard', '1 year');
 
 		ENV('date', 'yyyy-MM-dd HH:mm');
 
@@ -138,7 +140,7 @@
 			if (is && window.code && window.code.data) {
 				// maybe sleeping computer
 				FUNC.wsopen(code.data.id, code.editor ? code.editor.path : '', code.projectid);
-				common.online && EXEC('code/refresh');
+				common.online && EXEC('code/reload');
 			}
 
 			SET('common.online', is);
@@ -249,6 +251,7 @@
 					arr.unshift({ name: '@(Translate)', id: 'translate', icon: 'language' });
 
 				arr.unshift({ name: '@(Show logfile)', id: 'logfile', icon: 'bug' });
+				arr.push({ name: '@(Clipboard)', id: 'clipboard', icon: 'clipboard' });
 
 				if (code.editor.path) {
 					arr.unshift({ name: '@(Insert UI components)', id: 'componentator', icon: 'puzzle-piece' });
@@ -274,6 +277,7 @@
 						case 'save':
 						case 'review':
 						case 'translate':
+						case 'clipboard':
 							EXEC('code/' + value.id);
 							break;
 						case 'componentator':
@@ -317,8 +321,14 @@
 			code.editor && TOGGLE('common.debug');
 		}, true);
 
+		SETTER(true, 'shortcuts', 'register', 'F11', function(e) {
+			code.editor && EXEC('code/clipboard');
+		}, true);
+
 		SETTER(true, 'shortcuts', 'register', 'ctrl+s,cmd+s', function(e) {
-			EXEC('code/shortcut', 'save');
+			var tn = e.target ? e.target.tagName : '';
+			if (tn !== 'TEXTAREA' && tn !== 'INPUT')
+				EXEC('code/shortcut', 'save');
 		}, true);
 
 		SETTER(true, 'shortcuts', 'register', 'alt+w,cmd+w,alt+f4', function(e) {

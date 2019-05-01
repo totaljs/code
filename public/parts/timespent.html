@@ -1,6 +1,6 @@
 <div class="container timespent">
 	<div data---="viewbox__null__height:100;parent:window;margin:120">
-		<div data-bind="timespent__html" style="padding:0;margin:0"></div>
+		<div data-bind="timespent__html" style="padding:10px 0 0;margin:0"></div>
 	</div>
 </div>
 
@@ -103,6 +103,10 @@
 
 				var builder = [];
 				for (var i = 0; i < output.length; i++) {
+
+					if (i)
+						builder.push('<hr class="nmt" /><br />');
+
 					item = output[i];
 					builder.push('<div class="timespent-date"><i class="far fa-calendar"></i><b>{date}</b> - {month}</div>'.arg(item));
 					builder.push('<div class="row"><div class="col-sm-6 m">');

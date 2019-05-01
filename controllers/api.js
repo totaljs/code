@@ -19,8 +19,6 @@ exports.install = function() {
 		// Projects
 		ROUTE('GET     /api/projects/{id}/changelog/          *Files        --> @changelog');
 		ROUTE('GET     /api/projects/{id}/review/             *Files        --> @review', [10000]);
-		ROUTE('POST    /api/projects/{id}/comments/           *Comments     --> @insert');
-		ROUTE('GET     /api/projects/{id}/comments/           *Comments     --> @query');
 		ROUTE('POST    /api/projects/{id}/upload/             *FilesUpload  --> @exec', ['upload'], 1024 * 50);
 		ROUTE('GET     /api/projects/{id}/files/              *Projects     --> @files');
 		ROUTE('GET     /api/projects/{id}/backups/            *Projects     --> @backups');
@@ -32,6 +30,10 @@ exports.install = function() {
 		ROUTE('GET     /api/projects/{id}/changes/            *Projects',   files_changes);
 		ROUTE('GET     /api/projects/{id}/changelogs/',                     changelogs);
 		ROUTE('GET     /api/projects/timespent/',                           timespent);
+
+		// Clipboard
+		ROUTE('GET     /api/clipboard/                        *Clipboard  --> @get');
+		ROUTE('POST    /api/clipboard/                        *Clipboard  --> @save');
 
 		// Other
 		ROUTE('GET     /api/templates/{id}/',                               template);

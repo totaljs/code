@@ -13,6 +13,11 @@
 	</section>
 </div>
 
+<div id="clipboard" class="hidden" data-bind="common.clipboard__show">
+	<div class="titlebar"><i class="fa fa-times exec" data-exec="code/clipboard"></i><i class="fa fa-clipboard"></i>@(Clipboard)</div>
+	<textarea id="clipboardbody" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
+</div>
+
 <div id="realtimewindow" data-bind="common.debug__show" class="hidden">
 	<div class="titlebar"><i class="fa fa-times exec" data-exec="code/debug"></i><i class="fa fa-pulse fa-spinner"></i>@(Logs)</div>
 	<div class="body-scrollbar">
@@ -174,6 +179,7 @@
 			if (is && !common.form && code.current && !code.current.$components && common.showparts) {
 				SET('common.form', 'components');
 				code.current.$components = 0;
+				clipboardresize();
 			}
 		};
 
@@ -199,6 +205,7 @@
 		WATCH('common.form', function(path, value) {
 			if (value === '' && code.current)
 				code.current.$components = 1;
+			setTimeout(clipboardresize, 500);
 		});
 
 		exports.todo = function(todo) {
@@ -338,6 +345,12 @@
 					if (id && id.length > 15 && !projects[id])
 						localStorage.removeItem(keys[i]);
 				}
+
+				// Clipboard
+				AJAX('GET /api/clipboard/', function(response) {
+					$('#clipboardbody').val(response);
+				});
+
 			});
 		};
 
@@ -871,7 +884,8 @@
 			items.push({ value: 13, name: common.showparts ? '@(Disable parts panel)' : '<strong>@(Enable parts panel)</strong>', icon: 'puzzle-piece' + (common.showparts ? '' : ' green') });
 			items.push({ value: 15, name: common.powermode ? '@(Disable power mode)' : '<strong>@(Enable power mode)</strong>', icon: 'flask' + (common.powermode ? '' : ' green') });
 			items.push({ value: 14, name: '@(Output panel)', icon: 'rss' });
-			items.push({ value: 9, name: '@(Show log file)', icon: 'bug red' });
+			items.push({ value: 9, name: '@(Show log file)', icon: 'bug red', shortcut: 'F10' });
+			items.push({ value: 16, name: '@(Clipboard)', icon: 'clipboard green', shortcut: 'F11' });
 
 			SETTER('menu', 'show', 'left', el, items, function(item) {
 				switch (item.value) {
@@ -901,6 +915,9 @@
 						break;
 					case 15:
 						TOGGLE('common.powermode');
+						break;
+					case 16:
+						EXEC('code/clipboard');
 						break;
 					case 14:
 						SET('common.form', 'output');
@@ -1668,6 +1685,10 @@
 			SET('common.form', 'timespentform');
 		};
 
+		exports.clipboard = function() {
+			TOGGLE('common.clipboard');
+		};
+
 		exports.review = function(el) {
 
 			if (!code.data.review) {
@@ -1689,6 +1710,23 @@
 			SETTER(true, 'editor', 'reconfigure', 'powermode:' + (value ? '1' : '0'));
 		}, true);
 
+		WATCH('common.clipboard', function(path, value) {
+			var is = value === true;
+			var el = $('#clipboard').tclass('hidden', is == false);
+			if (is) {
+				clipboardresize();
+				setTimeout(function() {
+					el.find('textarea').focus();
+				}, 500);
+			}
+		}, true);
+
+		$('#clipboardbody').on('input', function() {
+			var el = this;
+			setTimeout2('clipboardsave', function(el) {
+				AJAX('POST /api/clipboard/', { body: el.value });
+			}, 1000, null, el);
+		});
 	});
 
 </script>

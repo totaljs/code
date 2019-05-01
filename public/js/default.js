@@ -13,7 +13,17 @@ ON('resize', function() {
 	}
 
 	SETTER('editor', 'resize');
+	clipboardresize();
 });
+
+function clipboardresize() {
+	var el = $('#clipboardbody');
+	if (el.length && el[0].parentNode) {
+		var parent = el.parent();
+		var pw = parent.width();
+		el.css('width', pw + SCROLLBARWIDTH());
+	}
+}
 
 ON('ready', function() {
 

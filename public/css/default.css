@@ -5,10 +5,25 @@ $color    : #4285F4;
 
 html,body { margin: 0; padding: 0; overflow: hidden; }
 
+::selection { background: #60307F; color: white; }
+::-moz-selection { background: #60307F; color: white; }
+
 .yellow { color: #d7cd17 !important; }
 .gray { color: gray; }
 .ml5 { margin-left: 5px; }
 .mb10 { margin-bottom: 10px; }
+
+#clipboard { border: 1px solid #D0D0D0; position: absolute; right: 30px; height: 252px; bottom: 65px; left: 265px; background-color: #303030; z-index: 9; border-radius: 3px; overflow: hidden; box-shadow: 0 2px 20px rgba(0,0,0,0.1); }
+#clipboard .titlebar { height: 30px; border-bottom: 1px solid #D0D0D0; line-height: 30px; padding: 0 10px; font-size: 12px; font-weight: bold; color: black; }
+#clipboard .titlebar .fa-times { float: right; color: red; cursor: pointer; height: 30px; line-height: 30px; }
+#clipboard .titlebar .fa-clipboard { margin-right: 5px; color: #8CC152; }
+#clipboard textarea { width: 100%; height: 222px; outline: 0; background-color: transparent; border: 0; font-family: Menlo,Consolas,monospace; padding: 10px; margin: 0; color: black; resize: none; }
+.codepanel #clipboard { right: 380px; }
+.td #clipboard textarea { color: white; }
+
+.td #clipboard { border-color: #404040; background-color: #303030; }
+.td #clipboard .titlebar { border-bottom-color: #404040; color: white; }
+.td #clipboard .body { color: white; }
 
 .timespent { padding: 20px 0; }
 .timespent-date { font-size: 18px; color: black; margin-bottom: 20px; }
@@ -41,6 +56,8 @@ html,body { margin: 0; padding: 0; overflow: hidden; }
 
 .td #combo { color: white; }
 .codepanel #combo { right: 410px; }
+
+.td .timespent hr { border-color: #303030; border-top-width: 4px; }
 
 #realtimewindow { position: absolute; right: 30px; bottom: 65px; border: 1px solid #D0D0D0; background-color: rgba(255,255,255,0.94); z-index: 10; width: 640px; box-shadow: 1px 1px 5px rgba(0,0,0,0.02); border-radius: 3px; }
 #realtimewindow .titlebar { height: 30px; border-bottom: 1px solid #D0D0D0; line-height: 30px; padding: 0 10px; font-size: 12px; font-weight: bold; }
