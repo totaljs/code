@@ -3054,7 +3054,7 @@ COMPONENT('panel', 'width:350;icon:circle-o;zindex:12;bg:true', function(self, c
 	self.resize = function() {
 		var el = self.element.find('.ui-panel-body');
 		el.height(WH - self.find('.ui-panel-header').height() - (config.bottom || 0));
-		config.top && self.element.css('top', config.top + 'px');
+		config.top && self.element.css('top', (config.top + (common.META ? 22 : 0) + 'px'));
 	};
 
 	self.icon = function(value) {
