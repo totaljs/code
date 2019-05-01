@@ -1083,6 +1083,7 @@
 				} else {
 					FUNC.wsopen(code.data.id, '');
 					$('#body').rclass('warning');
+					SET('code.data.todocurrent', []);
 					SET('code.editor', {});
 					SET('code.multiple', false);
 					SET('code.backup', false);
