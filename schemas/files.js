@@ -4,7 +4,7 @@ const Fs = require('fs');
 NEWSCHEMA('FilesTodo', function(schema) {
 	schema.define('line', Number);
 	schema.define('ch', Number);
-	schema.define('name', 'String(50)');
+	schema.define('name', 'String(70)');
 });
 
 NEWSCHEMA('Files', function(schema) {
