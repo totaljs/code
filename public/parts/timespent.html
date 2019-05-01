@@ -96,14 +96,15 @@
 						p.time.quicksort('name');
 					}
 					item.quicksort('name');
-					output.push({ sort: +key, date: key.substring(0, 4) + '/' + key.substring(4), month: MONTHS[(+key.substring(4)) - 1], projects: item, users: du[key] });
+					output.push({ sort: +key, date: key.substring(0, 4) + ' / ' + key.substring(4), month: MONTHS[(+key.substring(4)) - 1], projects: item, users: du[key] });
 				}
 
-				var builder = [];
+				output.quicksort('sort', false);
 
+				var builder = [];
 				for (var i = 0; i < output.length; i++) {
 					item = output[i];
-					builder.push('<div class="timespent-date"><b>{date}</b> - {month}</div>'.arg(item));
+					builder.push('<div class="timespent-date"><i class="far fa-calendar"></i><b>{date}</b> - {month}</div>'.arg(item));
 					builder.push('<div class="row"><div class="col-sm-6 m">');
 
 					for (var j = 0; j < item.projects.length; j++) {
@@ -127,7 +128,6 @@
 					builder.push('</div></div><br />');
 				}
 
-				output.quicksort('sort', true);
 				SET('timespent', builder.join('\n'));
 			});
 		};

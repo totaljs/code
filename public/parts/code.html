@@ -42,7 +42,7 @@
 	<div id="content" data-margin="36">
 		<div class="alert-saved hidden exec" data-bind="code.saved__show__html b" data-exec="code/syncsave"><i class="fa fa-warning"></i><b></b> @(has replaced content of this file on the server.)</div>
 		<div data-bind="code.editor.path__show" class="codeeditor">
-			<div data---="editor__code.editor.body__height:100%;pk:path;shortcut:code/shortcut;contextmenu:code/contextmenu;cursor:code/cursorposition;sync:code/sync;todo:code/todo;components:code/components;combo:code/combo"></div>
+			<div data---="editor__code.editor.body__height:100%;pk:path;change:code/modified;shortcut:code/shortcut;contextmenu:code/contextmenu;cursor:code/cursorposition;sync:code/sync;todo:code/todo;components:code/components;combo:code/combo"></div>
 		</div>
 		<div class="messages">
 			<div class="alert hidden" data-bind="code.backup__show" data-name="backup"><i class="fa fa-times exec" data-exec="code/warning"></i><i class="fa fa-warning"></i>@(Content of this file wasn't be saved before. Do you want to restore it?) <span class="link exec" data-name="restore" data-exec="code/warning">@(Restore)</span> @(or) <span class="link exec" data-exec="code/warning">@(Cancel)</span>.</div>
@@ -438,7 +438,6 @@
 						}
 
 						editor.replaceSelections(sel);
-						exports.modified();
 						return;
 					}
 
@@ -446,7 +445,6 @@
 						for (var i = 0; i < sel.length; i++)
 							sel[i] = value.value === 'lower' ? sel[i].toLowerCase() : sel[i].toUpperCase();
 						editor.replaceSelections(sel);
-						exports.modified();
 						return;
 					}
 
@@ -456,7 +454,6 @@
 							sel[i] = FUNC.comment(code.current.ext, sel[i]).join('\n');
 						}
 						editor.replaceSelections(sel);
-						exports.modified();
 						return;
 					}
 
@@ -466,7 +463,6 @@
 							sel[i] = FUNC.aligntext(sel[i]).join('\n');
 						}
 						editor.replaceSelections(sel);
-						exports.modified();
 						return;
 					}
 
@@ -543,7 +539,6 @@
 							model.body = sel;
 							AJAX('POST /api/common/encrypt/', model, function(response) {
 								editor.replaceSelections(response);
-								exports.modified();
 							});
 							return;
 						}
@@ -553,12 +548,10 @@
 								for (var i = 0; i < sel.length; i++)
 									sel[i] = sel[i].toSearch();
 								editor.replaceSelections(sel);
-								exports.modified();
 								break;
 							case 'template':
 								AJAX('GET /api/templates/' + value.id, function(response) {
 									editor.replaceSelection(response);
-									exports.modified();
 								});
 								break;
 							case 'ui':
@@ -571,12 +564,10 @@
 							case 'ip':
 								AJAX('GET /api/common/{0}/'.format(value.value), function(response) {
 									editor.replaceSelection(response);
-									exports.modified();
 								});
 								break;
 							case 'date':
 								editor.replaceSelection(new Date().format(null));
-								exports.modified();
 								break;
 							case 'password':
 								var pwd = GUID(15);
@@ -585,15 +576,12 @@
 										pwd = pwd.substring(0, i) + pwd.substring(i, i + 1).toUpperCase() + pwd.substring(i + 1);
 								}
 								editor.replaceSelection(pwd);
-								exports.modified();
 								break;
 							case 'GUID':
 								editor.replaceSelection(GUID(50));
-								exports.modified();
 								break;
 							case 'guid':
 								editor.replaceSelection(FUNC.guid());
-								exports.modified();
 								break;
 							case 'encodeURIComponent':
 							case 'decodeURIComponent':
@@ -608,31 +596,26 @@
 										} catch(e) {}
 									}
 								editor.replaceSelections(sel);
-								exports.modified();
 								break;
 							case 'translate':
 								for (var i = 0; i < sel.length; i++)
 									sel[i] = 'T' + HASH(sel[i]).toString();
 								editor.replaceSelections(sel);
-								exports.modified();
 								break;
 							case 'slug':
 								for (var i = 0; i < sel.length; i++)
 									sel[i] = sel[i][value.value]();
 								editor.replaceSelections(sel);
-								exports.modified();
 								break;
 							case 'json':
 								var tmp = PARSE(editor.getSelection().trim());
 								editor.replaceSelection(JSON.stringify(tmp));
-								exports.modified();
 								break;
 							case 'js':
 							case 'css':
 							case 'html':
 								AJAX('POST /api/files/minify/', { body: editor.getSelection(), type: value.value }, function(response) {
 									editor.replaceSelection(response);
-									exports.modified();
 								});
 								break;
 						}
@@ -769,9 +752,9 @@
 			});
 		};
 
-		exports.modified = function() {
-			code.current.modified = true;
-			exports.element.find('section.tabs').find('span[data-value="{0}"]'.format(code.current.path)).aclass('modified');
+		exports.modified = function(changescount) {
+			code.current.modified = changescount == null ? true : changescount > 0;
+			exports.element.find('section.tabs').find('span[data-value="{0}"]'.format(code.current.path)).tclass('modified', code.current.modified);
 		};
 
 		exports.open = function(item) {
@@ -904,10 +887,8 @@
 					case 3:
 						if (code.SYNC)
 							FUNC.warning('@(You can\'t replace all spaces to tabs in collaboration mode.)');
-						else {
+						else
 							editor.editor.setValue(FUNC.spaces_to_tabs(editor.editor.getValue()));
-							exports.modified();
-						}
 						break;
 					case 4:
 						SET('common.form', 'backups');

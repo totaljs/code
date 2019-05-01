@@ -43,6 +43,9 @@ div.CodeMirror span.CodeMirror-matchingbracket { border-bottom: 2px solid blue; 
 .td .cm-variable-J { background-color: rgba(27,27,27,.35); color: #90ff2f; }
 .td .cm-variable-B { background-color: rgba(27,27,27,.35); color: #84d087; }
 
+.CodeMirror-dialog button { background-color: #D0D0D0; border-radius: 3px; color: black; border: 0; height: 22px; font-weight: bold; line-height: 22px; font-size: 12px; }
+.td .CodeMirror-dialog button { background-color: #505050; color: white; }
+
 .cm-uname { position: absolute; font-size: 11px; margin: -19px 0 0 4px; height: 22px; }
 .cm-uname b { color: black; padding: 2px 5px; line-height: 12px; display: block; font-family: Arial; }
 .td .cm-uname b { color: white; }

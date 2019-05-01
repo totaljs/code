@@ -22,6 +22,8 @@ NEWSCHEMA('Projects', function(schema) {
 	schema.define('skipsrc', Boolean);
 	schema.define('skiptmp', Boolean);
 	schema.define('skipnm', Boolean);
+	schema.define('resetcombo', Boolean);
+	schema.define('resettime', Boolean);
 
 	schema.setGet(function($) {
 		var item = MAIN.projects.findItem('id', $.id);
@@ -110,6 +112,16 @@ NEWSCHEMA('Projects', function(schema) {
 		if (model.id) {
 			var item = MAIN.projects.findItem('id', model.id);
 			if (item) {
+
+				if (model.resettime)
+					item.time = {};
+
+				if (model.resetcombo)
+					item.combo = {};
+
+				model.resetcombo = undefined;
+				model.resettime = undefined;
+
 				U.extend(item, model);
 				item.updated = NOW;
 			}

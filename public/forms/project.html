@@ -54,7 +54,15 @@
 				<div data---="selectbox__?.users__if:!value.sa;datasource:%projectsformusers;text:id__[]"></div>
 				<div class="help m">@(Choose users which can have access to this project)</div>
 				<div data---="textarea__?.permissions__height:100;monospace:true;placeholder:@(userid \: path)__''">@(Permissions)</div>
-				<div class="help">@(Define permissions for the users. Path starting with <code>^</code> will disable the access.)</div>
+				<div class="help m">@(Define permissions for the users. Path starting with <code>^</code> will disable the access.)</div>
+			</div>
+			<div data-bind="?.id__show" class="hidden">
+				<hr class="nmt nmb" />
+				<div class="padding">
+					<h3><i class="fa fa-chart-bar"></i>@(Internal stats)</h3>
+					<div data---="checkbox__?.resetcombo__null__false">@(Reset combo scoreboard)</div>
+					<div data---="checkbox__?.resettime__null__false">@(Reset time spent)</div>
+				</div>
 			</div>
 			<hr class="nmt nmb" />
 			<div class="padding">

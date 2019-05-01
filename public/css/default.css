@@ -12,6 +12,7 @@ html,body { margin: 0; padding: 0; overflow: hidden; }
 
 .timespent { padding: 20px 0; }
 .timespent-date { font-size: 18px; color: black; margin-bottom: 20px; }
+.timespent-date i { margin-right: 8px; color: #D0D000; }
 .timespent-date b { color: black; }
 .timespent-item { border-bottom: 1px solid #E0E0E0; height: 24px; font-size: 12px; line-height: 24px; color: gray; }
 .timespent-item i { width: 16px; color: #505050; }
@@ -24,6 +25,7 @@ html,body { margin: 0; padding: 0; overflow: hidden; }
 .td .timespent-date { color: white; }
 .td .timespent-item { border-bottom-color: #404040; color: gray; }
 .td .timespent-date b { color: yellow; }
+.td .timespent-date i { color: #C7C764; }
 .td .timespent-item b { color: white; }
 .td .timespent-item i { color: #505050; }
 .td .timespent-item.b { color: #E0E0E0; }
@@ -104,7 +106,7 @@ h3 i { margin-right: 5px; color: $color; }
 .bg-yellow { background-color: #FFFFD5; }
 .bg-smoke { background-color: #F8F8F8; }
 
-#content .alert { padding: 7px 15px 5px; position: absolute; left: 241px; right: 0; z-index: 15; border-radius: 0; border-top: 1px solid #dddbaf; bottom: 44px; }
+#content .alert { padding: 7px 15px 5px; position: absolute; left: 241px; right: 0; z-index: 26; border-radius: 0; border-top: 1px solid #dddbaf; bottom: 44px; }
 #content .messages {}
 
 .projectslist { position: absolute; background-color: white; z-index: 7; top: 99px; width: 301px; border: 1px solid #E0E0E0; box-shadow: 5px 5px 10px rgba(0,0,0,0.1); }
@@ -231,7 +233,8 @@ header .tools .external { color: #a2a286; }
 .tabs .preview { float: right; font-size: 20px; margin: 12px 20px 0 0; cursor: pointer; color: #4285F4; }
 .tabs .preview:hover { opacity: 0.6; }
 .td .tabs .options:hover { color: white; }
-.nolocked { font-style: italic; }
+.nolocked { font-style: italic; color: gray !important; }
+.td .nolocked { color: #C0C0C0 !important; }
 
 .status { height: 35px; border-top: 1px solid #E0E0E0; padding: 0 0 0 10px; font-size: 12px; }
 .status-alerts { padding: 9px 0 0; cursor: pointer; position: relative; display: inline-block; vertical-align: top; height: 34px; min-width: 40px; text-align: center; }

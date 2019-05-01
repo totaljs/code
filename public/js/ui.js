@@ -205,6 +205,13 @@ COMPONENT('editor', function(self, config) {
 			return CodeMirror.pass;
 		};
 
+		var findnext = function() {
+			if (editor.state.search && editor.state.search.query) {
+				editor.execCommand('findNext');
+				return;
+			}
+		};
+
 		var options = {};
 		options.lineNumbers = true;
 		options.mode = config.type || 'htmlmixed';
@@ -226,7 +233,7 @@ COMPONENT('editor', function(self, config) {
 		options.lint = true;
 		options.blastCode = true;
 		options.autoCloseBrackets = true;
-		options.extraKeys = { 'Alt-F': 'findPersistent', 'Esc': clearsearch, 'Cmd-D': findmatch, 'Ctrl-D': findmatch, 'Cmd-S': shortcut('save'), 'Ctrl-S': shortcut('save'), 'Alt-W': shortcut('close'), 'Cmd-W': shortcut('close'), Enter: 'newlineAndIndentContinue', Tab: tabulator, 'Alt-Tab': shortcut('nexttab') };
+		options.extraKeys = { 'Alt-F': 'findPersistent', 'Ctrl-Enter': findnext, 'Cmd-Enter': findnext, 'Esc': clearsearch, 'Cmd-D': findmatch, 'Ctrl-D': findmatch, 'Cmd-S': shortcut('save'), 'Ctrl-S': shortcut('save'), 'Alt-W': shortcut('close'), 'Cmd-W': shortcut('close'), Enter: 'newlineAndIndentContinue', Tab: tabulator, 'Alt-Tab': shortcut('nexttab') };
 
 		if (common.electron) {
 			options.extraKeys['Cmd-Tab'] = shortcut('nexttab');
@@ -283,7 +290,10 @@ COMPONENT('editor', function(self, config) {
 		var REGHELPER = /(Thelpers|FUNC|REPO)\..*?=/g;
 		var cache_lines = null;
 
-		var prerender_colors = function() {
+		var prerender_colors = function(changescount) {
+
+			config.change && EXEC(config.change, changescount || 0);
+
 			var todos = [];
 			var components = [];
 			var mode = editor.getMode().name;
@@ -423,14 +433,20 @@ COMPONENT('editor', function(self, config) {
 					EXEC(config.sync, cache_sync);
 				}
 
-				for (var i = b.from.line; i < (b.from.line + b.text.length); i++)
-					self.diffgutter(i, cache_lines && cache_lines[i] === editor.getLine(i));
+				var count = 0;
+
+				for (var i = b.from.line; i < (b.from.line + b.text.length); i++) {
+					var is = cache_lines && cache_lines[i] === editor.getLine(i);
+					if (!is)
+						count++;
+					self.diffgutter(i, is);
+				}
 
 				if (b.origin && b.origin.charAt(1) !== 'd')
 					combo && combo();
 			}
 
-			setTimeout2('EditorGutterColor', prerender_colors, 500);
+			setTimeout2('EditorGutterColor', prerender_colors, 500, null, count);
 
 			if (config.disabled || !can[b.origin])
 				return;
