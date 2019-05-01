@@ -34,6 +34,8 @@
 	<div data---="LAZY emoji"></div>
 	<div data---="LAZY colorpicker"></div>
 
+	<div class="windowtitlebar"></div>
+
 	<header>
 		<button class="exec" data-exec="mainmenu"><i class="fa fa-navicon"></i></button>
 		<div class="tools" data-jc="selected__common.page__selector:a.R">
@@ -79,14 +81,15 @@
 				common.showparts = true;
 		});
 
-		if (common.electron)
-			$('body').aclass('electron');
+		if (common.electron) {
+			process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+			common.META = require('electron').remote.getGlobal('META') || EMPTYOBJECT;
+			if (common.META.version && navigator.userAgent.indexOf('Macintosh') !== -1)
+				$('body').aclass('electron');
+		}
 
 		CACHEPATH('common.showparts', '1 year');
 		CACHEPATH('common.powermode', '1 year');
-
-		if (common.electron)
-			process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
 		ENV('date', 'yyyy-MM-dd HH:mm');
 
