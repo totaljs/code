@@ -522,7 +522,8 @@ header .tools .external { color: #a2a286; }
 
 .todolist { padding: 10px 0; }
 .todolist i { margin-right: 5px; }
-.todo { padding: 5px 20px; color: gray; border-top: 1px solid #E0E0E0; font-size: 12px; cursor: pointer; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.todo { padding: 5px 20px; color: gray; border-top: 1px solid #E0E0E0; font-size: 12px; cursor: pointer; }
+.todo > div { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .todo:first-child { border-top: 0; }
 .todo span { width: 30px; float: left; font-size: 10px; color: gray; font-family: monospace; }
 .todo:hover { background-color: rgba(0,0,0,0.1); }
