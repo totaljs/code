@@ -1643,7 +1643,8 @@ SNIPPETS.push({ type: 'html', search: 'data-bind', text: '<b>Binder</b>', code: 
 SNIPPETS.push({ type: 'javascript', search: 'COMPONENT', text: '<b>COMPONENT</b>', code: 'COMPONENT(\'\', \'\', function(self, config) {\n\t{0}\n{0}});', ch: 12 });
 SNIPPETS.push({ type: 'javascript', search: 'NEWSCHEMA', text: '<b>NEWSCHEMA</b>', code: 'NEWSCHEMA(\'\', function(schema) {\n\t{0}schema.define(\'key\', String, true);\n{0}});', ch: 12 });
 SNIPPETS.push({ type: 'javascript', search: 'NEWOPERATION', text: '<b>NEWOPERATION</b>', code: 'NEWOPERATION(\'\', function($) {\n\t{0}\n{0}});', ch: 15 });
-SNIPPETS.push({ type: 'javascript', search: 'schema.define', text: '<b>scheam.define</b>', code: 'schema.define(\'\', String, true);', ch: 16 });
+SNIPPETS.push({ type: 'javascript', search: 'schema.define', text: '<b>schema.define</b>', code: 'schema.define(\'\', String, true);', ch: 16 });
+SNIPPETS.push({ type: 'javascript', search: 'schema.required', text: '<b>schema.required</b>', code: 'schema.required(\'\', model => model.age > 33);', ch: 18 });
 SNIPPETS.push({ type: 'javascript', search: 'schema.addWorkflow', text: '<b>schema.addWorkflow</b>', code: 'schema.addWorkflow(\'\', function($) {\n\t{0}\n{0}});', ch: 21 });
 SNIPPETS.push({ type: 'javascript', search: 'schema.addOperation', text: '<b>schema.addOperation</b>', code: 'schema.addOperation(\'\', function($) {\n\t{0}\n{0}});', ch: 21 });
 SNIPPETS.push({ type: 'javascript', search: 'schema.addTransform', text: '<b>schema.addTransform</b>', code: 'schema.addTransform(\'\', function($) {\n\t{0}\n{0}});', ch: 21 });
