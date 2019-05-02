@@ -16,6 +16,8 @@ NEWSCHEMA('Files', function(schema) {
 	schema.define('combo', Number); // Max. combo
 	schema.define('time', Number);  // Spent time
 
+	schema.trim = false;
+
 	schema.setSave(function($) {
 
 		var user = $.user;
