@@ -286,6 +286,7 @@ COMPONENT('editor', function(self, config) {
 		var REGTODO = /@todo/i;
 		var REGTODO2 = /^(\s)+-\s.*?/;
 		var REGTODOREPLACE = /^@todo(:)(\s)|(\s)+-(\s)/i;
+		var REGTODODONE = /@done|@canceled/i;
 		var REGTODOCLEAN = /-->|\*\//g;
 		var REGCOLORCLEAN = /;|'|"|,/g;
 		var REGPART = /(COMPONENT|NEWSCHEMA|NEWOPERATION|NEWTASK|MIDDLEWARE|WATCH|ROUTE|ON|PLUGIN)+\(.*?\)/g;
@@ -314,7 +315,8 @@ COMPONENT('editor', function(self, config) {
 
 					var m = mode === 'todo' ? lines[i].match(REGTODO2) : lines[i].match(REGTODO);
 
-					m && todos.push({ line: i + 1, ch: m.index || 0, name: lines[i].substring(m.index, 200).replace(REGTODOREPLACE, '').replace(REGTODOCLEAN, '').trim() });
+					if (m && !REGTODODONE.test(lines[i]))
+						todos.push({ line: i + 1, ch: m.index || 0, name: lines[i].substring(m.index, 200).replace(REGTODOREPLACE, '').replace(REGTODOCLEAN, '').trim() });
 
 					if (mode === 'javascript' || mode === 'totaljs' || mode === 'html') {
 
