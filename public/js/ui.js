@@ -3096,8 +3096,12 @@ COMPONENT('panel', 'width:350;icon:circle-o;zindex:12;bg:true', function(self, c
 
 	self.resize = function() {
 		var el = self.element.find('.ui-panel-body');
-		el.height(WH - self.find('.ui-panel-header').height() - (config.bottom || 0));
-		config.top && self.element.css('top', (config.top + (common.META ? 23 : 1) + 'px'));
+		var bottom = config.bottom || 0;
+		var plus = common.META ? 21 : 0;
+		if (plus)
+			bottom += plus;
+		el.height(WH - self.find('.ui-panel-header').height() - bottom);
+		config.top && self.element.css('top', (config.top + (common.META ? (plus + 1) : 1) + 'px'));
 	};
 
 	self.icon = function(value) {
