@@ -171,7 +171,7 @@ h3 i { margin-right: 5px; color: $color; }
 header .user { float: right; margin: 0; padding: 8px 20px 0; height: 49px; border-left: 1px solid #E0E0E0; }
 header .user .avatar { border-radius: 100px; width: 30px; height: 30px; background-color: $color; text-align: center; font-family: $font; color: white; font-size: 14px; padding: 4px 0 0 0; font-weight: bold; }
 header .tools { font-size: 18px; padding: 0; }
-header .tools a { color: black; position: relative; display: inline-block; transition: color 0.5s; font-size: 12px; line-height: 14px; border-right: 1px solid #E0E0E0; height: 49px; vertical-align: top; padding: 16px 0 0 0; text-align: center; width: 60px; font-size: 16px; }
+header .tools a { color: black; position: relative; display: inline-block; transition: color 0.5s; font-size: 12px; line-height: 14px; border-right: 1px solid #E0E0E0; height: 49px; vertical-align: top; padding: 16px 0 0 0; text-align: center; width: 60px; font-size: 16px; outline: 0; }
 header .tools a:first-child { width: 61px; }
 header .tools a:hover { text-decoration: none; background-color: #F0F0F0; }
 header .tools .selected { background-color: #F0F0F0; }

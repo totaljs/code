@@ -7,6 +7,8 @@ COMPONENT('editor', function(self, config) {
 	var autocomplete;
 	var lorem = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'.split(' ');
 	var HSM = { annotateScrollbar: true, delay: 100 };
+	var cache_lines = null;
+	var cache_lines_skip = false;
 
 	fn.lastIndexOf = function(str, chfrom) {
 		for (var i = chfrom; i > 0; i--) {
@@ -97,6 +99,7 @@ COMPONENT('editor', function(self, config) {
 
 	self.diffgutterclear = function() {
 		editor.doc.clearGutter('GutterDiff');
+		cache_lines = editor.getValue().split('\n');
 	};
 
 	self.diffgutter = function(line, nullable) {
@@ -292,9 +295,8 @@ COMPONENT('editor', function(self, config) {
 		var REGPART = /(COMPONENT|NEWSCHEMA|NEWOPERATION|NEWTASK|MIDDLEWARE|WATCH|ROUTE|ON|PLUGIN)+\(.*?\)/g;
 		var REGPARTCLEAN = /('|").*?('|")/;
 		var REGHELPER = /(Thelpers|FUNC|REPO)\..*?=/g;
-		var cache_lines = null;
 
-		var prerender_colors = function(changescount) {
+		self.prerender_colors = function(changescount) {
 
 			config.change && EXEC(config.change, changescount || 0);
 
@@ -432,7 +434,8 @@ COMPONENT('editor', function(self, config) {
 		editor.on('change', function(a, b) {
 
 			if (b.origin === 'setValue') {
-				cache_lines = editor.getValue().split('\n');
+				if (!cache_lines_skip)
+					cache_lines = editor.getValue().split('\n');
 			} else {
 
 				if (code.SYNC) {
@@ -457,7 +460,7 @@ COMPONENT('editor', function(self, config) {
 					combo && combo();
 			}
 
-			setTimeout2('EditorGutterColor', prerender_colors, 500, null, count);
+			setTimeout2('EditorGutterColor', self.prerender_colors, 500, null, count);
 
 			if (config.disabled || !can[b.origin])
 				return;
@@ -525,12 +528,41 @@ COMPONENT('editor', function(self, config) {
 	};
 
 	self.copy = function(history) {
-		return editor.doc.copy(history);
+		var doc = editor.doc.copy(history);
+		if (history)
+			doc.cachedlines = cache_lines;
+		return doc;
 	};
 
 	self.paste = function(doc) {
+		cache_lines = doc.cachedlines || null;
+		delete doc.cachedlines;
 		editor.swapDoc(doc);
+		cache_lines_skip = true;
 		editor.refresh();
+		cache_lines_skip = false;
+
+		if (!cache_lines)
+			return;
+
+		var length = editor.lineCount();
+		var index = 0;
+		var changes = 0;
+
+		for (var i = 0; i < length; i++) {
+			var line = editor.getLine(i);
+			var cache = cache_lines[index];
+			var is = cache != null && cache === line;
+			index++;
+			self.diffgutter(i, is);
+			if (!is) {
+				changes++;
+				if (!cache || line.substring(0, cache.length) !== cache)
+					index--;
+			}
+		}
+
+		setTimeout2('EditorGutterColor', self.prerender_colors, 500, null, changes);
 	};
 
 	self.clear = function(content) {
