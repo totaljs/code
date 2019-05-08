@@ -661,16 +661,18 @@
 			if (type === 1 && code.editor.body) {
 				setTimeout2('code.modified', function() {
 					var diffel = editor.find('.cm-diff:first-child');
+					var is = 0;
 					if (diffel.length) {
 						exports.cache_set();
 						if (!code.current.modified) {
 							code.current.modified = true;
-							exports.element.find('section.tabs').find('span[data-value="{0}"]'.format(code.current.path)).aclass('modified');
+							is = 1;
 						}
 					} else if (code.current.modified) {
 						code.current.modified = false;
-						exports.element.find('section.tabs').find('span[data-value="{0}"]'.format(code.current.path)).rclass('modified');
+						is = 2;
 					}
+					is && exports.element.find('section.tabs').find('span[data-value="{0}"]'.format(code.current.path)).tclass('modified', is === 1);
 					exports.tablocked();
 				}, 250);
 			}
@@ -1473,6 +1475,10 @@
 				code.current.modified = false;
 				exports.cache_rem(code.current.path);
 				exports.element.find('section.tabs').find('span[data-value="{0}"]'.format(code.current.path)).rclass('modified');
+
+				// Internal timers
+				clearTimeout2('code.modified');
+				clearTimeout2('EditorGutterColor');
 
 				AJAX('POST /api/files/{id}/ REPEAT'.arg(code.data), data, function(response) {
 
