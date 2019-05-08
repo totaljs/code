@@ -51,14 +51,15 @@ NEWSCHEMA('Files', function(schema) {
 			if (combo) {
 				var max = Math.max(count, combo.max);
 				if (max !== combo.max) {
-					combo = { max: max, date: NOW };
+					combo.max = max;
+					combo.date = NOW;
 					is = true;
 				}
 			} else {
-				if (!project.combo)
-					combo = project.combo = {};
-				else
+				if (project.combo)
 					combo = project.combo;
+				else
+					combo = project.combo = {};
 				combo[user.id] = { max: count, date: NOW };
 				is = true;
 			}
