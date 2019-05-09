@@ -785,7 +785,8 @@
 		};
 
 		exports.modified = function(changescount) {
-			code.current.modified = changescount == null ? true : changescount > 0;
+			if (code && code.current)
+				code.current.modified = changescount == null ? true : changescount > 0;
 			exports.element.find('section.tabs').find('span[data-value="{0}"]'.format(code.current.path)).tclass('modified', code.current.modified);
 		};
 
