@@ -1051,12 +1051,14 @@
 			if (el instanceof jQuery)
 				path = el.parent().attrd('value');
 			var tab = code.open.findItem('path', path);
-			if (tab && tab.modified) {
-				SETTER('confirm', 'show', '@(The content has been modified. <b>Do you want to <u>discard changes</u>?</b>)', ['"trash-o"@(Discard changes)', '@(Cancel)'], function(index) {
-					!index && exports.closeforce(tab.path);
-				});
-			} else
-				exports.closeforce(tab.path);
+			if (tab) {
+				if (tab.modified) {
+					SETTER('confirm', 'show', '@(The content has been modified. <b>Do you want to <u>discard changes</u>?</b>)', ['"trash-o"@(Discard changes)', '@(Cancel)'], function(index) {
+						!index && exports.closeforce(tab.path);
+					});
+				} else
+					exports.closeforce(tab.path);
+			}
 		};
 
 		exports.closeforce = function(path) {
