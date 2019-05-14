@@ -1649,6 +1649,7 @@ SNIPPETS.push({ type: 'javascript', search: 'schema.addWorkflow', text: '<b>sche
 SNIPPETS.push({ type: 'javascript', search: 'schema.addOperation', text: '<b>schema.addOperation</b>', code: 'schema.addOperation(\'\', function($) {\n\t{0}\n{0}});', ch: 21 });
 SNIPPETS.push({ type: 'javascript', search: 'schema.addTransform', text: '<b>schema.addTransform</b>', code: 'schema.addTransform(\'\', function($) {\n\t{0}\n{0}});', ch: 21 });
 SNIPPETS.push({ type: 'javascript', search: 'schema.setSave', text: '<b>schema.setSave</b>', code: 'schema.setSave(function($) {\n\t{0}\n{0}});', ch: 21, line: 1 });
+SNIPPETS.push({ type: 'javascript', search: 'schema.setPatch', text: '<b>schema.setPatch</b>', code: 'schema.setPatch(function($) {\n\t{0}\n{0}});', ch: 22, line: 1 });
 SNIPPETS.push({ type: 'javascript', search: 'schema.setInsert', text: '<b>schema.setInsert</b>', code: 'schema.setInsert(function($) {\n\t{0}\n{0}});', ch: 2, line: 1 });
 SNIPPETS.push({ type: 'javascript', search: 'schema.setUpdate', text: '<b>schema.setUpdate</b>', code: 'schema.setUpdate(function($) {\n\t{0}\n{0}});', ch: 2, line: 1 });
 SNIPPETS.push({ type: 'javascript', search: 'schema.setRemove', text: '<b>schema.setRemove</b>', code: 'schema.setRemove(function($) {\n\t{0}\n{0}});', ch: 2, line: 1 });
