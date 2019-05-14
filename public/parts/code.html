@@ -677,7 +677,7 @@
 				}, 250);
 			}
 
-			if (code.current && code.current.path.substring(code.current.path.length - 3) === '.js') {
+			if (code.current && (!code.current.path || code.current.path.substring(code.current.path.length - 3) === '.js')) {
 				setTimeout2('jshint', function() {
 					SET('code.errors', JSHINT.errors.slice(0));
 				}, 800);
