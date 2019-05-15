@@ -820,7 +820,7 @@
 				index = code.open.indexOf(code.current);
 			} else {
 				var tmp = code.open[code.open.length - 1];
-				if (!tmp.skip)
+				if (tmp && !tmp.skip)
 					index = code.open.length - 1;
 			}
 
