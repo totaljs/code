@@ -76,6 +76,9 @@
 			if (common.powermode == null)
 				common.powermode = true;
 
+			if (common.powermodeshaking == null)
+				common.powermodeshaking = false;
+
 			if (common.showparts == null)
 				common.showparts = true;
 		});
@@ -91,6 +94,7 @@
 
 		CACHEPATH('common.showparts', '1 year');
 		CACHEPATH('common.powermode', '1 year');
+		CACHEPATH('common.powermodeshaking', '1 year');
 		CACHEPATH('common.clipboard', '1 year');
 
 		ENV('date', 'yyyy-MM-dd HH:mm');

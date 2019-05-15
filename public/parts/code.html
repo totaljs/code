@@ -813,15 +813,21 @@
 			}
 
 			var rewrite = false;
+			var index = -1;
 
 			// we can open file on the current tab
 			if (!code.SYNC && code.current && !code.current.modified && !code.current.skip && (!tab || code.current.path !== tab.path)) {
-				var index = code.open.indexOf(code.current);
-				if (index !== -1) {
-					code.open.splice(index, 1);
-					exports.cache_rem(code.current);
-					code.current = null;
-				}
+				index = code.open.indexOf(code.current);
+			} else {
+				var tmp = code.open[code.open.length - 1];
+				if (!tmp.skip)
+					index = code.open.length - 1;
+			}
+
+			if (index !== -1) {
+				code.open.splice(index, 1);
+				exports.cache_rem(code.current);
+				code.current = null;
 			}
 
 			var newbie = false;
@@ -842,7 +848,7 @@
 				case 'rar':
 				case 'file':
 				case 'nosql-binary':
-					window.open('/api/download/{0}/?path={1}'.format(code.data.id, encodeURIComponent(item.path)));
+					W.open('/api/download/{0}/?path={1}'.format(code.data.id, encodeURIComponent(item.path)));
 					return;
 			}
 

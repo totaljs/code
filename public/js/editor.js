@@ -2124,11 +2124,14 @@ https://twitter.com/JoelBesada/status/670343885655293952
 
 		if (shakeTime > 0) {
 			shakeTime -= dt;
-			var magnitude = (shakeTime / shakeTimeMax) * shakeIntensity;
-			var shakeX = random(-magnitude, magnitude);
-			var shakeY = random(-magnitude, magnitude);
-			cmNode.style.transform = 'translate(' + shakeX + 'px,' + shakeY + 'px)';
+			if (common.powermodeshaking) {
+				var magnitude = (shakeTime / shakeTimeMax) * shakeIntensity;
+				var shakeX = random(-magnitude, magnitude);
+				var shakeY = random(-magnitude, magnitude);
+				cmNode.style.transform = 'translate(' + shakeX + 'px,' + shakeY + 'px)';
+			}
 		}
+
 		drawParticles();
 		requestAnimationFrame(loop);
 	}
