@@ -824,7 +824,7 @@
 					index = code.open.length - 1;
 			}
 
-			if (index !== -1) {
+			if (index !== -1 && (!code.current || !tab || code.current.path !== tab.path)) {
 				code.open.splice(index, 1);
 				exports.cache_rem(code.current);
 				code.current = null;
