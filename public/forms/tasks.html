@@ -60,7 +60,16 @@
 			}
 
 			PLUGIN('code').element.SETTER('tree', 'selectpath', path);
+
 			setTimeout2('codetasksopen', function() {
+
+				if (code.editor.path !== path) {
+					code.data.todo = code.data.todo.remove('path', path);
+					AJAX('DELETE /api/projects/{id}/todo/'.arg(code.data), { path: path });
+					UPD('code.data.todo');
+					return;
+				}
+
 				var editor = FIND('editor').editor;
 				editor.setCursor({ line: (+el.attrd('line')) - 1, ch: +el.attrd('ch') });
 				editor.focus();

@@ -7,6 +7,44 @@ NEWSCHEMA('FilesTodo', function(schema) {
 	schema.define('name', 'String(70)');
 });
 
+NEWSCHEMA('FilesTodoClear', function(schema) {
+
+	schema.define('path', 'String(500)');
+
+	schema.setRemove(function($) {
+
+		var project = MAIN.projects.findItem('id', $.id);
+		if (project == null) {
+			$.invalid('error-project');
+			return;
+		}
+
+		var model = $.body;
+		var user = $.user;
+
+		if (!user.sa) {
+			if (project.users.indexOf(user.id) === -1) {
+				$.invalid('error-permissions');
+				return;
+			}
+
+			if (!MAIN.authorize(project, $.user, model.path)) {
+				$.invalid('error-permissions');
+				return;
+			}
+		}
+
+		var count = project.todo.length;
+		project.todo = project.todo.remove('path', model.path);
+		if (count !== project.todo.length)
+			setTimeout2('combo', MAIN.save, 2000, null, 2);
+
+		$.success();
+	});
+
+});
+
+
 NEWSCHEMA('Files', function(schema) {
 
 	schema.define('body', String);

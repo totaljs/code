@@ -913,7 +913,7 @@ COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 
 	self.selectpath = function(path, noeval) {
 		var index = FUNC.treeindex(self.get(), path);
-		if (index !== -1) {
+		if (index !== -1 && index) {
 			self.expand(index);
 			self.select(index, noeval);
 		}

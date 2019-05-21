@@ -5,51 +5,52 @@ const Fs = require('fs');
 exports.install = function() {
 	GROUP(['authorize'], function() {
 
-		ROUTE('GET     /api/{schema}/                         *{schema}     --> @query');
-		ROUTE('GET     /api/{schema}/{id}/                    *{schema}     --> @read');
-		ROUTE('POST    /api/{schema}/                         *{schema}     --> @save');
-		ROUTE('DELETE  /api/{schema}/{id}/                    *{schema}     --> @remove');
-		ROUTE('POST    /api/{schema}/{id}/                    *{schema}     --> @save');
+		ROUTE('GET     /api/{schema}/                         *{schema}         --> @query');
+		ROUTE('GET     /api/{schema}/{id}/                    *{schema}         --> @read');
+		ROUTE('POST    /api/{schema}/                         *{schema}         --> @save');
+		ROUTE('DELETE  /api/{schema}/{id}/                    *{schema}         --> @remove');
+		ROUTE('POST    /api/{schema}/{id}/                    *{schema}         --> @save');
 
 		// Files
-		ROUTE('POST    /api/files/{id}/rename/                *FilesRename  --> @exec');
-		ROUTE('POST    /api/files/{id}/remove/                *FilesRemove  --> @exec');
-		ROUTE('POST    /api/files/{id}/create/                *FilesCreate  --> @exec');
+		ROUTE('POST    /api/files/{id}/rename/                *FilesRename      --> @exec');
+		ROUTE('POST    /api/files/{id}/remove/                *FilesRemove      --> @exec');
+		ROUTE('POST    /api/files/{id}/create/                *FilesCreate      --> @exec');
 
 		// Projects
-		ROUTE('GET     /api/projects/{id}/changelog/          *Files        --> @changelog');
-		ROUTE('GET     /api/projects/{id}/review/             *Files        --> @review', [10000]);
-		ROUTE('POST    /api/projects/{id}/upload/             *FilesUpload  --> @exec', ['upload'], 1024 * 50);
-		ROUTE('GET     /api/projects/{id}/files/              *Projects     --> @files');
-		ROUTE('GET     /api/projects/{id}/backups/            *Projects     --> @backups');
-		ROUTE('DELETE  /api/projects/{id}/backups/            *Projects     --> @backupsclear', [10000]);
-		ROUTE('GET     /api/projects/{id}/logfile/            *Projects',   files_logfile);
-		ROUTE('GET     /api/projects/{id}/restore/            *Projects',   files_restore);
-		ROUTE('GET     /api/projects/{id}/edit/               *Projects',   files_open);
-		ROUTE('GET     /api/projects/{id}/translate/          *Projects',   files_translate);
-		ROUTE('GET     /api/projects/{id}/changes/            *Projects',   files_changes);
-		ROUTE('GET     /api/projects/{id}/changelogs/',                     changelogs);
-		ROUTE('GET     /api/projects/timespent/',                           timespent);
+		ROUTE('GET     /api/projects/{id}/changelog/          *Files            --> @changelog');
+		ROUTE('GET     /api/projects/{id}/review/             *Files            --> @review', [10000]);
+		ROUTE('POST    /api/projects/{id}/upload/             *FilesUpload      --> @exec', ['upload'], 1024 * 50);
+		ROUTE('GET     /api/projects/{id}/files/              *Projects         --> @files');
+		ROUTE('GET     /api/projects/{id}/backups/            *Projects         --> @backups');
+		ROUTE('DELETE  /api/projects/{id}/backups/            *Projects         --> @backupsclear', [10000]);
+		ROUTE('DELETE  /api/projects/{id}/todo/               *FilesTodoClear   --> @remove');
+		ROUTE('GET     /api/projects/{id}/logfile/            *Projects',       files_logfile);
+		ROUTE('GET     /api/projects/{id}/restore/            *Projects',       files_restore);
+		ROUTE('GET     /api/projects/{id}/edit/               *Projects',       files_open);
+		ROUTE('GET     /api/projects/{id}/translate/          *Projects',       files_translate);
+		ROUTE('GET     /api/projects/{id}/changes/            *Projects',       files_changes);
+		ROUTE('GET     /api/projects/{id}/changelogs/',                         changelogs);
+		ROUTE('GET     /api/projects/timespent/',                               timespent);
 
 		// Clipboard
-		ROUTE('GET     /api/clipboard/                        *Clipboard  --> @get');
-		ROUTE('POST    /api/clipboard/                        *Clipboard  --> @save');
+		ROUTE('GET     /api/clipboard/                        *Clipboard       --> @get');
+		ROUTE('POST    /api/clipboard/                        *Clipboard       --> @save');
 
 		// Other
-		ROUTE('GET     /api/templates/{id}/',                               template);
-		ROUTE('GET     /api/download/{id}/',                                files_download);
-		ROUTE('POST    /api/files/minify/                     *Minify',     files_minify);
+		ROUTE('GET     /api/templates/{id}/',                                  template);
+		ROUTE('GET     /api/download/{id}/',                                   files_download);
+		ROUTE('POST    /api/files/minify/                     *Minify',        files_minify);
 		ROUTE('GET     /logout/', redirect_logout);
 
-		ROUTE('GET    /api/users/online/',                                  users_online);
-		ROUTE('GET    /api/users/refresh/',                                 users_refresh);
-		ROUTE('GET    /api/common/directories/',                            directories);
-		ROUTE('GET    /api/common/uid/',                                    custom_uid);
-		ROUTE('GET    /api/common/ip/',                                     custom_ip);
-		ROUTE('POST   /api/common/encrypt/                   *Encoder       --> @exec');
-		ROUTE('GET    /api/componentator/download/           *Componentator --> @download');
+		ROUTE('GET    /api/users/online/',                                     users_online);
+		ROUTE('GET    /api/users/refresh/',                                    users_refresh);
+		ROUTE('GET    /api/common/directories/',                               directories);
+		ROUTE('GET    /api/common/uid/',                                       custom_uid);
+		ROUTE('GET    /api/common/ip/',                                        custom_ip);
+		ROUTE('POST   /api/common/encrypt/                   *Encoder          --> @exec');
+		ROUTE('GET    /api/componentator/download/           *Componentator    --> @download');
 
-		ROUTE('POST   /api/request/', 										makerequest);
+		ROUTE('POST   /api/request/', 										   makerequest);
 
 	});
 
