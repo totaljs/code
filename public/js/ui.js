@@ -295,6 +295,7 @@ COMPONENT('editor', function(self, config) {
 		var REGPART = /(COMPONENT|NEWSCHEMA|NEWOPERATION|NEWTASK|MIDDLEWARE|WATCH|ROUTE|ON|PLUGIN)+\(.*?\)/g;
 		var REGPARTCLEAN = /('|").*?('|")/;
 		var REGHELPER = /(Thelpers|FUNC|REPO)\..*?=/g;
+		var REGCONSOLE = /console\.\w+\(.*?\)/g;
 
 		self.prerender_colors = function(changescount) {
 
@@ -350,6 +351,12 @@ COMPONENT('editor', function(self, config) {
 								var beg = m.index || 0;
 								components.push({ line: i, ch: beg, name: name.trim(), type: type === 'Thel' ? 'helper' : type.toUpperCase() });
 							}
+						}
+
+						m = lines[i].match(REGCONSOLE);
+						if (m) {
+							name = m[0].length > 20 ? (m[0].substring(0, 20) + '...') : m[0];
+							components.push({ line: i, ch: m.index || 0, name: name, type: 'console' });
 						}
 					}
 				}
