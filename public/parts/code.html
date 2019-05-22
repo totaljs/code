@@ -1515,9 +1515,11 @@
 				var tab = code.open[i];
 				var data = {};
 				data.path = tab.path;
-				if (tab.path === code.current.path)
-					data.focused = true;
-				arr.push(data);
+				if (tab) {
+					if (tab.path === code.current.path)
+						data.focused = true;
+					arr.push(data);
+				}
 			}
 
 			localStorage.setItem(code.data.id + '_tabs', STRINGIFY(arr));
