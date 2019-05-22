@@ -1409,7 +1409,7 @@ WAIT('CodeMirror.defineMode', function() {
 			if (opening && !range.empty()) {
 				curType = 'surround';
 			} else if ((identical || !opening) && next == ch) {
-				cm.replaceSelection(left, null);
+				cm.replaceSelection(next, null);
 				return CodeMirror.pass;
 			} else if (identical && cur.ch > 1 && triples.indexOf(ch) >= 0 && cm.getRange(Pos(cur.line, cur.ch - 2), cur) == ch + ch) {
 				if (cur.ch > 2 && /\bstring/.test(cm.getTokenTypeAt(Pos(cur.line, cur.ch - 2))))
