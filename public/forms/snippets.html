@@ -7,11 +7,11 @@
 		<div data---="textbox__codesnippets.search__type:search;placeholder:@(Search snippets);$binding:1;$delay:50"></div>
 	</div>
 	<div data---="viewbox__codesnippets.search__height:100;margin:124;parent:.ui-panel">
-		<div data-bind="codesnippets.items__template" data---="search__codesnippets.search__selector:.uicomponent">
+		<div data-bind="codesnippets.items__template" data---="search__codesnippets.search__selector:.part,.partgroup">
 			<script type="text/html">
 				{{ foreach m in value }}
 					{{ if m.name }}
-						<div class="partgroup">{{ m.name }}</div>
+						<div class="partgroup" data-search="">{{ m.name }}</div>
 					{{ fi }}
 					{{ foreach n in m.items }}
 						<div class="part exec" data-exec="codesnippets/append" data-id="{{ n.id }}" data-search="{{ n.name }}"><i class="fa fa-paste"></i><b>snippet</b>{{ n.name }}</div>
