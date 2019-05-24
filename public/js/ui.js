@@ -3961,18 +3961,20 @@ COMPONENT('loading', function(self) {
 
 COMPONENT('snackbar', 'timeout:4000;button:OK', function(self, config) {
 
+	var cls = 'ui-snackbar';
+	var cls2 = '.' + cls;
 	var show = true;
 	var callback;
-	var thide;
+	var delay;
 
 	self.readonly();
 	self.blind();
 	self.nocompile && self.nocompile();
 
 	self.make = function() {
-		self.aclass('ui-snackbar hidden');
-		self.append('<div><span class="ui-snackbar-dismiss"></span><span class="ui-snackbar-icon"></span><div class="ui-snackbar-body"></div></div>');
-		self.event('click', '.ui-snackbar-dismiss', function() {
+		self.aclass(cls + ' hidden');
+		self.append('<div><span class="{0}-dismiss"></span><span class="{0}-icon"></span><div class="{0}-body"></div></div>'.format(cls));
+		self.event('click', cls2 + '-dismiss', function() {
 			self.hide();
 			callback && callback();
 		});
@@ -3980,10 +3982,17 @@ COMPONENT('snackbar', 'timeout:4000;button:OK', function(self, config) {
 
 	self.hide = function() {
 		clearTimeout2(self.ID);
-		self.rclass('ui-snackbar-visible');
-		thide = setTimeout(function() {
+		self.rclass(cls + '-visible');
+		if (delay) {
+			clearTimeout(delay);
 			self.aclass('hidden');
-		}, 1000);
+			delay = null;
+		} else {
+			delay = setTimeout(function() {
+				delay = null;
+				self.aclass('hidden');
+			}, 1000);
+		}
 		show = true;
 	};
 
@@ -4008,20 +4017,17 @@ COMPONENT('snackbar', 'timeout:4000;button:OK', function(self, config) {
 
 		callback = close;
 
-		self.find('.ui-snackbar-icon').html('<i class="fa {0}"></i>'.format(icon || 'fa-info-circle'));
-		self.find('.ui-snackbar-body').html(message).attr('title', message);
-		self.find('.ui-snackbar-dismiss').html(button || config.button);
-
-		clearTimeout(thide);
+		self.find(cls2 + '-icon').html('<i class="fa {0}"></i>'.format(icon || 'fa-info-circle'));
+		self.find(cls2 + '-body').html(message).attr('title', message);
+		self.find(cls2 + '-dismiss').html(button || config.button);
 
 		if (show) {
 			self.rclass('hidden');
 			setTimeout(function() {
-				self.aclass('ui-snackbar-visible');
+				self.aclass(cls + '-visible');
 			}, 50);
 		}
 
-		clearTimeout2(self.ID);
 		setTimeout2(self.ID, self.hide, config.timeout + 50);
 		show = false;
 	};
