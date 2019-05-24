@@ -658,8 +658,12 @@
 		WATCH('code.editor.body', function(path, value, type) {
 
 			// cache
-			if (type === 1 && code.editor.body) {
+			if (type === 1 && code.editor.body && code.current) {
 				setTimeout2('code.modified', function() {
+
+					if (!code.current)
+						return;
+
 					var diffel = editor.find('.cm-diff:first-child');
 					var is = 0;
 					if (diffel.length) {
