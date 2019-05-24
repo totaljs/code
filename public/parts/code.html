@@ -1362,7 +1362,8 @@
 			opt.class = 'ui-directory-projects';
 
 			opt.callback = function(item) {
-				REDIRECT('/?id=' + item.id);
+				if (item && item.id)
+					REDIRECT('/?id=' + item.id);
 			};
 
 			SETTER('directory', 'show', opt);
