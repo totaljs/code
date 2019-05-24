@@ -1276,6 +1276,8 @@
 
 			AJAX('GET /api/projects/{0}/files/'.format(id), function(response) {
 
+				SETTER('loading', 'hide', 1000);
+
 				if (response instanceof Array) {
 					FUNC.warning(response);
 					return;
