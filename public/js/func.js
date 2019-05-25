@@ -265,8 +265,11 @@ FUNC.aligntext = function(sel) {
 		for (var i = 1; i < line.length; i++) {
 			c = line.charAt(i);
 			p = line.charAt(i - 1);
-			if (align[c] && (p === '\t' || p === ' '))
-				max = Math.max(i, max);
+			if (align[c] && (p === '\t' || p === ' ')) {
+				var count = line.substring(0, i - 1).trim().length + 1;
+				max = Math.max(count, max);
+				break;
+			}
 		}
 	}
 
@@ -276,10 +279,9 @@ FUNC.aligntext = function(sel) {
 			c = line.charAt(i);
 			p = line.charAt(i - 1);
 			if (align[c] && (p === '\t' || p === ' ')) {
-				if (i < max) {
-					var plus = ''.padLeft(max - i, p);
-					sel[j] = sel[j].substring(0, i) + plus + sel[j].substring(i);
-				}
+				var current = sel[j].substring(0, i - 1).trim();
+				var plus = ''.padLeft(max - current.length, p);
+				sel[j] = current + sel[j].substring(i - 1, i) + plus + sel[j].substring(i);
 			}
 		}
 	}
