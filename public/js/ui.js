@@ -301,7 +301,7 @@ COMPONENT('editor', function(self, config) {
 		var REGTODODONE = /@done|@canceled/i;
 		var REGTODOCLEAN = /-->|\*\//g;
 		var REGCOLORCLEAN = /;|'|"|,/g;
-		var REGPART = /(COMPONENT|NEWSCHEMA|NEWOPERATION|NEWTASK|MIDDLEWARE|WATCH|ROUTE|ON|PLUGIN)+\(.*?\)/g;
+		var REGPART = /(COMPONENT|NEWSCHEMA|NEWOPERATION|NEWTASK|MIDDLEWARE|WATCH|ROUTE|(^|\s)ON|PLUGIN)+\(.*?\)/g;
 		var REGPARTCLEAN = /('|").*?('|")/;
 		var REGHELPER = /(Thelpers|FUNC|REPO)\..*?=/g;
 		var REGCONSOLE = /console\.\w+\(.*?\)/g;
@@ -346,14 +346,12 @@ COMPONENT('editor', function(self, config) {
 						m = lines[i].match(REGPART);
 						if (m) {
 							name = m[0].match(REGPARTCLEAN);
-							type = m[0].toLowerCase().substring(0, 5);
+							type = m[0].toLowerCase().substring(0, 5).trim();
 							if (name) {
 								name = name[0].replace(/'|"/g, '');
 								var beg = m.index || 0;
 								if (type === 'newsc')
 									oldschema = name;
-								else
-									oldschema = null;
 								components.push({ line: i, ch: beg, name: name.trim(), type: type.substring(0, 3) === 'on(' ? 'event' : type === 'compo' ? 'component' : type === 'newsc' ? 'schema' : type === 'newop' ? 'operation' : type === 'newta' ? 'task' : type === 'watch' ? 'watcher' : type === 'plugi' ? 'plugin' : type === 'middl' ? 'middleware' : type === 'route' ? 'route' : 'undefined' });
 								is = beg;
 							}
@@ -668,6 +666,16 @@ COMPONENT('editor', function(self, config) {
 			for (var i = 0; i < autocomplete.length; i++) {
 				var s = autocomplete[i];
 				autocomplete[i] = { search: s, code: unique[s] };
+			}
+
+			if (code.componentsdb) {
+				for (var i = 0; i < code.componentsdb.length; i++) {
+					var item = code.componentsdb[i];
+					for (var j = 0; j < item.items.length; j++) {
+						var n = item.items[j].name;
+						autocomplete.push({ search: n, code: n });
+					}
+				}
 			}
 
 		} else

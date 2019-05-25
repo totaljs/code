@@ -517,6 +517,9 @@ header .tools .external { color: #a2a286; }
 .td .changedfiles > div:first-child { color: silver; }
 .td .changeitem .spent b { color: yellow; }
 
+.partscurrent { background-color: #FFFFD5; padding: 10px 0; }
+.td .partscurrent { background-color: #303030; }
+
 .todocurrent { background-color: #FFFFD5; padding: 10px 0; }
 .todocurrent { background-color: #303030; }
 

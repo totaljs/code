@@ -1352,6 +1352,7 @@
 					setTimeout(exports.restoretabs, 500);
 				}
 
+				AJAX('GET /api/projects/{0}/parts/'.format(id), 'code.componentsdb');
 				SETTER('loading', 'hide', 1000);
 			});
 		};
@@ -1478,6 +1479,18 @@
 				data.body = code.NOTRIM[code.current.ext] ? val : FUNC.rtrim(val);
 				data.combo = FIND('combo').summarize();
 				data.todo = code.data.todocurrent && code.data.todocurrent.length ? code.data.todocurrent : null;
+				data.parts = code.components;
+
+				var parts = code.componentsdb.findItem('path', data.path);
+				if (parts == null) {
+					parts = {};
+					parts.path = data.path;
+					parts.items = data.parts;
+					code.componentsdb.push(parts);
+				} else
+					parts.items = data.parts;
+
+				UPD('code.componentsdb');
 
 				var diff = Math.ceil((now - code.lastchange) / 1000);
 				var max = 40; // minutes

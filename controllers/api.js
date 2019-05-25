@@ -21,6 +21,8 @@ exports.install = function() {
 		ROUTE('GET     /api/projects/{id}/review/             *Files            --> @review', [10000]);
 		ROUTE('POST    /api/projects/{id}/upload/             *FilesUpload      --> @exec', ['upload'], 1024 * 50);
 		ROUTE('GET     /api/projects/{id}/files/              *Projects         --> @files');
+		ROUTE('GET     /api/projects/{id}/parts/              *Files            --> @parts');
+		ROUTE('DELETE  /api/projects/{id}/parts/              *FilesPartsClear  --> @remove');
 		ROUTE('GET     /api/projects/{id}/backups/            *Projects         --> @backups');
 		ROUTE('DELETE  /api/projects/{id}/backups/            *Projects         --> @backupsclear', [10000]);
 		ROUTE('DELETE  /api/projects/{id}/todo/               *FilesTodoClear   --> @remove');

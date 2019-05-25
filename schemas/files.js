@@ -7,6 +7,13 @@ NEWSCHEMA('FilesTodo', function(schema) {
 	schema.define('name', 'String(70)');
 });
 
+NEWSCHEMA('FilesPart', function(schema) {
+	schema.define('line', Number);
+	schema.define('ch', Number);
+	schema.define('type', 'String(20)', true);
+	schema.define('name', 'String(80)', true);
+});
+
 NEWSCHEMA('FilesTodoClear', function(schema) {
 
 	schema.define('path', 'String(500)');
@@ -44,6 +51,38 @@ NEWSCHEMA('FilesTodoClear', function(schema) {
 
 });
 
+NEWSCHEMA('FilesPartsClear', function(schema) {
+
+	schema.define('path', 'String(500)');
+
+	schema.setRemove(function($) {
+
+		var project = MAIN.projects.findItem('id', $.id);
+		if (project == null) {
+			$.invalid('error-project');
+			return;
+		}
+
+		var model = $.body;
+		var user = $.user;
+
+		if (!user.sa) {
+			if (project.users.indexOf(user.id) === -1) {
+				$.invalid('error-permissions');
+				return;
+			}
+
+			if (!MAIN.authorize(project, $.user, model.path)) {
+				$.invalid('error-permissions');
+				return;
+			}
+		}
+
+		NOSQL($.id + '_parts').remove().where('path', model.path);
+		$.success();
+	});
+
+});
 
 NEWSCHEMA('Files', function(schema) {
 
@@ -51,6 +90,7 @@ NEWSCHEMA('Files', function(schema) {
 	schema.define('path', 'String(500)', true);
 	schema.define('sync', Boolean);
 	schema.define('todo', '[FilesTodo]');
+	schema.define('parts', '[FilesPart]');
 	schema.define('combo', Number); // Max. combo
 	schema.define('time', Number);  // Spent time
 
@@ -127,6 +167,13 @@ NEWSCHEMA('Files', function(schema) {
 		else
 			project.todo = [];
 
+		var db = NOSQL(project.id + '_parts');
+
+		if (model.parts && model.parts.length)
+			db.update({ path: model.path, items: $.clean().parts }, true).where('path', model.path);
+		else
+			db.remove().where('path', model.path);
+
 		if (model.todo && model.todo.length) {
 			for (var i = 0; i < model.todo.length; i++) {
 				var todo = model.todo[i].$clean();
@@ -158,6 +205,10 @@ NEWSCHEMA('Files', function(schema) {
 			$.success();
 
 		MAIN.changelog(user, $.id, model.path);
+	});
+
+	schema.addWorkflow('parts', function($) {
+		NOSQL($.id + '_parts').find().callback($.callback);
 	});
 
 	schema.addWorkflow('changelog', function($) {

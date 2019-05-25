@@ -254,6 +254,7 @@ NEWSCHEMA('Projects', function(schema) {
 		}
 
 		MAIN.log($.user, 'projects_remove', item, null);
+		NOSQL($.id + '_parts').drop();
 
 		// @TODO: update all projects sessions
 		$.success();
