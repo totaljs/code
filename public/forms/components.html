@@ -40,6 +40,8 @@
 <script>
 	PLUGIN('components', function(exports) {
 
+		var prevpath;
+
 		exports.reload = function() {
 			SET('?.search', '');
 		};
@@ -77,6 +79,9 @@
 
 		var rebind = function() {
 
+			if (code.editor.path === prevpath)
+				return;
+
 			var value = code.componentsdb;
 			var arr = [];
 			var reg = (/(components|public|views|themes\/views)\//g);
@@ -84,10 +89,14 @@
 
 			for (var i = 0; i < value.length; i++) {
 				var item = value[i];
-				if (code.editor.path !== item.path && reg.test(item.path) === isserver)
-					arr.push(item);
+				if (code.editor.path !== item.path && reg.test(item.path) === isserver) {
+					item.items = item.items.remove('type', 'route');
+					if (item.items.length)
+						arr.push(item);
+				}
 			}
 
+			prevpath = code.editor.path;
 			SET('code.componentsall', arr);
 		};
 
