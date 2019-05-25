@@ -1,3 +1,16 @@
+FUNC.cleancss = function(text) {
+	return text.replace(/\n\n/g, '\0').replace(/\n|\t/g, '').replace(/:(\w|'|")/g, function(text) {
+		return ': ' + text.substring(1);
+	}).replace(/\}/g, '}\n').replace(/\s{2,}/g, ' ').replace(/(\w|'|"|;)\}/g, function(text) {
+		var l = text.substring(text.length - 2, text.length - 1);
+		return text.substring(0, text.length - 1) + (l !== ';' ? ';' : '') + ' ' + text.substring(text.length - 1);
+	}).replace(/"/g, '\'').replace(/(\w)\{/g, '$1 {').replace(/\{\w/g, function(text) {
+		return text.substring(0, 1) + ' ' + text.substring(1);
+	}).replace(/(\n)?.*?\{/g, function(text) {
+		return text.replace(/:\s(\w)/g, ':$1');
+	}).replace(/\0/, '\n');
+};
+
 FUNC.getName = function(path) {
 	var index = path.lastIndexOf('/');
 	return path.substring(index + 1);

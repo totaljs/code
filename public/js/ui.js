@@ -9,6 +9,7 @@ COMPONENT('editor', function(self, config) {
 	var HSM = { annotateScrollbar: true, delay: 100 };
 	var cache_lines = null;
 	var cache_lines_skip = false;
+	var cache_diffs = {};
 
 	fn.lastIndexOf = function(str, chfrom) {
 		for (var i = chfrom; i > 0; i--) {
@@ -100,9 +101,17 @@ COMPONENT('editor', function(self, config) {
 	self.diffgutterclear = function() {
 		editor.doc.clearGutter('GutterDiff');
 		cache_lines = editor.getValue().split('\n');
+		cache_diffs = {};
 	};
 
 	self.diffgutter = function(line, nullable) {
+		var key = line + '';
+
+		if (nullable)
+			delete cache_diffs[key];
+		else
+			cache_diffs[key] = 1;
+
 		editor.setGutterMarker(line, 'GutterDiff', nullable ? null : GutterDiff());
 	};
 
@@ -536,14 +545,20 @@ COMPONENT('editor', function(self, config) {
 
 	self.copy = function(history) {
 		var doc = editor.doc.copy(history);
-		if (history)
+		if (history) {
 			doc.cachedlines = cache_lines;
+			doc.cacheddiffs = cache_diffs;
+		}
 		return doc;
 	};
 
 	self.paste = function(doc) {
+
 		cache_lines = doc.cachedlines || null;
+		cache_diffs = doc.cacheddiffs || {};
+
 		delete doc.cachedlines;
+		delete doc.cacheddiffs;
 		editor.swapDoc(doc);
 		cache_lines_skip = true;
 		editor.refresh();
@@ -552,20 +567,12 @@ COMPONENT('editor', function(self, config) {
 		if (!cache_lines)
 			return;
 
-		var length = editor.lineCount();
-		var index = 0;
 		var changes = 0;
-
-		for (var i = 0; i < length; i++) {
-			var line = editor.getLine(i);
-			var cache = cache_lines[index];
-			var is = cache != null && cache === line;
-			index++;
-			self.diffgutter(i, is);
-			if (!is) {
+		if (cache_diffs) {
+			var keys = Object.keys(cache_diffs);
+			for (var i = 0; i < keys.length; i++) {
+				self.diffgutter(+keys[i]);
 				changes++;
-				if (!cache || line.substring(0, cache.length) !== cache)
-					index--;
 			}
 		}
 

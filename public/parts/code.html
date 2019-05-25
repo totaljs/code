@@ -397,6 +397,9 @@
 				if (text.indexOf('\n') !== -1)
 					items.push({ name: '@(Sort)', icon: 'sort-alpha-down', value: 'sort' });
 
+				if ((/css/).test(code.current.ext))
+					items.push({ name: '@(Clean)', icon: 'broom', value: 'clean' });
+
 				items.push({ name: '@(Encode)', icon: 'code', value: 'encode' });
 				items.push({ name: '@(Decode)', icon: 'broom', value: 'decode' });
 				items.push({ name: '@(Minify code)', icon: 'compress', value: 'minify' });
@@ -424,6 +427,11 @@
 
 				if (value.value === 'run') {
 					FUNC.request(text, editor.getValue());
+					return;
+				}
+
+				if (value.value === 'clean') {
+					editor.replaceSelection(FUNC.cleancss(text));
 					return;
 				}
 
