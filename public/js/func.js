@@ -8,7 +8,7 @@ FUNC.cleancss = function(text) {
 		return text.substring(0, 1) + ' ' + text.substring(1);
 	}).replace(/(\n)?.*?\{/g, function(text) {
 		return text.replace(/:\s(\w)/g, ':$1');
-	}).replace(/\0/, '\n');
+	}).replace(/\0/g, '\n').trim();
 };
 
 FUNC.getName = function(path) {
