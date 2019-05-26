@@ -307,6 +307,7 @@ COMPONENT('editor', function(self, config) {
 		var REGCONSOLE = /console\.\w+\(.*?\)/g;
 		var REGSCHEMAOP = /\.(setQuery|setSave|setInsert|setUpdate|setPatch|setRead|setGet|setRemove|addWorkflow|addTransform|addOperation|addHook)\(.*?\)/g;
 		var REGSCHEMAOP_REPLACE = /(\(|,(\s))function.*?$/g;
+		var REGPLUGINOP_REPLACE = /(\s)+=(\s)+function/g;
 
 		var schemaoperation_replace = function(text) {
 			return text.charAt(0) === '(' ? '()' : ')';
@@ -320,7 +321,7 @@ COMPONENT('editor', function(self, config) {
 			var components = [];
 			var mode = editor.getMode().name;
 			var is = null;
-			var name, type, color, oldschema;
+			var name, type, color, oldschema, oldplugin, pluginvariable;
 
 			if (mode === 'totaljsresources' || mode === 'javascript' || mode === 'totaljs' || mode === 'css' || mode === 'sass' || mode === 'html' || mode === 'todo') {
 				var lines = editor.getValue().split('\n');
@@ -350,8 +351,16 @@ COMPONENT('editor', function(self, config) {
 							if (name) {
 								name = name[0].replace(/'|"/g, '');
 								var beg = m.index || 0;
-								if (type === 'newsc')
-									oldschema = name;
+								switch(type) {
+									case 'newsc':
+										oldschema = name;
+										break;
+									case 'plugi':
+										oldplugin = name;
+										pluginvariable = m[0].substring(m[0].indexOf('(', 10) + 1, m[0].indexOf(')'));
+										break;
+								}
+
 								components.push({ line: i, ch: beg, name: name.trim(), type: type.substring(0, 3) === 'on(' ? 'event' : type === 'compo' ? 'component' : type === 'newsc' ? 'schema' : type === 'newop' ? 'operation' : type === 'newta' ? 'task' : type === 'watch' ? 'watcher' : type === 'plugi' ? 'plugin' : type === 'middl' ? 'middleware' : type === 'route' ? 'route' : 'undefined' });
 								is = beg;
 							}
@@ -365,6 +374,14 @@ COMPONENT('editor', function(self, config) {
 							type = m[0].substring(0, 4);
 							name = m[0].substring(type === 'Thel' ? 9 : 5, end).trim();
 							if (name) {
+
+								if (type === 'Thel' || type === 'FUNC') {
+									var index = lines[i].indexOf('function(');
+									if (index === -1)
+										continue;
+									name = name.trim() + lines[i].substring(index + 8, lines[i].indexOf(')', index + 8) + 1);
+								}
+
 								var beg = m.index || 0;
 								components.push({ line: i, ch: beg, name: name.trim(), type: type === 'Thel' ? 'helper' : type.toUpperCase() });
 							}
@@ -381,6 +398,15 @@ COMPONENT('editor', function(self, config) {
 							if (m) {
 								m = m[0].replace(REGSCHEMAOP_REPLACE, schemaoperation_replace);
 								components.push({ line: i, ch: m.index || 0, name: oldschema + m, type: 'schema' });
+							}
+						}
+
+						if (oldplugin) {
+							m = lines[i].match(new RegExp(pluginvariable + '.*?(\\s)=(\\s)function\\(.*?\\)'));
+							if (m) {
+								m = m[0].replace(REGPLUGINOP_REPLACE, '');
+								m = m.substring(0, m.indexOf(')') + 1).trim().substring(pluginvariable.length);
+								components.push({ line: i, ch: m.index || 0, name: oldplugin + m, type: 'plugin' });
 							}
 						}
 					}

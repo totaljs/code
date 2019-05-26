@@ -543,6 +543,8 @@ header .tools .external { color: #a2a286; }
 .part b { color: #606060; float: right; font-family: Arial; }
 .part:first-child { border-top: 0; }
 .part:hover { background-color: rgba(0,0,0,0.1); }
+.part span { color: #A0A0A0; }
+.td .part span { color: #666666; }
 .td .part { color: #A0A0A0; border-color: #202020; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: Menlo,Consolas,monospace; }
 .td .partgroup { color: white; }
 .part .fa-align-left { color: #C8059B; }
