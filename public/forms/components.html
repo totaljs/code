@@ -44,13 +44,13 @@
 
 		exports.reload = function() {
 			SET('?.search', '');
+			prevpath = null;
 		};
 
 		exports.find = function(el) {
 			var com = code.components[+el.attrd('index')];
 			EXEC('code/move', com.line, com.ch, com.lineto);
 		};
-
 
 		exports.open = function(el) {
 			var path = el.attrd('path');
@@ -84,15 +84,14 @@
 
 			var value = code.componentsdb;
 			var arr = [];
-			var reg = (/(components|public|views|themes\/views)\//g);
-			var isserver = reg.test(code.editor.path);
+			var reg = (/\/(components|public|views|themes\/views)\//);
+			var isclient = reg.test(code.editor.path);
 
 			for (var i = 0; i < value.length; i++) {
 				var item = value[i];
-				if (code.editor.path !== item.path && reg.test(item.path) === isserver) {
+				if (code.editor.path !== item.path && reg.test(item.path) === isclient) {
 					item.items = item.items.remove('type', 'route');
-					if (item.items.length)
-						arr.push(item);
+					item.items.length && arr.push(item);
 				}
 			}
 
