@@ -308,6 +308,7 @@ COMPONENT('editor', function(self, config) {
 		var REGSCHEMAOP = /\.(setQuery|setSave|setInsert|setUpdate|setPatch|setRead|setGet|setRemove|addWorkflow|addTransform|addOperation|addHook)\(.*?\)/g;
 		var REGSCHEMAOP_REPLACE = /(\(|,(\s))function.*?$/g;
 		var REGPLUGINOP_REPLACE = /(\s)+=(\s)+function/g;
+		var REGTASKOP = /('|").*?('|")/g;
 
 		var schemaoperation_replace = function(text) {
 			return text.charAt(0) === '(' ? '()' : ')';
@@ -321,7 +322,7 @@ COMPONENT('editor', function(self, config) {
 			var components = [];
 			var mode = editor.getMode().name;
 			var is = null;
-			var name, type, color, oldschema, oldplugin, pluginvariable;
+			var name, type, color, oldschema, oldplugin, pluginvariable, oldtask, taskvariable;
 
 			if (mode === 'totaljsresources' || mode === 'javascript' || mode === 'totaljs' || mode === 'css' || mode === 'sass' || mode === 'html' || mode === 'todo') {
 				var lines = editor.getValue().split('\n');
@@ -354,6 +355,10 @@ COMPONENT('editor', function(self, config) {
 								switch(type) {
 									case 'newsc':
 										oldschema = name;
+										break;
+									case 'newta':
+										oldtask = name;
+										taskvariable = m[0].substring(m[0].indexOf('(', 10) + 1, m[0].indexOf(')'));
 										break;
 									case 'plugi':
 										oldplugin = name;
@@ -407,6 +412,17 @@ COMPONENT('editor', function(self, config) {
 								m = m[0].replace(REGPLUGINOP_REPLACE, '');
 								m = m.substring(0, m.indexOf(')') + 1).trim().substring(pluginvariable.length);
 								components.push({ line: i, ch: m.index || 0, name: oldplugin + m, type: 'plugin' });
+							}
+						}
+
+						if (oldtask) {
+							m = lines[i].match(new RegExp(taskvariable + '\\(.*?,'));
+							if (m) {
+								m = m[0].match(REGTASKOP);
+								if (m) {
+									m = m[0].replace(/"|'/g, '');
+									components.push({ line: i, ch: m.index || 0, name: oldtask + '.' + m, type: 'task' });
+								}
 							}
 						}
 					}
