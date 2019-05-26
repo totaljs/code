@@ -4,7 +4,7 @@ FUNC.cleancss = function(text) {
 	}).replace(/\}/g, '}\n').replace(/\s{2,}/g, ' ').replace(/(\w|'|"|;)\}/g, function(text) {
 		var l = text.substring(text.length - 2, text.length - 1);
 		return text.substring(0, text.length - 1) + (l !== ';' ? ';' : '') + ' ' + text.substring(text.length - 1);
-	}).replace(/"/g, '\'').replace(/(\w)\{/g, '$1 {').replace(/\{\w/g, function(text) {
+	}).replace(/;(\w)/g, '; $1').replace(/"/g, '\'').replace(/(\w)\{/g, '$1 {').replace(/\{\w/g, function(text) {
 		return text.substring(0, 1) + ' ' + text.substring(1);
 	}).replace(/(\n)?.*?\{/g, function(text) {
 		return text.replace(/:\s(\w)/g, ':$1');
