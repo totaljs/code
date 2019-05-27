@@ -310,16 +310,22 @@ NEWSCHEMA('FilesRename', function(schema) {
 
 		MAIN.log($.user, 'files_rename', project, model.oldpath, model.newpath);
 		MAIN.change('rename', $.user, project, model.oldpath + ' --> ' + model.newpath);
-
 		NOSQL($.id + '_parts').modify({ $path: 'val.replace(\'{0}\', \'{1}\')'.format(oldpath, newpath) }).search('path', oldpath, 'beg');
 
-		Fs.rename(model.oldpath, model.newpath, function(err) {
-			if (err)
-				$.invalid(err);
-			else
-				$.success();
-		});
+		var length = project.todo.length;
+		if (length) {
+			var is = false;
+			for (var i = 0; i < project.todo.length; i++) {
+				var item = project.todo[i];
+				if (item.path.substring(0, oldpath.length) === oldpath) {
+					item.path = item.path.replace(oldpath, newpath);
+					is = true;
+				}
+			}
+			is && MAIN.save(2);
+		}
 
+		Fs.rename(model.oldpath, model.newpath, $.done());
 	});
 });
 
@@ -366,6 +372,15 @@ NEWSCHEMA('FilesRemove', function(schema) {
 
 			// Removes parts
 			NOSQL(project.id + '_parts').remove().search('path', model.path, 'beg');
+
+			var length = project.todo.length;
+			if (length) {
+				project.todo = project.todo.remove(function(item) {
+					return item.path.substring(0, model.path.length) === model.path;
+				});
+				if (project.todo.length !== length)
+					MAIN.save(2);
+			}
 
 		} catch (e) {}
 
