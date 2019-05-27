@@ -294,6 +294,9 @@ NEWSCHEMA('FilesRename', function(schema) {
 			}
 		}
 
+		var oldpath = model.oldpath;
+		var newpath = model.newpath;
+
 		model.oldpath = Path.join(project.path, model.oldpath);
 		model.newpath = Path.join(project.path, model.newpath);
 
@@ -307,6 +310,8 @@ NEWSCHEMA('FilesRename', function(schema) {
 
 		MAIN.log($.user, 'files_rename', project, model.oldpath, model.newpath);
 		MAIN.change('rename', $.user, project, model.oldpath + ' --> ' + model.newpath);
+
+		NOSQL($.id + '_parts').modify({ $path: 'val.replace(\'{0}\', \'{1}\')'.format(oldpath, newpath) }).search('path', oldpath, 'beg');
 
 		Fs.rename(model.oldpath, model.newpath, function(err) {
 			if (err)
@@ -358,6 +363,10 @@ NEWSCHEMA('FilesRemove', function(schema) {
 				else
 					Fs.unlink(filename, ERROR('files.remove'));
 			}
+
+			// Removes parts
+			NOSQL(project.id + '_parts').remove().search('path', model.path, 'beg');
+
 		} catch (e) {}
 
 		$.success();

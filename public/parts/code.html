@@ -171,8 +171,8 @@
 
 			var is = components.length > 0;
 
-			if (!is && common.form === 'components')
-				NULL('common.form');
+			// if (!is && common.form === 'components')
+			// 	NULL('common.form');
 
 			SET('code.components', components);
 
@@ -1081,7 +1081,7 @@
 		};
 
 		exports.closeforce = function(path) {
-			common.form && SET('common.form', '');
+			//common.form && SET('common.form', '');
 			exports.closetab(path || code.current.path);
 		};
 
