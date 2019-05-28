@@ -314,9 +314,26 @@ COMPONENT('editor', function(self, config) {
 			return text.charAt(0) === '(' ? '()' : ')';
 		};
 
+		var prevchangescount = 0;
+		var changesinterval = 1;
+
 		self.prerender_colors = function(changescount) {
 
 			config.change && EXEC(config.change, changescount || 0);
+
+			if (changescount === undefined) {
+				prevchangescount = 0;
+				changesinterval = 1;
+			} else if (changescount === prevchangescount) {
+
+				if ((changesinterval++) % 3 === 0) {
+					changesinterval = 1;
+					prevchangescount = 0;
+				}
+
+				return;
+			} else
+				prevchangescount = changescount;
 
 			var todos = [];
 			var components = [];
@@ -428,6 +445,7 @@ COMPONENT('editor', function(self, config) {
 					}
 				}
 			}
+
 			EXEC(config.components, components);
 			EXEC(config.todo, todos);
 			setTimeout2(self.ID, self.rebuild_autocomplete, 5000);
@@ -534,7 +552,7 @@ COMPONENT('editor', function(self, config) {
 					combo && combo();
 			}
 
-			setTimeout2('EditorGutterColor', self.prerender_colors, 500, null, count);
+			setTimeout2('EditorGutterColor', self.prerender_colors, 800, null, count);
 
 			if (config.disabled || !can[b.origin])
 				return;

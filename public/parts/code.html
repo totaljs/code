@@ -170,10 +170,11 @@
 		exports.components = function(components) {
 
 			var is = components.length > 0;
+			var checksum = HASH(components);
+			if (checksum === code.componentschecksum)
+				return;
 
-			// if (!is && common.form === 'components')
-			// 	NULL('common.form');
-
+			code.componentschecksum = checksum;
 			SET('code.components', components);
 
 			if (is && !common.form && code.current && !code.current.$components && common.showparts) {
