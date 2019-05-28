@@ -10,6 +10,8 @@ COMPONENT('editor', function(self, config) {
 	var cache_lines = null;
 	var cache_lines_skip = false;
 	var cache_diffs = {};
+	var cache_diffs_checksum = 0;
+	var checksum = -1;
 
 	fn.lastIndexOf = function(str, chfrom) {
 		for (var i = chfrom; i > 0; i--) {
@@ -102,6 +104,13 @@ COMPONENT('editor', function(self, config) {
 		editor.doc.clearGutter('GutterDiff');
 		cache_lines = editor.getValue().split('\n');
 		cache_diffs = {};
+		cache_diffs_checksum = 0;
+	};
+
+	var cache_diffs_interval = null;
+	var cache_diffs_sum = function() {
+		cache_diffs_interval = null;
+		cache_diffs_checksum = HASH(cache_diffs);
 	};
 
 	self.diffgutter = function(line, nullable) {
@@ -112,6 +121,8 @@ COMPONENT('editor', function(self, config) {
 		else
 			cache_diffs[key] = 1;
 
+		cache_diffs_interval && clearTimeout(cache_diffs_interval);
+		cache_diffs_interval = setTimeout(cache_diffs_sum, 200);
 		editor.setGutterMarker(line, 'GutterDiff', nullable ? null : GutterDiff());
 	};
 
@@ -314,26 +325,14 @@ COMPONENT('editor', function(self, config) {
 			return text.charAt(0) === '(' ? '()' : ')';
 		};
 
-		var prevchangescount = 0;
-		var changesinterval = 1;
-
 		self.prerender_colors = function(changescount) {
 
 			config.change && EXEC(config.change, changescount || 0);
 
-			if (changescount === undefined) {
-				prevchangescount = 0;
-				changesinterval = 1;
-			} else if (changescount === prevchangescount) {
-
-				if ((changesinterval++) % 3 === 0) {
-					changesinterval = 1;
-					prevchangescount = 0;
-				}
-
+			if (cache_diffs_checksum === checksum)
 				return;
-			} else
-				prevchangescount = changescount;
+
+			checksum = cache_diffs_checksum;
 
 			var todos = [];
 			var components = [];
@@ -552,7 +551,7 @@ COMPONENT('editor', function(self, config) {
 					combo && combo();
 			}
 
-			setTimeout2('EditorGutterColor', self.prerender_colors, 800, null, count);
+			setTimeout2('EditorGutterColor', self.prerender_colors, 999, null, count);
 
 			if (config.disabled || !can[b.origin])
 				return;
@@ -639,6 +638,7 @@ COMPONENT('editor', function(self, config) {
 		cache_lines_skip = true;
 		editor.refresh();
 		cache_lines_skip = false;
+		checksum = -1;
 
 		if (!cache_lines)
 			return;
@@ -647,7 +647,7 @@ COMPONENT('editor', function(self, config) {
 		if (cache_diffs) {
 			var keys = Object.keys(cache_diffs);
 			for (var i = 0; i < keys.length; i++) {
-				self.diffgutter(+keys[i]);
+				self.diffgutter(+keys[i], null, true);
 				changes++;
 			}
 		}
