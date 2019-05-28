@@ -403,7 +403,14 @@ NEWSCHEMA('Projects', function(schema) {
 		Fs.stat(filename, function(err, stats) {
 			if (stats) {
 				var start = stats.size - (1024 * 4); // Max 4 kb
-				Fs.createReadStream(filename, { start: start < 0 ? 0 : start }).once('data', chunk => $.callback(chunk.toString('utf8')));
+				if (start < 0)
+					start = 0;
+				var buffer = [];
+				Fs.createReadStream(filename, { start: start < 0 ? 0 : start }).on('data', chunk => buffer.push(chunk)).on('end', function() {
+					var buf = Buffer.concat(buffer);
+					$.callback(buf.toString('utf8'));
+					//  + ':' + (start + '/' + stats.size + ':' + buf.length).padLeft(15, '.')
+				});
 			} else
 				$.callback('');
 		});
