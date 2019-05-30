@@ -1,5 +1,5 @@
 const MSG_OPEN = { TYPE: 'open' };
-const MSG_CLOSE = { TYPE: 'close' };
+const MSG_EXIT = { TYPE: 'exit' };
 
 exports.install = function() {
 	WEBSOCKET('/', realtime, ['authorize'], 1024);
@@ -14,7 +14,7 @@ function realtime() {
 
 		var old = self.find(conn => conn.user === client.user && conn.id !== client.id);
 		if (old) {
-			old.send(MSG_CLOSE);
+			old.send(MSG_EXIT);
 			setTimeout(() => old.close(), 1000);
 		}
 
@@ -43,9 +43,9 @@ function realtime() {
 		if (msg[9] === 'e') {
 			msg = msg.parseJSON();
 			client.user.fileid && refresh_collaborators(self, client.user);
-			client.user.projectid = msg.projectid;
-			client.user.openid = (msg.openid || 0).toString();
+			client.user.projectid = msg.projectid || '';
 			client.user.fileid = msg.fileid;
+			client.user.openid = (msg.openid || 0).toString();
 			client.user.ts = Date.now();
 			refresh_collaborators(self, client.user, true);
 		} else if (msg[9] === 's' && msg[12] === 'e')
@@ -81,5 +81,13 @@ function refresh_collaborators(ws, user, add) {
 		}
 	}
 
-	MSG_OPEN.file.length && ws.send2(MSG_OPEN);
+	//if (MSG_OPEN.file.length) {
+
+	if (add)
+		MSG_OPEN.TYPE = 'open';
+	else
+		MSG_OPEN.TYPE = 'close';
+
+	ws.send2(MSG_OPEN);
+	//}
 }

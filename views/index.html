@@ -165,11 +165,22 @@
 				case 'blocked':
 					location.href = '/';
 					break;
-				case 'close':
+				case 'exit':
 					// close all projects
 					location.href = '/offline/';
 					break;
 				case 'open':
+
+					if (code.current && msg.userid !== user.id && msg.fileid === code.current.path)
+						EXEC('code/readonly', true);
+
+					EXEC('code/collaboration', msg);
+					break;
+				case 'close':
+
+					if (code.current && msg.fileid === code.current.path)
+						EXEC('code/readonly', false);
+
 					EXEC('code/collaboration', msg);
 					break;
 				case 'sync':
@@ -182,8 +193,9 @@
 					}
 					break;
 				case 'syncsend':
+
 					if (msg.projectid === code.projectid && msg.connid !== common.id) {
-						// SETTER('loading', 'show');
+						EXEC('code/readonly', true);
 						code.SYNC = false;
 						clearTimeout(common.synctimeout);
 						common.synctimeout = null;
@@ -205,6 +217,7 @@
 						var editor = FIND('editor').editor;
 						editor.replaceRange(msg.body, { line: 0, ch: 0 }, { line: editor.lineCount() + 1, ch: 0 });
 						EXEC('code/restoreposition', true);
+						EXEC('code/readonly', true);
 						msg.body = null;
 						FUNC.wssend(msg);
 					}
@@ -217,6 +230,7 @@
 						code.issyncing = false;
 						SET('code.backup', false);
 						SET('code.multiple', false);
+						EXEC('code/readonly', false);
 						SETTER('loading', 'hide');
 					}
 					break;
@@ -225,7 +239,7 @@
 						EXEC('code/synccursor', msg);
 					break;
 				case 'save':
-					if (window.code) {
+					if (W.code) {
 						if (msg.projectid === code.projectid && msg.id !== user.id)
 							EXEC('code/syncsave', msg);
 						else if (code) {

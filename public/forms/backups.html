@@ -47,11 +47,29 @@
 			qs.path = el.attrd('path');
 			SETTER('loading', 'show');
 			AJAX('GET /api/projects/{id}/restore/'.arg(code.data), qs, function(response) {
+
+				var editor = FIND('editor').editor;
+				var sel = editor.getSelection();
+				var beg = sel ? editor.getCursor(true) : null;
+
 				SETTER('loading', 'hide', 500);
-				FUNC.success('@(File has been restored in the code editor.)');
+
 				var codeplugin = PLUGIN('code');
 				code.current.modified = true;
-				codeplugin.editor.restore(response);
+
+				if (sel) {
+
+					var lines = response.split('\n');
+					var tmp = lines.splice(beg.line, sel.split('\n').length).join('\n');
+					editor.replaceSelection(tmp);
+
+					FUNC.success('@(Selected part has been restored in the code editor.)');
+
+				} else {
+					FUNC.success('@(File has been restored in the code editor.)');
+					codeplugin.editor.restore(response);
+				}
+
 				codeplugin.element.find('section.tabs').find('span[data-value="{0}"]'.format(code.current.path)).aclass('modified');
 			});
 		};

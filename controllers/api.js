@@ -53,7 +53,6 @@ exports.install = function() {
 		ROUTE('GET    /api/componentator/download/           *Componentator    --> @download');
 
 		ROUTE('POST   /api/request/', 										   makerequest);
-
 	});
 
 	GROUP(['unauthorize'], function() {

@@ -629,7 +629,7 @@ COMPONENT('editor', function(self, config) {
 
 	self.paste = function(doc) {
 
-		cache_lines = doc.cachedlines || null;
+		cache_lines = doc.cachedlines || editor.getValue().split('\n');
 		cache_diffs = doc.cacheddiffs || {};
 
 		delete doc.cachedlines;
