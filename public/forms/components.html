@@ -8,7 +8,7 @@
 		<!-- <div class="help"><span class="link exec" data-path="common.form" data-value="'componentator'"><i class="fa fa-plus-circle"></i>@(Insert UI components)</span></div>-->
 	</div>
 	<div data---="viewbox__components.search__height:100;margin:134;parent:.ui-panel">
-		<div data---="search__components.search__selector:.part,.partgroup">
+		<div data---="search__components.search__selector:.part">
 			<div data-bind="code.components__template">
 				<script type="text/html">
 					{{ if value.length }}
@@ -25,7 +25,7 @@
 				<script type="text/html">
 					{{ foreach n in value }}
 						{{ if n.path }}
-							<div class="partgroup" data-search="">{{ n.path }}</div>
+							<div class="partgroup">{{ n.path }}</div>
 						{{ fi }}
 						{{ foreach m in n.items }}
 							<div class="part exec" data-path="{{ n.path }}" data-exec="components/open" data-line="{{ m.line }}" data-ch="{{ m.ch }}" data-search="{{ m.name }}" data-index="{{ $index }}" title="@(Line:) {{ m.line }}"><i class="fa fa-{{ if m.type === 'helper' }}align-left{{ else if m.type === 'FUNC' }}code{{ else if m.type === 'REPO' }}box{{ else if m.type === 'plugin' }}plug{{ else if m.type === 'route' }}link{{ else if m.type === 'watcher' }}eye{{ else if m.type === 'event' }}bolt{{ else if m.type === 'middleware' }}filter{{ else if m.type === 'component' }}drafting-compass{{ else if m.type === 'schema' }}code-branch{{ else if m.type === 'console'}}font{{ else if m.type === 'operation' }}plug{{ else }}tasks{{ fi }}"></i><b>{{ m.type }}</b>{{ m.name | partvariables }}</div>
