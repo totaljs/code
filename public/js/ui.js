@@ -5670,8 +5670,11 @@ COMPONENT('directory', 'minwidth:200', function(self, config) {
 		var counter = 0;
 		var scroller = container.parent();
 		var h = scroller.height();
+		var li = container.find('li');
+		var hli = li.eq(0).innerHeight() || 30;
+		var was = false;
 
-		container.find('li').each(function() {
+		li.each(function() {
 			var el = $(this);
 
 			if (el.hclass('hidden')) {
@@ -5683,14 +5686,22 @@ COMPONENT('directory', 'minwidth:200', function(self, config) {
 			el.tclass('current', is);
 
 			if (is) {
-				var t = (h * counter) - h;
-				if ((t + h * 4) > h)
-					scroller.scrollTop(t - h);
+				was = true;
+				var t = (hli * (counter || 1));
+				var f = Math.ceil((h / hli) / 2);
+				if (counter > f)
+					scroller[0].scrollTop = (t + f) - (h / 2.8 >> 0);
 				else
-					scroller.scrollTop(0);
+					scroller[0].scrollTop = 0;
 			}
+
 			counter++;
 		});
+
+		if (!was && li.length) {
+			selectedindex = li.length - 1;
+			li.eq(selectedindex).aclass('current');
+		}
 	};
 
 	self.search = function(value) {
@@ -5791,6 +5802,7 @@ COMPONENT('directory', 'minwidth:200', function(self, config) {
 		self.initializing = true;
 		self.target = el;
 		opt.ajax = null;
+		self.ajaxold = null;
 
 		var element = $(opt.element);
 		var callback = opt.callback;
@@ -5855,8 +5867,9 @@ COMPONENT('directory', 'minwidth:200', function(self, config) {
 
 		self.target = element[0];
 
+		var w = element.width();
 		var offset = element.offset();
-		var width = element.width() + (opt.offsetWidth || 0);
+		var width = w + (opt.offsetWidth || 0);
 
 		if (opt.minwidth && width < opt.minwidth)
 			width = opt.minwidth;
@@ -5871,7 +5884,28 @@ COMPONENT('directory', 'minwidth:200', function(self, config) {
 		var scroller = self.find(cls2 + '-container').css('width', width + 30);
 		container.html(builder);
 
-		var options = { left: offset.left + (opt.offsetX || 0), top: offset.top + (opt.offsetY || 0), width: width };
+		var options = { left: 0, top: 0, width: width };
+
+		switch (opt.align) {
+			case 'center':
+				options.left = Math.ceil((offset.left - width / 2) + (width / 2));
+				break;
+			case 'right':
+				options.left = (offset.left - width) + w;
+				break;
+			default:
+				options.left = offset.left;
+				break;
+		}
+
+		options.top = opt.position === 'bottom' ? ((offset.top - self.height()) + element.height()) : offset.top;
+
+		if (opt.offsetX)
+			options.left += opt.offsetX;
+
+		if (opt.offsetY)
+			options.top += opt.offsetY;
+
 		self.css(options);
 
 		!isMOBILE && setTimeout(function() {
