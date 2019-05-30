@@ -314,11 +314,12 @@ COMPONENT('editor', function(self, config) {
 		var REGCOLORCLEAN = /;|'|"|,/g;
 		var REGPART = /(COMPONENT|NEWSCHEMA|NEWOPERATION|NEWTASK|MIDDLEWARE|WATCH|ROUTE|(^|\s)ON|PLUGIN)+\(.*?\)/g;
 		var REGPARTCLEAN = /('|").*?('|")/;
-		var REGHELPER = /(Thelpers|FUNC|REPO)\..*?=/g;
+		var REGHELPER = /(Thelpers|FUNC|REPO|MAIN)\.[a-z0-9A-Z_$]+(\s)+=/g;
 		var REGCONSOLE = /console\.\w+\(.*?\)/g;
 		var REGSCHEMAOP = /\.(setQuery|setSave|setInsert|setUpdate|setPatch|setRead|setGet|setRemove|addWorkflow|addTransform|addOperation|addHook)\(.*?\)/g;
 		var REGSCHEMAOP_REPLACE = /(\(|,(\s))function.*?$/g;
 		var REGPLUGINOP_REPLACE = /(\s)+=(\s)+function/g;
+		var REGFUNCTION = /((\s)+=(\s)+function)/;
 		var REGTASKOP = /('|").*?('|")/g;
 
 		var schemaoperation_replace = function(text) {
@@ -397,20 +398,20 @@ COMPONENT('editor', function(self, config) {
 							if (name) {
 
 								if (type === 'Thel' || type === 'FUNC') {
-									var index = lines[i].indexOf('function(');
-									if (index === -1)
+									var subm = lines[i].match(REGFUNCTION);
+									if (!subm)
 										continue;
-									name = name.trim() + lines[i].substring(index + 8, lines[i].indexOf(')', index + 8) + 1);
+									name = name.trim() + lines[i].substring(lines[i].indexOf('(', subm.index), lines[i].indexOf(')', subm.index + 8) + 1);
 								}
 
 								var beg = m.index || 0;
-								components.push({ line: i, ch: beg, name: name.trim(), type: type === 'Thel' ? 'helper' : type.toUpperCase() });
+								components.push({ line: i, ch: beg, name: (type === 'Thel' ? 'Thelpers' : type) + '.' + name.trim(), type: type === 'Thel' ? 'helper' : type.toUpperCase() });
 							}
 						}
 
 						m = lines[i].match(REGCONSOLE);
 						if (m) {
-							name = m[0].length > 20 ? (m[0].substring(0, 20) + '...') : m[0];
+							name = m[0].length > 20 ? (m[0].substring(0, 30) + '...') : m[0];
 							components.push({ line: i, ch: m.index || 0, name: name, type: 'console' });
 						}
 
