@@ -107,6 +107,6 @@
 		var index = val.indexOf('(');
 		if (index === -1)
 			return val;
-		return val.substring(0, index) + '<span>' + val.substring(index) + '</span>';
+		return Thelpers.encode(val.substring(0, index)) + '<span>' + Thelpers.encode(val.substring(index)) + '</span>';
 	};
 </script>
