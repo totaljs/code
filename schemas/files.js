@@ -14,6 +14,12 @@ NEWSCHEMA('FilesPart', function(schema) {
 	schema.define('name', 'String(80)', true);
 });
 
+NEWSCHEMA('FilesDiff', function(schema) {
+	schema.define('line', Number);
+	schema.define('userid', 'Lower(30)');
+	schema.define('updated', Date);
+});
+
 NEWSCHEMA('FilesTodoClear', function(schema) {
 
 	schema.define('path', 'String(500)');
@@ -93,6 +99,7 @@ NEWSCHEMA('Files', function(schema) {
 	schema.define('parts', '[FilesPart]');
 	schema.define('combo', Number); // Max. combo
 	schema.define('time', Number);  // Spent time
+	schema.define('diff', '[FilesDiff]'); // Changed lines
 
 	schema.trim = false;
 
@@ -122,6 +129,7 @@ NEWSCHEMA('Files', function(schema) {
 		var filename = Path.join(project.path, model.path);
 		var name = U.getName(filename);
 		var is = false;
+		var clean = $.clean();
 
 		var count = model.combo;
 		if (count) {
@@ -170,13 +178,13 @@ NEWSCHEMA('Files', function(schema) {
 		var db = NOSQL(project.id + '_parts');
 
 		if (model.parts && model.parts.length)
-			db.update({ path: model.path, items: $.clean().parts }, true).where('path', model.path);
+			db.update({ path: model.path, items: clean.parts }, true).where('path', model.path);
 		else
 			db.remove().where('path', model.path);
 
 		if (model.todo && model.todo.length) {
 			for (var i = 0; i < model.todo.length; i++) {
-				var todo = model.todo[i].$clean();
+				var todo = model.todo[i];
 				todo.path = model.path;
 				project.todo.push(todo);
 				is = true;
@@ -192,9 +200,11 @@ NEWSCHEMA('Files', function(schema) {
 		F.path.mkdir(filename.substring(0, filename.length - name.length));
 
 		if (project.backup)
-			MAIN.backup(user, filename, () => Fs.writeFile(filename, model.body, ERROR('files.write')), project);
+			MAIN.backup(user, filename, () => Fs.writeFile(filename, model.body, ERROR('files.write')), project, model.diff.length);
 		else
 			Fs.writeFile(filename, model.body, ERROR('files.write'));
+
+		MAIN.diff(project, filename, clean.diff);
 
 		if (model.sync && project.pathsync) {
 			filename = Path.join(project.pathsync, model.path);

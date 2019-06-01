@@ -12,6 +12,7 @@
 						<div class="meta">
 							<div class="date"><span>{{ m.date | format('[date]') }}</span><i class="fa fa-clock"></i><span class="time" data-time="{{ m.date | utc }}">{{ m.date | time }}</span></div>
 							<div class="user">{{ m.user }}</div>
+							<div class="changes">@(Changed lines:) <b>{{ m.changes }}x</b></div>
 						</div>
 					</div>
 				{{ end }}

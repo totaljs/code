@@ -11,9 +11,9 @@
 						<div class="date">{{ m.date }}</div>
 						<div class="items">
 							{{ foreach n in m.items }}
-								<div><b>{{ n.count | timespent(true) }}</b><span>{{ n.name }}</span></div>
+								<div><b>{{ n.count | timespent }}</b><span>{{ n.name }}</span></div>
 							{{ end }}
-							<div><b>{{ m.sum | timespent(true) }}</b><span class="b">@(Summarize)</span></div>
+							<div><b>{{ m.sum | timespent }}</b><span class="b">@(Summarize)</span></div>
 						</div>
 					</div>
 				{{ end }}
@@ -41,7 +41,7 @@
 
 			for (var i = 0; i < keys.length; i++) {
 				var key = keys[i];
-				var name = code.usersproject.findValue('id', key, 'name', key);
+				var name = code.data.users.findValue('id', key, 'name', key);
 				var item = code.data.time[key];
 				var keys2 = Object.keys(item);
 				for (var j = 0; j < keys2.length; j++) {

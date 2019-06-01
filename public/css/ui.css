@@ -37,14 +37,25 @@ button { outline: 0; }
 .CodeMirror-focused .cm-matchhighlight { }
 .cm-matchhighlight { outline: 1px solid #4285F4; }
 .CodeMirror-selection-highlight-scrollbar { background-color: yellow; }
-.CodeMirror-gutters { width: 60px; }
+.CodeMirror-gutters { text-align: right; }
 div.CodeMirror span.CodeMirror-matchingbracket { border-bottom: 2px solid blue; color: inherit; }
 .td .cm-variable-S { background-color: rgba(255,59,231,.15); color: #f546fd; }
 .td .cm-variable-J { background-color: rgba(27,27,27,.35); color: #90ff2f; }
 .td .cm-variable-B { background-color: rgba(27,27,27,.35); color: #84d087; }
+.cm-diff-user { font-size: 10px; width: 14px; height: 14px; line-height: 15px; text-align: center; position: absolute; border-radius: 2px; font-weight: bold; letter-spacing: -0.4px; color: white; margin: 5px 0 0 3px; }
+.cm-diff { font-size: 14px; font-weight: bold; position: absolute; left: 6px; }
+.cm-gutter-color { margin-left: 8px; }
+.CodeMirror-linenumbers { width: 30px !important; overflow: hidden; }
+.CodeMirror-linenumber { overflow: hidden; font-size: 12px; width: 30px !important; text-overflow: ellipsis; }
+
+.GutterColor { width: 12px; }
+.GutterUser { width: 15px; }
+.GutterDiff { width: 12px; }
 
 .CodeMirror-dialog button { background-color: #D0D0D0; border-radius: 3px; color: black; border: 0; height: 22px; font-weight: bold; line-height: 22px; font-size: 12px; }
 .td .CodeMirror-dialog button { background-color: #505050; color: white; }
+.CodeMirror-lint-tooltip .fa-warning { color: #D89E00; }
+.CodeMirror-lint-tooltip .fa-error { color: red; }
 
 .cm-uname { position: absolute; font-size: 11px; margin: -19px 0 0 4px; height: 22px; }
 .cm-uname b { color: black; padding: 2px 5px; line-height: 12px; display: block; font-family: Arial; }
@@ -331,8 +342,7 @@ input:invalid { box-shadow: none; }
 .ui-right { text-align: right; }
 .ui-center { text-align: center; }
 
-.ui-menu { position: absolute; z-index: 100; background-color: white; padding: 5px 0; border-radius: 3px; box-shadow: 2px 5px 10px rgba(0,0,0,0.05); transition: 0.2s all; transform: scale(0.3); transform-origin: top left; opacity: 0; border: 1px solid #E0E0E0; }
-.ui-menu-visible { transform: scale(1); opacity: 1; }
+.ui-menu { position: absolute; z-index: 100; background-color: white; padding: 5px 0; border-radius: 3px; box-shadow: 2px 5px 10px rgba(0,0,0,0.05); border: 1px solid #E0E0E0; }
 .ui-menu ul { margin: 0; padding: 0; }
 .ui-menu li { margin: 0; padding: 5px 20px 5px 5px; list-style-type: none; font-size: 12px; cursor: pointer; }
 .ui-menu li:hover { background-color: #F0F0F0; }

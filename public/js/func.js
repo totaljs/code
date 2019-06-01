@@ -11,6 +11,19 @@ FUNC.cleancss = function(text) {
 	}).replace(/\0/g, '\n').trim();
 };
 
+FUNC.usercolor = function(value) {
+
+	var index = value.indexOf('.');
+	var arr = value.substring(index + 1).replace(/\s{2,}/g, ' ').trim().split(' ');
+	var initials = (arr[0].substring(0, 1) + (arr[1] || '').substring(0, 1));
+	var sum = 0;
+
+	for (var i = 0; i < value.length; i++)
+		sum += value.charCodeAt(i);
+
+	return { color: TTIC[sum % value.length], name: value, initials: initials };
+};
+
 FUNC.getName = function(path) {
 	var index = path.lastIndexOf('/');
 	return path.substring(index + 1);

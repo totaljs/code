@@ -188,6 +188,7 @@
 						var editor = FIND('editor').editor;
 						var data = PARSE(msg.data);
 						code.SYNC = false;
+						code.SYNCUSER = msg.userid;
 						editor.replaceRange(data.text, data.from, data.to);
 						code.SYNC = true;
 					}
@@ -200,9 +201,11 @@
 						clearTimeout(common.synctimeout);
 						common.synctimeout = null;
 						if (msg.fromid === user.id) {
-							var editor = FIND('editor').editor;
+							var editor = FIND('editor');
+							var cm = editor.editor;
 							msg.TYPE = 'syncbody';
-							msg.body = editor.getValue();
+							msg.body = cm.getValue();
+							msg.diff = editor.getDiff();
 							FUNC.wssend(msg);
 						}
 					}
@@ -218,7 +221,9 @@
 						editor.replaceRange(msg.body, { line: 0, ch: 0 }, { line: editor.lineCount() + 1, ch: 0 });
 						EXEC('code/restoreposition', true);
 						EXEC('code/readonly', true);
+						SET('code.current.diff', msg.diff);
 						msg.body = null;
+						msg.diff = null;
 						FUNC.wssend(msg);
 					}
 					break;
@@ -412,7 +417,6 @@
 				return Math.ceil(value / 60) + '@(m)';
 
 			var minutes = Math.round(value / 60);
-
 
 			if (minutes > 0) {
 				var hours = Math.round(minutes / 60);

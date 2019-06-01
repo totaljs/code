@@ -31,6 +31,7 @@ exports.install = function() {
 		ROUTE('GET     /api/projects/{id}/edit/               *Projects',       files_open);
 		ROUTE('GET     /api/projects/{id}/translate/          *Projects',       files_translate);
 		ROUTE('GET     /api/projects/{id}/changes/            *Projects',       files_changes);
+		ROUTE('GET     /api/projects/{id}/diff/',                               files_diff);
 		ROUTE('GET     /api/projects/{id}/changelogs/',                         changelogs);
 		ROUTE('GET     /api/projects/timespent/',                               timespent);
 
@@ -98,6 +99,19 @@ function files_logfile(id) {
 			self.invalid(err);
 		else
 			self.plain(data);
+	});
+}
+
+function files_diff(id) {
+	var self = this;
+	var project = MAIN.projects.findItem('id', id);
+	if (project == null) {
+		self.invalid('error-project');
+		return;
+	}
+
+	Fs.readFile(MAIN.diffpath(project, Path.join(project.path, self.query.path)), function(err, data) {
+		self.content((data ? data.toString('utf8').trim() : null) || '[]', U.getContentType('json'));
 	});
 }
 

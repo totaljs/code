@@ -65,6 +65,11 @@
 		<div data-bind="code.errors__html b:value?value.length:0__.red:value && value.length>0" class="status-alerts exec" data-exec="code/warnings">
 			<i class="fa fa-warning"></i><b>0</b>
 		</div>
+		<div class="status-diff" data-bind="code.current.changes__disabled button:!value||!value.length__click button:code/diff__text b:value?value.length:0">
+			<button name="prev" title="@(Previous change)"><i class="fa fa-chevron-left"></i></button>
+			<span title="@(Count of changed lines)"><i class="fa fa-plus green"></i><b>0</b></span>
+			<button name="next" title="@(Next change)"><i class="fa fa-chevron-right"></i></button>
+		</div>
 		<div class="status-modified exec" data-bind="code.current.lastmodified__template__show" data-path="common.form" data-value="'backups'">
 			<script type="text/html">
 				{{ if value }}
@@ -728,11 +733,13 @@
 		var cache_sync = { TYPE: 'sync' };
 
 		exports.sync = function(data) {
+			code.SYNCUSER = user.id;
 			// Determines how many people is editing this file?
 			if (code.usersfile.length > 1 && code.SYNC) {
 				cache_sync.data = STRINGIFY(data);
 				cache_sync.id = common.id;
 				cache_sync.projectid = code.projectid;
+				cache_sync.userid = user.id;
 				FUNC.wssend(cache_sync);
 			}
 		};
@@ -804,9 +811,10 @@
 		};
 
 		exports.modified = function(changescount) {
-			if (code && code.current) {
+			if (code && code.current && code.current.path) {
 				code.current.modified = changescount == null ? true : changescount > 0;
 				exports.element.find('section.tabs').find('span[data-value="{0}"]'.format(code.current.path)).tclass('modified', code.current.modified);
+				SET('code.current.changes', editor.difflines());
 			}
 		};
 
@@ -814,6 +822,8 @@
 
 			if (!item || item.children)
 				return;
+
+			code.SYNCUSER = null;
 
 			var tab = code.open.findItem('path', item.path);
 			if (tab && tab.loaded) {
@@ -1120,8 +1130,10 @@
 					SET('code.backup', false);
 					SET('code.current.lastmodified', null);
 					exports.element.RECONFIGURE('editor', 'disabled:true');
+					NULL('code.current', 300);
 				}
 			}
+
 			exports.savetabs();
 		};
 
@@ -1246,20 +1258,36 @@
 			setTimeout2('code.autocomplete', editor.rebuild_autocomplete, 1000);
 			code.current = tab;
 			editor.reconfigure('disabled:false;mode:' + mode);
+			code.SYNCUSER = '';
+
 			FUNC.wsopen(code.data.id, code.current.path, code.projectid);
 
 			code.editor.loaded = true;
+			code.editor.loadedcache = false;
 			!tab.doc && setTimeout(function() {
 				editor.editor.refresh();
 				exports.restoreposition();
+				code.editor.loadedcache = true;
 			}, 250);
+
+			(function(tab) {
+				AJAX('GET /api/projects/{id}/diff/'.arg(code.data), { path: tab.path }, function(response) {
+					tab.diff = response;
+					if (code.current && tab.path === code.current.path)
+						UPD('code.current.diff');
+				});
+			})(tab);
 
 			// Refresh tasks
 			exports.changelog();
 		};
 
 		exports.restoreposition = function(cursoronly) {
-			var cache = code.current ? exports.cache_getscroll(code.current.path) : null;
+
+			if (!code.current)
+				return;
+
+			var cache = exports.cache_getscroll(code.current.path);
 			if (cache) {
 				editor.editor.setCursor({ line: cache.line || 0, ch: cache.ch || 0 });
 				if (!cursoronly)
@@ -1481,12 +1509,13 @@
 			setTimeout(function() {
 				var data = {};
 				var val = editor.editor.getValue();
-				var now = window.NOW = Date.now();
+				var now = Date.now();
 				data.path = code.editor.path;
 				data.body = code.NOTRIM[code.current.ext] ? val : FUNC.rtrim(val);
 				data.combo = FIND('combo').summarize();
 				data.todo = code.data.todocurrent && code.data.todocurrent.length ? code.data.todocurrent : null;
 				data.parts = code.components;
+				data.diff = editor.getDiff();
 
 				var parts = code.componentsdb.findItem('path', data.path);
 				if (parts == null) {
@@ -1537,6 +1566,7 @@
 					FUNC.success((response.value === 'synchronized' ? '@(<b>{0}</b> saved and synchronized)' : '@(<b>{0}</b> saved)').format(data.path));
 					common.electron && code.data.repository && user.localsave && exports.savelocal();
 					SET('code.current.lastmodified', { user: user.name, updated: new Date() });
+					data.diff.length && UPD('code.current.diff');
 				});
 
 			}, 300);
@@ -1718,7 +1748,7 @@
 			BIND('code.cursor');
 
 			setTimeout2('savescrollposition', function(editor) {
-				if (!code.editor.loaded || code.issyncing)
+				if (!code.editor.loaded || code.issyncing || !code.editor.loadedcache)
 					return;
 				var info = editor.getScrollInfo();
 				var key = code.projectid + '_scroll';
@@ -1800,6 +1830,72 @@
 			});
 		};
 
+		exports.diff = function(el) {
+
+			var changes = code.current.changes;
+			var curr = code.current;
+			var line = editor.editor.getCursor().line;
+			var type = el.attr('name');
+			var next = -1;
+
+			if (type === 'prev')
+				line--;
+			else
+				line++;
+
+			for (var i = 0; i < changes.length; i++) {
+				var chl = changes[i];
+				if (chl === line) {
+					next = i;
+					break;
+				}
+			}
+
+			if (next === -1) {
+
+				if (type === 'next') {
+					for (var i = 0; i < changes.length; i++) {
+						var chl = changes[i];
+						if (chl >= line) {
+							next = i;
+							break;
+						}
+					}
+				} else {
+					for (var i = changes.length; i > -1; i--) {
+						var chl = changes[i];
+						if (chl <= line) {
+							next = i;
+							break;
+						}
+					}
+				}
+
+				if (next === -1)
+					next = changes[type === 'prev' ? changes.length - 1 : 0];
+				else
+					next = changes[next];
+
+			} else {
+
+				if (type === 'next') {
+					next = changes[next + 1];
+					if (next == null)
+						next = changes[0];
+				} else {
+					next = changes[next - 1];
+					if (next == null)
+						next = changes[changes.length - 1];
+				}
+
+				if (next == null)
+					next = -1;
+			}
+
+			if (next > -1)
+				editor.editor.setCursor({ line: next - 1, ch: 0 });
+		};
+
 		WATCH('common.powermode', function(path, value) {
 			SETTER(true, 'editor', 'reconfigure', 'powermode:' + (value ? '1' : '0'));
 		}, true);
@@ -1814,6 +1910,23 @@
 				}, 500);
 			}
 		}, true);
+
+		WATCH('code.current.diff', function(path, value) {
+
+			if (!value)
+				return;
+
+			var users = {};
+			for (var i = 0; i < code.data.users.length; i++) {
+				var usr = code.data.users[i];
+				users[usr.id] = usr.name;
+			}
+
+			for (var i = 0; i < value.length; i++) {
+				var diff = value[i];
+				editor.diffuser(diff.line - 1, diff.userid, users[diff.userid] || '', diff.updated);
+			}
+		});
 
 		$('#clipboardbody').on('input', function() {
 			var el = this;

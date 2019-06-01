@@ -233,7 +233,13 @@ NEWSCHEMA('Projects', function(schema) {
 					directories[i] = directories[i].replace(/\\/g, '/');
 			}
 
-			$.callback({ review: !!PREF.token, files: files, directories: directories, url: item.url, name: item.name, icon: item.icon, repository: item.repository, id: item.id, documentation: item.documentation, support: item.support, pathsync: item.pathsync, combo: item.combo, time: item.time, todo: item.todo });
+			var users = [];
+			for (var i = 0; i < MAIN.users.length; i++) {
+				var tmpuser = MAIN.users[i];
+				users.push({ id: tmpuser.id, name: tmpuser.name, collaborator: !!(item.time ? item.time[tmpuser.id] : 0) });
+			}
+
+			$.callback({ review: !!PREF.token, files: files, directories: directories, url: item.url, name: item.name, icon: item.icon, repository: item.repository, id: item.id, documentation: item.documentation, support: item.support, pathsync: item.pathsync, combo: item.combo, time: item.time, todo: item.todo, users: users });
 
 		}, n => !SKIP.test(n) && (!skip || !skip.test(n)));
 	});
@@ -312,11 +318,15 @@ NEWSCHEMA('Projects', function(schema) {
 
 		var name = U.getName($.query.path);
 		var dir = Path.dirname(path);
+		var ext = '';
+
 		path = Path.join(CONF.backup, project.path, dir);
 
-		var index = name.lastIndexOf('.');
-		if (index !== -1)
-			name = name.substring(0, index);
+		var extindex = name.lastIndexOf('.');
+		if (extindex !== -1) {
+			ext = name.substring(extindex);
+			name = name.substring(0, extindex);
+		}
 
 		Fs.readdir(path, function(err, response) {
 
@@ -332,9 +342,10 @@ NEWSCHEMA('Projects', function(schema) {
 			for (var i = 0; i < response.length; i++) {
 				var filename = response[i];
 				if (filename.substring(0, tmp.length) === tmp) {
-					var meta = filename.substring(tmp.length).split('_');
+					console.log(ext);
+					var meta = filename.substring(tmp.length, filename.length - ext.length).split('_');
 					var dt = meta[0];
-					index = meta[1].lastIndexOf('.');
+					var index = meta[1].lastIndexOf('.');
 					if (index !== -1)
 						meta[1] = meta[1].substring(0, index);
 
@@ -344,7 +355,7 @@ NEWSCHEMA('Projects', function(schema) {
 						users[meta[1]] = usr;
 					}
 
-					arr.push({ filename: Path.join(dir, filename), date: new Date(2000 + (+dt.substring(0, 2)), (+dt.substring(2, 4)) - 1, +dt.substring(4, 6), +dt.substring(6, 8), +dt.substring(8, 10)), id: meta[1], user: usr ? usr.name : meta[1] });
+					arr.push({ filename: Path.join(dir, filename), date: new Date(2000 + (+dt.substring(0, 2)), (+dt.substring(2, 4)) - 1, +dt.substring(4, 6), +dt.substring(6, 8), +dt.substring(8, 10)), id: meta[1], user: usr ? usr.name : meta[1], changes: +(meta[2] || 0) });
 				}
 			}
 

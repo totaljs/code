@@ -23,6 +23,15 @@ COMPONENT('editor', function(self, config) {
 		return 0;
 	};
 
+	self.difflines = function() {
+		var arr = [];
+		var tmp = Object.keys(cache_diffs);
+		for (var i = 0; i < tmp.length; i++)
+			arr.push((+tmp[i]) + 1);
+		arr.quicksort();
+		return arr;
+	};
+
 	self.getter = null;
 	self.bindvisible();
 	self.nocompile && self.nocompile();
@@ -78,9 +87,6 @@ COMPONENT('editor', function(self, config) {
 		var marker = document.createElement('div');
 		var css = marker.style;
 		css.color = '#3ed853';
-		css.position = 'absolute';
-		css.left = '39px';
-		css.top = '-1px';
 		marker.className = 'cm-diff';
 		marker.innerHTML = '+';
 		return marker;
@@ -113,6 +119,8 @@ COMPONENT('editor', function(self, config) {
 		cache_diffs_checksum = HASH(cache_diffs);
 	};
 
+	var cache_users = {};
+
 	self.diffgutter = function(line, nullable) {
 		var key = line + '';
 
@@ -124,6 +132,51 @@ COMPONENT('editor', function(self, config) {
 		cache_diffs_interval && clearTimeout(cache_diffs_interval);
 		cache_diffs_interval = setTimeout(cache_diffs_sum, 200);
 		editor.setGutterMarker(line, 'GutterDiff', nullable ? null : GutterDiff());
+
+		var info = editor.lineInfo(line);
+		var key = line + '';
+
+		if (nullable) {
+			// restore previous user
+			var prev = cache_users[key];
+			if (prev) {
+				editor.setGutterMarker(line, 'GutterUser', prev.el);
+				delete cache_users[key];
+			} else if (!info.text)
+				editor.setGutterMarker(line, 'GutterUser', null);
+
+		} else if (info.text) {
+
+			var usr = user;
+			if (code.SYNCUSER && code.SYNCUSER !== user.id) {
+				usr = code.data.users.findItem('id', code.SYNCUSER);
+				if (usr == null)
+					return;
+			}
+
+			if (!cache_users[key])
+				cache_users[key] = { el: info.gutterMarkers.GutterUser ? info.gutterMarkers.GutterUser.cloneNode(true) : null };
+
+			self.diffuser(line, usr.id, usr.name, NOW);
+		} else
+			editor.setGutterMarker(line, 'GutterUser', null);
+	};
+
+	var GutterUser = function(userid, username, updated) {
+		var marker = document.createElement('div');
+		var css = marker.style;
+		var usercolor = FUNC.usercolor(username);
+		css['background-color'] = usercolor.color;
+		marker.title = usercolor.name + ': ' + Thelpers.time(updated);
+		marker.className = 'cm-diff-user';
+		marker.setAttribute('data-userid', userid);
+		marker.setAttribute('data-date', updated.getTime());
+		marker.innerHTML = usercolor.initials;
+		return marker;
+	};
+
+	self.diffuser = function(line, userid, name, updated) {
+		editor.setGutterMarker(line, 'GutterUser', name ? GutterUser(userid, name, updated) : null);
 	};
 
 	self.make = function() {
@@ -246,7 +299,7 @@ COMPONENT('editor', function(self, config) {
 		options.scrollbarStyle = 'simple';
 
 		options.rulers = [{ column: 130, lineStyle: 'dashed' }];
-		options.gutters = ['CodeMirror-lint-markers', 'GutterColor', 'GutterDiff'];
+		options.gutters = ['GutterUser', 'GutterColor', 'CodeMirror-lint-markers', 'CodeMirror-linenumbers', 'GutterDiff'];
 		options.foldGutter = true;
 		options.highlightSelectionMatches = HSM;
 		options.phrases = {};
@@ -267,10 +320,8 @@ COMPONENT('editor', function(self, config) {
 			var marker = document.createElement('div');
 			var css = marker.style;
 			css.color = color;
-			css.position = 'absolute';
-			css.left = '-10px';
-			css.top = '-1px';
-			marker.innerHTML = '●';
+			marker.className = 'cm-gutter-color';
+			marker.innerHTML = '<i class="fa fa-fill"></i>';
 			return marker;
 		};
 
@@ -624,14 +675,29 @@ COMPONENT('editor', function(self, config) {
 		if (history) {
 			doc.cachedlines = cache_lines;
 			doc.cacheddiffs = cache_diffs;
+			doc.cachedusers = cache_users;
 		}
 		return doc;
+	};
+
+	self.getDiff = function() {
+		var arr = [];
+		var count = editor.lineCount();
+		for (var i = 0; i < count; i++) {
+			var info = editor.lineInfo(i);
+			if (info.text && info.gutterMarkers && info.gutterMarkers.GutterUser) {
+				var el = $(info.gutterMarkers.GutterUser);
+				arr.push({ userid: el.attrd('userid'), line: i + 1, updated: new Date(+el.attrd('date')) });
+			}
+		}
+		return arr;
 	};
 
 	self.paste = function(doc) {
 
 		cache_lines = doc.cachedlines || editor.getValue().split('\n');
 		cache_diffs = doc.cacheddiffs || {};
+		cache_users = doc.cachedusers || {};
 
 		delete doc.cachedlines;
 		delete doc.cacheddiffs;
@@ -3300,6 +3366,7 @@ COMPONENT('importer', function(self, config) {
 
 	var init = false;
 	var clid = null;
+	var pending = false;
 	var content = '';
 
 	self.readonly();
@@ -3312,15 +3379,21 @@ COMPONENT('importer', function(self, config) {
 	self.reload = function(recompile) {
 		config.reload && EXEC(config.reload);
 		recompile && COMPILE();
+		pending = false;
 	};
 
 	self.setter = function(value) {
+
+		if (pending)
+			return;
 
 		if (config.if !== value) {
 			if (config.cleaner && init && !clid)
 				clid = setTimeout(self.clean, config.cleaner * 60000);
 			return;
 		}
+
+		pending = true;
 
 		if (clid) {
 			clearTimeout(clid);
@@ -3363,7 +3436,7 @@ COMPONENT('selectbox', function(self, config) {
 		return config.disabled || !config.required ? true : value && value.length > 0;
 	};
 
-	self.configure = function(key, value, init) {
+	self.configure = function(key, value) {
 
 		var redraw = false;
 
@@ -4989,7 +5062,6 @@ COMPONENT('infopanel', function(self) {
 	var cache;
 	var tsshow;
 	var tshide;
-	var closing = false;
 
 	// self.singleton();
 	self.readonly();
@@ -5562,6 +5634,7 @@ COMPONENT('directory', 'minwidth:200', function(self, config) {
 		});
 
 		self.event('click', cls2 + '-button', function(e) {
+			skipclear = false;
 			input.val('');
 			self.search();
 			e.stopPropagation();
@@ -5673,8 +5746,10 @@ COMPONENT('directory', 'minwidth:200', function(self, config) {
 		var li = container.find('li');
 		var hli = li.eq(0).innerHeight() || 30;
 		var was = false;
+		var last = -1;
+		var lastselected = 0;
 
-		li.each(function() {
+		li.each(function(index) {
 			var el = $(this);
 
 			if (el.hclass('hidden')) {
@@ -5696,11 +5771,13 @@ COMPONENT('directory', 'minwidth:200', function(self, config) {
 			}
 
 			counter++;
+			last = index;
+			lastselected++;
 		});
 
-		if (!was && li.length) {
-			selectedindex = li.length - 1;
-			li.eq(selectedindex).aclass('current');
+		if (!was && last >= 0) {
+			selectedindex = lastselected;
+			li.eq(last).aclass('current');
 		}
 	};
 

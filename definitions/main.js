@@ -69,7 +69,7 @@ MAIN.authorize = function(project, user) {
 	return true;
 };
 
-MAIN.backup = function(user, path, callback, project) {
+MAIN.backup = function(user, path, callback, project, changescount) {
 
 	var name = U.getName(path);
 	var target = path.substring(0, path.length - name.length);
@@ -85,7 +85,7 @@ MAIN.backup = function(user, path, callback, project) {
 	F.path.mkdir(dir);
 
 	var ext = U.getExtension(name);
-	var add = '-' + NOW.format('yyMMddHHmm') + '_' + user.id;
+	var add = '-' + NOW.format('yyMMddHHmm') + '_' + user.id + '_' + (changescount || 0);
 
 	if (ext)
 		name = name.replace('.' + ext, add + '.' + ext);
@@ -94,6 +94,35 @@ MAIN.backup = function(user, path, callback, project) {
 
 	// Copy files
 	Fs.createReadStream(path).on('error', callback).pipe(Fs.createWriteStream(Path.join(dir, name))).on('error', callback).on('finish', callback);
+};
+
+MAIN.diffpath = function(project, path) {
+
+	var name = U.getName(path);
+	var target = path.substring(0, path.length - name.length);
+	var dir;
+
+	if (F.isWindows)
+		dir = Path.join(CONF.backup, project.name, target.replace(project.path.replace('/', ''), ''));
+	else
+		dir = Path.join(CONF.backup, target);
+
+	// Creates directories
+	F.path.mkdir(dir);
+
+	var ext = U.getExtension(name);
+	var add = '.diff';
+
+	if (ext)
+		name = name.replace('.' + ext, add);
+	else
+		name += add;
+
+	return Path.join(dir, name);
+};
+
+MAIN.diff = function(project, path, diff) {
+	Fs.writeFile(MAIN.diffpath(project, path), JSON.stringify(diff), ERROR('MAIN.diff'));
 };
 
 MAIN.log = function(user, type, projectid, path) {
