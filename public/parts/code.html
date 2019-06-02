@@ -4,10 +4,10 @@
 		<div data---="tree__code.tree__exec:code/open;options:code/options;rename:code/rename;first:false;upload:code/upload;pk:path"></div>
 	</div>
 	<section class="status invisible" data-bind="code.data__invisible:!value">
-		<button title="@(Create file)" class="exec" data-name="file" data-exec="code/statusform"><i class="fa fa-file-text-o"></i></button>
-		<button title="@(Create folder)" class="exec" data-name="directory" data-exec="code/statusform"><i class="fa fa-folder"></i></button>
+		<button title="@(Create file)" class="exec" data-name="file" data-exec="code/statusform"><i class="far fa-file-text-o"></i></button>
+		<button title="@(Create folder)" class="exec" data-name="directory" data-exec="code/statusform"><i class="far fa-folder"></i></button>
 		<button title="@(Refresh directories and files)" class="exec" data-exec="code/refresh"><i class="fa fa-refresh"></i></button>
-		<button title="@(Time spent)" class="exec" data-exec="code/timespent"><i class="fa fa-calendar"></i></button>
+		<button title="@(Time spent)" class="exec" data-exec="code/timespent"><i class="far fa-calendar"></i></button>
 		<button title="@(All tracked changes)" class="exec" data-exec="code/changes"><i class="fa fa-history"></i></button>
 		<button title="@(Users)" class="exec" data-name="directory" data-exec="code/usersonline"><i class="fa fa-users"></i></button>
 	</section>
@@ -1029,8 +1029,8 @@
 			var items = [];
 
 			if (node.children) {
-				items.push({ value: 'file', name: '@(Create file)', icon: 'file-text-o' });
-				items.push({ value: 'directory', name: '@(Create directory)', icon: 'folder-o' });
+				items.push({ value: 'file', name: '@(Create file)', icon: '!far fa-file-text-o' });
+				items.push({ value: 'directory', name: '@(Create directory)', icon: '!far fa-folder-o' });
 			}
 
 			items.push({ value: 3, name: '@(Rename)', icon: 'pencil' });
