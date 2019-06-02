@@ -11,6 +11,7 @@ COMPONENT('editor', function(self, config) {
 	var cache_lines_skip = false;
 	var cache_diffs = {};
 	var cache_diffs_checksum = 0;
+	var cache_users = {};
 	var checksum = -1;
 
 	fn.lastIndexOf = function(str, chfrom) {
@@ -118,8 +119,6 @@ COMPONENT('editor', function(self, config) {
 		cache_diffs_interval = null;
 		cache_diffs_checksum = HASH(cache_diffs);
 	};
-
-	var cache_users = {};
 
 	self.diffgutter = function(line, nullable) {
 		var key = line + '';
