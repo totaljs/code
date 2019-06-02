@@ -340,6 +340,15 @@ COMPONENT('editor', function(self, config) {
 				e.stopPropagation();
 				e.preventDefault();
 			}
+
+			if (e.keyCode === 13) {
+				var tmp = editor.getCursor();
+				var line = editor.lineInfo(tmp.line);
+				if ((/^\t+$/).test(line.text))
+					editor.replaceRange('', { line: tmp.line, ch: 0 }, { line: tmp.line, ch: line.text.length });
+				return;
+			}
+
 		});
 
 		editor.phrase = function(text) {
