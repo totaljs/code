@@ -17,8 +17,10 @@
 						<div class="help">@(Total.js Team offers a professional code review. You can obtain a token on) <a href="https://my.totaljs.com" target="_blank">https://my.totaljs.com</a></div>
 					</div>
 
+					<div data---="radiobutton__?.darkmode__items:@(Light mode)|0,@(Dark mode)|1,@(Day/Night)|2;type:number;inline:1__0"></div>
+					<hr class="nmt" />
+
 					<div data---="checkbox__?.localsave">@(Always local storing files in Electron version)</div>
-					<div data---="checkbox__?.darkmode">@(Dark mode)</div>
 					<div data---="checkbox__?.ispassword" class="b m">@(Change password)</div>
 
 					<div bind="?.ispassword__show" class="hidden m">
@@ -41,19 +43,28 @@
 	PLUGIN('settings', function(exports) {
 		exports.reload = function() {
 			SETR('settings', {});
-			AJAX('GET /api/accounts/', 'settings');
+			AJAX('GET /api/accounts/', function(response) {
+				// Backward compatibility
+				if (response.darkmode === true)
+					response.darkmode = 1;
+				else if (response.darkmode === false)
+					response.darkmode = 0;
+				SET('settings', response);
+			});
 		};
 
 		exports.submit = function() {
-			var data = GETR('settings');
+			var data = CLONE(GETR('settings'));
 			AJAX('POST /api/accounts/', data, function(response) {
 				if (response.success) {
 					SETTER('snackbar', 'show', '@(Account has been updated successfully.)');
 					user.darkmode = data.darkmode;
 					user.email = data.email;
 					user.localsave = data.localsave;
+					user.autodarkmode = data.autodarkmode;
 					$('body').tclass('td', user.darkmode);
 					SET('code.data.review', !!data.token);
+					FUNC.autodarkmode();
  				}
  				SET('settings.response', response);
 			});

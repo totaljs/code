@@ -3,7 +3,7 @@ NEWSCHEMA('Accounts', function(schema) {
 	schema.define('email', 'Email', true);
 	schema.define('phone', 'Phone');
 	schema.define('token', 'String(100)');
-	schema.define('darkmode', Boolean);
+	schema.define('darkmode', Number);
 	schema.define('localsave', Boolean);
 	schema.define('password', 'String(30)');
 
@@ -29,6 +29,7 @@ NEWSCHEMA('Accounts', function(schema) {
 		user.phone = model.phone;
 		user.darkmode = model.darkmode;
 		user.localsave = model.localsave;
+		user.autodarkmode = model.autodarkmode;
 
 		if (model.password && model.password.substring(0, 3) !== '***')
 			user.password = model.password.sha256();

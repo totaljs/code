@@ -16,7 +16,7 @@
 	<script src="/js/cdn.min.js"></script>
 	@{import('meta', 'head', 'default.css', 'default.js', 'favicon.ico')}
 </head>
-<body data---="exec" class="@{if user.darkmode}td @{fi}invisible" data-jc-class="invisible">
+<body data---="exec" class="@{if (user.darkmode === 2 && NOW.getHours()<=6 && NOW.getHours()>=18) || (user.darkmode !== 0 && user.darkmode !== 2)}td @{fi}invisible" data-jc-class="invisible">
 
 	<div data---="loading" class="ui-loading"><div></div></div>
 	<div data---="LAZY suggestion__null__placeholder:@(Search)"></div>
@@ -426,6 +426,24 @@
 			}
 			return value + '@(s)';
 		};
+
+		FUNC.autodarkmode = function() {
+			var h = NOW.getHours();
+			if (user.darkmode === 3) {
+				var dark = h <= 6 && h >= 18;
+				var body = $('body');
+				var is = body.hclass('td');
+				if (dark) {
+					if (!is)
+						body.aclass('td')
+				} else {
+					if (is)
+						body.rclass('td');
+				}
+			}
+		};
+
+		ON('knockknock', FUNC.autodarkmode);
 
 	</script>
 

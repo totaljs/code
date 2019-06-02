@@ -10,7 +10,7 @@ NEWSCHEMA('Users', function(schema) {
 	schema.define('password', 'String(40)', true);
 	schema.define('blocked', Boolean);
 	schema.define('sa', Boolean);
-	schema.define('darkmode', Boolean);
+	schema.define('darkmode', Number);
 	schema.define('localsave', Boolean);
 
 	schema.setQuery(function($) {
