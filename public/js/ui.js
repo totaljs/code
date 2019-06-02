@@ -371,7 +371,7 @@ COMPONENT('editor', function(self, config) {
 		var REGTODODONE = /@done|@canceled/i;
 		var REGTODOCLEAN = /-->|\*\//g;
 		var REGCOLORCLEAN = /;|'|"|,/g;
-		var REGPART = /(COMPONENT|NEWSCHEMA|NEWOPERATION|NEWTASK|MIDDLEWARE|WATCH|ROUTE|(^|\s)ON|PLUGIN)+\(.*?\)/g;
+		var REGPART = /(COMPONENT|COMPONENT_EXTEND|NEWSCHEMA|NEWOPERATION|NEWTASK|MIDDLEWARE|WATCH|ROUTE|(^|\s)ON|PLUGIN)+\(.*?\)/g;
 		var REGPARTCLEAN = /('|").*?('|")/;
 		var REGHELPER = /(Thelpers|FUNC|REPO|MAIN)\.[a-z0-9A-Z_$]+(\s)+=/g;
 		var REGCONSOLE = /console\.\w+\(.*?\)/g;
