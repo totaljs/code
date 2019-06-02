@@ -141,10 +141,10 @@ COMPONENT('editor', function(self, config) {
 			if (prev) {
 				editor.setGutterMarker(line, 'GutterUser', prev.el);
 				delete cache_users[key];
-			} else if (!info.text)
+			} else if (!info || !info.text)
 				editor.setGutterMarker(line, 'GutterUser', null);
 
-		} else if (info.text) {
+		} else if (info && info.text) {
 
 			var usr = user;
 			if (code.SYNCUSER && code.SYNCUSER !== user.id) {
