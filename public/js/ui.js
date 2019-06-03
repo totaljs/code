@@ -109,9 +109,16 @@ COMPONENT('editor', function(self, config) {
 
 	self.diffgutterclear = function() {
 		editor.doc.clearGutter('GutterDiff');
+		editor.doc.clearGutter('GutterUser');
 		cache_lines = editor.getValue().split('\n');
 		cache_diffs = {};
+		cache_users = {};
 		cache_diffs_checksum = 0;
+	};
+
+	self.diffuserclear = function() {
+		editor.doc.clearGutter('GutterUser');
+		cache_users = {};
 	};
 
 	var cache_diffs_interval = null;
@@ -398,7 +405,7 @@ COMPONENT('editor', function(self, config) {
 			var components = [];
 			var mode = editor.getMode().name;
 			var is = null;
-			var name, type, color, oldschema, oldplugin, pluginvariable, oldtask, taskvariable;
+			var name, type, color, oldschema, oldplugin, pluginvariable, oldtask, taskvariable, tmp;
 
 			if (mode === 'totaljsresources' || mode === 'javascript' || mode === 'totaljs' || mode === 'css' || mode === 'sass' || mode === 'html' || mode === 'todo') {
 				var lines = editor.getValue().split('\n');
@@ -424,7 +431,13 @@ COMPONENT('editor', function(self, config) {
 						m = lines[i].match(REGPART);
 						if (m) {
 							name = m[0].match(REGPARTCLEAN);
-							type = m[0].toLowerCase().substring(0, 5).trim();
+							tmp = m[0].toLowerCase();
+
+							if (tmp.substring(0, 16) === 'component_extend') {
+								type = 'component_extend';
+							} else
+								type = tmp.substring(0, 5).trim();
+
 							if (name) {
 								name = name[0].replace(/'|"/g, '');
 								var beg = m.index || 0;
@@ -442,7 +455,7 @@ COMPONENT('editor', function(self, config) {
 										break;
 								}
 
-								components.push({ line: i, ch: beg, name: name.trim(), type: type.substring(0, 3) === 'on(' ? 'event' : type === 'compo' ? 'component' : type === 'newsc' ? 'schema' : type === 'newop' ? 'operation' : type === 'newta' ? 'task' : type === 'watch' ? 'watcher' : type === 'plugi' ? 'plugin' : type === 'middl' ? 'middleware' : type === 'route' ? 'route' : 'undefined' });
+								components.push({ line: i, ch: beg, name: name.trim(), type: type.substring(0, 3) === 'on(' ? 'event' : type === 'component_extend' ? type : type === 'compo' ? 'component' : type === 'newsc' ? 'schema' : type === 'newop' ? 'operation' : type === 'newta' ? 'task' : type === 'watch' ? 'watcher' : type === 'plugi' ? 'plugin' : type === 'middl' ? 'middleware' : type === 'route' ? 'route' : 'undefined' });
 								is = beg;
 							}
 						}

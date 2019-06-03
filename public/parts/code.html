@@ -933,6 +933,7 @@
 			is && items.push({ value: 3, name: '@(Convert to Tabs)', icon: 'align-right' });
 			is && common.electron && code.data.repository && items.push({ value: 5, name: '@(Save locally)', icon: 'floppy-o' });
 			is && items.push({ value: 4, name: '@(Restore from backup)', icon: 'history' });
+			is && items.push({ value: 18, name: '@(Clear user changes)', icon: 'recycle red' });
 			is && code.data.pathsync && items.push({ value: 6, name: '@(Save synchronized)', icon: 'sync green' });
 			common.electron && code.data.repository && items.push({ value: 7, name: '@(Synchronize locally <strong>last changes</strong>)', icon: 'floppy-o' });
 			is && items.push({ value: 99, name: '<strong>@(Code review)</strong>', icon: 'check-circle green' });
@@ -1005,6 +1006,11 @@
 						break;
 					case 99:
 						exports.review();
+						break;
+					case 18:
+						SETTER('confirm', 'show', '@(Are you sure you want to remove all user changes?)', ['"trash-o" @(Remove)', '@(Cancel)'], function(index) {
+							!index && editor.diffuserclear();
+						});
 						break;
 				}
 			}, -5, -5);
