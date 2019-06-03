@@ -109,10 +109,8 @@ COMPONENT('editor', function(self, config) {
 
 	self.diffgutterclear = function() {
 		editor.doc.clearGutter('GutterDiff');
-		editor.doc.clearGutter('GutterUser');
 		cache_lines = editor.getValue().split('\n');
 		cache_diffs = {};
-		cache_users = {};
 		cache_diffs_checksum = 0;
 	};
 
