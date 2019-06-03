@@ -247,12 +247,10 @@
 			editor.editor.replaceSelection(val + '\n');
 		};
 
-		exports.appendspecial = function(val) {
+		exports.appendcustom = function(fn) {
 			var cur = editor.editor.getCursor();
 			var c = editor.editor.getRange({ line: cur.line, ch: cur.ch - 1 }, { line: cur.line, ch: cur.ch });
-			if ((/[a-z0-9]/i).test(c))
-				val = ' ' + val;
-			editor.editor.replaceSelection(val);
+			fn(editor.editor, cur, c);
 		};
 
 		exports.move = function(line, ch, lineto) {
@@ -1008,12 +1006,8 @@
 						exports.review();
 						break;
 					case 18:
-						SETTER('confirm', 'show', '@(Are you sure you want to remove all user changes?)', ['"trash-o" @(Remove)', '@(Cancel)'], function(index) {
-							if (!index) {
-								editor.diffuserclear();
-								EXEC('code/modified', 1);
-							}
-						});
+						editor.diffuserclear();
+						EXEC('code/modified', 1);
 						break;
 				}
 			}, -5, -5);
