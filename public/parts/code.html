@@ -1009,7 +1009,10 @@
 						break;
 					case 18:
 						SETTER('confirm', 'show', '@(Are you sure you want to remove all user changes?)', ['"trash-o" @(Remove)', '@(Cancel)'], function(index) {
-							!index && editor.diffuserclear();
+							if (!index) {
+								editor.diffuserclear();
+								EXEC('code/modified', 1);
+							}
 						});
 						break;
 				}
