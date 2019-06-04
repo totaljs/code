@@ -182,10 +182,10 @@ NEWSCHEMA('Files', function(schema) {
 		else
 			db.remove().where('path', model.path);
 
-		if (model.todo && model.todo.length) {
-			for (var i = 0; i < model.todo.length; i++) {
-				var todo = model.todo[i];
-				todo.path = model.path;
+		if (clean.todo && clean.todo.length) {
+			for (var i = 0; i < clean.todo.length; i++) {
+				var todo = clean.todo[i];
+				todo.path = clean.path;
 				project.todo.push(todo);
 				is = true;
 			}
