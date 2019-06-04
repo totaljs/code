@@ -171,7 +171,7 @@
 					break;
 				case 'open':
 
-					if (code.current && msg.userid !== user.id && msg.fileid === code.current.path)
+					if (code.data && code.current && msg.userid !== user.id && msg.projectid === code.data.id && msg.fileid === code.current.path)
 						EXEC('code/readonly', true);
 
 					EXEC('code/collaboration', msg);
