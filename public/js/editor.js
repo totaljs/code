@@ -1641,7 +1641,8 @@ SNIPPETS.push({ type: 'html', search: '--', text: '<b>Component</b>', code: '<di
 SNIPPETS.push({ type: 'html', search: 'scope', text: '<b>Scope</b>', code: '<div data-scope=""></div>', ch: 18 });
 SNIPPETS.push({ type: 'html', search: 'data-bind', text: '<b>Binder</b>', code: 'data-bind="__"', ch: 12 });
 SNIPPETS.push({ type: 'javascript', search: 'COMPONENT', text: '<b>COMPONENT</b>', code: 'COMPONENT(\'\', \'\', function(self, config) {\n\t{0}\n{0}});', ch: 12 });
-SNIPPETS.push({ type: 'javascript', search: 'COMPONENT_EXTEND', text: '<b>COMPONENT_EXTEND</b>', code: 'COMPONENT_EXTEND(\'\', \'\', function(self, config) {\n\t{0}\n{0}});', ch: 19 });
+SNIPPETS.push({ type: 'javascript', search: 'EXTENSION', text: '<b>EXTENSION</b>', code: 'EXTENSION(\'\', \'\', function(self, config) {\n\t{0}\n{0}});', ch: 12 });
+SNIPPETS.push({ type: 'javascript', search: 'CONFIG', text: '<b>CONFIG</b>', code: 'CONFIG(\'\', \'\');', ch: 9 });
 SNIPPETS.push({ type: 'javascript', search: 'NEWSCHEMA', text: '<b>NEWSCHEMA</b>', code: 'NEWSCHEMA(\'\', function(schema) {\n\t{0}schema.define(\'key\', String, true);\n{0}});', ch: 12 });
 SNIPPETS.push({ type: 'javascript', search: 'NEWOPERATION', text: '<b>NEWOPERATION</b>', code: 'NEWOPERATION(\'\', function($) {\n\t{0}\n{0}});', ch: 15 });
 SNIPPETS.push({ type: 'javascript', search: 'NEWTASK', text: '<b>NEWTASK</b>', code: 'NEWTASK(\'\', function(push) {\n\t{0}push(\'TASK_NAME\', function($) {\n\t\t{0}$.next(\'NEXT_TASK_NAME\');\n\t{0}});\n{0}});', ch: 10 });
