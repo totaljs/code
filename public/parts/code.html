@@ -1513,23 +1513,26 @@
 				var data = {};
 				var val = editor.editor.getValue();
 				var now = Date.now();
+				var isminified = /(\.|-)min(\.|-)/.test(code.editor.path);
 				data.path = code.editor.path;
 				data.body = code.NOTRIM[code.current.ext] ? val : FUNC.rtrim(val);
-				data.combo = FIND('combo').summarize();
-				data.todo = code.data.todocurrent && code.data.todocurrent.length ? code.data.todocurrent : null;
-				data.parts = code.components;
+				data.combo = isminified ? 0 : FIND('combo').summarize();
+				data.todo = isminified ? EMPTYARRAY : code.data.todocurrent && code.data.todocurrent.length ? code.data.todocurrent : null;
+				data.parts = isminified ? EMPTYARRAY : code.components;
 				data.diff = editor.getDiff();
 
-				var parts = code.componentsdb.findItem('path', data.path);
-				if (parts == null) {
-					parts = {};
-					parts.path = data.path;
-					parts.items = data.parts;
-					code.componentsdb.push(parts);
-				} else
-					parts.items = data.parts;
+				if (!isminified) {
+					var parts = code.componentsdb.findItem('path', data.path);
+					if (parts == null) {
+						parts = {};
+						parts.path = data.path;
+						parts.items = data.parts;
+						code.componentsdb.push(parts);
+					} else
+						parts.items = data.parts;
 
-				UPD('code.componentsdb');
+					UPD('code.componentsdb');
+				}
 
 				var diff = Math.ceil((now - code.lastchange) / 1000);
 				var max = 40; // minutes
