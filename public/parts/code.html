@@ -1518,7 +1518,7 @@
 				var data = {};
 				var val = editor.editor.getValue();
 				var now = Date.now();
-				var isminified = /(\.|-)min(\.|-)/.test(code.editor.path);
+				var isminified = /(\.|-)min(\.|@|-)/.test(code.editor.path);
 				data.path = code.editor.path;
 				data.body = code.NOTRIM[code.current.ext] ? val : FUNC.rtrim(val);
 				data.combo = isminified ? 0 : FIND('combo').summarize();
