@@ -1539,6 +1539,9 @@
 					UPD('code.componentsdb');
 				}
 
+				if (code.current.diff)
+					code.current.diff = data.diff;
+
 				var diff = Math.ceil((now - code.lastchange) / 1000);
 				var max = 40; // minutes
 
