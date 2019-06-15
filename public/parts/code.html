@@ -390,6 +390,7 @@
 			var sel = editor.getSelections();
 			var text = sel.join('');
 			var can = text.length > 0;
+			var sub = [];
 
 			if (can) {
 
@@ -410,20 +411,80 @@
 				if ((/css/).test(code.current.ext))
 					items.push({ name: '@(Clean)', icon: 'broom', value: 'clean' });
 
-				items.push({ name: '@(Encode)', icon: 'code', value: 'encode' });
-				items.push({ name: '@(Decode)', icon: 'broom', value: 'decode' });
-				items.push({ name: '@(Minify code)', icon: 'compress', value: 'minify' });
+
+				sub = [];
+				sub.push({ name: '@(Base64)', icon: 'chevron-right', value: 'btoa' });
+				sub.push({ name: '@(Hex)', icon: 'chevron-right', value: 'hexe', server: true });
+				sub.push({ name: '@(Encode URI)', icon: 'chevron-right', value: 'encodeURIComponent' });
+				sub.push({ name: '@(Escape)', icon: 'chevron-right', value: 'escape' });
+				sub.push({ name: '@(Slug)', icon: 'chevron-right', value: 'slug' });
+				sub.push({ name: '@(HASH)', icon: 'chevron-right', value: 'HASH' });
+				sub.push({ name: '@(Translate)', icon: 'chevron-right', value: 'translate' });
+				sub.push({ name: '@(MD5)', icon: 'chevron-right', value: 'md5', server: true });
+				sub.push({ name: '@(SHA-1)', icon: 'chevron-right', value: 'sha1', server: true });
+				sub.push({ name: '@(SHA-256)', icon: 'chevron-right', value: 'sha256', server: true });
+				sub.push({ name: '@(SHA-512)', icon: 'chevron-right', value: 'sha512', server: true });
+				sub.push({ name: '@(CRC-32)', icon: 'chevron-right', value: 'crc32', server: true });
+				sub.push({ name: '@(CRC-32 unsigned)', icon: 'chevron-right', value: 'crc32unsigned', server: true });
+				sub.push({ name: '@(Optimize for search)', icon: 'search', value: 'search' });
+				items.push({ name: '@(Encode)', icon: 'code', value: 'encode', children: sub });
+
+				sub = [];
+				sub.push({ name: '@(Hex)', icon: 'chevron-right', value: 'hexd', server: true });
+				sub.push({ name: '@(Base64)', icon: 'chevron-right', value: 'atob' });
+				sub.push({ name: '@(Decode URI)', icon: 'chevron-right', value: 'decodeURIComponent' });
+				sub.push({ name: '@(Unescape)', icon: 'chevron-right', value: 'unescape' });
+				items.push({ name: '@(Decode)', icon: 'broom', value: 'decode', children: sub });
+
+				sub = [];
+				sub.push({ name: '@(JavaScript)', icon: 'chevron-right', value: 'js' });
+				sub.push({ name: '@(HTML)', icon: 'chevron-right', value: 'html' });
+				sub.push({ name: '@(CSS)', icon: 'chevron-right', value: 'css' });
+				sub.push({ name: '@(JSON)', icon: 'chevron-right', value: 'json' });
+				items.push({ name: '@(Minify code)', icon: 'compress', value: 'minify', children: sub });
+
 				items.push({ name: '@(Upper Case)', icon: 'font', value: 'upper' });
 				items.push({ name: '@(Lower Case)', icon: 'font', value: 'lower' });
 				items.push('-');
 			}
 
-			items.push({ name: '@(Insert)', icon: 'plus-circle green', value: 'insert' });
+			sub = [];
+			if ((/^(js|css|html)$/).test(code.current.ext)) {
+				sub.push({ name: '@(UI components)', icon: 'chevron-right', value: 'ui' });
+				sub.push({ name: '@(Snippet)', icon: 'chevron-right', value: 'snippet' });
+			}
+
+			sub.push({ name: '@(UID)', icon: 'chevron-right', value: 'uid' });
+			sub.push({ name: '@(GUID)', icon: 'chevron-right', value: 'guid' });
+			sub.push({ name: '@(Password)', icon: 'chevron-right', value: 'password' });
+			sub.push({ name: '@(IP address)', icon: 'chevron-right', value: 'ip' });
+			sub.push({ name: '@(Date / Time)', icon: 'chevron-right', value: 'date' });
+
+			items.push({ name: '@(Insert)', icon: 'plus-circle green', value: 'insert', children: sub });
 			items.push({ name: '@(Insert emoji)', icon: 'smile yellow', value: 'emoji' });
 			items.push({ name: '@(Insert color)', icon: 'fill-drip colorize', value: 'colorpicker' });
 
-			if ((/js|json|html|todo|api/).test(code.current.ext))
-				items.push({ name: '@(Insert template)', icon: 'plus-circle', value: 'template' });
+			if ((/js|json|html|todo|api/).test(code.current.ext)) {
+				sub = [];
+				if (code.current.ext === 'js') {
+					sub.push({ name: '@(Controller)', icon: 'code', value: 'template', id: 'controller' });
+					sub.push({ name: '@(Schema)', icon: 'code', value: 'template', id: 'schema' });
+					sub.push({ name: '@(Operation)', icon: 'code', value: 'template', id: 'operation' });
+				} else if (code.current.ext === 'json') {
+					sub.push({ name: '@(openplatform.json)', icon: 'code', value: 'template', id: 'openplatform' });
+					sub.push({ name: '@(package.json)', icon: 'code', value: 'template', id: 'package' });
+				} else if (code.current.ext === 'todo') {
+					sub.push({ name: '@(TO-DO example)', icon: 'code', value: 'template', id: 'todo' });
+				} else if (code.current.ext === 'api') {
+					sub.push({ name: '@(API example)', icon: 'code', value: 'template', id: 'restapi' });
+				} else {
+					sub.push({ name: '@(HTML template)', icon: 'code', value: 'template', id: 'html' });
+					sub.push({ name: '@(j-Modal)', icon: 'code', value: 'template', id: 'modal' });
+					sub.push({ name: '@(j-Panel)', icon: 'code', value: 'template', id: 'panel' });
+					sub.push({ name: '@(j-Window)', icon: 'code', value: 'template', id: 'window' });
+				}
+				items.push({ name: '@(Insert template)', icon: 'plus-circle', value: 'template', children: sub });
+			}
 
 			SETTER('menu', 'showxy', e.pageX - 5, e.pageY - 15, items, function(value) {
 
@@ -514,161 +575,92 @@
 						return;
 					}
 
-					if (value.value === 'insert') {
-
-						if ((/^(js|css|html)$/).test(code.current.ext)) {
-							items.push({ name: '@(UI components)', icon: 'chevron-right', value: 'ui' });
-							items.push({ name: '@(Snippet)', icon: 'chevron-right', value: 'snippet' });
-						}
-
-						items.push({ name: '@(UID)', icon: 'chevron-right', value: 'uid' });
-						items.push({ name: '@(GUID)', icon: 'chevron-right', value: 'guid' });
-						items.push({ name: '@(Password)', icon: 'chevron-right', value: 'password' });
-						items.push({ name: '@(IP address)', icon: 'chevron-right', value: 'ip' });
-						items.push({ name: '@(Date / Time)', icon: 'chevron-right', value: 'date' });
-						y = -10;
-					} else if (value.value === 'template') {
-
-						if (code.current.ext === 'js') {
-							items.push({ name: '@(Controller)', icon: 'code', value: 'template', id: 'controller' });
-							items.push({ name: '@(Schema)', icon: 'code', value: 'template', id: 'schema' });
-							items.push({ name: '@(Operation)', icon: 'code', value: 'template', id: 'operation' });
-						} else if (code.current.ext === 'json') {
-							items.push({ name: '@(openplatform.json)', icon: 'code', value: 'template', id: 'openplatform' });
-							items.push({ name: '@(package.json)', icon: 'code', value: 'template', id: 'package' });
-						} else if (code.current.ext === 'todo') {
-							items.push({ name: '@(TO-DO example)', icon: 'code', value: 'template', id: 'todo' });
-						} else if (code.current.ext === 'api') {
-							items.push({ name: '@(API example)', icon: 'code', value: 'template', id: 'restapi' });
-						} else {
-							items.push({ name: '@(HTML template)', icon: 'code', value: 'template', id: 'html' });
-							items.push({ name: '@(j-Modal)', icon: 'code', value: 'template', id: 'modal' });
-							items.push({ name: '@(j-Panel)', icon: 'code', value: 'template', id: 'panel' });
-							items.push({ name: '@(j-Window)', icon: 'code', value: 'template', id: 'window' });
-						}
-
-						y = 40;
-
-					} else if (value.value === 'minify') {
-						items.push({ name: '@(JavaScript)', icon: 'chevron-right', value: 'js' });
-						items.push({ name: '@(HTML)', icon: 'chevron-right', value: 'html' });
-						items.push({ name: '@(CSS)', icon: 'chevron-right', value: 'css' });
-						items.push({ name: '@(JSON)', icon: 'chevron-right', value: 'json' });
-						y = 60;
-					} else if (value.value === 'encode') {
-						items.push({ name: '@(Base64)', icon: 'chevron-right', value: 'btoa' });
-						items.push({ name: '@(Hex)', icon: 'chevron-right', value: 'hexe', server: true });
-						items.push({ name: '@(Encode URI)', icon: 'chevron-right', value: 'encodeURIComponent' });
-						items.push({ name: '@(Escape)', icon: 'chevron-right', value: 'escape' });
-						items.push({ name: '@(Slug)', icon: 'chevron-right', value: 'slug' });
-						items.push({ name: '@(HASH)', icon: 'chevron-right', value: 'HASH' });
-						items.push({ name: '@(Translate)', icon: 'chevron-right', value: 'translate' });
-						items.push({ name: '@(MD5)', icon: 'chevron-right', value: 'md5', server: true });
-						items.push({ name: '@(SHA-1)', icon: 'chevron-right', value: 'sha1', server: true });
-						items.push({ name: '@(SHA-256)', icon: 'chevron-right', value: 'sha256', server: true });
-						items.push({ name: '@(SHA-512)', icon: 'chevron-right', value: 'sha512', server: true });
-						items.push({ name: '@(CRC-32)', icon: 'chevron-right', value: 'crc32', server: true });
-						items.push({ name: '@(CRC-32 unsigned)', icon: 'chevron-right', value: 'crc32unsigned', server: true });
-						items.push({ name: '@(Optimize for search)', icon: 'search', value: 'search' });
-						y = -10;
-					} else {
-						y = 40;
-						items.push({ name: '@(Hex)', icon: 'chevron-right', value: 'hexd', server: true });
-						items.push({ name: '@(Base64)', icon: 'chevron-right', value: 'atob' });
-						items.push({ name: '@(Decode URI)', icon: 'chevron-right', value: 'decodeURIComponent' });
-						items.push({ name: '@(Unescape)', icon: 'chevron-right', value: 'unescape' });
+					if (value.server) {
+						var model = {};
+						model.type = value.value;
+						model.body = sel;
+						AJAX('POST /api/common/encrypt/', model, function(response) {
+							editor.replaceSelections(response);
+						});
+						return;
 					}
 
-					SETTER('menu', 'showxy', e.pageX + x, e.pageY + y, items, function(value) {
-
-						if (value.server) {
-							var model = {};
-							model.type = value.value;
-							model.body = sel;
-							AJAX('POST /api/common/encrypt/', model, function(response) {
-								editor.replaceSelections(response);
+					switch (value.value) {
+						case 'search':
+							for (var i = 0; i < sel.length; i++)
+								sel[i] = sel[i].toSearch();
+							editor.replaceSelections(sel);
+							break;
+						case 'template':
+							AJAX('GET /api/templates/' + value.id, function(response) {
+								editor.replaceSelection(response);
 							});
-							return;
-						}
-
-						switch (value.value) {
-							case 'search':
-								for (var i = 0; i < sel.length; i++)
-									sel[i] = sel[i].toSearch();
-								editor.replaceSelections(sel);
-								break;
-							case 'template':
-								AJAX('GET /api/templates/' + value.id, function(response) {
-									editor.replaceSelection(response);
-								});
-								break;
-							case 'ui':
-								SET('common.form', 'componentator');
-								break;
-							case 'snippet':
-								SET('common.form', 'snippets');
-								break;
-							case 'uid':
-							case 'ip':
-								AJAX('GET /api/common/{0}/'.format(value.value), function(response) {
-									editor.replaceSelection(response);
-								});
-								break;
-							case 'date':
-								editor.replaceSelection(new Date().format(null));
-								break;
-							case 'password':
-								var pwd = GUID(15);
-								for (var i = 0; i < pwd.length; i++) {
-									if (i % 2 === 0)
-										pwd = pwd.substring(0, i) + pwd.substring(i, i + 1).toUpperCase() + pwd.substring(i + 1);
+							break;
+						case 'ui':
+							SET('common.form', 'componentator');
+							break;
+						case 'snippet':
+							SET('common.form', 'snippets');
+							break;
+						case 'uid':
+						case 'ip':
+							AJAX('GET /api/common/{0}/'.format(value.value), function(response) {
+								editor.replaceSelection(response);
+							});
+							break;
+						case 'date':
+							editor.replaceSelection(new Date().format(null));
+							break;
+						case 'password':
+							var pwd = GUID(15);
+							for (var i = 0; i < pwd.length; i++) {
+								if (i % 2 === 0)
+									pwd = pwd.substring(0, i) + pwd.substring(i, i + 1).toUpperCase() + pwd.substring(i + 1);
+							}
+							editor.replaceSelection(pwd);
+							break;
+						case 'GUID':
+							editor.replaceSelection(GUID(50));
+							break;
+						case 'guid':
+							editor.replaceSelection(FUNC.guid());
+							break;
+						case 'encodeURIComponent':
+						case 'decodeURIComponent':
+						case 'atob':
+						case 'btoa':
+						case 'escape':
+						case 'unescape':
+						case 'HASH':
+								for (var i = 0; i < sel.length; i++) {
+									try {
+										sel[i] = window[value.value](sel[i]).toString();
+									} catch(e) {}
 								}
-								editor.replaceSelection(pwd);
-								break;
-							case 'GUID':
-								editor.replaceSelection(GUID(50));
-								break;
-							case 'guid':
-								editor.replaceSelection(FUNC.guid());
-								break;
-							case 'encodeURIComponent':
-							case 'decodeURIComponent':
-							case 'atob':
-							case 'btoa':
-							case 'escape':
-							case 'unescape':
-							case 'HASH':
-									for (var i = 0; i < sel.length; i++) {
-										try {
-											sel[i] = window[value.value](sel[i]).toString();
-										} catch(e) {}
-									}
-								editor.replaceSelections(sel);
-								break;
-							case 'translate':
-								for (var i = 0; i < sel.length; i++)
-									sel[i] = 'T' + HASH(sel[i]).toString();
-								editor.replaceSelections(sel);
-								break;
-							case 'slug':
-								for (var i = 0; i < sel.length; i++)
-									sel[i] = sel[i][value.value]();
-								editor.replaceSelections(sel);
-								break;
-							case 'json':
-								var tmp = PARSE(editor.getSelection().trim());
-								editor.replaceSelection(JSON.stringify(tmp));
-								break;
-							case 'js':
-							case 'css':
-							case 'html':
-								AJAX('POST /api/files/minify/', { body: editor.getSelection(), type: value.value }, function(response) {
-									editor.replaceSelection(response);
-								});
-								break;
-						}
-					});
-
+							editor.replaceSelections(sel);
+							break;
+						case 'translate':
+							for (var i = 0; i < sel.length; i++)
+								sel[i] = 'T' + HASH(sel[i]).toString();
+							editor.replaceSelections(sel);
+							break;
+						case 'slug':
+							for (var i = 0; i < sel.length; i++)
+								sel[i] = sel[i][value.value]();
+							editor.replaceSelections(sel);
+							break;
+						case 'json':
+							var tmp = PARSE(editor.getSelection().trim());
+							editor.replaceSelection(JSON.stringify(tmp));
+							break;
+						case 'js':
+						case 'css':
+						case 'html':
+							AJAX('POST /api/files/minify/', { body: editor.getSelection(), type: value.value }, function(response) {
+								editor.replaceSelection(response);
+							});
+							break;
+					}
 				}, 200);
 			});
 		};
