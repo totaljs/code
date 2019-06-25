@@ -2008,7 +2008,7 @@ https://twitter.com/JoelBesada/status/670343885655293952
 		w = window.innerWidth,
 		h = window.innerHeight,
 		effect,
-		isActive = false;
+		isActive = false, isRunning = false;
 
 	var codemirrors = [], cmNode;
 	var canvas, ctx;
@@ -2020,12 +2020,21 @@ https://twitter.com/JoelBesada/status/670343885655293952
 		var pos = cm.cursorCoords();
 		//var node = document.elementFromPoint(pos.left - 5, pos.top + 5);
 		type = cm.getTokenAt(cursorPos);
-		if (type) { type = type.type; }
+
+		if (type)
+			type = type.type;
+
 		var numParticles = random(PARTICLE_NUM_RANGE.min, PARTICLE_NUM_RANGE.max);
 		var color = randomcolor();
+
 		for (var i = numParticles; i--;) {
-			particles[particlePointer] = createParticle(pos.left + 20, pos.top, color);
+			particles.push(createParticle(pos.left + 20, pos.top, color));
 			particlePointer = (particlePointer + 1) % MAX_PARTICLES;
+		}
+
+		if (!isRunning) {
+			isRunning = true;
+			requestAnimationFrame(loop);
 		}
 	}
 
@@ -2072,19 +2081,33 @@ https://twitter.com/JoelBesada/status/670343885655293952
 		particle.size *= 0.96;
 		ctx.fillStyle = particle.color;
 		ctx.fillRect(Math.round(particle.x - 1), Math.round(particle.y - 1), particle.size, particle.size);
-		// ctx.beginPath();
-		// ctx.arc(Math.round(particle.x - 1), Math.round(particle.y - 1), particle.size, 0, 2 * Math.PI);
-		// ctx.fill();
 	}
 
 	function drawParticles(timeDelta) {
+
 		var particle;
-		for (var i = particles.length; i--;) {
-			particle = particles[i];
-			if (!particle || particle.alpha < 0.01 || particle.size <= 0.5) { continue; }
-			if (effect === 1) { effect1(particle); }
-			else if (effect === 2) { effect2(particle); }
+		var index = 0;
+
+		while (true) {
+
+			particle = particles[index++];
+
+			if (!particle)
+				break;
+
+			if (particle.alpha < 0.01 || particle.size <= 0.5) {
+				index--;
+				particles.splice(index, 1);
+				continue;
+			}
+
+			if (effect === 1)
+				effect1(particle);
+			else if (effect === 2)
+				effect2(particle);
 		}
+
+		isRunning = particles.length > 0;
 	}
 
 	function shake(editor, time) {
@@ -2115,13 +2138,17 @@ https://twitter.com/JoelBesada/status/670343885655293952
 	}
 
 	function loop() {
-		if (!isActive) { return; }
+
+		if (!isActive || !isRunning)
+			return;
 
 		ctx.clearRect(0, 0, w, h);
 
 		// get the time past the previous frame
-		var current_time = new Date().getTime();
-		if(!lastTime) lastTime = current_time;
+		var current_time = Date.now();
+		if (!lastTime)
+			lastTime = current_time;
+
 		var dt = (current_time - lastTime) / 1000;
 		lastTime = current_time;
 
@@ -2172,6 +2199,7 @@ https://twitter.com/JoelBesada/status/670343885655293952
 		codemirrors.splice(codemirrors.indexOf(editor), 1);
 		if (!codemirrors.length) {
 			isActive = false;
+			isRunning = false;
 			if (canvas) {
 				canvas.remove();
 				canvas = null;
