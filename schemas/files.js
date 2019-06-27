@@ -99,6 +99,7 @@ NEWSCHEMA('Files', function(schema) {
 	schema.define('parts', '[FilesPart]');
 	schema.define('combo', Number); // Max. combo
 	schema.define('time', Number);  // Spent time
+	schema.define('changes', Number);  // Changes count
 	schema.define('diff', '[FilesDiff]'); // Changed lines
 
 	schema.trim = false;
@@ -193,14 +194,14 @@ NEWSCHEMA('Files', function(schema) {
 
 		is && setTimeout2('combo', MAIN.save, 2000, null, 2);
 
-		MAIN.log($.user, 'files_save', project, filename, count, model.time);
-		MAIN.change('save', $.user, project, model.path, count, model.time);
+		MAIN.log($.user, 'files_save', project, filename, count, model.time, model.changes);
+		MAIN.change('save', $.user, project, model.path, count, model.time, model.changes);
 
 		// Tries to create a folder
 		F.path.mkdir(filename.substring(0, filename.length - name.length));
 
 		if (project.backup)
-			MAIN.backup(user, filename, () => Fs.writeFile(filename, model.body, ERROR('files.write')), project, model.diff.length);
+			MAIN.backup(user, filename, () => Fs.writeFile(filename, model.body, ERROR('files.write')), project, model.changes || 0);
 		else
 			Fs.writeFile(filename, model.body, ERROR('files.write'));
 

@@ -3938,7 +3938,6 @@ COMPONENT('menu', function(self) {
 			} else {
 
 				var index = el.attrd('index').split('-');
-
 				if (index.length > 1) {
 					// submenu
 					self.opt.callback(self.opt.items[+index[0]].children[+index[1]]);
@@ -3961,11 +3960,11 @@ COMPONENT('menu', function(self) {
 
 		events.click = function(e) {
 			if (is && !isopen && (!self.target || (self.target !== e.target && !self.target.contains(e.target))))
-				setTimeout2(self.ID, self.hide, 100);
+				setTimeout2(self.ID, self.hide, 300);
 		};
 
 		events.hidechildren = function() {
-			if ($(this.parentNode.parentNode).hclass('ui-menu-items')) {
+			if ($(this.parentNode.parentNode).hclass(cls + '-items')) {
 				if (prevsub && prevsub[0] !== this) {
 					prevsub.rclass(cls + '-selected');
 					prevsub = null;
@@ -3977,12 +3976,8 @@ COMPONENT('menu', function(self) {
 
 		events.children = function() {
 
-			if (prevsub) {
+			if (prevsub && prevsub[0] !== this) {
 				prevsub.rclass(cls + '-selected');
-				if (prevsub[0] === this) {
-					prevsub = null;
-					return;
-				}
 				prevsub = null;
 			}
 
@@ -4024,8 +4019,8 @@ COMPONENT('menu', function(self) {
 
 	self.bindevents = function() {
 		events.is = true;
-		$(document).on('touchstart mousedown', events.click);
 		$(document).on('touchstart mouseenter mousedown', cls2 + '-children', events.children);
+		$(document).on('touchstart mousedown', events.click);
 		$(window).on('scroll', events.hide);
 		self.element.on('mouseenter', 'li', events.hidechildren);
 	};
@@ -4084,7 +4079,7 @@ COMPONENT('menu', function(self) {
 			if (item.note)
 				tmp += '<div class="ui-menu-note">{0}</div>'.format(item.note);
 
-			builder.push('<li class="{0}" data-index="{2}">{1}</li>'.format(cn, tmp, (index ? (index + '-') : '') + i));
+			builder.push('<li class="{0}" data-index="{2}">{1}</li>'.format(cn, tmp, (index != null ? (index + '-') : '') + i));
 		}
 
 		return builder.join('');
@@ -4121,6 +4116,7 @@ COMPONENT('menu', function(self) {
 		var css = {};
 		children.aclass('hidden');
 		children.find('ul').empty();
+		clearTimeout2(self.ID);
 
 		ul.html(self.makehtml(opt.items));
 
