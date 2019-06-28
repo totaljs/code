@@ -9,8 +9,8 @@ cp -a ../public/ public
 cp -a ../resources/ resources
 cp -a ../views/ views
 
-tpm create code.package
-cp code.package ../code.bundle
+totaljs --bundle code.bundle
+cp code.bundle ../code.bundle
 
 cd ..
 rm -rf .bundle
