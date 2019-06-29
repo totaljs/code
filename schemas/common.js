@@ -1,5 +1,5 @@
 NEWSCHEMA('Minify', function(schema) {
-	schema.define('body', 'String', true);
+	schema.define('body', String, true);
 	schema.define('type', ['js', 'css', 'html'], true);
 
 	schema.addWorkflow('exec', function($) {

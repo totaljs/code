@@ -2,7 +2,7 @@ const Fs = require('fs');
 
 NEWSCHEMA('Clipboard', function(schema) {
 
-	schema.define('body', 'String');
+	schema.define('body', String);
 
 	schema.setGet(function($) {
 		Fs.readFile(PATH.databases($.user.id + '.txt'), function(err, buffer) {

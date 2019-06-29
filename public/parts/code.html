@@ -386,11 +386,15 @@
 		};
 
 		exports.contextmenu = function(e, editor) {
+
 			var items = [];
 			var sel = editor.getSelections();
 			var text = sel.join('');
 			var can = text.length > 0;
 			var sub = [];
+
+			if (code.current.path.indexOf('/scripts/') !== -1)
+				items.push({ name: '@(Run script)', icon: 'play-circle red', value: 'run' });
 
 			if (can) {
 
@@ -488,8 +492,6 @@
 
 			SETTER('menu', 'showxy', e.pageX - 5, e.pageY - 15, items, function(value) {
 
-				console.log(value);
-
 				if (value.command) {
 					editor.focus();
 					setTimeout(function() {
@@ -499,7 +501,10 @@
 				}
 
 				if (value.value === 'run') {
-					FUNC.request(text, editor.getValue());
+					if ((/\/scripts\//g).test(code.current.path))
+						FUNC.requestscript(code.data.id, code.current.path);
+					else
+						FUNC.request(text, editor.getValue());
 					return;
 				}
 

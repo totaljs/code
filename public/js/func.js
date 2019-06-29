@@ -302,8 +302,26 @@ FUNC.aligntext = function(sel) {
 	return sel;
 };
 
-FUNC.request = function(text, body) {
+FUNC.requestscript = function(id, path) {
+	AJAX('GET /api/request/{0}/?path={1}'.format(id, encodeURIComponent(path)), function(response, err) {
 
+		if (err) {
+			SETTER('message', 'warning', err.toString());
+			return;
+		}
+
+		if (response instanceof Array) {
+			SETTER('message', 'warning', response[0].error);
+			return;
+		}
+
+		var template = '<div class="output-response-header">{0}:</div><div class="output-response-header-value">{1}</div>';
+		PUSH('^output', '<div class="output-response"><div class="output-response-caption" title="{0}">{0}</div>{1}</div>'.format(Thelpers.encode(response.url), template.format('Response (' + (response.duration / 1000) + ' s)', Thelpers.encode(response.response))));
+		SET('common.form', 'output');
+	});
+};
+
+FUNC.request = function(text, body) {
 
 	// Find variables
 	var REG_VARIABLE = /^\$(\$)?[a-z0-9_\-.#]+/i;
@@ -361,7 +379,7 @@ FUNC.request = function(text, body) {
 				builder.push(template.format(key, Thelpers.encode(val)));
 		}
 
-		builder.push(template.format('Response', Thelpers.encode(response.response)));
+		builder.push(template.format('Response (' + (response.duration / 1000) + ' s)', Thelpers.encode(response.response)));
 
 		PUSH('^output', '<div class="output-response"><div class="output-response-caption" title="{0}">{0}</div>{1}</div>'.format(Thelpers.encode(response.url), builder.join('')));
 		SET('common.form', 'output');

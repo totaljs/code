@@ -26,7 +26,6 @@ function clipboardresize() {
 }
 
 ON('ready', function() {
-
 	$(window).on('resize', function() {
 		setTimeout2('resize', function() {
 			EMIT('resize');

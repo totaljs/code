@@ -1,6 +1,7 @@
 const READDIROPTIONS = { withFileTypes: true };
 const Path = require('path');
 const Fs = require('fs');
+const Exec = require('child_process').exec;
 
 exports.install = function() {
 	GROUP(['authorize'], function() {
@@ -43,7 +44,7 @@ exports.install = function() {
 		ROUTE('GET     /api/templates/{id}/',                                  template);
 		ROUTE('GET     /api/download/{id}/',                                   files_download);
 		ROUTE('POST    /api/files/minify/                     *Minify',        files_minify);
-		ROUTE('GET     /logout/', redirect_logout);
+		ROUTE('GET     /logout/',                                              redirect_logout);
 
 		ROUTE('GET    /api/users/online/',                                     users_online);
 		ROUTE('GET    /api/users/refresh/',                                    users_refresh);
@@ -53,7 +54,8 @@ exports.install = function() {
 		ROUTE('POST   /api/common/encrypt/                   *Encoder          --> @exec');
 		ROUTE('GET    /api/componentator/download/           *Componentator    --> @download');
 
-		ROUTE('POST   /api/request/', 										   makerequest);
+		ROUTE('POST   /api/request/',                                          makerequest, [20000]);
+		ROUTE('GET    /api/request/{id}/',                                     makerequestscript, [20000]);
 	});
 
 	GROUP(['unauthorize'], function() {
@@ -321,14 +323,47 @@ function makerequest() {
 			builder.urlencoded(data);
 	}
 
+	var beg = Date.now();
+
 	builder.exec(function(err, response, output) {
 		if (err)
 			self.invalid(err);
 		else {
 			output.url = method + ' ' + url;
 			output.value = undefined;
+			output.duration = Date.now() - beg;
 			self.json(output);
 		}
+	});
+}
+
+function makerequestscript(id) {
+	var self = this;
+	var project = MAIN.projects.findItem('id', id);
+	if (project == null) {
+		$.invalid('error-project');
+		return;
+	}
+
+	var user = self.user;
+	if (!user.sa) {
+		if (project.users.indexOf(user.id) === -1) {
+			$.invalid('error-permissions');
+			return;
+		}
+		if (!MAIN.authorize(project, self.user, self.query.path)) {
+			$.invalid('error-permissions');
+			return;
+		}
+	}
+
+	var beg = Date.now();
+
+	Exec('node ' + Path.join(project.path, self.query.path), function(err, stdout, stderr) {
+		var data = {};
+		data.response = stderr || stdout;
+		data.duration = Date.now() - beg;
+		self.json(data);
 	});
 }
 

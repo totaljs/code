@@ -2,7 +2,7 @@ NEWSCHEMA('Snippets', function(schema) {
 
 	schema.define('id', 'UID');
 	schema.define('name', 'String(50)', true);
-	schema.define('body', 'String', true);
+	schema.define('body', String, true);
 	schema.define('group', 'String(50)');
 
 	schema.setGet(function($) {
