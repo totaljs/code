@@ -1537,7 +1537,7 @@
 				data.path = code.editor.path;
 				data.combo = isminified ? 0 : FIND('combo').summarize();
 				data.todo = isminified ? EMPTYARRAY : code.data.todocurrent && code.data.todocurrent.length ? code.data.todocurrent : null;
-				data.parts = isminified ? EMPTYARRAY : code.components;
+				data.parts = isminified || code.editor.path.substring(0, 9) === '/scripts/' ? EMPTYARRAY : code.components;
 
 				// Update hashsum
 				code.data.hashsum = hashsum;
