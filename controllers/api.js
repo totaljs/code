@@ -341,18 +341,23 @@ function makerequestscript(id) {
 	var self = this;
 	var project = MAIN.projects.findItem('id', id);
 	if (project == null) {
-		$.invalid('error-project');
+		self.invalid('error-project');
+		return;
+	}
+
+	if (!project.allowscripts) {
+		self.invalid('error-project-scripts');
 		return;
 	}
 
 	var user = self.user;
 	if (!user.sa) {
 		if (project.users.indexOf(user.id) === -1) {
-			$.invalid('error-permissions');
+			self.invalid('error-permissions');
 			return;
 		}
 		if (!MAIN.authorize(project, self.user, self.query.path)) {
-			$.invalid('error-permissions');
+			self.invalid('error-permissions');
 			return;
 		}
 	}

@@ -22,6 +22,7 @@ NEWSCHEMA('Projects', function(schema) {
 	schema.define('skipsrc', Boolean);
 	schema.define('skiptmp', Boolean);
 	schema.define('skipnm', Boolean);
+	schema.define('allowscripts', Boolean);
 	schema.define('resetcombo', Boolean);
 	schema.define('resettime', Boolean);
 
