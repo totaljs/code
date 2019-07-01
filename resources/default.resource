@@ -6,3 +6,4 @@ error-project          : Project not found.
 erorr-file             : File not found.
 error-invalid          : Invalid data.
 error-project-scripts  : Scripts are disabled for this project.
+error-timeout          : A timeout.

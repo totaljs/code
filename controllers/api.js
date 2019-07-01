@@ -364,7 +364,12 @@ function makerequestscript(id) {
 
 	var beg = Date.now();
 
-	Exec('node ' + Path.join(project.path, self.query.path), function(err, stdout, stderr) {
+	self.childtimeout = setTimeout(function() {
+		child.kill(9);
+	}, 19000);
+
+	var child = Exec('node ' + Path.join(project.path, self.query.path), function(err, stdout, stderr) {
+		clearTimeout(self.childtimeout);
 		var data = {};
 		data.response = stderr || stdout;
 		data.duration = Date.now() - beg;

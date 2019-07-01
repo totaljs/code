@@ -6,6 +6,8 @@ require('total.js').load('debug', function() {
 });
 
 // 5000 is 5 seconds timeout
+/*
 setTimeout(function() {
 	process.exit(1);
 }, 5000);
+*/
