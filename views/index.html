@@ -363,6 +363,17 @@
 				EXEC('code/shortcut', 'save');
 		}, true);
 
+		SETTER(true, 'shortcuts', 'register', 'ctrl+b,cmd+b', function(e) {
+			if (!W.code || !W.code.current)
+				return;
+			// BUILD
+			if ((/\/scripts\//g).test(code.current.path)) {
+				if (code.current.ext === 'js')
+					FUNC.requestscript(code.data.id, code.current.path);
+			} else if (code.current.ext === 'api')
+				FUNC.request(text, FIND('editor').editor.getValue());
+		}, true);
+
 		SETTER(true, 'shortcuts', 'register', 'alt+w,cmd+w,alt+f4', function(e) {
 			EXEC('code/shortcut', 'close');
 		}, true);

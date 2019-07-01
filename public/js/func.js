@@ -303,7 +303,10 @@ FUNC.aligntext = function(sel) {
 };
 
 FUNC.requestscript = function(id, path) {
+	SETTER('loading', 'show');
 	AJAX('GET /api/request/{0}/?path={1}'.format(id, encodeURIComponent(path)), function(response, err) {
+
+		SETTER('loading', 'hide', 100);
 
 		if (err) {
 			SETTER('message', 'warning', err.toString());
@@ -343,7 +346,10 @@ FUNC.request = function(text, body) {
 		return variables[text] == null ? text : variables[text];
 	});
 
+	SETTER('loading', 'show');
 	AJAX('POST /api/request/', { body: text }, function(response, err) {
+
+		SETTER('loading', 'hide', 100);
 
 		if (err) {
 			SETTER('message', 'warning', err.toString());
