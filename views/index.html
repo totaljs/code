@@ -370,8 +370,10 @@
 			if ((/\/scripts\//g).test(code.current.path)) {
 				if (code.current.ext === 'js')
 					FUNC.requestscript(code.data.id, code.current.path);
-			} else if (code.current.ext === 'api')
-				FUNC.request(text, FIND('editor').editor.getValue());
+			} else if (code.current.ext === 'api') {
+				var editor = FIND('editor').editor;
+				FUNC.request(editor.getSelections().join(''), editor.getValue());
+			}
 		}, true);
 
 		SETTER(true, 'shortcuts', 'register', 'alt+w,cmd+w,alt+f4', function(e) {
