@@ -470,7 +470,9 @@
 
 			if ((/js|json|html|todo|api/).test(code.current.ext)) {
 				sub = [];
-				if (code.current.ext === 'js') {
+				if (code.current.path.substring(0, 9) === '/scripts/' && code.current.ext === 'js') {
+					sub.push({ name: '@(Script)', icon: 'code', value: 'template', id: 'script' });
+				} else if (code.current.ext === 'js') {
 					sub.push({ name: '@(Controller)', icon: 'code', value: 'template', id: 'controller' });
 					sub.push({ name: '@(Schema)', icon: 'code', value: 'template', id: 'schema' });
 					sub.push({ name: '@(Operation)', icon: 'code', value: 'template', id: 'operation' });

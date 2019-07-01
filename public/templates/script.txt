@@ -1,0 +1,11 @@
+require('total.js').load('debug', function() {
+
+	// Project is loaded
+	// Here you can enter raw JS code
+
+});
+
+// 5000 is 5 seconds timeout
+setTimeout(function() {
+	process.exit(1);
+}, 5000);
