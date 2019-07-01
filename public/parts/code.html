@@ -1006,8 +1006,9 @@
 						exports.review();
 						break;
 					case 18:
+						AJAX('DELETE /api/projects/{id}/diff/'.arg(code.data) + '?path=' + encodeURIComponent(code.current.path));
+						code.current.diff = [];
 						editor.diffuserclear();
-						EXEC('code/modified', 1);
 						break;
 				}
 			}, -5, -5);

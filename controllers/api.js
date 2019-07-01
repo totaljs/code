@@ -33,6 +33,7 @@ exports.install = function() {
 		ROUTE('GET     /api/projects/{id}/translate/          *Projects',       files_translate);
 		ROUTE('GET     /api/projects/{id}/changes/            *Projects',       files_changes);
 		ROUTE('GET     /api/projects/{id}/diff/',                               files_diff);
+		ROUTE('DELETE  /api/projects/{id}/diff/',                               files_diff_delete);
 		ROUTE('GET     /api/projects/{id}/changelogs/',                         changelogs);
 		ROUTE('GET     /api/projects/timespent/',                               timespent);
 
@@ -115,6 +116,19 @@ function files_diff(id) {
 	Fs.readFile(MAIN.diffpath(project, Path.join(project.path, self.query.path)), function(err, data) {
 		self.content((data ? data.toString('utf8').trim() : null) || '[]', U.getContentType('json'));
 	});
+}
+
+function files_diff_delete(id) {
+
+	var self = this;
+	var project = MAIN.projects.findItem('id', id);
+	if (project == null) {
+		self.invalid('error-project');
+		return;
+	}
+
+	Fs.unlink(MAIN.diffpath(project, Path.join(project.path, self.query.path)), NOOP);
+	self.success();
 }
 
 function files_restore(id) {
