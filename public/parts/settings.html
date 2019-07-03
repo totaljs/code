@@ -62,7 +62,7 @@
 					user.email = data.email;
 					user.localsave = data.localsave;
 					user.autodarkmode = data.autodarkmode;
-					$('body').tclass('td', user.darkmode);
+					$('body').tclass('td', user.darkmode === 1);
 					SET('code.data.review', !!data.token);
 					FUNC.autodarkmode();
  				}
