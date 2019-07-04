@@ -179,7 +179,7 @@ function files_download(id) {
 					data = data.substring(0, data.lastIndexOf('}') + 1).parseJSON();
 					meta.start = 2000;
 					delete meta.end;
-					self.stream(data.type, Fs.createReadStream(filename, meta));
+					self.stream(data.type || U.getExtension('unknown'), Fs.createReadStream(filename, meta));
 				}).on('end', function() {
 					// Fallback
 					!meta.start && self.throw404();
