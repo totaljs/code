@@ -554,7 +554,7 @@ header .tools .external { color: #a2a286; }
 
 .partgroup { font-size: 14px; color: black; margin: 10px 0 2px; padding: 5px 20px; font-weight: bold; }
 .partgroup:first-child { margin-top: 0; }
-.part { padding: 5px 20px; color: gray; border-top: 1px solid #E0E0E0; font-size: 11px; cursor: pointer; }
+.part { padding: 5px 20px; color: gray; border-top: 1px solid #E0E0E0; font-size: 11px; cursor: pointer; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; }
 .part i { width: 18px; }
 .part b { color: #606060; float: right; font-family: Arial; }
 .part:first-child { border-top: 0; }
