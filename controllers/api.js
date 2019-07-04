@@ -36,6 +36,7 @@ exports.install = function() {
 		ROUTE('DELETE  /api/projects/{id}/diff/',                               files_diff_delete);
 		ROUTE('GET     /api/projects/{id}/changelogs/',                         changelogs);
 		ROUTE('GET     /api/projects/timespent/',                               timespent);
+		ROUTE('GET     /api/projects/{id}/modify/',                           	files_modify);
 
 		// Clipboard
 		ROUTE('GET     /api/clipboard/                        *Clipboard       --> @get');
@@ -359,6 +360,11 @@ function makerequestscript(id) {
 		return;
 	}
 
+	if (!self.query.path) {
+		self.invalid('error-path');
+		return;
+	}
+
 	if (!project.allowscripts) {
 		self.invalid('error-project-scripts');
 		return;
@@ -413,3 +419,36 @@ function timespent() {
 
 	self.json({ projects: projects, users: users });
 }
+
+function files_modify(id) {
+	var self = this;
+	var project = MAIN.projects.findItem('id', id);
+	if (project == null) {
+		self.invalid('error-project');
+		return;
+	}
+
+	if (!self.query.path) {
+		self.invalid('error-path');
+		return;
+	}
+
+	var user = self.user;
+	if (!user.sa) {
+		if (project.users.indexOf(user.id) === -1) {
+			self.invalid('error-permissions');
+			return;
+		}
+		if (!MAIN.authorize(project, self.user, self.query.path)) {
+			self.invalid('error-permissions');
+			return;
+		}
+	}
+
+	Fs.open(Path.join(project.path, self.query.path), 'w', function(err, fd) {
+		!err && Fs.close(fd, NOOP);
+	});
+
+	self.success();
+}
+

@@ -1527,7 +1527,7 @@
 
 				var hashsum = HASH(data.body);
 				if (hashsum === code.current.hashsum && !changes) {
-					FUNC.info('@(No change detected in this "<b>{0}</b>" file.)'.format(code.editor.path));
+					AJAX('GET /api/projects/{id}/modify/ REPEAT'.arg(code.data), { path: code.editor.path });
 					SETTER('loading', 'hide');
 					return;
 				}
