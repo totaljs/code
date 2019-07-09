@@ -945,6 +945,11 @@
 			items.push({ value: 9, name: '@(Show log file)', icon: 'bug red', shortcut: 'F10' });
 			items.push({ value: 16, name: '@(Clipboard)', icon: 'clipboard', shortcut: 'F11' });
 
+			if (code.data.allowbundle) {
+				items.push('-');
+				items.push({ value: 19, name: '@(Make a bundle)', icon: 'box', classname: 'b' });
+			}
+
 			SETTER('menu', 'show', 'left', el, items, function(item) {
 				switch (item.value) {
 					case 1:
@@ -1011,6 +1016,10 @@
 						AJAX('DELETE /api/projects/{id}/diff/'.arg(code.data) + '?path=' + encodeURIComponent(code.current.path));
 						code.current.diff = [];
 						editor.diffuserclear();
+						break;
+					case 19:
+						// SETTER('loading', 'show');
+						location.href = '/api/projects/{id}/bundle/'.arg(code.data);
 						break;
 				}
 			}, -5, -5);
@@ -1164,76 +1173,80 @@
 			var ext = tab.path.substring(tab.path.lastIndexOf('.') + 1).toLowerCase();
 			var mode;
 
-			switch (ext) {
-				case 'src/config':
-				case 'src/config-release':
-				case 'src/config-debug':
-				case 'src/config-test':
-				case 'src/versions':
-				case 'src/dependencies':
-				case 'src/sitemap':
-				case 'src/workflows':
-				case '/config':
-				case '/config-release':
-				case '/config-debug':
-				case '/config-test':
-				case '/versions':
-				case '/dependencies':
-				case '/sitemap':
-				case '/workflows':
-				case 'resource':
-				case 'package':
-				case 'bundle':
-					mode = 'totaljsresources';
-					break;
-				case 'todo':
-					mode = 'todo';
-					break;
-				case 'js':
-					mode = 'javascript';
-					break;
-				case 'api':
-					mode = 'codeapi';
-					break;
-				case 'json':
-				case 'nosql':
-					mode = 'application/ld+json';
-					break;
-				case 'py':
-					mode = 'text/x-cython';
-					break;
-				case 'php':
-					mode = 'application/x-httpd-php';
-					break;
-				case 'css':
-					mode = 'text/css';
-					break;
-				case 'sql':
-					mode = 'text/x-sql';
-					break;
-				case 'sh':
-					mode = 'text/x-sh';
-					break;
-				case 'md':
-					mode = 'markdown';
-					break;
-				case 'sass':
-					mode = 'text/x-sass';
-					break;
-				case 'yaml':
-					mode = 'text/x-yaml';
-					break;
-				case 'xml':
-				case 'rss':
-					mode = 'application/xml';
-					break;
-				case 'html':
-				case 'htm':
-					mode = 'totaljs';
-					break;
-				default:
-					mode = 'plain';
-					break;
+			if (tab.path === '/.bundlesignore') {
+				mode = 'totaljsbundle';
+			} else {
+				switch (ext) {
+					case 'src/config':
+					case 'src/config-release':
+					case 'src/config-debug':
+					case 'src/config-test':
+					case 'src/versions':
+					case 'src/dependencies':
+					case 'src/sitemap':
+					case 'src/workflows':
+					case '/config':
+					case '/config-release':
+					case '/config-debug':
+					case '/config-test':
+					case '/versions':
+					case '/dependencies':
+					case '/sitemap':
+					case '/workflows':
+					case 'resource':
+					case 'package':
+					case 'bundle':
+						mode = 'totaljsresources';
+						break;
+					case 'todo':
+						mode = 'todo';
+						break;
+					case 'js':
+						mode = 'javascript';
+						break;
+					case 'api':
+						mode = 'codeapi';
+						break;
+					case 'json':
+					case 'nosql':
+						mode = 'application/ld+json';
+						break;
+					case 'py':
+						mode = 'text/x-cython';
+						break;
+					case 'php':
+						mode = 'application/x-httpd-php';
+						break;
+					case 'css':
+						mode = 'text/css';
+						break;
+					case 'sql':
+						mode = 'text/x-sql';
+						break;
+					case 'sh':
+						mode = 'text/x-sh';
+						break;
+					case 'md':
+						mode = 'markdown';
+						break;
+					case 'sass':
+						mode = 'text/x-sass';
+						break;
+					case 'yaml':
+						mode = 'text/x-yaml';
+						break;
+					case 'xml':
+					case 'rss':
+						mode = 'application/xml';
+						break;
+					case 'html':
+					case 'htm':
+						mode = 'totaljs';
+						break;
+					default:
+						mode = 'plain';
+						break;
+				}
 			}
 
 			SET('code.editor.path', tab.path);

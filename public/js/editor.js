@@ -341,6 +341,47 @@ WAIT('CodeMirror.defineMode', function() {
 		};
 	});
 
+	CodeMirror.defineMode('totaljsbundle', function() {
+		var REG_ADD = /^\+/;
+		var REG_REM = /^-/;
+		var REG_FILENAME = /[a-z-0-9_-]+\.bundle/;
+		return {
+			token: function(stream) {
+
+				var m;
+
+				if (stream.sol()) {
+					var line = stream.string;
+					if (line.substring(0, 2) === '//') {
+						stream.skipToEnd();
+						return 'comment';
+					}
+				}
+
+				m = stream.match(REG_FILENAME, true);
+				if (m) {
+					stream.skipToEnd();
+					return 'variable-B';
+				}
+
+				m = stream.match(REG_ADD, true);
+				if (m) {
+					stream.skipToEnd();
+					return 'variable-J';
+				}
+
+				m = stream.match(REG_REM, true);
+				if (m) {
+					stream.skipToEnd();
+					return 'variable-S';
+				}
+
+				stream.next();
+				return '';
+			}
+		};
+	});
+
 	CodeMirror.defineMode('codeapi', function() {
 
 		var REG_KEY = /^\$[a-z0-9_\-.#]+(\s)+:\s/i;
@@ -709,7 +750,6 @@ WAIT('CodeMirror.defineMode', function() {
 
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
 // Distributed under an MIT license: https://codemirror.net/LICENSE
-
 (function(mod) {
 	mod(CodeMirror);
 })(function(CodeMirror) {

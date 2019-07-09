@@ -37,6 +37,7 @@ exports.install = function() {
 		ROUTE('GET     /api/projects/{id}/changelogs/',                         changelogs);
 		ROUTE('GET     /api/projects/timespent/',                               timespent);
 		ROUTE('GET     /api/projects/{id}/modify/',                           	files_modify);
+		ROUTE('GET     /api/projects/{id}/bundle/',                           	makebundle);
 
 		// Clipboard
 		ROUTE('GET     /api/clipboard/                        *Clipboard       --> @get');
@@ -450,3 +451,56 @@ function files_modify(id) {
 	self.success();
 }
 
+function makebundle(id) {
+
+	var self = this;
+	var project = MAIN.projects.findItem('id', id);
+
+	if (project == null) {
+		self.invalid('error-project');
+		return;
+	}
+
+	if (!project.allowbundle) {
+		self.invalid('error-bundles');
+		return;
+	}
+
+	var user = self.user;
+	var path = '/bundle';
+
+	if (!user.sa) {
+		if (project.users.indexOf(user.id) === -1) {
+			self.invalid('error-permissions');
+			return;
+		}
+		if (!MAIN.authorize(project, self.user, path)) {
+			self.invalid('error-permissions');
+			return;
+		}
+	}
+
+	Fs.readFile(Path.join(project.path, path), function(err, data) {
+
+		data = (data ? data.toString('utf8') : '').split('\n');
+		data.push('/tmp/*');
+		data.push('/logs/*');
+		data.push('/bundles/*');
+		data.push('/debug.js');
+		data.push('/debug.pid');
+		data.push('/bundle.json');
+		data.push('/app.bundle');
+
+		var ignore = FUNC.makeignore(data);
+		var filename = Path.join(project.path, 'app.bundle');
+		if (filename.toLowerCase().lastIndexOf('.bundle') === -1)
+			filename += '.bundle';
+
+		F.backup(filename, project.path, function(err) {
+			if (err)
+				self.invalid(err);
+			else
+				self.file('~' + filename, 'app.bundle', null, () => Fs.unlink(filename, NOOP));
+		}, path => path === '/' || ignore('/' + path) === true);
+	});
+}

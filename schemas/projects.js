@@ -22,6 +22,7 @@ NEWSCHEMA('Projects', function(schema) {
 	schema.define('skipsrc', Boolean);
 	schema.define('skiptmp', Boolean);
 	schema.define('skipnm', Boolean);
+	schema.define('allowbundle', Boolean);
 	schema.define('allowscripts', Boolean);
 	schema.define('resetcombo', Boolean);
 	schema.define('resettime', Boolean);
@@ -240,7 +241,7 @@ NEWSCHEMA('Projects', function(schema) {
 				users.push({ id: tmpuser.id, name: tmpuser.name, collaborator: !!(item.time ? item.time[tmpuser.id] : 0) });
 			}
 
-			$.callback({ review: !!PREF.token, files: files, directories: directories, url: item.url, name: item.name, icon: item.icon, repository: item.repository, id: item.id, documentation: item.documentation, support: item.support, pathsync: item.pathsync, combo: item.combo, time: item.time, todo: item.todo, users: users });
+			$.callback({ allowbundle: item.allowbundle, review: !!PREF.token, files: files, directories: directories, url: item.url, name: item.name, icon: item.icon, repository: item.repository, id: item.id, documentation: item.documentation, support: item.support, pathsync: item.pathsync, combo: item.combo, time: item.time, todo: item.todo, users: users });
 
 		}, n => !SKIP.test(n) && (!skip || !skip.test(n)));
 	});
