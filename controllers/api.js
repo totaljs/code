@@ -445,10 +445,8 @@ function files_modify(id) {
 		}
 	}
 
-	Fs.open(Path.join(project.path, self.query.path), 'a', function(err, fd) {
-		!err && Fs.close(fd, NOOP);
-	});
-
+	var dt = new Date();
+	Fs.utimes(Path.join(project.path, self.query.path), dt, dt, NOOP);
 	self.success();
 }
 
