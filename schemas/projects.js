@@ -344,7 +344,6 @@ NEWSCHEMA('Projects', function(schema) {
 			for (var i = 0; i < response.length; i++) {
 				var filename = response[i];
 				if (filename.substring(0, tmp.length) === tmp) {
-					console.log(ext);
 					var meta = filename.substring(tmp.length, filename.length - ext.length).split('_');
 					var dt = meta[0];
 					var index = meta[1].lastIndexOf('.');
