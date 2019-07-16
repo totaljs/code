@@ -775,6 +775,8 @@ COMPONENT('editor', function(self, config) {
 			editor.refresh();
 		}, 2000);
 
+		checksum = -1;
+		setTimeout2('EditorGutterColor', self.prerender_colors, 999, 20, 0);
 		self.resize();
 	};
 
