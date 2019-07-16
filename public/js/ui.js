@@ -111,7 +111,7 @@ COMPONENT('editor', function(self, config) {
 		editor.doc.clearGutter('GutterDiff');
 		cache_lines = editor.getValue().split('\n');
 		cache_diffs = {};
-		cache_diffs_checksum = 0;
+		cache_diffs_checksum = -1;
 	};
 
 	self.diffuserclear = function() {
@@ -123,6 +123,9 @@ COMPONENT('editor', function(self, config) {
 	var cache_diffs_sum = function() {
 		cache_diffs_interval = null;
 		cache_diffs_checksum = HASH(cache_diffs);
+
+		// because of prerender_colors:
+		checksum = -1;
 	};
 
 	self.diffgutter = function(line, nullable) {
@@ -622,7 +625,7 @@ COMPONENT('editor', function(self, config) {
 					combo && combo();
 			}
 
-			setTimeout2('EditorGutterColor', self.prerender_colors, 999, null, count);
+			setTimeout2('EditorGutterColor', self.prerender_colors, 999, 20, count);
 
 			if (config.disabled || !can[b.origin])
 				return;
@@ -738,7 +741,7 @@ COMPONENT('editor', function(self, config) {
 			}
 		}
 
-		setTimeout2('EditorGutterColor', self.prerender_colors, 500, null, changes);
+		setTimeout2('EditorGutterColor', self.prerender_colors, 500, 20, changes);
 	};
 
 	self.clear = function(content) {
