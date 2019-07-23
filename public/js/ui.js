@@ -780,6 +780,12 @@ COMPONENT('editor', function(self, config) {
 		self.resize();
 	};
 
+	self.flush = function() {
+		clearTimeout2('EditorGutterColor');
+		checksum = -1;
+		self.prerender_colors(0);
+	};
+
 	self.state = function(type) {
 		if (!type)
 			return;

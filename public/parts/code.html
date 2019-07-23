@@ -1532,6 +1532,8 @@
 
 			setTimeout(function() {
 
+				editor.flush();
+
 				var data = {};
 				var val = editor.editor.getValue();
 				var changes = $('.cm-diff').length;
@@ -1547,7 +1549,7 @@
 				}
 
 				var now = Date.now();
-				var isminified = /(\.|-)min(\.|@|-)/.test(code.editor.path);
+				var isminified = /(\.|-)min(\.|@|-)/.test(code.editor.path) || (/\.(log|txt|md)$/).test(code.editor.path);
 
 				data.diff = editor.getDiff();
 				data.changes = changes;
