@@ -111,7 +111,7 @@ COMPONENT('editor', function(self, config) {
 		editor.doc.clearGutter('GutterDiff');
 		cache_lines = editor.getValue().split('\n');
 		cache_diffs = {};
-		cache_diffs_checksum = -1;
+		cache_diffs_checksum = 0;
 	};
 
 	self.diffuserclear = function() {
