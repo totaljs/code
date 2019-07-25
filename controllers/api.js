@@ -37,7 +37,7 @@ exports.install = function() {
 		ROUTE('GET     /api/projects/{id}/changelogs/',                         changelogs);
 		ROUTE('GET     /api/projects/timespent/',                               timespent);
 		ROUTE('GET     /api/projects/{id}/modify/',                           	files_modify);
-		ROUTE('GET     /api/projects/{id}/bundle/',                           	makebundle);
+		ROUTE('GET     /api/projects/{id}/bundle/',                           	makebundle, [10000]);
 
 		// Clipboard
 		ROUTE('GET     /api/clipboard/                        *Clipboard       --> @get');
@@ -500,6 +500,6 @@ function makebundle(id) {
 				self.invalid(err);
 			else
 				self.file('~' + filename, 'app.bundle', null, () => Fs.unlink(filename, NOOP));
-		}, path => path === '/' || (ignore('/' + path) === true));
+		}, path => path === '/' || (ignore(path) === true));
 	});
 }
