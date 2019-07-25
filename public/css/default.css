@@ -46,7 +46,7 @@ html,body { margin: 0; padding: 0; overflow: hidden; }
 .td .timespent-item.b { color: #E0E0E0; }
 .td .timespent-user b { color: gray; }
 
-#combo { position: absolute; font-size: 10px; right: 58px; top: 50px; z-index: 2; line-height: 18px; text-align: center; color: black; cursor: pointer; }
+#combo { position: absolute; font-size: 10px; right: 49px; top: 50px; z-index: 2; line-height: 18px; text-align: center; color: black; cursor: pointer; }
 #combo .rating { font-size: 20px; text-align: center; font-family: Arial; position: absolute; width: 140px; margin-left: -34px; text-align: center; text-transform: uppercase; font-weight: bold; }
 #combo .progress { height: 3px; margin: 0 auto; background-color: #505050; border-radius: 10px; width: 5%; }
 #combo b { font-size: 20px; display: block; height: 26px; }
@@ -253,7 +253,7 @@ header .tools .external { color: #a2a286; }
 .tabs nav i:hover:before { content: '\f00d'; font-size: 11px; }
 .tabs .options { position: absolute; left: 33px; font-size: 20px; top: 12px; cursor: pointer; }
 .tabs .options:hover { color: black; }
-.tabs .preview { float: right; font-size: 20px; margin: 12px 20px 0 0; cursor: pointer; color: #4285F4; }
+.tabs .preview { float: right; font-size: 20px; margin: 11px 15px 0 0; cursor: pointer; color: #4285F4; }
 .tabs .preview:hover { opacity: 0.6; }
 .td .tabs nav { margin-left: 74px; }
 .td .tabs .options:hover { color: white; }

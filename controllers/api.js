@@ -467,14 +467,10 @@ function makebundle(id) {
 	}
 
 	var user = self.user;
-	var path = '/bundle';
+	var path = '/.bundlesignore';
 
 	if (!user.sa) {
 		if (project.users.indexOf(user.id) === -1) {
-			self.invalid('error-permissions');
-			return;
-		}
-		if (!MAIN.authorize(project, self.user, path)) {
 			self.invalid('error-permissions');
 			return;
 		}
@@ -490,6 +486,9 @@ function makebundle(id) {
 		data.push('/debug.pid');
 		data.push('/bundle.json');
 		data.push('/app.bundle');
+		data.push('/.bundlesignore');
+		data.push('/.gitignore');
+		data.push('/.npmignore');
 
 		var ignore = FUNC.makeignore(data);
 		var filename = Path.join(project.path, 'app.bundle');
@@ -501,6 +500,6 @@ function makebundle(id) {
 				self.invalid(err);
 			else
 				self.file('~' + filename, 'app.bundle', null, () => Fs.unlink(filename, NOOP));
-		}, path => path === '/' || ignore('/' + path) === true);
+		}, path => path === '/' || (ignore('/' + path) === true));
 	});
 }
