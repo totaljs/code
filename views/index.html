@@ -73,7 +73,12 @@
 
 		var user = PARSE('#userdata');
 
+		CONFIG('panel', function() {
+			return (/projectsform|usersform|snippetsform/).test(this.path) ? '' : (common.electron ? 'top:50' : 'top:49');
+		});
+
 		MAKE('common', function(common) {
+
 			common.id = GUID(5);
 			common.electron = navigator.userAgent.indexOf('Electron') !== -1 && window.require != null;
 			common.online = true;
