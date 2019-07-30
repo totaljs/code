@@ -497,11 +497,13 @@ COMPONENT('editor', function(self, config) {
 						}
 
 						if (oldplugin) {
-							m = lines[i].match(new RegExp(pluginvariable + '.*?(\\s)=(\\s)function\\(.*?\\)'));
-							if (m) {
-								m = m[0].replace(REGPLUGINOP_REPLACE, '');
-								m = m.substring(0, m.indexOf(')') + 1).trim().substring(pluginvariable.length);
-								components.push({ line: i, ch: m.index || 0, name: oldplugin + m, type: 'plugin' });
+							if (pluginvariable.indexOf('(') == -1) {
+								m = lines[i].match(new RegExp(pluginvariable + '.*?(\\s)=(\\s)function\\(.*?\\)'));
+								if (m) {
+									m = m[0].replace(REGPLUGINOP_REPLACE, '');
+									m = m.substring(0, m.indexOf(')') + 1).trim().substring(pluginvariable.length);
+									components.push({ line: i, ch: m.index || 0, name: oldplugin + m, type: 'plugin' });
+								}
 							}
 						}
 
