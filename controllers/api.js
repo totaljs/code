@@ -484,11 +484,21 @@ function makebundle(id) {
 		data.push('/bundles/*');
 		data.push('/debug.js');
 		data.push('/debug.pid');
+		data.push('/release.js');
+		data.push('/package.json');
+		data.push('/package-lock.json');
+		data.push('/readme.md');
 		data.push('/bundle.json');
+		data.push('/config');
+		data.push('/config-release');
+		data.push('/config-debug');
 		data.push('/app.bundle');
 		data.push('/.bundlesignore');
 		data.push('/.gitignore');
 		data.push('/.npmignore');
+		data.push('/*.todo');
+		data.push('/*.sql');
+		data.push('/*.bundle');
 
 		var ignore = FUNC.makeignore(data);
 		var filename = Path.join(project.path, 'app.bundle');
