@@ -28,6 +28,7 @@ exports.install = function() {
 		ROUTE('DELETE  /api/projects/{id}/backups/            *Projects         --> @backupsclear', [10000]);
 		ROUTE('DELETE  /api/projects/{id}/todo/               *FilesTodoClear   --> @remove');
 		ROUTE('GET     /api/projects/{id}/logfile/            *Projects',       files_logfile);
+		ROUTE('GET     /api/projects/{id}/logfile/clear/      *Projects         --> @logfileclear');
 		ROUTE('GET     /api/projects/{id}/restore/            *Projects',       files_restore);
 		ROUTE('GET     /api/projects/{id}/edit/               *Projects',       files_open);
 		ROUTE('GET     /api/projects/{id}/translate/          *Projects',       files_translate);

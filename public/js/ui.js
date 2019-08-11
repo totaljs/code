@@ -174,8 +174,8 @@ COMPONENT('editor', function(self, config) {
 		var css = marker.style;
 		var usercolor = FUNC.usercolor(username);
 		css['background-color'] = usercolor.color;
-		marker.title = usercolor.name + ': ' + Thelpers.time(updated);
 		marker.className = 'cm-diff-user';
+		marker.setAttribute('data-title', usercolor.name + ': ' + Thelpers.time(updated));
 		marker.setAttribute('data-userid', userid);
 		marker.setAttribute('data-date', updated.getTime());
 		marker.innerHTML = usercolor.initials;
@@ -306,7 +306,7 @@ COMPONENT('editor', function(self, config) {
 		options.scrollbarStyle = 'simple';
 
 		options.rulers = [{ column: 130, lineStyle: 'dashed' }];
-		options.gutters = ['GutterUser', 'GutterColor', 'CodeMirror-lint-markers', 'CodeMirror-linenumbers', 'GutterDiff'];
+		options.gutters = ['GutterUser', 'CodeMirror-lint-markers', 'CodeMirror-linenumbers', 'GutterDiff'];
 		options.foldGutter = true;
 		options.highlightSelectionMatches = HSM;
 		options.phrases = {};
@@ -372,13 +372,11 @@ COMPONENT('editor', function(self, config) {
 		var can = {};
 		can['+input'] = can['+delete'] = can.undo = can.redo = can.paste = can.cut = can.clear = true;
 
-		var REGHEXCOLOR = /#[a-f0-9]{6}(;|"|'|>|<|\)|\(|$)/i;
 		var REGTODO = /@todo/i;
 		var REGTODO2 = /^(\s)+-\s.*?/;
 		var REGTODOREPLACE = /^@todo(:)(\s)|(\s)+-(\s)/i;
 		var REGTODODONE = /@done|@canceled/i;
 		var REGTODOCLEAN = /-->|\*\//g;
-		var REGCOLORCLEAN = /;|'|"|,/g;
 		var REGPART = /(COMPONENT|COMPONENT_EXTEND|EXTENSION|CONFIG|NEWSCHEMA|NEWOPERATION|NEWTASK|MIDDLEWARE|WATCH|ROUTE|(^|\s)ON|PLUGIN)+\(.*?\)/g;
 		var REGPARTCLEAN = /('|").*?('|")/;
 		var REGHELPER = /(Thelpers|FUNC|REPO|MAIN)\.[a-z0-9A-Z_$]+(\s)+=/g;
@@ -393,6 +391,18 @@ COMPONENT('editor', function(self, config) {
 			return text.charAt(0) === '(' ? '()' : ')';
 		};
 
+		editor.on('renderLine', function(cm, line, el) {
+			if (config.mode === 'totaljs' || config.mode === 'text/css') {
+				var arr = el.querySelectorAll('.cm-atom');
+				for (var i = 0; i < arr.length; i++) {
+					el = arr[i];
+					var html = el.innerHTML;
+					if (html.charAt(0) === '#' && (html.length === 4 || html.length === 7))
+						el.style = 'border-radius:2px;border:2px solid ' + html;
+				}
+			}
+		});
+
 		self.prerender_colors = function(changescount) {
 
 			config.change && EXEC(config.change, changescount || 0);
@@ -406,16 +416,16 @@ COMPONENT('editor', function(self, config) {
 			var components = [];
 			var mode = editor.getMode().name;
 			var is = null;
-			var name, type, color, oldschema, oldplugin, pluginvariable, oldtask, taskvariable, tmp;
+			var name, type, oldschema, oldplugin, pluginvariable, oldtask, taskvariable, tmp;
 
 			if (mode === 'totaljsresources' || mode === 'javascript' || mode === 'totaljs' || mode === 'css' || mode === 'sass' || mode === 'html' || mode === 'todo') {
 				var lines = editor.getValue().split('\n');
 				for (var i = 0; i < lines.length; i++) {
 
-					if (mode !== 'todo') {
-						color = lines[i].match(REGHEXCOLOR);
-						color && editor.setGutterMarker(i, 'GutterColor', GutterColor(color.toString().replace(REGCOLORCLEAN, '')));
-					}
+					// if (mode !== 'todo') {
+					// 	color = lines[i].match(REGHEXCOLOR);
+					// 	color && editor.setGutterMarker(i, 'GutterColor', GutterColor(color.toString().replace(REGCOLORCLEAN, '')));
+					// }
 
 					var m = mode === 'todo' ? lines[i].match(REGTODO2) : lines[i].match(REGTODO);
 
@@ -912,10 +922,19 @@ COMPONENT('exec', function(self, config) {
 
 COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 
+	Thelpers.treefilecolor = function(filename) {
+		if (filename.charAt(0) === '.' || filename.indexOf('-bk.') !== -1)
+			return ' ui-tree-hiddenfile';
+		return '';
+	};
+
 	Thelpers.fileicon = function(filename) {
 		var ext = filename.substring(filename.lastIndexOf('.') + 1).toLowerCase();
 
 		ext = ext.substring(ext.lastIndexOf('/') + 1);
+
+		if (filename.charAt(0) === '.')
+			return 'far fa-file-alt';
 
 		switch (ext) {
 			case 'api':
@@ -989,7 +1008,7 @@ COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 	var expanded = {};
 	var selindex = -1;
 
-	self.template = Tangular.compile('<div class="item{{ if children }} expand{{ fi }}" data-index="{{ $pointer }}" title="{{ name }}"><i class="icon {{ if children }}fa fa-folder{{ if isopen }}-open {{ fi }}{{ else }}{{ name | fileicon }}{{ fi }}"></i><span class="options"><i class="fa fa-ellipsis-h"></i></span><div>{{ name }}</div></div>');
+	self.template = Tangular.compile('<div class="item{{ if children }} expand{{ fi }}{{ name | treefilecolor }}" data-index="{{ $pointer }}" title="{{ name }}"><i class="icon {{ if children }}fa fa-folder{{ if isopen }}-open {{ fi }}{{ else }}{{ name | fileicon }}{{ fi }}"></i><span class="options"><i class="fa fa-ellipsis-h"></i></span><div>{{ name }}</div></div>');
 	self.readonly();
 
 	self.make = function() {
@@ -7893,4 +7912,86 @@ COMPONENT('radiobutton', 'inline:1', function(self, config) {
 		self.append(render);
 		self.refresh();
 	};
+});
+
+COMPONENT('tooltip', function(self) {
+
+	var cls = 'ui-tooltip';
+	var is = false;
+
+	self.singleton();
+	self.readonly();
+	self.blind();
+	self.nocompile && self.nocompile();
+
+	self.make = function() {
+		self.aclass(cls + ' hidden');
+	};
+
+	self.hide = function(force) {
+		is && setTimeout2(self.ID, function() {
+			self.aclass('hidden');
+			self.rclass(cls + '-visible');
+			is = false;
+		}, force ? 1 : 200);
+	};
+
+	self.show = function(opt) {
+
+		var tmp = opt.element ? opt.element instanceof jQuery ? opt.element[0] : opt.element.element ? opt.element.dom : opt.element : null;
+
+		if (is && tmp && self.target === tmp) {
+			self.hide();
+			return;
+		}
+
+		clearTimeout2(self.ID);
+
+		self.target = tmp;
+		self.opt = opt;
+		self.html('<div class="' + cls + '-body">' + opt.html + '</div>');
+
+		var b = self.find('.' + cls + '-body');
+		b.rclass2(cls + '-arrow-');
+		b.aclass(cls + '-arrow-' + opt.align);
+
+		var css = {};
+
+		if (is) {
+			css.left = 0;
+			css.top = 0;
+			self.element.css(css);
+		} else {
+			self.rclass('hidden');
+			self.aclass(cls + '-visible', 100);
+			is = true;
+		}
+
+		var target = $(opt.element);
+		var w = self.width();
+		var h = self.height();
+		var offset = target.offset();
+
+		switch (opt.align) {
+			case 'left':
+			case 'right':
+				css.top = offset.top + (opt.center ? (h / 2 >> 0) : 0);
+				css.left = opt.align === 'left' ? (offset.left - w - 10) : (offset.left + target.innerWidth() + 10);
+				break;
+			default:
+				css.left = Math.ceil((offset.left - w / 2) + (target.innerWidth() / 2));
+				css.top = opt.align === 'bottom' ? (offset.top + target.innerHeight() + 10) : (offset.top - h - 10);
+				break;
+		}
+
+		if (opt.offsetX)
+			css.left += opt.offsetX;
+
+		if (opt.offsetY)
+			css.top += opt.offsetY;
+
+		opt.timeout && setTimeout2(self.ID, self.hide, opt.timeout - 200);
+		self.element.css(css);
+	};
+
 });

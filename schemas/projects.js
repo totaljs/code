@@ -102,7 +102,7 @@ NEWSCHEMA('Projects', function(schema) {
 		var model = $.clean();
 		var users = [];
 
-		model.path = U.path(model.path);
+		model.path = U.path(model.path.replace(/\/\//g, '/').replace(/\\\\/g, '\\'));
 
 		for (var i = 0; i < model.users.length; i++) {
 			if (MAIN.users.findItem('id', model.users[i]))
@@ -426,5 +426,16 @@ NEWSCHEMA('Projects', function(schema) {
 			} else
 				$.callback('');
 		});
+	});
+
+	schema.addWorkflow('logfileclear', function($) {
+		var project = MAIN.projects.findItem('id', $.id);
+		if (project == null) {
+			$.invalid('error-project');
+			return;
+		}
+		var filename = project.logfile ? project.logfile : Path.join(project.path, 'logs/debug.log');
+		Fs.truncate(filename, NOOP);
+		$.success();
 	});
 });

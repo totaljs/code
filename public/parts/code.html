@@ -19,7 +19,7 @@
 </div>
 
 <div id="realtimewindow" data-bind="common.debug__show" class="hidden">
-	<div class="titlebar"><i class="fa fa-times exec" data-exec="code/debug"></i><i class="fa fa-pulse fa-spinner"></i>@(Logs)</div>
+	<div class="titlebar"><i class="fa fa-times exec" data-exec="code/debug" title="@(Close log)"></i><i class="fa fa-trash exec" data-exec="code/debugclear" title="@(Truncate log)"></i><i class="fa fa-pulse fa-spinner"></i>@(Logs)</div>
 	<div class="body-scrollbar">
 		<div id="realtimewindowbody" class="body"></div>
 	</div>
@@ -191,6 +191,12 @@
 
 		exports.debug = function() {
 			TOGGLE('common.debug');
+		};
+
+		exports.debugclear = function() {
+			SETTER('loading', 'show');
+			SETTER('loading', 'hide', 1000);
+			AJAX('GET /api/projects/{id}/logfile/clear/'.arg(code.data), NOOP);
 		};
 
 		function watchlogfile() {

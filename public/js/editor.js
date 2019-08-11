@@ -1,5 +1,6 @@
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
 // Distributed under an MIT license: http://codemirror.net/LICENSE
+
 (function(mod) {
 	mod(CodeMirror);
 })(function(CodeMirror) {
@@ -1705,6 +1706,11 @@ SNIPPETS.push({ type: 'javascript', search: 'WEBSOCKET', text: '<b>WEBSOCKET</b>
 SNIPPETS.push({ type: 'javascript', search: 'LOCALIZE', text: '<b>LOCALIZE</b>', code: 'LOCALIZE(\'\', \'\');', ch: 11 });
 SNIPPETS.push({ type: 'javascript', search: 'exports.install', text: '<b>exports.install</b>', code: 'exports.install = function() {\n\t{0}\n{0}};', ch: 2, line: 1 });
 
+(function() {
+	for (var i = 0; i < SNIPPETS.length; i++)
+		SNIPPETS[i].search = SNIPPETS[i].search.toLowerCase();
+})();
+
 FUNC.snippets = function(type, text, tabs, line, words, chplus) {
 
 	switch (type) {
@@ -1716,6 +1722,8 @@ FUNC.snippets = function(type, text, tabs, line, words, chplus) {
 			type = 'javascript';
 			break;
 	}
+
+	text = text.toLowerCase();
 
 	var arr = [];
 	for (var i = 0; i < SNIPPETS.length; i++) {

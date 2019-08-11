@@ -323,7 +323,7 @@ NEWSCHEMA('FilesRename', function(schema) {
 		MAIN.change('rename', $.user, project, model.oldpath + ' --> ' + model.newpath);
 		NOSQL($.id + '_parts').modify({ $path: 'val.replace(\'{0}\', \'{1}\')'.format(oldpath, newpath) }).search('path', oldpath, 'beg');
 
-		var length = project.todo.length;
+		var length = project.todo ? project.todo.length : 0;
 		if (length) {
 			var is = false;
 			for (var i = 0; i < project.todo.length; i++) {
