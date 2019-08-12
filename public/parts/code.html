@@ -467,7 +467,8 @@
 			sub.push({ name: '@(UID)', icon: 'chevron-right', value: 'uid' });
 			sub.push({ name: '@(GUID)', icon: 'chevron-right', value: 'guid' });
 			sub.push({ name: '@(Password)', icon: 'chevron-right', value: 'password' });
-			sub.push({ name: '@(IP address)', icon: 'chevron-right', value: 'ip' });
+			sub.push({ name: '@(IP address - my)', icon: 'chevron-right', value: 'ip' });
+			sub.push({ name: '@(IP address - server)', icon: 'chevron-right', value: 'ipserver' });
 			sub.push({ name: '@(Date / Time)', icon: 'chevron-right', value: 'date' });
 
 			items.push({ name: '@(Insert)', icon: 'plus-circle green', value: 'insert', children: sub });
@@ -619,6 +620,7 @@
 							break;
 						case 'uid':
 						case 'ip':
+						case 'ipserver':
 							AJAX('GET /api/common/{0}/'.format(value.value), function(response) {
 								editor.replaceSelection(response);
 							});

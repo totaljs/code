@@ -55,6 +55,7 @@ exports.install = function() {
 		ROUTE('GET    /api/common/directories/',                               directories);
 		ROUTE('GET    /api/common/uid/',                                       custom_uid);
 		ROUTE('GET    /api/common/ip/',                                        custom_ip);
+		ROUTE('GET    /api/common/ipserver/',                                  custom_ipsever);
 		ROUTE('POST   /api/common/encrypt/                   *Encoder          --> @exec');
 		ROUTE('GET    /api/componentator/download/           *Componentator    --> @download');
 
@@ -237,6 +238,13 @@ function custom_uid() {
 
 function custom_ip() {
 	this.plain(this.ip);
+}
+
+function custom_ipsever() {
+	var self = this;
+	require('dns').lookup(require('os').hostname(), function(err, add) {
+		self.plain(add || 'undefined');
+	});
 }
 
 function files_changes(id) {
