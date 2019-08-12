@@ -242,8 +242,8 @@ function custom_ip() {
 
 function custom_ipsever() {
 	var self = this;
-	require('dns').lookup(require('os').hostname(), function(err, add) {
-		self.plain(add || 'undefined');
+	REQUEST('https://ipecho.net/plain', ['get'], function(err, response) {
+		self.plain(response || 'undefined');
 	});
 }
 
