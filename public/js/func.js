@@ -267,6 +267,49 @@ FUNC.comment = function(ext, sel) {
 	return sel;
 };
 
+FUNC.alignsitemap = function(sel) {
+
+	var data = [];
+	var max1 = 0;
+	var max2 = 0;
+	var max3 = 0;
+	var max4 = 0;
+
+	for (var j = 0; j < sel.length; j++) {
+		var line = sel[j];
+		var index = line.indexOf(':');
+		if (index === -1 || line.charAt(0) === '/') {
+			data.push(line);
+			continue;
+		}
+
+		var obj = {};
+		obj.key = line.substring(0, index).trim();
+		var arr = line.substring(index + 1).split('-->');
+		obj.title = (arr[0] || '').trim();
+		obj.url = (arr[1] || '').trim();
+		obj.parent = (arr[2] || '').trim();
+
+		max1 = Math.max(max1, obj.key.length);
+		max2 = Math.max(max2, obj.title.length);
+		max3 = Math.max(max3, obj.url.length);
+
+		data.push(obj);
+	}
+
+	var padding = 10;
+
+	for (var j = 0; j < sel.length; j++) {
+		var obj = data[j];
+		if (typeof(obj) === 'string')
+			sel[j] = obj;
+		else
+			sel[j] = obj.key.padRight(max1 + padding, ' ') + ': ' + obj.title.padRight(max2 + padding, ' ') + ' --> ' + obj.url.padRight(max3 + padding, ' ') + (obj.parent ? (' --> ' + obj.parent) : '');
+	}
+
+	return sel;
+};
+
 FUNC.aligntext = function(sel) {
 
 	var align = { ':': 1, '|': 1, '=': 1, '\'': 1, '"': 1, '{': 1 };

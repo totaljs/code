@@ -4,14 +4,6 @@
 			<div class="padding">
 				<div class="row">
 					<div class="col-sm-6 m">
-						<div data---="textbox__?.name__required:true__''">@(Name)</div>
-					</div>
-					<div class="col-sm-6 m">
-						<div data---="textbox__?.url__required:true__''">@(URL to application)</div>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-sm-6 m">
 						<div data---="textbox__?.path__required:true__'/www/www/'">@(Path)</div>
 						<div class="help">
 							<span class="link exec" data-exec="?/autocomplete"><i class="fa fa-search"></i>@(Browse)</span>
@@ -22,7 +14,14 @@
 						<div class="help"><span class="link exec" data-exec="?/autocomplete2"><i class="fa fa-search"></i>@(Browse)</span>. @(Additional path for e.g. production)</div>
 					</div>
 				</div>
-
+				<div class="row">
+					<div class="col-sm-6 m">
+						<div data---="textbox__?.name__required:true__''">@(Name)</div>
+					</div>
+					<div class="col-sm-6 m">
+						<div data---="textbox__?.url__required:true__''">@(URL to application)</div>
+					</div>
+				</div>
 				<div class="row">
 					<div class="col-sm-6 m">
 						<div data---="textbox__?.documentation__placeholder:https://wiki.totaljs.com__'https://wiki.totaljs.com'">@(Documentation URL)</div>
@@ -127,6 +126,21 @@
 				input.component().set('');
 			}, 0, 2);
 		};
+
+		WATCH('?.path', function(path, value) {
+			if (value && value !== '/www/www/' && (/_|-/).test(value)) {
+				var index = value.lastIndexOf('/');
+				if (index === -1)
+					index = value.lastIndexOf('\\');
+				if (!projectsform.name)
+					SET('?.name', value.substring(index + 1));
+				if (!projectsform.url) {
+					var arr = value.substring(index + 1).replace(/_/g, '.').split('-');
+					arr.reverse();
+					SET('?.url', 'https://' + arr.join('.'));
+				}
+			}
+		});
 
 	});
 </script>

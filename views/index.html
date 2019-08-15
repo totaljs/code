@@ -54,12 +54,6 @@
 		</div>
 	</header>
 
-<!--
-	<div style="position:absolute;z-index:1000;height:100%;left:0;top:0;width:50%">
-		<webview id="preview" src="https://www.totaljs.com" style="width:100%;height:100%"></webview>
-	</div>
--->
-
 	<div data---="part__common.page__if:code;url:/parts/code.html;reload:code/reload"></div>
 	<div data---="part__common.page__if:snippets;url:/parts/snippets.html;reload:snippets/reload;cleaner:10"></div>
 	<div data---="part__common.page__if:projects;url:/parts/projects.html;reload:projects/reload;cleaner:10"></div>
@@ -68,6 +62,9 @@
 	<div data---="part__common.page__if:timespent;url:/parts/timespent.html;reload:timespent/reload;cleaner:10"></div>
 	<div data---="websocket__null__url:/"></div>
 
+	<div data---="importer__common.form__if:bundles;url:/forms/bundles.html;cleaner:10"></div>
+	<div data---="importer__common.form__if:templates;url:/forms/templates.html;cleaner:10"></div>
+
 	@{json(user, 'userdata')}
 
 	<script>
@@ -75,7 +72,7 @@
 		var user = PARSE('#userdata');
 
 		CONFIG('panel', function() {
-			return (/projectsform|usersform|snippetsform/).test(this.path) ? '' : (common.electron ? 'top:50' : 'top:49');
+			return (/projectsform|usersform|snippetsform/).test(this.config.if) ? '' : (common.electron ? 'top:50' : 'top:49');
 		});
 
 		MAKE('common', function(common) {
@@ -270,7 +267,9 @@
 
 			var arr = [];
 
-			if (common.page === 'code') {
+			arr.push({ name: '@(Help)', id: 'help', icon: 'life-ring' });
+
+			if (common.page === 'code' && W.code && W.code.data) {
 
 				for (var i = 0; i < code.data.files.length; i++) {
 					var file = code.data.files[i];
@@ -305,6 +304,9 @@
 					EXEC('code/open', { path: value.name, name: value.filename });
 				} else {
 					switch (value.id) {
+						case 'help':
+							window.open('https://wiki.totaljs.com/code/01-welcome/');
+							break;
 						case 'reload':
 							FUNC.editor_reload();
 							break;
@@ -326,6 +328,16 @@
 							TOGGLE('common.debug');
 							break;
 					}
+				}
+			}, function(search) {
+				// fallback
+				if (search.charAt(0) === ':') {
+					// go to line
+					setTimeout(function() {
+						var tmp = search.split(':').trim();
+						SETTER('editor', 'gotoline', (tmp[0] || '').parseInt(), (tmp[1] || '').parseInt());
+					}, 500);
+					return;
 				}
 			});
 

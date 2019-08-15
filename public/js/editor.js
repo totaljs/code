@@ -275,6 +275,9 @@ WAIT('CodeMirror.defineMode', function() {
 				if (stream.match(/data-jc=|data-{2,4}=|data-bind=/, true))
 					return 'variable-J';
 
+				if (stream.match(/data-jc-(url|scope|import|cache|path|config|id|type|init|class)=/, true))
+					return 'variable-E';
+
 				stream.next();
 				return null;
 			}
@@ -1673,6 +1676,10 @@ WAIT('CodeMirror.defineMode', function() {
 });
 
 var SNIPPETS = [];
+SNIPPETS.push({ type: 'css', search: 'hellip overflow', text: '<b>hellip</b>', code: 'text-overflow: ellipsis; white-space: nowrap; overflow: hidden;', ch: 64 });
+SNIPPETS.push({ type: 'css', search: 'linear gradient', text: '<b>linear</b>-gradient', code: 'background: linear-gradient(0deg,#F0F0F0,#D0D0D0);', ch: 34 });
+SNIPPETS.push({ type: 'css', search: 'radial gradient', text: '<b>radial</b>-gradient', code: 'background: radial-gradient(#F0F0F0,#D0D0D0);', ch: 29 });
+SNIPPETS.push({ type: 'css', search: 'media', text: 'Media', code: '@media(max-width: 768px) {\n\n}', ch: 30 });
 SNIPPETS.push({ type: 'html', search: 'script', text: '<b>Script: JavaScript</b>', code: '<script></script>', ch: 9 });
 SNIPPETS.push({ type: 'html', search: 'script', text: '<b>Script: HTML</b>', code: '<script type="text/html"></script>', ch: 26 });
 SNIPPETS.push({ type: 'html', search: 'script', text: '<b>Script: Text</b>', code: '<script type="text/plain"></script>', ch: 27 });
@@ -1712,8 +1719,10 @@ SNIPPETS.push({ type: 'javascript', search: 'exports.install', text: '<b>exports
 })();
 
 FUNC.snippets = function(type, text, tabs, line, words, chplus) {
-
 	switch (type) {
+		case 'text/css':
+			type = 'css';
+			break;
 		case 'html':
 		case 'totaljs':
 			type = 'html';

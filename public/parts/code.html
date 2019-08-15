@@ -1,7 +1,7 @@
 <div id="panel">
 	<section class="project exec" data-exec="code/projects" data-bind="!code.data__html b:value.name__title:value.name"><i class="fa fa-caret-down"></i><b>@(Choose project)</b></section>
 	<div class="panel-scroller fullheight noscrollbar" data-margin="36">
-		<div data---="tree__code.tree__exec:code/open;options:code/options;rename:code/rename;first:false;upload:code/upload;pk:path"></div>
+		<div data---="tree__code.tree__exec:code/open;options:code/options;rename:code/rename;first:false;upload:code/upload;pk:path;extrabutton:code/templates;extralabel:@(Download template)"></div>
 	</div>
 	<section class="status invisible" data-bind="code.data__invisible:!value">
 		<button title="@(Create file)" class="exec" data-name="file" data-exec="code/statusform"><i class="far fa-file-text-o"></i></button>
@@ -387,6 +387,10 @@
 			});
 		};
 
+		exports.templates = function() {
+			SET('common.form', 'templates');
+		};
+
 		exports.changes = function() {
 			SET('common.form', 'changes');
 		};
@@ -583,11 +587,19 @@
 					}
 
 					if (value.value === 'align') {
-						for (var i = 0; i < sel.length; i++) {
-							sel[i] = sel[i].split('\n');
-							sel[i] = FUNC.aligntext(sel[i]).join('\n');
+						if (code.current.name === 'sitemap') {
+							for (var i = 0; i < sel.length; i++) {
+								sel[i] = sel[i].split('\n');
+								sel[i] = FUNC.alignsitemap(sel[i]).join('\n');
+							}
+							editor.replaceSelections(sel);
+						} else {
+							for (var i = 0; i < sel.length; i++) {
+								sel[i] = sel[i].split('\n');
+								sel[i] = FUNC.aligntext(sel[i]).join('\n');
+							}
+							editor.replaceSelections(sel);
 						}
-						editor.replaceSelections(sel);
 						return;
 					}
 
@@ -1051,6 +1063,11 @@
 
 			var items = [];
 
+			if (node.name === 'bundles') {
+				items.push({ value: 'bundles', name: '@(Download bundles)', icon: 'cloud-download', classname: 'b' });
+				items.push('-');
+			}
+
 			if (node.children) {
 				items.push({ value: 'file', name: '@(Create file)', icon: '!far fa-file-text-o' });
 				items.push({ value: 'directory', name: '@(Create directory)', icon: '!far fa-folder-o' });
@@ -1062,6 +1079,9 @@
 
 			SETTER('menu', 'show', 'right', el, items, function(item) {
 				switch (item.value) {
+					case 'bundles':
+						SET('common.form', 'bundles');
+						break;
 					case 'file':
 					case 'directory':
 						SET('code.statusform.name', item.value);

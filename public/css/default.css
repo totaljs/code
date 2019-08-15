@@ -119,8 +119,8 @@ h3 i { margin-right: 5px; color: $color; }
 #body.warning .tabs span.selected  { border-top-color: red; }
 #panel { width: 240px; float: left; overflow: hidden; }
 #content { overflow: hidden; }
-#panel .project { height: 50px; border-bottom: 1px solid #E0E0E0; background-color: #fffbed; color: black; cursor: pointer; font-size: 18px; padding: 12px 0 0 20px; font-weight: bold; }
-#panel .project i { float: right; margin: 3px 15px 0 0; }
+#panel .project { height: 50px; border-bottom: 1px solid #E0E0E0; background-color: #fffbed; color: black; cursor: pointer; font-size: 18px; padding: 12px 0 0 18px; font-weight: bold; }
+#panel .project i { float: right; margin: 3px 12px 0 0; }
 #panel .project b { margin-right: 40px; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 #panel .project:hover { background-color: #fef9e3; }
 #panel .status { padding: 0; }

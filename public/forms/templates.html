@@ -1,0 +1,15 @@
+<div data---="panel__common.form__if:templates;width:350;title:@(Download templates);icon:cloud-download;reload:templatespanel/reload;bg:false;autofocus:true;bottom:87;top:50" class="hidden">
+	<div data---="viewbox__templatespanel__height:100;margin:51;parent:.ui-panel">
+		LIST OF TEMPLATES
+	</div>
+</div>
+
+<script>
+	PLUGIN('templatespanel', function(exports) {
+		exports.reload = function() {
+			exports.refresh();
+		};
+		exports.refresh = function() {
+		};
+	})
+</script>

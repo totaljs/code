@@ -15,3 +15,5 @@
 - improved file browser
 - improved tasks
 - fixed tab tag completion
+- press F1 and type :LINENUMBER:CHARNUMBER
+- `sitemap` supprots custom `align` function

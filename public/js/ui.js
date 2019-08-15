@@ -62,6 +62,16 @@ COMPONENT('editor', function(self, config) {
 		self.find('.CodeMirror').css('height', h);
 	};
 
+	self.gotoline = function(line, ch) {
+		var cur = { line: line, ch: ch || 0 };
+		var t = editor.charCoords(cur, 'local').top;
+		var mid = editor.getScrollerElement().offsetHeight / 2;
+		cur.line--;
+		editor.setCursor(cur);
+		editor.scrollTo(null, t - mid - 5);
+		editor.focus();
+	};
+
 	self.configure = function(key, value, init) {
 		if (init)
 			return;
@@ -1017,6 +1027,10 @@ COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 		var ddfile = null;
 		var ddtarget = null;
 
+		self.event('click', '.extrabutton', function() {
+			EXEC(config.extrabutton);
+		});
+
 		self.event('dragenter dragover dragexit drop dragleave', function (e) {
 
 			e.stopPropagation();
@@ -1247,6 +1261,9 @@ COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 		selindex = -1;
 		counter = 0;
 		cache = {};
+
+		if (value && !value.findItem('name', 'controllers'))
+			builder.push('<div class="extrabutton"><i class="fa fa-cloud-download"></i>{0}</div>'.format(config.extralabel));
 
 		value && value.forEach(function(item) {
 			counter++;
@@ -4736,6 +4753,8 @@ COMPONENT('features', 'height:37', function(self, config) {
 					var sel = self.find('li.selected');
 					if (sel.length && self.callback)
 						self.callback(self.items[+sel.attrd('index')]);
+					else
+						self.fallback && self.fallback(input.val());
 					self.hide();
 					break;
 				case 38: // up
@@ -4834,7 +4853,7 @@ COMPONENT('features', 'height:37', function(self, config) {
 		});
 	};
 
-	self.show = function(items, callback) {
+	self.show = function(items, callback, fallback) {
 
 		if (is) {
 			clearTimeout(timeout);
@@ -4855,6 +4874,7 @@ COMPONENT('features', 'height:37', function(self, config) {
 
 		self.items = items;
 		self.callback = callback;
+		self.fallback = fallback;
 		results = true;
 		resultscount = self.items.length;
 
