@@ -1,4 +1,5 @@
 const WSBLOCKED = { TYPE: 'blocked' };
+var DDOS = {};
 
 NEWSCHEMA('Users', function(schema) {
 
@@ -106,10 +107,19 @@ NEWSCHEMA('Login', function(schema) {
 	// Performs login
 	schema.setSave(function($) {
 
+		if (DDOS[$.ip] > 4) {
+			$.invalid('error-blocked-ip');
+			return;
+		}
+
 		var user = MAIN.users.findItem('email', $.model.email);
 
 		if (!user || user.password !== $.model.password.sha256()) {
 			$.invalid('error-credentials');
+			if (DDOS[$.ip])
+				DDOS[$.ip]++;
+			else
+				DDOS[$.ip] = 1;
 			return;
 		}
 
@@ -129,4 +139,9 @@ NEWSCHEMA('Login', function(schema) {
 		MAIN.session.setcookie($.controller, opt, $.done());
 	});
 
+});
+
+ON('service', function(counter) {
+	if (counter % 15 === 0)
+		DDOS = {};
 });
