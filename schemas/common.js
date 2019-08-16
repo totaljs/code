@@ -1,5 +1,4 @@
 const Path = require('path');
-const Fs = require('fs');
 const Exec = require('child_process').exec;
 
 NEWSCHEMA('Minify', function(schema) {
