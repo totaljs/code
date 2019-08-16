@@ -1269,7 +1269,7 @@ COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 		counter = 0;
 		cache = {};
 
-		if (value && !value.findItem('name', 'controllers'))
+		if (value && !value.findItem('name', 'controllers') && !value.findItem('name', 'bundles'))
 			builder.push('<div class="extrabutton"><i class="fa fa-cloud-download"></i>{0}</div>'.format(config.extralabel));
 
 		value && value.forEach(function(item) {
