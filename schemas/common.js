@@ -1,3 +1,7 @@
+const Path = require('path');
+const Fs = require('fs');
+const Exec = require('child_process').exec;
+
 NEWSCHEMA('Minify', function(schema) {
 	schema.define('body', String, true);
 	schema.define('type', ['js', 'css', 'html'], true);
@@ -38,4 +42,52 @@ NEWSCHEMA('Encoder', function(schema) {
 		$.callback(model.body);
 	});
 
+});
+
+NEWSCHEMA('ExternalTemplate', function(schema) {
+
+	schema.define('git', 'String', true);
+
+	schema.setQuery(function($) {
+		RESTBuilder.GET('https://cdn.totaljs.com/code/templates.json').exec($.callback);
+	});
+
+	schema.setSave(function($) {
+
+		var project = MAIN.projects.findItem('id', $.id);
+		if (project == null) {
+			$.invalid('error-project');
+			return;
+		}
+
+		// clone repository
+		// move repository
+		// clean repository
+
+		MAIN.log($.user, 'download_template', project, $.model.git);
+		Exec('bash ' + PATH.root('clone.sh') + ' "{0}" "{1}"'.format($.model.git, project.path), $.done());
+	});
+});
+
+NEWSCHEMA('ExternalBundle', function(schema) {
+
+	schema.define('url', 'String', true);
+	schema.define('name', 'String', true);
+
+	schema.setQuery(function($) {
+		RESTBuilder.GET('https://cdn.totaljs.com/code/bundles.json').exec($.callback);
+	});
+
+	schema.setSave(function($) {
+
+		var project = MAIN.projects.findItem('id', $.id);
+		if (project == null) {
+			$.invalid('error-project');
+			return;
+		}
+
+		var model = $.model;
+		MAIN.log($.user, 'download_bundle', project, model.url);
+		F.download(model.url, Path.join(project.path, 'bundles', model.name), $.done());
+	});
 });

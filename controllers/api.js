@@ -61,6 +61,11 @@ exports.install = function() {
 
 		ROUTE('POST   /api/request/',                                          makerequest, [20000]);
 		ROUTE('GET    /api/request/{id}/',                                     makerequestscript, [20000]);
+
+		ROUTE('GET    /api/external/bundles/                 *ExternalBundle   --> @query');
+		ROUTE('POST   /api/external/bundles/{id}/            *ExternalBundle   --> @save', [10000]);
+		ROUTE('GET    /api/external/templates/               *ExternalTemplate --> @query');
+		ROUTE('POST   /api/external/templates/{id}/          *ExternalTemplate --> @save', [10000]);
 	});
 
 	GROUP(['unauthorize'], function() {

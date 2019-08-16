@@ -9,17 +9,17 @@ $cookie        : YOUR_COOKIE_VALUE
 ================================================================================
 
 // Sign-in
-POST https://domain.com/api/login/
+POST @URL/api/login/
 {"email":"petersirka@gmail.com","password":"123456"}
 
 ================================================================================
 
 // Codelist
-GET https://domain.com/api/cl/
+GET @URL/api/cl/
 Cookie: session=$cookie
 
 ================================================================================
 
 // List of products
-GET https://domain.com/api/products/
+GET @URL/api/products/
 Cookie: session=$cookie

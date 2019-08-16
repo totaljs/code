@@ -3,7 +3,7 @@
 	"description": "DESCRIPTION",
 	"version": "1.0.0",
 	"icon": "book",
-	"url": "URL_ADDRESS",
+	"url": "@URL",
 	"author": "Total Avengers",
 	"email": "info@totalavengers.com",
 	"roles": ["admin"],

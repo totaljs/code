@@ -39,6 +39,7 @@
 
 	<header>
 		<button class="exec" data-exec="mainmenu"><i class="fa fa-navicon"></i></button>
+		<span class="version">v@{MAIN.version}</span>
 		<div class="tools" data-jc="selected__common.page__selector:a.R">
 			<a href="@{#}/" title="@(Code)" class="R" data-if="code"><i class="fa fa-laptop-code"></i></a>
 			<a href="#" data-bind="code.data.documentation__show__href" title="@(Documentation)" target="_blank" class="external hidden"><i class="fa fa-book-open"></i></a>
@@ -297,6 +298,8 @@
 					code.data.review && arr.unshift({ name: '@(Code review)', id: 'review', icon: 'check-circle green' });
 					arr.unshift({ name: '@(History &amp; Backups)', id: 'history', icon: 'history', keywords: 'backups' });
 				}
+
+				arr.push({ name: '@(Clear the project)', id: 'removeall', icon: 'trash-o' });
 			}
 
 			SETTER('features', 'show', arr, function(value) {
@@ -304,6 +307,31 @@
 					EXEC('code/open', { path: value.name, name: value.filename });
 				} else {
 					switch (value.id) {
+						case 'removeall':
+							SETTER('confirm', 'show', '@(Are you sure you want to clear the project?)', ['"trash-o" @(Remove)', '@(Cancel)'], function(index) {
+								if (index)
+									return;
+
+								SETTER('loading', 'show');
+								var allowed = { logs: 1, 'debug.js': 1, 'release.js': 1, 'debug.pid': 1, config: 1 };
+								code.tree.wait(function(item, next) {
+
+									if (allowed[item.name]) {
+										next();
+										return;
+									}
+
+									var data = {};
+									data.path = item.path;
+									AJAX('POST /api/files/{id}/remove/'.arg(code.data), data, next);
+								}, function() {
+									SETTER('loading', 'hide');
+									EXEC('code/refresh');
+									FUNC.success('@(The project has been cleared successfully.)');
+								});
+							});
+
+							break;
 						case 'help':
 							window.open('https://wiki.totaljs.com/code/01-welcome/');
 							break;

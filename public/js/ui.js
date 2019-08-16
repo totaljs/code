@@ -1116,6 +1116,13 @@ COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 			}
 		});
 
+		self.event('contextmenu', '.item', function(e) {
+			e.preventDefault();
+			var el = $(this);
+			var index = el.attrd('index');
+			config.options && EXEC(config.options, cache[index], el);
+		});
+
 	};
 
 	self.select = function(index, noeval) {
@@ -4094,6 +4101,18 @@ COMPONENT('menu', function(self) {
 	self.makehtml = function(items, index) {
 		var builder = [];
 		var tmp;
+		var shortcutsize = 0;
+
+		for (var i = 0; i < items.length; i++) {
+			if (typeof(items[i]) !== 'string' && items[i].shortcut) {
+				var l = items[i].shortcut.length;
+				if (l > shortcutsize)
+					shortcutsize = l;
+			}
+		}
+
+		if (l)
+			l += 5;
 
 		for (var i = 0; i < items.length; i++) {
 			var item = items[i];
@@ -4123,7 +4142,7 @@ COMPONENT('menu', function(self) {
 				tmp += '<i class="fa fa-play pull-right"></i>';
 			}
 
-			tmp += '<div class="{0}-name">{1}{2}{3}</div>'.format(cls, icon, item.name, item.shortcut ? '<b>{0}</b>'.format(item.shortcut) : '');
+			tmp += '<div class="{0}-name">{1}{2}{3}</div>'.format(cls, icon, item.name + (l ? ''.padLeft(l, '&nbsp;') : ''), item.shortcut ? '<b>{0}</b>'.format(item.shortcut) : '');
 
 			if (item.note)
 				tmp += '<div class="ui-menu-note">{0}</div>'.format(item.note);

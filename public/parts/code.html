@@ -471,6 +471,7 @@
 			sub.push({ name: '@(UID)', icon: 'chevron-right', value: 'uid' });
 			sub.push({ name: '@(GUID)', icon: 'chevron-right', value: 'guid' });
 			sub.push({ name: '@(Password)', icon: 'chevron-right', value: 'password' });
+			sub.push({ name: '@(Hostname)', icon: 'chevron-right', value: 'url' });
 			sub.push({ name: '@(IP address - my)', icon: 'chevron-right', value: 'ip' });
 			sub.push({ name: '@(IP address - server)', icon: 'chevron-right', value: 'ipserver' });
 			sub.push({ name: '@(Date / Time)', icon: 'chevron-right', value: 'date' });
@@ -499,6 +500,7 @@
 					sub.push({ name: '@(j-Modal)', icon: 'code', value: 'template', id: 'modal' });
 					sub.push({ name: '@(j-Panel)', icon: 'code', value: 'template', id: 'panel' });
 					sub.push({ name: '@(j-Window)', icon: 'code', value: 'template', id: 'window' });
+					sub.push({ name: '@(Plugin)', icon: 'code', value: 'template', id: 'plugin' });
 				}
 				items.push({ name: '@(Insert template)', icon: 'plus-circle', value: 'template', children: sub });
 			}
@@ -518,6 +520,11 @@
 						FUNC.requestscript(code.data.id, code.current.path);
 					else
 						FUNC.request(text, editor.getValue());
+					return;
+				}
+
+				if (value.value === 'url') {
+					editor.replaceSelection(code.data.url);
 					return;
 				}
 
@@ -621,7 +628,10 @@
 							break;
 						case 'template':
 							AJAX('GET /api/templates/' + value.id, function(response) {
-								editor.replaceSelection(response);
+								var url = code.data.url;
+								if (url.substring(url.length - 1) === '/')
+									url = url.substring(url.length - 1);
+								editor.replaceSelection(response.replace(/@URL/g, url));
 							});
 							break;
 						case 'ui':
@@ -1116,6 +1126,10 @@
 								AJAX('POST /api/files/{id}/remove/'.arg(code.data), data, function() {
 									SETTER('loading', 'hide', 100);
 									FUNC.success('@(Removed successfully: <b>{0}</b>.)'.format(data.path));
+									var el = exports.element.find('.tabs');
+									el = el.find('span[data-value="{0}"]'.format(data.path));
+									if (el.length)
+										el.find('i').trigger('click');
 									SET('code.tree', FUNC.treeremove(code.tree, node.path));
 								});
 							}
@@ -1717,7 +1731,7 @@
 			if (msg.projectid === code.data.id)
 				SET('code.usersproject', msg.project);
 
-			if (code.editor && msg.fileid === code.editor.path) {
+			if (code.editor && msg.projectid === code.data.id && msg.fileid === code.editor.path) {
 				SET('code.usersfile', msg.file);
 				var colors = [];
 				for (var i = 0; i < msg.file.length; i++) {
@@ -1736,7 +1750,6 @@
 				SET('code.multiple', is);
 
 				// auto-sync
-				// if (is && !code.current.modified && !code.backup) {
 				if (is) {
 					if (user.id === msg.userid) {
 						code.issyncing = true;

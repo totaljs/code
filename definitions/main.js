@@ -1,7 +1,7 @@
 const Path = require('path');
 const Fs = require('fs');
 
-var MAIN = global.MAIN = {};
+MAIN.version = '1.2.0';
 
 // Projects
 MAIN.projects = [];
