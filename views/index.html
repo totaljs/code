@@ -48,7 +48,9 @@
 			<a href="@{#}/projects/" title="@(Projects)" class="R" data-if="projects"><i class="fa fa-code-branch"></i></a>
 			<a href="@{#}/users/" title="@(Users)" class="R" data-if="users"><i class="fa fa-users"></i></a>
 			<a href="@{#}/timespent/" title="@(Time spent)" class="R" data-if="timespent"><i class="far fa-calendar"></i></a>
+			<!--
 			<a href="@{#}/snippets/" title="@(Snippets)" class="R" data-if="snippets"><i class="far fa-clone"></i></a>
+			-->
 			@{fi}
 			<a href="@{#}/settings/" title="@(Settings)" class="R" data-if="settings"><i class="fa fa-cog"></i></a>
 			<a href="@{#}/logout/" title="@(Sign out)"><i class="fa fa-sign-out"></i></a>
@@ -79,6 +81,7 @@
 		MAKE('common', function(common) {
 
 			common.id = GUID(5);
+			common.idletime = 0;
 			common.electron = navigator.userAgent.indexOf('Electron') !== -1 && window.require != null;
 			common.online = true;
 			common.name = document.title;
@@ -269,6 +272,7 @@
 			var arr = [];
 
 			arr.push({ name: '@(Help)', id: 'help', icon: 'life-ring' });
+			arr.push({ name: '@(Pause)', id: 'pause', icon: 'pause' });
 
 			if (common.page === 'code' && W.code && W.code.data) {
 
@@ -334,6 +338,9 @@
 							break;
 						case 'help':
 							window.open('https://wiki.totaljs.com/code/01-welcome/');
+							break;
+						case 'pause':
+							location.href = $('.pause').attr('href');
 							break;
 						case 'reload':
 							FUNC.editor_reload();
@@ -502,7 +509,16 @@
 			}
 		};
 
-		ON('knockknock', FUNC.autodarkmode);
+		ON('knockknock', function(counter) {
+
+			FUNC.autodarkmode();
+			common.idletime++;
+
+			// 5 minutes idle time
+			if (common.idletime > 5)
+				location.href = $('.pause').attr('href');
+
+		});
 
 		if (!isMOBILE) {
 			$(document).on('mouseenter mouseleave', '.cm-diff-user', function(e) {
@@ -519,6 +535,10 @@
 					SETTER('tooltip', 'hide');
 			});
 		}
+
+		$(W).on('click keypress', function (e) {
+			common.idletime = 0;
+		});
 
 	</script>
 

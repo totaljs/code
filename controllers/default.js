@@ -3,6 +3,7 @@ exports.install = function() {
 	ROUTE('/*', 'index', ['authorize']);
 	ROUTE('/*', 'login', ['unauthorize']);
 	ROUTE('/offline/');
+	ROUTE('/pause/');
 
 	// File routes
 	FILE('/manifest.json', manifest);

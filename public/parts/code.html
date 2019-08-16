@@ -96,6 +96,7 @@
 
 <div class="collaborators" data-bind="code.editor.path__show .onlyopen__|__code.data__show">
 	<div class="tools">
+		<a data-bind="code.data.id__href:'/pause/?url=' + encodeURIComponent('/?id=' + (value || ''))" title="@(Pause / Time to Relax)" class="red pause"><i class="fa fa-pause"></i></a>
 		<span title="@(To-Do list)" class="exec" data-path="common.form" data-value="'tasks'"><b class="uncomplete" data-bind="code.data.todo --> code/codetasks_unsolved__show__html"></b><i class="fa fa-tasks"></i></span>
 		<span title="@(Code review)" data-bind="code.editor.path__show" class="hidden exec review onlyopen" data-exec="code/review"><i class="fa fa-check"></i></span>
 	</div>

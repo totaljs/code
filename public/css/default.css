@@ -306,11 +306,11 @@ header .tools .external { color: #a2a286; }
 .collaborators { position: absolute; right: 0; top: 0; }
 .collaborators section { display: inline-block; }
 .collaborators .tools { float: right; font-size: 18px; padding: 0; }
-.collaborators .tools span { color: black; position: relative; display: inline-block; transition: color 0.5s; font-size: 12px; line-height: 14px; border-left: 1px solid #E0E0E0; height: 49px; vertical-align: top; padding: 16px 0 0 0; text-align: center; width: 50px; font-size: 16px; cursor: pointer; }
-.collaborators .tools span:hover { text-decoration: none; background-color: #F0F0F0; }
+.collaborators .tools span, .collaborators .tools a { color: black; position: relative; display: inline-block; transition: color 0.5s; font-size: 12px; line-height: 14px; border-left: 1px solid #E0E0E0; height: 49px; vertical-align: top; padding: 16px 0 0 0; text-align: center; width: 50px; font-size: 16px; cursor: pointer; }
+.collaborators .tools span:hover, .collaborators .tools a:hover { text-decoration: none; background-color: #F0F0F0; }
 .collaborators .tools span b { position: absolute; width: 20px; height: 20px; background-color: red; color: white; padding: 2px 0 0; font-size: 10px; border-radius: 100px; z-index: 1; margin: -12px 0 0 10px; }
 .collaborators .tools .selected { background-color: #F0F0F0; }
-.collaborators .initials { width: 50px; height: 49px; border-radius: 0; font-size: 18px; padding-top: 12px; margin: 0; float: left; }
+.collaborators .initials { width: 30px; height: 30px; border-radius: 0; font-size: 12px; line-height: 30px; margin: 9px 10px 0 0; float: left; padding: 0; border-radius: 100px; }
 .collaborators .review { color: #8CC152 !important; }
 .uncomplete { animation: uncomplete 0.5s infinite forwards alternate; }
 
@@ -394,8 +394,8 @@ header .tools .external { color: #a2a286; }
 .td header .tools .selected { background-color: #303030; }
 .td header .tools .external { color: #e8d68f; }
 .td .collaborators .tools .selected { background-color: #303030; }
-.td .collaborators .tools span { border-left-color: #353535; color: white; }
-.td .collaborators .tools span:hover { text-decoration: none; background-color: #303030; }
+.td .collaborators .tools span, .td .collaborators .tools a { border-left-color: #353535; color: white; }
+.td .collaborators .tools span:hover, .td .collaborators .tools a:hover { text-decoration: none; background-color: #303030; }
 .td .status { border-top-color: #353535; }
 .td #panel .status button { background-color: #202020; border-left-color: #353535; color: white; }
 .td #panel .status button:hover { background-color: #303030; }

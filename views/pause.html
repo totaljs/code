@@ -11,27 +11,33 @@
 	<meta name="robots" content="all,follow" />
 	<link rel="stylesheet" href="/css/cdn.min.css" />
 	<style>
-		.note { font-size: 12px; margin: 50px 0 20px; color: gray; text-align: center; }
+		.note { font-size: 12px; margin: 20px 0 20px; color: gray; text-align: center; }
 		.note i { margin-right: 5px; }
-		.button { background-color: #68b043; border: 0; color: white; cursor: pointer; outline: 0; width: 100%; border-radius: 3px; height: 44px; text-transform: uppercase; font-family: Arial; display: block; text-align: center; line-height: 44px; font-weight: bold; max-width: 200px; width: 100%; margin: 0 auto; }
+		.button { background-color: #68b043; border: 0; color: white; cursor: pointer; outline: 0; width: 100%; border-radius: 3px; height: 44px; text-transform: uppercase; font-family: Arial; display: block; text-align: center; line-height: 44px; font-weight: bold; max-width: 200px; width: 100%; margin: 0 auto; animation: scale 1s infinite forwards; }
 		.button:hover { box-shadow: 0 2px 5px rgba(0,0,0,0.1); opacity: 0.9; text-decoration: none; }
 		.button i { margin-right: 5px; }
-		.panel { background-color: white; border-radius: 3px; border: 1px solid #E9E9E9; width: 300px; height: 300px; left: 50%; margin: -150px 0 0 -150px; top: 50%; position: absolute; }
+		.panel { background-color: white; border-radius: 3px; border: 1px solid #E9E9E9; width: 300px; height: 220px; left: 50%; margin: -150px 0 0 -150px; top: 50%; position: absolute; }
 		.panel > label { display: block; padding: 10px 20px; border-bottom: 1px solid #E0E0E0; font-size: 14px; font-weight: bold; background-color: #F8F8F8; }
 		.panel > label i { margin-right: 5px; }
 		.panel .body { padding: 20px; position: relative; }
 		.ui-dark .panel { background-color: #252525; border-color: #303030; }
 		.ui-dark .panel > label { background-color: #202020; border-color: #303030; }
 
+		@keyframes scale {
+			0% { transform: scale(1); }
+			50% { transform: scale(1.1); }
+			100% { transform: scale(1); }
+		}
+
 	</style>
 </head>
 <body@{if user && user.darkmode == 1} class="ui-dark"@{fi}>
 
 	<div class="panel">
-		<label><i class="fa fa-warning red"></i> @(Logged out)</label>
+		<label><i class="fa fa-pause red"></i> @(Paused coding)</label>
 		<div class="body">
-			<div class="note">@(You have been logged out because you have used another device.)</div>
-			<a href="/" class="button"><i class="fa fa-key"></i>@(Sign in)</a>
+			<div class="note">@(Do you want to continue?)</div>
+			<a href="@{query.url}" class="button"><i class="fa fa-play"></i>@(Play with code)</a>
 		</div>
 	</div>
 
