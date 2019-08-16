@@ -9,6 +9,7 @@ html,body { margin: 0; padding: 0; overflow: hidden; }
 ::-moz-selection { background: #60307F; color: white; }
 
 .version { position: absolute; font-size: 9px; z-index: 1; left: 210px; top: 55px; }
+.electron .version { top: 77px; }
 .yellow { color: #d7cd17 !important; }
 .gray { color: gray; }
 .ml5 { margin-left: 5px; }
