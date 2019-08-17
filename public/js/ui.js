@@ -2481,7 +2481,7 @@ COMPONENT('datagrid', 'checkbox:true;colwidth:150;rowheight:27;limit:80;filterla
 			}
 		}
 
-		self.style(css);
+		CSS(css, self.ID);
 
 		var w = self.width();
 		if (w > opt.width)
@@ -3423,7 +3423,7 @@ COMPONENT('panel', 'width:350;icon:circle-o;zindex:12;bg:true', function(self, c
 		var container = self.element.find('.ui-panel-body');
 
 		self.css('z-index', W.$$panel_level * config.zindex);
-		container.scrollTop(0);
+		container.scrollTop(1);
 		self.rclass('hidden');
 		self.release(false);
 		setTimeout(self.resize, 50);
@@ -5651,13 +5651,13 @@ COMPONENT('search', 'class:hidden;delay:50;attribute:data-search', function(self
 	};
 });
 
-COMPONENT('viewbox', 'margin:0;scroll:true;delay:100;scrollbar:false;visibleY:true', function(self, config) {
+COMPONENT('viewbox', 'margin:0;scroll:true;delay:100;scrollbar:0;visibleY:1;height:100', function(self, config) {
 
 	var eld, elb;
 	var scrollbar;
 	var cls = 'ui-viewbox';
 	var cls2 = '.' + cls;
-	var sw = SCROLLBARWIDTH();
+	var init = false;
 
 	self.readonly();
 
@@ -5667,12 +5667,17 @@ COMPONENT('viewbox', 'margin:0;scroll:true;delay:100;scrollbar:false;visibleY:tr
 			obj = W.OP;
 		else
 			obj = $(W);
-		obj.on('resize', function() {
+
+		var resize = function() {
 			for (var i = 0; i < M.components.length; i++) {
 				var com = M.components[i];
 				if (com.name === 'viewbox' && com.dom.offsetParent && com.$ready && !com.$removed)
 					com.resize();
 			}
+		};
+
+		obj.on('resize', function() {
+			setTimeout2('viewboxresize', resize, 200);
 		});
 	};
 
@@ -5682,6 +5687,7 @@ COMPONENT('viewbox', 'margin:0;scroll:true;delay:100;scrollbar:false;visibleY:tr
 				eld.tclass('hidden', !value);
 				break;
 			case 'minheight':
+			case 'margin':
 				!init && self.resize();
 				break;
 			case 'selector': // backward compatibility
@@ -5706,6 +5712,7 @@ COMPONENT('viewbox', 'margin:0;scroll:true;delay:100;scrollbar:false;visibleY:tr
 	};
 
 	self.make = function() {
+		self.aclass('invisible');
 		config.scroll && MAIN.version > 17 && self.element.wrapInner('<div class="ui-viewbox-body"></div>');
 		self.element.prepend('<div class="ui-viewbox-disabled hidden"></div>');
 		eld = self.find('> .{0}-disabled'.format(cls)).eq(0);
@@ -5733,12 +5740,12 @@ COMPONENT('viewbox', 'margin:0;scroll:true;delay:100;scrollbar:false;visibleY:tr
 
 	var css = {};
 
-	self.resize = function() {
+	self.resize = function(scrolltop) {
 
 		if (self.release())
 			return;
 
-		var el = config.parent ? config.parent === 'window' ? $(window) : self.element.closest(config.parent) : self.parent();
+		var el = config.parent ? config.parent === 'window' ? $(W) : config.parent === 'parent' ? self.parent() : self.element.closest(config.parent) : self.parent();
 		var h = el.height();
 		var w = el.width();
 
@@ -5759,18 +5766,21 @@ COMPONENT('viewbox', 'margin:0;scroll:true;delay:100;scrollbar:false;visibleY:tr
 
 		css.width = null;
 		self.css(css);
-
 		elb.length && elb.css(css);
 		self.element.SETTER('*', 'resize');
 		var c = cls + '-hidden';
 		self.hclass(c) && self.rclass(c, 100);
+		scrollbar && scrollbar.resize();
+		scrolltop && self.scrolltop(0);
 
-		if (scrollbar)
-			scrollbar.resize();
+		if (!init) {
+			self.rclass('invisible', 250);
+			init = true;
+		}
 	};
 
 	self.setter = function() {
-		setTimeout(self.resize, config.delay);
+		setTimeout(self.resize, config.delay, config.scrolltop);
 	};
 });
 

@@ -275,7 +275,7 @@ WAIT('CodeMirror.defineMode', function() {
 				if (stream.match(/data-jc=|data-{2,4}=|data-bind=/, true))
 					return 'variable-J';
 
-				if (stream.match(/data-jc-(url|scope|import|cache|path|config|id|type|init|class)=/, true))
+				if (stream.match(/data-import|(data-jc-(url|scope|import|cache|path|config|id|type|init|class))=/, true))
 					return 'variable-E';
 
 				stream.next();
