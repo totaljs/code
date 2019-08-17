@@ -386,6 +386,31 @@ WAIT('CodeMirror.defineMode', function() {
 		};
 	});
 
+	CodeMirror.defineMode('env', function() {
+		var REG_KEY = /.*?=/;
+		return {
+			token: function(stream) {
+
+				var m;
+
+				if (stream.sol()) {
+					var line = stream.string;
+					if (line.substring(0, 2) === '//' || line[0] === '#') {
+						stream.skipToEnd();
+						return 'comment';
+					}
+				}
+
+				m = stream.match(REG_KEY, true);
+				if (m)
+					return 'type';
+
+				stream.next();
+				return '';
+			}
+		};
+	});
+
 	CodeMirror.defineMode('codeapi', function() {
 
 		var REG_KEY = /^\$[a-z0-9_\-.#]+(\s)+:\s/i;
