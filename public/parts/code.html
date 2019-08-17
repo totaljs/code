@@ -154,8 +154,8 @@
 			FIND('combo').combo();
 		};
 
-		exports.refresh = function() {
-			exports.load(code.data.id, true);
+		exports.refresh = function(callback) {
+			exports.load(code.data.id, true, callback);
 		};
 
 		exports.statusinfo = function(value) {
@@ -198,6 +198,15 @@
 			SETTER('loading', 'show');
 			SETTER('loading', 'hide', 1000);
 			AJAX('GET /api/projects/{id}/logfile/clear/'.arg(code.data), NOOP);
+		};
+
+		exports.localize = function() {
+			SETTER('loading', 'show');
+			AJAX('GET /api/projects/{id}/localize/'.arg(code.data), function() {
+				EXEC('code/refresh', function() {
+					exports.element.SETTER('tree', 'selectpath', '/localization.resource');
+				});
+			});
 		};
 
 		function watchlogfile() {
@@ -975,6 +984,7 @@
 			items.push({ value: 14, name: '@(Output panel)', icon: 'rss' });
 			items.push({ value: 9, name: '@(Show log file)', icon: 'bug red', shortcut: 'F10' });
 			items.push({ value: 16, name: '@(Clipboard)', icon: 'clipboard', shortcut: 'F11' });
+			items.push({ value: 20, name: '@(Translate application)', icon: 'language' });
 
 			if (code.data.allowbundle) {
 				items.push('-');
@@ -1015,6 +1025,9 @@
 						break;
 					case 17:
 						SET('common.form', 'tasks');
+						break;
+					case 20:
+						EXEC('code/localize');
 						break;
 					case 14:
 						SET('common.form', 'output');
@@ -1393,7 +1406,7 @@
 			});
 		};
 
-		exports.load = function(id, skip) {
+		exports.load = function(id, skip, callback) {
 
 			SETTER('loading', 'show');
 
@@ -1403,6 +1416,7 @@
 
 				if (response instanceof Array) {
 					FUNC.warning(response);
+					callback && callback();
 					return;
 				}
 
@@ -1465,6 +1479,7 @@
 
 				AJAX('GET /api/projects/{0}/parts/'.format(id), 'code.componentsdb');
 				SETTER('loading', 'hide', 1000);
+				callback && callback();
 			});
 		};
 
@@ -1767,9 +1782,70 @@
 		exports.statusform = function(name, value, type) {
 
 			if (name instanceof jQuery) {
+
+				var dname = name.attrd('name');
+
+				if (dname === 'directory') {
+					var opt = {};
+					opt.element = name;
+					opt.offsetY = -50;
+					opt.offsetX = -20;
+					opt.position = 'bottom';
+					opt.items = [];
+
+					var directory = {};
+
+					for (var i = 0; i < code.tree.length; i++)
+						directory[code.tree[i].name] = 1;
+
+					if (!directory.bundles)
+						opt.items.push({ name: '<strong>@(Create):</strong> /bundles', icon: '!far fa-folder', value: 'bundles' });
+
+					if (!directory.components)
+						opt.items.push({ name: '<strong>@(Create):</strong> /components', icon: '!far fa-folder', value: 'components' });
+
+					if (!directory.controllers)
+						opt.items.push({ name: '<strong>@(Create):</strong> /controllers', icon: '!far fa-folder', value: 'controllers' });
+
+					if (!directory.definitions)
+						opt.items.push({ name: '<strong>@(Create):</strong> /definitions', icon: '!far fa-folder', value: 'definitions' });
+
+					if (!directory.operations)
+						opt.items.push({ name: '<strong>@(Create):</strong> /operations', icon: '!far fa-folder', value: 'operations' });
+
+					if (!directory.packages)
+						opt.items.push({ name: '<strong>@(Create):</strong> /packages', icon: '!far fa-folder', value: 'packages' });
+
+					if (!directory.resources)
+						opt.items.push({ name: '<strong>@(Create):</strong> /resources', icon: '!far fa-folder', value: 'resources' });
+
+					if (!directory.schemas)
+						opt.items.push({ name: '<strong>@(Create):</strong> /schemas', icon: '!far fa-folder', value: 'schemas' });
+
+					if (!directory.tasks)
+						opt.items.push({ name: '<strong>@(Create):</strong> /tasks', icon: '!far fa-folder', value: 'tasks' });
+
+					if (!directory.themes)
+						opt.items.push({ name: '<strong>@(Create):</strong> /themes', icon: '!far fa-folder', value: 'themes' });
+
+					if (!directory.views)
+						opt.items.push({ name: '<strong>@(Create):</strong> /views', icon: '!far fa-folder', value: 'views' });
+
+					if (!directory.workers)
+						opt.items.push({ name: '<strong>@(Create):</strong> /workers', icon: '!far fa-folder', value: 'workers' });
+
+					opt.callback = function(item) {
+						exports.statusform('directory', item.value);
+						SET('code.statusform.name', '');
+					};
+
+					if (opt.items.length)
+						SETTER('menu', 'show', opt);
+				}
+
 				// element
 				SET('code.statusform.path', '');
-				SET('code.statusform.name', name.attrd('name'));
+				SET('code.statusform.name', dname);
 				return;
 			}
 
@@ -1782,6 +1858,7 @@
 			data.folder = name !== 'file';
 			data.clone = type;
 
+			SETTER('!menu', 'hide');
 			SETTER('loading', 'show');
 			AJAX('POST /api/files/{id}/create/'.arg(code.data), data, function(response) {
 				SETTER('loading', 'hide', 500);
@@ -1801,12 +1878,12 @@
 						var user = response[i];
 						if (user == null)
 							break;
-						builder.push('<div class="infopanel-online"><span>{0}</span><b>{1}</b></div>'.format(user.name, user.project || '@(No file open)'));
+						builder.push('<div class="infopanel-online">{0}<div><b>{1}</b><span>{2}</span></div></div>'.format(Thelpers.initials(user.name), user.name, user.project || '@(No file open)'));
 					}
 
 					!builder.length && FUNC.warning('@(No-one works.)');
 					el.html(builder.join(''));
-				}, 0, -10);
+				}, 0, -20);
 			});
 		};
 

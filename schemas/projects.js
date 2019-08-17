@@ -92,6 +92,70 @@ NEWSCHEMA('Projects', function(schema) {
 		});
 	});
 
+	schema.addWorkflow('localize', function($) {
+		var item = MAIN.projects.findItem('id', $.id);
+		MAIN.log($.user, 'files_localize', item, item.path);
+		U.ls(item.path, function(files) {
+
+			var resource = {};
+			var texts = {};
+			var max = 0;
+
+			for (var i = 0, length = files.length; i < length; i++) {
+				var filename = files[i];
+				var ext = U.getExtension(filename);
+
+				if (filename.indexOf('sitemap') === -1 && ext !== 'html' && ext !== 'js')
+					continue;
+
+				var content = Fs.readFileSync(filename).toString('utf8');
+				var command = Internal.findLocalization(content, 0);
+				while (command !== null) {
+
+					// Skip for direct reading
+					if (command.command[0] === '#' && command.command[1] !== ' ') {
+						command = Internal.findLocalization(content, command.end);
+						continue;
+					}
+
+					var key = 'T' + command.command.hash();
+					var file = filename.substring(item.path.length + 1);
+
+					texts[key] = command.command;
+
+					if (resource[key]) {
+						if (resource[key].indexOf(file) === -1)
+							resource[key] += ', ' + file;
+					}
+					else
+						resource[key] = file;
+
+					max = Math.max(max, key.length);
+					command = Internal.findLocalization(content, command.end);
+				}
+			}
+
+			var keys = Object.keys(resource);
+			var builder = [];
+			var output = {};
+
+			for (var i = 0, length = keys.length; i < length; i++) {
+				if (!output[resource[keys[i]]])
+					output[resource[keys[i]]] = [];
+				output[resource[keys[i]]].push(keys[i].padRight(max + 5, ' ') + ': ' + texts[keys[i]]);
+			}
+
+			keys = Object.keys(output);
+			for (var i = 0, length = keys.length; i < length; i++)
+				builder.push('\n// ' + keys[i] + '\n' + output[keys[i]].join('\n'));
+
+			var data = '// Total.js localization file\n// Created by ' + $.user.name + ': ' + new Date().format('yyyy-MM-dd HH:mm') + '\n' + builder.join('\n');
+			Fs.writeFile(Path.join(item.path, 'localization.resource'), data, $.done());
+
+		}, (path, dir) => dir ? (path.endsWith('/node_modules') || path.endsWith('/tmp') || path.endsWith('/.git') || path.endsWith('/.src') || path.endsWith('/logs')) ? false : true : true);
+
+	});
+
 	schema.setSave(function($) {
 
 		if (!$.user.sa) {

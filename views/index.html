@@ -39,7 +39,7 @@
 
 	<header>
 		<button class="exec" data-exec="mainmenu"><i class="fa fa-navicon"></i></button>
-		<span class="version">v@{MAIN.version}</span>
+		<span class="version hidden" data-bind="common.page__show:value === 'code'">v@{MAIN.version}</span>
 		<div class="tools" data-jc="selected__common.page__selector:a.R">
 			<a href="@{#}/" title="@(Code)" class="R" data-if="code"><i class="fa fa-laptop-code"></i></a>
 			<a href="#" data-bind="code.data.documentation__show__href" title="@(Documentation)" target="_blank" class="external hidden"><i class="fa fa-book-open"></i></a>
@@ -290,7 +290,10 @@
 					arr.unshift({ name: '@(Used parts)', id: 'components', icon: 'puzzle-piece' });
 
 				if (code.data && code.data.id)
-					arr.unshift({ name: '@(Translate)', id: 'translate', icon: 'language' });
+					arr.unshift({ name: '@(Translate application)', id: 'localize', icon: 'language', keywords: 'localize' });
+
+				if (code.data && code.editor && code.editor.loaded)
+					arr.unshift({ name: '@(Translate file)', id: 'translate', icon: 'language', keywords: 'localize' });
 
 				arr.unshift({ name: '@(Show logfile)', id: 'logfile', icon: 'bug' });
 				arr.push({ name: '@(Clipboard)', id: 'clipboard', icon: 'clipboard' });
@@ -353,6 +356,7 @@
 						case 'review':
 						case 'translate':
 						case 'clipboard':
+						case 'localize':
 							EXEC('code/' + value.id);
 							break;
 						case 'componentator':

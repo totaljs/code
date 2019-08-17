@@ -498,7 +498,7 @@ input:invalid { box-shadow: none; }
 .td .ui-dropdown-invalid .ui-dropdown { border-color: red !important; }
 .td .ui-dropdown-invalid .ui-dropdown:after { border-left-color: red !important; }
 
-.ui-infopanel { position: absolute; z-index: 7; background-color: white; padding: 5px; border-radius: 3px; box-shadow: 2px 2px 5px rgba(0,0,0,0.05); border: 1px solid #E0E0E0; }
+.ui-infopanel { position: absolute; z-index: 7; background-color: white; border-radius: 3px; box-shadow: 2px 2px 5px rgba(0,0,0,0.05); border: 1px solid #E0E0E0; }
 .td .ui-infopanel { background-color: #151515; border: 1px solid #252525; }
 
 .ui-suggestion { position: absolute; opacity: 0; transition: 0.25s transform cubic-bezier(0.23, 1, 0.32, 1); left: -100; top: -100; z-index: 100; width: 240px; box-shadow: 0 1px 20px rgba(0,0,0,0.1); transform: translate(0px,20px); background-color: white; border-radius: 4px; border: 1px solid #E0E0E0; }

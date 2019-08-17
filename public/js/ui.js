@@ -1269,8 +1269,19 @@ COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 		counter = 0;
 		cache = {};
 
-		if (value && !value.findItem('name', 'controllers') && !value.findItem('name', 'bundles'))
-			builder.push('<div class="extrabutton"><i class="fa fa-cloud-download"></i>{0}</div>'.format(config.extralabel));
+		var extra = true;
+		if (value) {
+			for (var i = 0; i < value.length; i++) {
+				var key = value[i].name;
+				if (key === 'controllers' || key === 'bundles' || key === 'packages') {
+					extra = false;
+					break;
+				}
+			}
+
+			if (extra)
+				builder.push('<div class="extrabutton"><i class="fa fa-cloud-download"></i>{0}</div>'.format(config.extralabel));
+		}
 
 		value && value.forEach(function(item) {
 			counter++;
@@ -4992,7 +5003,6 @@ COMPONENT('tasks', function(self, config) {
 	self.readonly();
 
 	var binder;
-	var cache = {};
 
 	self.make = function() {
 
