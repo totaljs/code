@@ -65,6 +65,8 @@ exports.install = function() {
 
 		ROUTE('GET    /api/external/bundles/                 *ExternalBundle   --> @query');
 		ROUTE('POST   /api/external/bundles/{id}/            *ExternalBundle   --> @save', [10000]);
+		ROUTE('GET    /api/external/packages/                *ExternalPackage  --> @query');
+		ROUTE('POST   /api/external/packages/{id}/           *ExternalPackage  --> @save', [10000]);
 		ROUTE('GET    /api/external/templates/               *ExternalTemplate --> @query');
 		ROUTE('POST   /api/external/templates/{id}/          *ExternalTemplate --> @save', [10000]);
 	});

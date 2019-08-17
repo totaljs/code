@@ -67,6 +67,7 @@
 
 	<div data---="importer__common.form__if:bundles;url:/forms/bundles.html;cleaner:10"></div>
 	<div data---="importer__common.form__if:templates;url:/forms/templates.html;cleaner:10"></div>
+	<div data---="importer__common.form__if:packages;url:/forms/packages.html;cleaner:10"></div>
 
 	@{json(user, 'userdata')}
 
@@ -442,6 +443,7 @@
 			if (window.code && window.code.statusform)
 				SET('code.statusform', '');
 
+			SETTER('!menu', 'hide');
 		});
 
 		common.electron && window.require('electron').ipcRenderer.on('tabs.close', function() {

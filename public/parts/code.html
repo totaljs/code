@@ -1092,6 +1092,11 @@
 				items.push('-');
 			}
 
+			if (node.name === 'packages') {
+				items.push({ value: 'packages', name: '@(Download packages)', icon: 'cloud-download', classname: 'b' });
+				items.push('-');
+			}
+
 			if (node.children) {
 				items.push({ value: 'file', name: '@(Create file)', icon: '!far fa-file-text-o' });
 				items.push({ value: 'directory', name: '@(Create directory)', icon: '!far fa-folder-o' });
@@ -1104,7 +1109,8 @@
 			SETTER('menu', 'show', 'right', el, items, function(item) {
 				switch (item.value) {
 					case 'bundles':
-						SET('common.form', 'bundles');
+					case 'packages':
+						SET('common.form', item.value);
 						break;
 					case 'file':
 					case 'directory':
