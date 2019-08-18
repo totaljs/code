@@ -76,7 +76,7 @@
 		var user = PARSE('#userdata');
 
 		CONFIG('panel', function() {
-			return (/projectsform|usersform|snippetsform/).test(this.config.if) ? '' : (common.electron ? 'top:50' : 'top:49');
+			return (/projectsform|usersform|snippetsform/).test(this.config.if) ? '' : (common.electron ? ('top:' + (common.ismac ? '50' : '28')) : 'top:49');
 		});
 
 		MAKE('common', function(common) {
@@ -84,6 +84,11 @@
 			common.id = GUID(5);
 			common.idletime = 0;
 			common.electron = navigator.userAgent.indexOf('Electron') !== -1 && window.require != null;
+			common.ismac = navigator.platform.substring(0, 3) === 'Mac';
+
+			if (common.electron && !common.ismac)
+				$('header').aclass('electron-header-border');
+
 			common.online = true;
 			common.name = document.title;
 
