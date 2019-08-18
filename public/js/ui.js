@@ -6270,11 +6270,11 @@ COMPONENT('directory', 'minwidth:200', function(self, config) {
 	};
 });
 
-COMPONENT('input', 'maxlength:200;dirkey:name;dirvalue:id;increment:1;autovalue:name;after:\\:', function(self, config) {
+COMPONENT('input', 'maxlength:200;dirkey:name;dirvalue:id;increment:1;autovalue:name;direxclude:false;forcevalidation:1;searchalign:1;after:\\:', function(self, config) {
 
 	var cls = 'ui-input';
 	var cls2 = '.' + cls;
-	var input, placeholder, dirsource, binded, customvalidator, mask;
+	var input, placeholder, dirsource, binded, customvalidator, mask, isdirvisible = false, nobindcamouflage = false, focused = false;
 
 	self.nocompile();
 	self.bindvisible(20);
@@ -6283,7 +6283,7 @@ COMPONENT('input', 'maxlength:200;dirkey:name;dirvalue:id;increment:1;autovalue:
 		Thelpers.ui_input_icon = function(val) {
 			return val.charAt(0) === '!' ? ('<span class="ui-input-icon-custom">' + val.substring(1) + '</span>') : ('<i class="fa fa-' + val + '"></i>');
 		};
-		W.ui_input_template = Tangular.compile(('{{ if label }}<div class="{0}-label">{{ if icon }}<i class="fa fa-{{ icon }}"></i>{{ fi }}{{ label }}{{ after }}</div>{{ fi }}<div class="{0}-control{{ if licon }} {0}-licon{{ fi }}{{ if ricon || (type === \'number\' && increment) }} {0}-ricon{{ fi }}">{{ if ricon || (type === \'number\' && increment) }}<div class="{0}-icon-right{{ if type === \'number\' && increment }} {0}-increment{{ else if riconclick || type === \'date\' || type === \'time\' || type === \'search\' || type === \'password\' }} {0}-click{{ fi }}">{{ if type === \'number\' }}<i class="fa fa-caret-up"></i><i class="fa fa-caret-down"></i>{{ else }}{{ ricon | ui_input_icon }}{{ fi }}</div>{{ fi }}{{ if licon }}<div class="{0}-icon-left{{ if liconclick }} {0}-click{{ fi }}">{{ licon | ui_input_icon }}</div>{{ fi }}<div class="{0}-input{{ if align === 1 || align === \'center\' }} center{{ else if align === 2 || align === \'right\' }} right{{ fi }}">{{ if placeholder && !innerlabel }}<div class="{0}-placeholder">{{ placeholder }}</div>{{ fi }}<input type="{{ if !dirsource && type === \'password\' }}password{{ else }}text{{ fi }}"{{ if autofill }} name="{{ PATH }}"{{ else }} autocomplete="input' + Date.now() + '"{{ fi }}{{ if dirsource }} readonly{{ else }} data-jc-bind=""{{ fi }}{{ if maxlength > 0}} maxlength="{{ maxlength }}"{{ fi }}{{ if autofocus }} autofocus{{ fi }} /></div></div>{{ if error }}<div class="{0}-error hidden"><i class="fa fa-warning"></i> {{ error }}</div>{{ fi }}').format(cls));
+		W.ui_input_template = Tangular.compile(('{{ if label }}<div class="{0}-label">{{ if icon }}<i class="fa fa-{{ icon }}"></i>{{ fi }}{{ label }}{{ after }}</div>{{ fi }}<div class="{0}-control{{ if licon }} {0}-licon{{ fi }}{{ if ricon || (type === \'number\' && increment) }} {0}-ricon{{ fi }}">{{ if ricon || (type === \'number\' && increment) }}<div class="{0}-icon-right{{ if type === \'number\' && increment }} {0}-increment{{ else if riconclick || type === \'date\' || type === \'time\' || (type === \'search\' && searchalign === 1) || type === \'password\' }} {0}-click{{ fi }}">{{ if type === \'number\' }}<i class="fa fa-caret-up"></i><i class="fa fa-caret-down"></i>{{ else }}{{ ricon | ui_input_icon }}{{ fi }}</div>{{ fi }}{{ if licon }}<div class="{0}-icon-left{{ if liconclick || (type === \'search\' && searchalign !== 1) }} {0}-click{{ fi }}">{{ licon | ui_input_icon }}</div>{{ fi }}<div class="{0}-input{{ if align === 1 || align === \'center\' }} center{{ else if align === 2 || align === \'right\' }} right{{ fi }}">{{ if placeholder && !innerlabel }}<div class="{0}-placeholder">{{ placeholder }}</div>{{ fi }}<input type="{{ if !dirsource && type === \'password\' }}password{{ else }}text{{ fi }}"{{ if autofill }} name="{{ PATH }}"{{ else }} name="input' + Date.now() + '" autocomplete="new-password"{{ fi }}{{ if dirsource }} readonly{{ else }} data-jc-bind=""{{ fi }}{{ if maxlength > 0}} maxlength="{{ maxlength }}"{{ fi }}{{ if autofocus }} autofocus{{ fi }} /></div></div>{{ if error }}<div class="{0}-error hidden"><i class="fa fa-warning"></i> {{ error }}</div>{{ fi }}').format(cls));
 	};
 
 	self.make = function() {
@@ -6301,22 +6301,43 @@ COMPONENT('input', 'maxlength:200;dirkey:name;dirvalue:id;increment:1;autovalue:
 		self.redraw();
 
 		self.event('input change', function() {
-			self.check();
+			if (nobindcamouflage)
+				nobindcamouflage = false;
+			else
+				self.check();
 		});
 
 		self.event('focus', 'input', function() {
+			focused = true;
+			self.camouflage(false);
 			self.aclass(cls + '-focused');
-			config.autocomplete && EXEC(config.autocomplete, self, input.parent());
+			config.autocomplete && EXEC(self.makepath(config.autocomplete), self, input.parent());
 			if (config.autosource) {
 				var opt = {};
 				opt.element = self.element;
-				opt.search = GET(config.autosource);
+				opt.search = GET(self.makepath(config.autosource));
 				opt.callback = function(value) {
-					self.set(typeof(value) === 'string' ? value : value[config.autovalue], 2);
-					self.change();
-					self.bindvalue();
+					var val = typeof(value) === 'string' ? value : value[config.autovalue];
+					if (config.autoexec) {
+						EXEC(self.makepath(config.autoexec), value, function(val) {
+							self.set(val, 2);
+							self.change();
+							self.bindvalue();
+						});
+					} else {
+						self.set(val, 2);
+						self.change();
+						self.bindvalue();
+					}
 				};
 				SETTER('autocomplete', 'show', opt);
+			} else if (config.mask) {
+				setTimeout(function(input) {
+					input.selectionStart = input.selectionEnd = 0;
+				}, 50, this);
+			} else if (config.dirsource && (config.autofocus != false && config.autofocus != 0)) {
+				if (!isdirvisible)
+					self.find(cls2 + '-control').trigger('click');
 			}
 		});
 
@@ -6334,14 +6355,20 @@ COMPONENT('input', 'maxlength:200;dirkey:name;dirvalue:id;increment:1;autovalue:
 			var code = e.which;
 
 			if (t.readOnly || config.disabled) {
-				e.preventDefault();
-				e.stopPropagation();
-				//self.curpos(0);
+				// TAB
+				if (e.keyCode !== 9) {
+					if (config.dirsource) {
+						self.find(cls2 + '-control').trigger('click');
+						return;
+					}
+					e.preventDefault();
+					e.stopPropagation();
+				}
 				return;
 			}
 
 			if (!config.disabled && config.dirsource && (code === 13 || code > 30)) {
-				self.element.find(cls2 + '-control').trigger('click');
+				self.find(cls2 + '-control').trigger('click');
 				return;
 			}
 
@@ -6434,18 +6461,26 @@ COMPONENT('input', 'maxlength:200;dirkey:name;dirvalue:id;increment:1;autovalue:
 		});
 
 		self.event('blur', 'input', function() {
+			focused = false;
+			self.camouflage(true);
 			self.rclass(cls + '-focused');
 		});
 
 		self.event('click', cls2 + '-control', function() {
 
-			if (!config.dirsource || config.disabled)
+			if (!config.dirsource || config.disabled || isdirvisible)
 				return;
+
+			isdirvisible = true;
+			setTimeout(function() {
+				isdirvisible = false;
+			}, 500);
 
 			var opt = {};
 			opt.element = self.find(cls2 + '-control');
 			opt.items = dirsource;
-			opt.offsetY = -1;
+			opt.offsetY = -1 + (config.diroffsety || 0);
+			opt.offsetX = 0 + (config.diroffsetx || 0);
 			opt.placeholder = config.dirplaceholder;
 			opt.render = config.dirrender ? GET(config.dirrender) : null;
 			opt.custom = !!config.dircustom;
@@ -6513,8 +6548,8 @@ COMPONENT('input', 'maxlength:200;dirkey:name;dirvalue:id;increment:1;autovalue:
 				if (config.dirsource) {
 					e.preventDefault();
 					e.stopPropagation();
-					self.element.find(cls2 + '-control').trigger('click');
-				} else
+					self.find(cls2 + '-control').trigger('click');
+				} else if (!config.camouflage || $(e.target).hclass(cls + '-placeholder'))
 					input.focus();
 			}
 		});
@@ -6565,11 +6600,29 @@ COMPONENT('input', 'maxlength:200;dirkey:name;dirvalue:id;increment:1;autovalue:
 			}
 
 			if (left && config.liconclick)
-				EXEC(config.liconclick, self, el);
+				EXEC(self.makepath(config.liconclick), self, el);
 			else if (config.riconclick)
-				EXEC(config.riconclick, self, el);
+				EXEC(self.makepath(config.riconclick), self, el);
+			else if (left && config.type === 'search')
+				self.set('');
 
 		});
+	};
+
+	self.camouflage = function(is) {
+		if (config.camouflage) {
+			if (is) {
+				var t = input[0];
+				var arr = t.value.split('');
+				for (var i = 0; i < arr.length; i++)
+					arr[i] = typeof(config.camouflage) === 'string' ? config.camouflage : '*';
+				nobindcamouflage = true;
+				t.value = arr.join('');
+			} else {
+				nobindcamouflage = true;
+				input[0].value = self.get();
+			}
+		}
 	};
 
 	self.curpos = function(pos) {
@@ -6586,7 +6639,7 @@ COMPONENT('input', 'maxlength:200;dirkey:name;dirvalue:id;increment:1;autovalue:
 
 	self.validate = function(value) {
 
-		if (!config.required || config.disabled)
+		if ((!config.required || config.disabled) && !self.forcedvalidation())
 			return true;
 
 		if (config.dirsource)
@@ -6648,6 +6701,10 @@ COMPONENT('input', 'maxlength:200;dirkey:name;dirvalue:id;increment:1;autovalue:
 
 	self.getterin = self.getter;
 	self.getter = function(value, realtime, nobind) {
+
+		if (nobindcamouflage)
+			return;
+
 		if (config.mask && config.masktidy) {
 			var val = [];
 			for (var i = 0; i < value.length; i++) {
@@ -6697,6 +6754,8 @@ COMPONENT('input', 'maxlength:200;dirkey:name;dirvalue:id;increment:1;autovalue:
 		self.setterin(value, path, type);
 		self.bindvalue();
 
+		config.camouflage && !focused && setTimeout(self.camouflage, type === 1 ? 1000 : 1, true);
+
 		if (config.type === 'password')
 			self.password(true);
 	};
@@ -6713,7 +6772,7 @@ COMPONENT('input', 'maxlength:200;dirkey:name;dirvalue:id;increment:1;autovalue:
 		self.tclass(cls + '-binded', is);
 
 		if (config.type === 'search')
-			self.find(cls2 + '-icon-right').find('i').tclass(config.ricon, !is).tclass('fa-times', is);
+			self.find(cls2 + '-icon-' + (config.searchalign === 1 ? 'right' : 'left')).find('i').tclass(config.searchalign === 1 ? config.ricon : config.licon, !is).tclass('fa-times', is);
 	};
 
 	self.bindvalue = function() {
@@ -6757,7 +6816,10 @@ COMPONENT('input', 'maxlength:200;dirkey:name;dirvalue:id;increment:1;autovalue:
 				if (!config.align && !config.innerlabel)
 					config.align = 1;
 			} else if (config.type === 'search')
-				config.ricon = 'search';
+				if (config.searchalign === 1)
+					config.ricon = 'search';
+				else
+					config.licon = 'search';
 			else if (config.type === 'password')
 				config.ricon = 'eye';
 			else if (config.type === 'number') {
@@ -6872,12 +6934,19 @@ COMPONENT('input', 'maxlength:200;dirkey:name;dirvalue:id;increment:1;autovalue:
 	self.state = function(type) {
 		if (!type)
 			return;
-		var invalid = config.required ? self.isInvalid() : false;
+		var invalid = config.required ? self.isInvalid() : self.forcedvalidation() ? self.isInvalid() : false;
 		if (invalid === self.$oldstate)
 			return;
 		self.$oldstate = invalid;
 		self.tclass(cls + '-invalid', invalid);
 		config.error && self.find(cls2 + '-error').tclass('hidden', !invalid);
+	};
+
+	self.forcedvalidation = function() {
+		if (!config.forcevalidation)
+			return false;
+		var val = self.get();
+		return (self.type === 'phone' || self.type === 'email') && (val != null && (typeof(val) === 'string' && val.length !== 0));
 	};
 });
 

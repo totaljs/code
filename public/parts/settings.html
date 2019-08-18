@@ -1,19 +1,17 @@
 <div class="container">
 	<br />
 	<br />
-	<br />
 	<div class="row">
 		<div class="col-md-4 col-md-offset-4">
 			<div class="panel">
 				<label><i class="fa fa-cog"></i>@(Settings)</label>
 				<div class="body" data-scope="settings">
 
-					<div data---="textbox__?.name__required:true;disabled:true" class="m">@(Account name)</div>
 					<div data---="textbox__?.email__required:true;type:email" class="m">@(Email address)</div>
 					<div data---="textbox__?.phone__type:phone" class="m">@(Phone number)</div>
 
 					<div data-bind="user.sa__show" class="hidden m">
-						<div data---="textbox__?.token__maxlength:100;icon:check green;placeholder:@(Enter a token)">@(Token for code review)</div>
+						<div data---="input__?.token__maxlength:100;camouflage:*;icon:check green;placeholder:@(Enter a token)">@(Token for code review)</div>
 						<div class="help">@(Total.js Team offers a professional code review. You can obtain a token on) <a href="https://my.totaljs.com" target="_blank">https://my.totaljs.com</a></div>
 					</div>
 
@@ -24,7 +22,7 @@
 					<div data---="checkbox__?.ispassword" class="b m">@(Change password)</div>
 
 					<div bind="?.ispassword__show" class="hidden m">
-						<div data---="textbox__?.password__type:password;required:true">@(New password)</div>
+						<div data---="input__?.password__camouflage:true;required:true">@(New password)</div>
 					</div>
 
 					<div data---="error__?.response"></div>
@@ -52,6 +50,13 @@
 				SET('settings', response);
 			});
 		};
+
+		WATCH('?.ispassword', function(path, value) {
+			if (value) {
+				SET('?.password', '');
+				FIND('.settings.password').find('input').focus();
+			}
+		});
 
 		exports.submit = function() {
 			var data = CLONE(GETR('settings'));
