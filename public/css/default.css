@@ -15,6 +15,9 @@ html,body { margin: 0; padding: 0; overflow: hidden; }
 .ml5 { margin-left: 5px; }
 .mb10 { margin-bottom: 10px; }
 
+.bbfooter { position: absolute; bottom: 0; border-bottom: 1px solid #E0E0E0; height: 1px; left: 1px; right: 1px; z-index: 10; }
+.td .bbfooter { border-bottom-color: #303030; }
+
 #clipboard { border: 1px solid #D0D0D0; position: absolute; right: 30px; height: 252px; bottom: 65px; left: 265px; background-color: white; z-index: 9; border-radius: 3px; overflow: hidden; box-shadow: 0 2px 20px rgba(0,0,0,0.1); }
 #clipboard .titlebar { height: 30px; border-bottom: 1px solid #D0D0D0; line-height: 30px; padding: 0 10px; font-size: 12px; font-weight: bold; color: black; }
 #clipboard .titlebar .fa-times { float: right; color: red; cursor: pointer; height: 30px; line-height: 30px; }
