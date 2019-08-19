@@ -48,7 +48,7 @@ NEWSCHEMA('ExternalTemplate', function(schema) {
 	schema.define('git', 'String', true);
 
 	schema.setQuery(function($) {
-		RESTBuilder.GET('https://cdn.totaljs.com/code/templates.json').exec($.callback);
+		RESTBuilder.GET(CONF.cdn_templates || 'https://cdn.totaljs.com/code/templates.json').exec($.callback);
 	});
 
 	schema.setSave(function($) {
@@ -74,7 +74,7 @@ NEWSCHEMA('ExternalBundle', function(schema) {
 	schema.define('name', 'String', true);
 
 	schema.setQuery(function($) {
-		RESTBuilder.GET('https://cdn.totaljs.com/code/bundles.json').exec($.callback);
+		RESTBuilder.GET(CONF.cdn_bundles || 'https://cdn.totaljs.com/code/bundles.json').exec($.callback);
 	});
 
 	schema.setSave(function($) {
@@ -97,7 +97,7 @@ NEWSCHEMA('ExternalPackage', function(schema) {
 	schema.define('name', 'String', true);
 
 	schema.setQuery(function($) {
-		RESTBuilder.GET('https://cdn.totaljs.com/code/packages.json').exec($.callback);
+		RESTBuilder.GET(CONF.cdn_packages || 'https://cdn.totaljs.com/code/packages.json').exec($.callback);
 	});
 
 	schema.setSave(function($) {
