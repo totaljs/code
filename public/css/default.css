@@ -484,7 +484,7 @@ header .tools .external { color: #a2a286; }
 .td .ui-panel-title .ui-panel-button-close { border-left-color: #353535; }
 .td hr { border-color: #181818; }
 
-.infopanel-line { font-size: 12px; cursor: pointer; padding: 1px 4px; border-radius: 3px; }
+.infopanel-line { font-size: 11px; cursor: pointer; padding: 1px 8px; }
 .infopanel-line b { float: right; width: 24px; text-align: right; color: red; }
 .infopanel-line:hover { background-color: #E0E0E0; }
 .infopanel-line span { margin-right: 24px; display: block; min-width: 200px; max-width: 400px; font-family: Menlo,Consolas; color: black; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; }
