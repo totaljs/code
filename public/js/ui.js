@@ -3351,7 +3351,8 @@ COMPONENT('panel', 'width:350;icon:circle-o;zindex:12;bg:true', function(self, c
 	self.resize = function() {
 		var el = self.element.find('.ui-panel-body');
 		var bottom = config.bottom || 0;
-		var plus = 0; //common.META ? 21 : 0;
+		// var plus = 0; //common.META ? 21 : 0;
+		var plus = common.META && config.top ? 21 : 0;
 		if (plus)
 			bottom += plus;
 		el.height(WH - self.find('.ui-panel-header').height() - bottom);
