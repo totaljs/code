@@ -1705,6 +1705,10 @@ SNIPPETS.push({ type: 'css', search: 'hellip overflow', text: '<b>hellip</b>', c
 SNIPPETS.push({ type: 'css', search: 'linear gradient', text: '<b>linear</b>-gradient', code: 'background: linear-gradient(0deg,#F0F0F0,#D0D0D0);', ch: 34 });
 SNIPPETS.push({ type: 'css', search: 'radial gradient', text: '<b>radial</b>-gradient', code: 'background: radial-gradient(#F0F0F0,#D0D0D0);', ch: 29 });
 SNIPPETS.push({ type: 'css', search: 'media', text: 'Media', code: '@media(max-width: 768px) {\n\n}', ch: 30 });
+SNIPPETS.push({ type: 'html', search: 'link', text: '<b>Link</b>', code: '<link rel="stylesheet" href="/css/.css" />', ch: 35 });
+SNIPPETS.push({ type: 'html', search: 'favicon', text: '<b>Favicon</b>', code: '<link rel="icon" href="" type="image/x-icon" />', ch: 24 });
+SNIPPETS.push({ type: 'html', search: 'style', text: '<b>Inline style</b>', code: 'style=""', ch: 8 });
+SNIPPETS.push({ type: 'html', search: 'style', text: '<b>Style</b>', code: '{0}<style></style>', ch: 8 });
 SNIPPETS.push({ type: 'html', search: 'script', text: '<b>Script: JavaScript</b>', code: '<script></script>', ch: 9 });
 SNIPPETS.push({ type: 'html', search: 'script', text: '<b>Script: HTML</b>', code: '<script type="text/html"></script>', ch: 26 });
 SNIPPETS.push({ type: 'html', search: 'script', text: '<b>Script: Text</b>', code: '<script type="text/plain"></script>', ch: 27 });
