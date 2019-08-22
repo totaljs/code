@@ -1416,6 +1416,9 @@
 
 			SETTER('loading', 'show');
 
+			if (callback instanceof jQuery)
+				callback = null;
+
 			AJAX('GET /api/projects/{0}/files/'.format(id), function(response) {
 
 				SETTER('loading', 'hide', 1000);
