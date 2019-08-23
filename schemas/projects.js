@@ -382,7 +382,7 @@ NEWSCHEMA('Projects', function(schema) {
 			}
 		}
 
-		var name = U.getName($.query.path);
+		var name = U.getName(path);
 		var dir = Path.dirname(path);
 		var ext = '';
 
@@ -407,7 +407,7 @@ NEWSCHEMA('Projects', function(schema) {
 
 			for (var i = 0; i < response.length; i++) {
 				var filename = response[i];
-				if (filename.substring(0, tmp.length) === tmp) {
+				if (filename.substring(0, tmp.length) === tmp && filename.charCodeAt(tmp.length + 1) < 58) {
 					var meta = filename.substring(tmp.length, filename.length - ext.length).split('_');
 					var dt = meta[0];
 					var index = meta[1].lastIndexOf('.');
