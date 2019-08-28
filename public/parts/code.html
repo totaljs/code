@@ -547,10 +547,12 @@
 				}
 
 				if (value.value === 'copymarkdown') {
-					var syntax = editor.options.mode;
+					var cur = editor.getModeAt(editor.getCursor());
+					var syntax = cur.helperType || cur.name;
 					switch (syntax) {
 						case 'totaljs':
 						case 'text/html':
+						case 'html':
 							syntax = 'html';
 							break;
 						case 'application/x-httpd-php':
