@@ -423,6 +423,7 @@
 
 				items.push({ name: '@(Copy)', icon: '!far fa-copy', command: 'copy' });
 				items.push({ name: '@(Copy with syntax)', icon: 'print', value: 'copysyntax' });
+				items.push({ name: '@(Copy as Markdown)', icon: '!fab fa-markdown', value: 'copymarkdown' });
 				items.push('-');
 
 				if ((/[:\|\='"\{]/).test(text))
@@ -542,6 +543,52 @@
 					setTimeout(function() {
 						document.body.removeChild(div);
 					}, 500);
+					return;
+				}
+
+				if (value.value === 'copymarkdown') {
+					var syntax = editor.options.mode;
+					switch (syntax) {
+						case 'totaljs':
+						case 'text/html':
+							syntax = 'html';
+							break;
+						case 'application/x-httpd-php':
+							syntax = 'php';
+							break;
+						case 'text/css':
+							syntax = 'css';
+							break;
+						case 'text/x-csrc':
+						case 'text/x-c++src':
+							syntax = 'cpp';
+							break;
+						case 'text/x-sql':
+							syntax = 'sql';
+							break;
+						case 'application/ld+json':
+							syntax = 'json';
+							break;
+						case 'text/x-cython':
+							syntax = 'python';
+							break;
+						case 'text/x-sh':
+							syntax = 'bash';
+							break;
+						case 'text/x-sass':
+							syntax = 'sass';
+							break;
+						case 'text/x-yaml':
+							syntax = 'yaml';
+							break;
+						case 'application/xml':
+							syntax = 'xml';
+							break;
+						default:
+							syntax = 'plain';
+							break;
+					}
+					SETTER('clipboard', 'copy', '```' + syntax + '\n' + text.replace(/\t/g, '  ').trim() + '\n```');
 					return;
 				}
 
