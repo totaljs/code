@@ -421,7 +421,9 @@
 				if ((/api/).test(code.current.ext))
 					items.push({ name: '@(Run)', icon: 'play-circle red', value: 'run' });
 
-				items.push({ name: '@(Copy)', icon: 'copy', command: 'copy' });
+				items.push({ name: '@(Copy)', icon: '!far fa-copy', command: 'copy' });
+				items.push({ name: '@(Copy with syntax)', icon: 'print', value: 'copysyntax' });
+				items.push('-');
 
 				if ((/[:\|\='"\{]/).test(text))
 					items.push({ name: '@(Align)', icon: 'align-left', value: 'align' });
@@ -522,6 +524,24 @@
 					setTimeout(function() {
 						document.execCommand(value.command, true);
 					}, 100);
+					return;
+				}
+
+				if (value.value === 'copysyntax') {
+					var div = document.createElement('DIV');
+					var el = document.createElement('PRE');
+					div.style = 'position:absolute;left:-2000px;top:-2000px;opacity:0';
+					div.appendChild(el);
+					document.body.appendChild(div);
+					CodeMirror.runMode(text.replace(/\t/g, '  '), editor.options.mode, el);
+					el.setAttribute('class', 'cm-s-default');
+					el.setAttribute('contenteditable', 'true');
+					el.focus();
+					document.execCommand('selectAll', false, null);
+					document.execCommand('copy', false, null);
+					setTimeout(function() {
+						document.body.removeChild(div);
+					}, 500);
 					return;
 				}
 
