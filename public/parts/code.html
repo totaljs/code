@@ -548,51 +548,7 @@
 
 				if (value.value === 'copymarkdown') {
 					var cur = editor.getModeAt(editor.getCursor());
-					var syntax = cur.helperType || cur.name;
-					switch (syntax) {
-						case 'totaljs':
-						case 'text/html':
-						case 'html':
-							syntax = 'html';
-							break;
-						case 'application/x-httpd-php':
-							syntax = 'php';
-							break;
-						case 'javascript':
-							syntax = 'js';
-							break;
-						case 'text/css':
-							syntax = 'css';
-							break;
-						case 'text/x-csrc':
-						case 'text/x-c++src':
-							syntax = 'cpp';
-							break;
-						case 'text/x-sql':
-							syntax = 'sql';
-							break;
-						case 'application/ld+json':
-							syntax = 'json';
-							break;
-						case 'text/x-cython':
-							syntax = 'python';
-							break;
-						case 'text/x-sh':
-							syntax = 'bash';
-							break;
-						case 'text/x-sass':
-							syntax = 'sass';
-							break;
-						case 'text/x-yaml':
-							syntax = 'yaml';
-							break;
-						case 'application/xml':
-							syntax = 'xml';
-							break;
-						default:
-							syntax = 'plain';
-							break;
-					}
+					var syntax = FUNC.getext(cur.helperType || cur.name);
 					SETTER('clipboard', 'copy', '```' + syntax + '\n' + text.replace(/\t/g, '  ').trim() + '\n```');
 					return;
 				}
@@ -667,10 +623,15 @@
 					}
 
 					if (value.value === 'comment') {
+
+						var cur = editor.getModeAt(editor.getCursor());
+						var syntax = FUNC.getext(cur.helperType || cur.name);
+
 						for (var i = 0; i < sel.length; i++) {
 							sel[i] = sel[i].split('\n');
-							sel[i] = FUNC.comment(code.current.ext, sel[i]).join('\n');
+							sel[i] = FUNC.comment(syntax, sel[i]).join('\n');
 						}
+
 						editor.replaceSelections(sel);
 						return;
 					}

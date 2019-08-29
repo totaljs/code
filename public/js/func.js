@@ -227,6 +227,39 @@ FUNC.guid = function() {
 	return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
 };
 
+FUNC.getext = function(syntax) {
+	switch (syntax) {
+		case 'totaljs':
+		case 'text/html':
+		case 'html':
+			return 'html';
+		case 'application/x-httpd-php':
+			return 'php';
+		case 'javascript':
+			return 'js';
+		case 'text/css':
+			return 'css';
+		case 'text/x-csrc':
+		case 'text/x-c++src':
+			return 'cpp';
+		case 'text/x-sql':
+			return 'sql';
+		case 'application/ld+json':
+			return 'json';
+		case 'text/x-cython':
+			return 'python';
+		case 'text/x-sh':
+			return 'bash';
+		case 'text/x-sass':
+			return 'sass';
+		case 'text/x-yaml':
+			return 'yaml';
+		case 'application/xml':
+			return 'xml';
+	}
+	return 'plain';
+};
+
 FUNC.comment = function(ext, sel) {
 	for (var j = 0; j < sel.length; j++) {
 
