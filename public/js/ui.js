@@ -305,6 +305,17 @@ COMPONENT('editor', function(self, config) {
 			}
 		};
 
+		var comment = function() {
+			var sel = editor.getSelections();
+			var cur = editor.getModeAt(editor.getCursor());
+			var syntax = FUNC.getext(cur.helperType || cur.name);
+			for (var i = 0; i < sel.length; i++) {
+				sel[i] = sel[i].split('\n');
+				sel[i] = FUNC.comment(syntax, sel[i]).join('\n');
+			}
+			editor.replaceSelections(sel);
+		};
+
 		var options = {};
 		options.lineNumbers = true;
 		options.mode = config.type || 'htmlmixed';
@@ -327,7 +338,7 @@ COMPONENT('editor', function(self, config) {
 		options.lint = true;
 		options.blastCode = true;
 		options.autoCloseBrackets = true;
-		options.extraKeys = { 'Alt-F': 'findPersistent', 'Ctrl-Enter': findnext, 'Cmd-Enter': findnext, 'Esc': clearsearch, 'Cmd-D': findmatch, 'Ctrl-D': findmatch, 'Cmd-S': shortcut('save'), 'Ctrl-S': shortcut('save'), 'Alt-W': shortcut('close'), 'Cmd-W': shortcut('close'), Enter: 'newlineAndIndentContinue', Tab: tabulator, 'Alt-Tab': shortcut('nexttab') };
+		options.extraKeys = { 'Alt-F': 'findPersistent', 'Ctrl-Enter': findnext, 'Ctrl--': comment, 'Cmd--': comment, 'Cmd-Enter': findnext, 'Esc': clearsearch, 'Cmd-D': findmatch, 'Ctrl-D': findmatch, 'Cmd-S': shortcut('save'), 'Ctrl-S': shortcut('save'), 'Alt-W': shortcut('close'), 'Cmd-W': shortcut('close'), Enter: 'newlineAndIndentContinue', Tab: tabulator, 'Alt-Tab': shortcut('nexttab') };
 
 		if (common.electron) {
 			options.extraKeys['Cmd-Tab'] = shortcut('nexttab');
@@ -559,6 +570,7 @@ COMPONENT('editor', function(self, config) {
 			}
 
 			var cur = cm.getCursor();
+			var mode = cm.getModeAt(cur);
 			var start = snippets.index;
 			var end = cur.ch;
 			var tabs = ''.padLeft(snippets.index, '\t');
@@ -586,7 +598,7 @@ COMPONENT('editor', function(self, config) {
 			if (snippets.text.length < 2)
 				cache_snip.list = EMPTYARRAY;
 			else
-				cache_snip.list = FUNC.snippets(config.mode, snippets.text, tabs, cur.line, autocomplete, index);
+				cache_snip.list = FUNC.snippets(FUNC.getext(mode.helperType || mode.name), snippets.text, tabs, cur.line, autocomplete, index);
 
 			return cache_snip;
 		}};

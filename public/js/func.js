@@ -329,7 +329,6 @@ FUNC.alignsitemap = function(sel) {
 	var max1 = 0;
 	var max2 = 0;
 	var max3 = 0;
-	var max4 = 0;
 
 	for (var j = 0; j < sel.length; j++) {
 		var line = sel[j];
