@@ -159,6 +159,29 @@ FUNC.treeindex = function(tree, path) {
 	}
 };
 
+FUNC.strim = function(value) {
+	var c = value.charAt(0);
+	if (c !== ' ' && c !== '\t')
+		return value;
+
+	for (var i = 0; i < value.length; i++) {
+		c = value.charAt(i);
+		if (c !== ' ' && c !== '\t')
+			break;
+	}
+
+	var count = i;
+	var lines = value.split('\n');
+
+	for (var i = 0; i < lines.length; i++) {
+		var line = lines[i];
+		if (line.length > count)
+			lines[i] = line.substring(count);
+	}
+
+	return lines.join('\n');
+};
+
 FUNC.rtrim = function(value) {
 	var lines = value.split('\n');
 	var reg = /\s+$/;

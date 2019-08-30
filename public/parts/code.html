@@ -534,7 +534,7 @@
 					div.style = 'position:absolute;left:-2000px;top:-2000px;opacity:0';
 					div.appendChild(el);
 					document.body.appendChild(div);
-					CodeMirror.runMode(text.replace(/\t/g, '  '), editor.options.mode, el);
+					CodeMirror.runMode(FUNC.strim(text).replace(/\t/g, '  '), editor.options.mode, el);
 					el.setAttribute('class', 'cm-s-default');
 					el.setAttribute('contenteditable', 'true');
 					el.focus();
@@ -549,7 +549,7 @@
 				if (value.value === 'copymarkdown') {
 					var cur = editor.getModeAt(editor.getCursor());
 					var syntax = FUNC.getext(cur.helperType || cur.name);
-					SETTER('clipboard', 'copy', '```' + syntax + '\n' + text.replace(/\t/g, '  ').trim() + '\n```');
+					SETTER('clipboard', 'copy', '```' + syntax + '\n' + FUNC.strim(text).replace(/\t/g, '  ').trim() + '\n```');
 					return;
 				}
 
