@@ -532,7 +532,7 @@ input:invalid { box-shadow: none; }
 .ui-directory-visible { opacity: 1; }
 .ui-directory-container { height: 150px; overflow-x: hidden; overflow-y: auto; overflow-scrolling: touch; margin: 0 30px 0 0; padding: 0; }
 .ui-directory ul { list-style-type: none; margin: 0; padding: 0; }
-.ui-directory .selected { background-color: #F0F0F0; color: black; }
+.ui-directory .selected { background-color: #E8E8E8; color: black; }
 .ui-directory li { border-top: 1px solid #E9E9E9; font-size: 12px; padding: 3px 10px; background-color: white; cursor: pointer; margin: 0; line-height: 16px; }
 .ui-directory li:first-child { border-top: 0; }
 .ui-directory-search-hidden .ui-directory-search { height: 0; overflow: hidden; opacity: 0; }
@@ -546,12 +546,13 @@ input:invalid { box-shadow: none; }
 .td .ui-directory-add:hover { color: white; }
 .td .ui-directory .selected { background-color: #404040; color: white; }
 .td .ui-directory .current { background-color: #404040; color: white; }
+.td li.ui-directory-current { background-color: rgba(0,0,0,0.2); font-weight: bold; color: white; }
 
 .ui-directory-projects li { padding: 8px 10px; font-size: 14px; }
 .ui-directory-projects .ui-directory-container { height: 250px; }
 .ui-directory-projects li i { margin-right: 5px; font-size: 12px; }
 .ui-directory-projects li span { float: right; font-size: 11px; background-color: red; color: white; width: 22px; text-align: center; padding: 3px 0; border-radius: 3px; margin-right: 40px; line-height: 11px; }
-.ui-directory-current { background-color: rgba(100,100,100,0.1) !important; font-weight: bold; }
+li.ui-directory-current { background-color: rgba(0,0,0,0.02); font-weight: bold; }
 
 .ui-input { position: relative; font-size: 13px; }
 .ui-input-required .ui-input-control { border-color: #D0D0D0; }

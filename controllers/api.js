@@ -484,7 +484,7 @@ function makebundle(id) {
 	}
 
 	var user = self.user;
-	var path = '/.bundlesignore';
+	var path = '/.bundleignore';
 
 	if (!user.sa) {
 		if (project.users.indexOf(user.id) === -1) {
@@ -493,8 +493,7 @@ function makebundle(id) {
 		}
 	}
 
-	Fs.readFile(Path.join(project.path, path), function(err, data) {
-
+	var makebundle = function(err, data) {
 		data = (data ? data.toString('utf8') : '').split('\n');
 		data.push('/tmp/*');
 		data.push('/logs/*');
@@ -504,6 +503,7 @@ function makebundle(id) {
 		data.push('/release.js');
 		data.push('/package.json');
 		data.push('/package-lock.json');
+		data.push('/openplatform.json');
 		data.push('/readme.md');
 		data.push('/bundle.json');
 		data.push('/config');
@@ -528,5 +528,12 @@ function makebundle(id) {
 			else
 				self.file('~' + filename, 'app.bundle', null, () => Fs.unlink(filename, NOOP));
 		}, path => path === '/' || (ignore(path) === true));
+	};
+
+	Fs.readFile(Path.join(project.path, path), function(err, data) {
+		if (err)
+			Fs.readFile(Path.join(project.path, '/.bundlesignore'), makebundle);
+		else
+			makebundle(err, data);
 	});
 }

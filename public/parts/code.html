@@ -1268,7 +1268,7 @@
 			var ext = tab.path.substring(tab.path.lastIndexOf('.') + 1).toLowerCase();
 			var mode;
 
-			if (tab.path === '/.bundlesignore') {
+			if (tab.path === '/.bundlesignore' || tab.path === '/.bundleignore') {
 				mode = 'totaljsbundle';
 			} else {
 				switch (ext) {
