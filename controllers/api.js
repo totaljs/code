@@ -499,6 +499,9 @@ function makebundle(id) {
 		data.push('/logs/*');
 		data.push('/bundles/*');
 		data.push('/debug.js');
+		data.push('/license.txt');
+		data.push('/LICENSE');
+		data.push('/localization.resource');
 		data.push('/debug.pid');
 		data.push('/release.js');
 		data.push('/package.json');

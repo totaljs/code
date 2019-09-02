@@ -257,27 +257,43 @@ FUNC.getext = function(syntax) {
 		case 'html':
 			return 'html';
 		case 'application/x-httpd-php':
+		case 'php':
 			return 'php';
 		case 'javascript':
+		case 'js':
 			return 'js';
 		case 'text/css':
+		case 'css':
 			return 'css';
 		case 'text/x-csrc':
 		case 'text/x-c++src':
+		case 'cpp':
 			return 'cpp';
 		case 'text/x-sql':
+		case 'sql':
 			return 'sql';
 		case 'application/ld+json':
+		case 'application/json':
+		case 'text/json':
+		case 'json':
 			return 'json';
 		case 'text/x-cython':
+		case 'python':
+		case 'py':
 			return 'python';
 		case 'text/x-sh':
+		case 'bash':
+		case 'sh':
 			return 'bash';
 		case 'text/x-sass':
+		case 'sass':
 			return 'sass';
 		case 'text/x-yaml':
+		case 'yaml':
 			return 'yaml';
 		case 'application/xml':
+		case 'text/xml':
+		case 'xml':
 			return 'xml';
 	}
 	return 'plain';
