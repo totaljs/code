@@ -514,6 +514,7 @@ function makebundle(id) {
 		data.push('/config-debug');
 		data.push('/app.bundle');
 		data.push('/.bundlesignore');
+		data.push('/.bundleignore');
 		data.push('/.gitignore');
 		data.push('/.npmignore');
 		data.push('/*.todo');
