@@ -15,6 +15,15 @@ html,body { margin: 0; padding: 0; overflow: hidden; }
 .ml5 { margin-left: 5px; }
 .mb10 { margin-bottom: 10px; }
 
+.search { height: 28px; border-bottom: 1px solid #E0E0E0; font-size: 12px; }
+.search > span { width: 74px; border-right: 1px solid #E0E0E0; float: left; line-height: 28px; text-align: center; color: #A0A0A0; }
+.search > span i { margin-right: 5px; }
+.search > div { margin: 0 75px; }
+.search > div input { width: 100%; height: 27px; border: 0; padding: 0 5px; margin: 0; outline: 0; color: black; font-weight: bold; }
+.search > nav { float: right; }
+.search > nav button { width: 24px; height: 27px; outline: 0; background-color: white; border: 0; font-size: 11px; border-left: 1px solid #E0E0E0; border-radius: 0; }
+.search > nav button:disabled { color: #C0C0C0; }
+
 .bbfooter { position: absolute; bottom: 0; border-bottom: 1px solid #E0E0E0; height: 1px; left: 1px; right: 1px; z-index: 10; }
 .td .bbfooter { border-bottom-color: #303030; }
 
@@ -60,7 +69,7 @@ html,body { margin: 0; padding: 0; overflow: hidden; }
 .td #combo .info { border-right-color: #303030; }
 
 .td #combo { color: white; }
-.codepanel #combo { right: 410px; }
+.codepanel #combo { right: 397px; }
 
 .td .timespent hr { border-color: #303030; border-top-width: 4px; }
 
@@ -258,7 +267,7 @@ header .tools .external { color: #a2a286; }
 .tabs, .tabs * { user-select: none; }
 .tabs nav { position: absolute; margin: 15px 0 0 63px; }
 .tabs nav span { position: relative; display: inline-block; max-width: 150px; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; height: 34px; background-color: #E0E0E0; padding: 8px 15px 0 25px; border-radius: 3px 3px 0 0; margin-left: 10px; font-size: 12px; border: 1px solid #E0E0E0; border-bottom: 0; cursor: pointer; color: gray; vertical-align: top; }
-.tabs nav .selected { background-color: white; height: 35px; color: black; box-shadow: 0 -1px 5px rgba(0,0,0,0.05); height: 36px; }
+.tabs nav .selected { background-color: white; height: 35px; color: black; height: 35px; }
 .tabs nav i { color: gray; font-size: 11px; position: absolute; left: 10px; top: 10px; width: 14px; }
 .tabs nav .modified i { color: red; left: 8px; top: 9px; }
 .tabs nav i:before { content: '\f00d'; }
@@ -614,7 +623,7 @@ header .tools .external { color: #a2a286; }
 
 .codepanel .codeeditor { margin-right: 350px; }
 .codepanel #realtimewindow { right: 380px; }
-.codepanel .preview { margin-right: 370px; }
+.codepanel .preview { margin-right: 364px; }
 .colorize { animation: colorize 1.3s infinite alternate; }
 
 @keyframes colorize {

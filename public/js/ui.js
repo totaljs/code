@@ -734,6 +734,7 @@ COMPONENT('editor', function(self, config) {
 			doc.cacheddiffs = cache_diffs;
 			doc.cachedusers = cache_users;
 		}
+		doc.cachedsearch = editor.state.search;
 		return doc;
 	};
 
@@ -751,6 +752,8 @@ COMPONENT('editor', function(self, config) {
 	};
 
 	self.paste = function(doc) {
+
+		editor.execCommand('clearSearch');
 
 		cache_lines = doc.cachedlines || editor.getValue().split('\n');
 		cache_diffs = doc.cacheddiffs || {};

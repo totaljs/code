@@ -44,6 +44,16 @@
 			</script>
 		</nav>
 	</section>
+	<div data-bind="code.editor.path__visible" class="invisible">
+		<div class="search">
+			<span><i class="fa fa-search"></i>@(Search)</span>
+			<nav>
+				<button name="prev" disabled="disabled" title="@(Previous result)"><i class="fa fa-angle-up"></i></button>
+				<button name="next" disabled="disabled" title="@(Next result)"><i class="fa fa-angle-down"></i></button>
+			</nav>
+			<div><input type="text" maxlength="100" placeholder="@(Type to search and press enter)" /></div>
+		</div>
+	</div>
 	<div id="content" data-margin="36">
 		<div class="alert-saved hidden exec" data-bind="code.saved__show__html b" data-exec="code/syncsave"><i class="fa fa-warning"></i><b></b> @(has replaced content of this file on the server.)</div>
 		<div data-bind="code.editor.path__show" class="codeeditor">
@@ -1000,8 +1010,8 @@
 			is && (/js|css|html/).test(code.current.ext) && items.push({ value: 12, name: '@(Insert icon)', icon: 'images', shortcut: 'F6' });
 			is && items.push('-');
 			is && items.push({ value: 1, name: '@(Reload)', icon: 'refresh', shortcut: 'F5' });
-			is && items.push({ value: 2, name: '@(Find)', icon: 'search', command: 'findPersistent' });
-			is && items.push({ value: 2, name: '@(Replace)', icon: 'search', command: 'replaceAll' });
+			is && items.push({ value: 2, name: '@(Find)', icon: 'search', command: 'find' });
+			// is && items.push({ value: 2, name: '@(Replace)', icon: 'search', command: 'replaceAll' });
 			is && items.push({ value: 11, name: '@(Translate)', icon: 'language' });
 			is && items.push({ value: 3, name: '@(Convert to Tabs)', icon: 'align-right' });
 			is && common.electron && code.data.repository && items.push({ value: 5, name: '@(Save locally)', icon: 'floppy-o' });
