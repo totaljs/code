@@ -328,7 +328,7 @@ COMPONENT('editor', function(self, config) {
 
 		options.rulers = [{ column: 130, lineStyle: 'dashed' }];
 		options.gutters = ['GutterUser', 'CodeMirror-lint-markers', 'CodeMirror-linenumbers', 'GutterDiff'];
-		options.viewportMargin = 0;
+		//options.viewportMargin = 0;
 		options.foldGutter = true;
 		options.highlightSelectionMatches = HSM;
 		options.phrases = {};
@@ -344,15 +344,6 @@ COMPONENT('editor', function(self, config) {
 			options.extraKeys['Cmd-Tab'] = shortcut('nexttab');
 			options.extraKeys['Ctrl-Tab'] = shortcut('nexttab');
 		}
-
-		var GutterColor = function(color) {
-			var marker = document.createElement('div');
-			var css = marker.style;
-			css.color = color;
-			marker.className = 'cm-gutter-color';
-			marker.innerHTML = '<i class="fa fa-fill"></i>';
-			return marker;
-		};
 
 		editor = CodeMirror(container[0], options);
 		self.editor = editor;
@@ -443,11 +434,6 @@ COMPONENT('editor', function(self, config) {
 			if (mode === 'totaljsresources' || mode === 'javascript' || mode === 'totaljs' || mode === 'css' || mode === 'sass' || mode === 'html' || mode === 'todo') {
 				var lines = editor.getValue().split('\n');
 				for (var i = 0; i < lines.length; i++) {
-
-					// if (mode !== 'todo') {
-					// 	color = lines[i].match(REGHEXCOLOR);
-					// 	color && editor.setGutterMarker(i, 'GutterColor', GutterColor(color.toString().replace(REGCOLORCLEAN, '')));
-					// }
 
 					var m = mode === 'todo' ? lines[i].match(REGTODO2) : lines[i].match(REGTODO);
 

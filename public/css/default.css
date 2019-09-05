@@ -23,6 +23,13 @@ html,body { margin: 0; padding: 0; overflow: hidden; }
 .search > nav { float: right; }
 .search > nav button { width: 24px; height: 27px; outline: 0; background-color: white; border: 0; font-size: 11px; border-left: 1px solid #E0E0E0; border-radius: 0; }
 .search > nav button:disabled { color: #C0C0C0; }
+.codepanel .search { margin-right: 350px; }
+
+.td .search { border-bottom-color: #353535; background-color: #282C34; }
+.td .search > span { border-right-color: #353535; color: #777777; border-bottom: 1px solid #353535; line-height: 27px; }
+.td .search > div input { background-color: #282C34; color: white; }
+.td .search > nav button { background-color: #282C34; color: white; border-left-color: #353535; }
+.td .search > nav button:disabled { color: #505050; }
 
 .bbfooter { position: absolute; bottom: 0; border-bottom: 1px solid #E0E0E0; height: 1px; left: 1px; right: 1px; z-index: 10; }
 .td .bbfooter { border-bottom-color: #303030; }
@@ -66,7 +73,7 @@ html,body { margin: 0; padding: 0; overflow: hidden; }
 #combo b { font-size: 20px; display: block; height: 26px; }
 #combo .rating-animate { margin-top: 20px; opacity: 0; }
 #combo .info { height: 50px; border-right: 1px solid #E0E0E0; width: 80px; padding: 4px 0 0; }
-.td #combo .info { border-right-color: #303030; }
+.td #combo .info { border-right-color: #353535; }
 
 .td #combo { color: white; }
 .codepanel #combo { right: 397px; }
