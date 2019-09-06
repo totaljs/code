@@ -2913,6 +2913,7 @@ https://twitter.com/JoelBesada/status/670343885655293952
 				case 27:
 					t.value = '';
 					cm.execCommand('clearSearch');
+					cm.focus();
 					break;
 			}
 			setTimeout2('searchinput', state, 500, null, t);
