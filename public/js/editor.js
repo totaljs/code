@@ -1717,6 +1717,7 @@ SNIPPETS.push({ type: 'html', search: 'jc', text: '<b>Component</b>', code: '<di
 SNIPPETS.push({ type: 'html', search: '--', text: '<b>Component</b>', code: '<div data---="__"></div>', ch: 15 });
 SNIPPETS.push({ type: 'html', search: 'scope', text: '<b>Scope</b>', code: '<div data-scope=""></div>', ch: 18 });
 SNIPPETS.push({ type: 'html', search: 'data-bind', text: '<b>Binder</b>', code: 'data-bind="__"', ch: 12 });
+SNIPPETS.push({ type: 'html', search: 'data-import', text: '<b>Importer</b>', code: 'data-import="__"', ch: 14 });
 SNIPPETS.push({ type: 'js', search: 'PLUGIN', text: '<b>PLUGIN</b>', code: 'PLUGIN(\'\', function(exports) {\n\n\texports.refresh = function() {\n\t};\n\n{0}});', ch: 9 });
 SNIPPETS.push({ type: 'js', search: 'COMPONENT', text: '<b>COMPONENT</b>', code: 'COMPONENT(\'\', \'\', function(self, config) {\n\t{0}\n{0}});', ch: 12 });
 SNIPPETS.push({ type: 'js', search: 'EXTENSION', text: '<b>EXTENSION</b>', code: 'EXTENSION(\'\', \'\', function(self, config) {\n\t{0}\n{0}});', ch: 12 });

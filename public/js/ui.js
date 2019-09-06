@@ -328,7 +328,7 @@ COMPONENT('editor', function(self, config) {
 
 		options.rulers = [{ column: 130, lineStyle: 'dashed' }];
 		options.gutters = ['GutterUser', 'CodeMirror-lint-markers', 'CodeMirror-linenumbers', 'GutterDiff'];
-		//options.viewportMargin = 0;
+		options.viewportMargin = 2;
 		options.foldGutter = true;
 		options.highlightSelectionMatches = HSM;
 		options.phrases = {};
