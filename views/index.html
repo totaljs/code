@@ -76,6 +76,11 @@
 	<script>
 
 		var user = PARSE('#userdata');
+		var EDITOR = null;
+
+		FIND('editor', function(com) {
+			EDITOR = com;
+		});
 
 		CONFIG('panel', function() {
 			return (/projectsform|usersform|snippetsform/).test(this.config.if) ? '' : (common.electron ? ('top:' + (common.ismac ? '50' : '28')) : 'top:49');
@@ -200,11 +205,13 @@
 					break;
 				case 'sync':
 					if (code.SYNC && msg.projectid === code.projectid && msg.id !== common.id) {
-						var editor = FIND('editor').editor;
 						var data = PARSE(msg.data);
 						code.SYNC = false;
 						code.SYNCUSER = msg.userid;
-						editor.replaceRange(data.text, data.from, data.to);
+						EDITOR.editor.replaceRange(data.text, data.from, data.to);
+						var history = EDITOR.editor.doc.history.done;
+						history.pop();
+						history.pop();
 						code.SYNC = true;
 					}
 					break;
@@ -216,11 +223,10 @@
 						clearTimeout(common.synctimeout);
 						common.synctimeout = null;
 						if (msg.fromid === user.id) {
-							var editor = FIND('editor');
-							var cm = editor.editor;
+							var cm = EDITOR.editor;
 							msg.TYPE = 'syncbody';
 							msg.body = cm.getValue();
-							msg.diff = editor.getDiff();
+							msg.diff = EDITOR.getDiff();
 							FUNC.wssend(msg);
 						}
 					}
@@ -232,8 +238,10 @@
 						code.SYNC = false;
 						msg.TYPE = 'syncdone';
 						code.issyncing = false;
-						var editor = FIND('editor').editor;
-						editor.replaceRange(msg.body, { line: 0, ch: 0 }, { line: editor.lineCount() + 1, ch: 0 });
+						EDITOR.editor.replaceRange(msg.body, { line: 0, ch: 0 }, { line: EDITOR.editor.lineCount() + 1, ch: 0 });
+						var history = EDITOR.editor.doc.history.done;
+						history.pop();
+						history.pop();
 						EXEC('code/restoreposition', true);
 						EXEC('code/readonly', true);
 						SET('code.current.diff', msg.diff);

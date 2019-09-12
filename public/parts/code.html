@@ -1386,6 +1386,9 @@
 				editor.clear();
 				SETR('code.editor.body', tab.body, 2);
 				editor.paste(editor.copy(false));
+				var history = editor.editor.doc.history;
+				history.done.pop();
+				history.done.pop();
 			}
 
 			setTimeout2('code.autocomplete', editor.rebuild_autocomplete, 1000);
