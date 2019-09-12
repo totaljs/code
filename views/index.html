@@ -422,6 +422,10 @@
 			code.editor && EXEC('code/clipboard');
 		}, true);
 
+		SETTER(true, 'shortcuts', 'register', 'ctrl+f,cmd+f', function(e) {
+			$('.search').find('input').focus();
+		}, true);
+
 		SETTER(true, 'shortcuts', 'register', 'ctrl+s,cmd+s', function(e) {
 			var tn = e.target ? e.target.tagName : '';
 			if (tn !== 'TEXTAREA' && tn !== 'INPUT')
