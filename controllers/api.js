@@ -495,6 +495,8 @@ function makebundle(id) {
 
 	var makebundle = function(err, data) {
 		data = (data ? data.toString('utf8') : '').split('\n');
+		data.push('/.git/*');
+		data.push('/.src/*');
 		data.push('/tmp/*');
 		data.push('/logs/*');
 		data.push('/bundles/*');

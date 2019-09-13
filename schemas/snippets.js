@@ -45,7 +45,6 @@ FUNC.parsesnippet = function(html) {
 	var body_script = '';
 	var body_style = '';
 	var body_html = '';
-	var body_total = '';
 	var raw = html;
 
 	while (true) {
