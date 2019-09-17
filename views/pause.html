@@ -42,9 +42,15 @@
 	</div>
 
 	<script>
+		var autoredirect = function() {
+			location.href = document.querySelector('.button').getAttribute('href') || '/';
+			autoredirect = null;
+		};
+		window.addEventListener('mousedown', function(e) {
+			autoredirect && autoredirect();
+		});
 		window.addEventListener('keydown', function(e) {
-			if (e.keyCode === 13 || e.keyCode === 27)
-				location.href = document.querySelector('.button').getAttribute('href') || '/';
+			autoredirect && autoredirect();
 		});
 	</script>
 
