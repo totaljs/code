@@ -544,7 +544,8 @@
 					div.style = 'position:absolute;left:-2000px;top:-2000px;opacity:0';
 					div.appendChild(el);
 					document.body.appendChild(div);
-					CodeMirror.runMode(FUNC.strim(text).replace(/\t/g, '  '), editor.options.mode, el);
+					var cur = editor.getModeAt(editor.getCursor());
+					CodeMirror.runMode(FUNC.strim(text).replace(/\t/g, '  '), cur.helperType || cur.name, el);
 					el.setAttribute('class', 'cm-s-default');
 					el.setAttribute('contenteditable', 'true');
 					el.focus();
