@@ -702,7 +702,10 @@
 							});
 							break;
 						case 'date':
-							editor.replaceSelection(new Date().format(null));
+							var dt = new Date();
+							dt.setSeconds(0);
+							dt.setMilliseconds(0);
+							editor.replaceSelection(dt.format(null));
 							break;
 						case 'password':
 							var pwd = GUID(15);
