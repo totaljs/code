@@ -517,7 +517,7 @@ header .tools .external { color: #a2a286; }
 .td .infopanel-online { color: #A0A0A0; border-top-color: #353535; }
 .td .infopanel-online b { color: white; }
 
-.infopanel-combo { font-size: 11px; color: #666666; height: 15px; border-top: 1px solid #E0E0E0; line-height: 14px; }
+.infopanel-combo { font-size: 11px; color: #666666; border-top: 1px solid #E0E0E0; padding: 2px 5px; }
 .infopanel-combo b { float: right; width: 40px; text-align: right; color: black; }
 .infopanel-combo span { display: block; width: 120px; margin-right: 40px; }
 .infopanel-combo:first-child { border-top: 0; }

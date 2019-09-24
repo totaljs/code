@@ -25,7 +25,7 @@
 	</div>
 </div>
 
-<div id="combo" data---="combo__editor.combo" data-bind="code.editor.path__show" class="hidden" title="@(Scoreboard for the project)">
+<div id="combo" data---="combo__editor.combo" data-bind="code.editor.path__show:code/showcombo" class="hidden" title="@(Scoreboard for the project)">
 	<div class="info">
 		<div>@(COMBO)</div>
 		<b>0</b>
@@ -152,7 +152,14 @@
 			combo = com;
 		});
 
+		exports.showcombo = function(value) {
+			return !!value && !!common.powermode;
+		};
+
 		exports.combo = function() {
+
+			if (!common.powermode)
+				return;
 
 			var old = code.lastchange;
 			code.lastchange = Date.now();
@@ -2148,6 +2155,7 @@
 
 		WATCH('common.powermode', function(path, value) {
 			SETTER(true, 'editor', 'reconfigure', 'powermode:' + (value ? '1' : '0'));
+			BIND('code.editor.path');
 		}, true);
 
 		WATCH('common.clipboard', function(path, value) {

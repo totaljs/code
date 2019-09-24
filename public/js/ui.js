@@ -7885,7 +7885,7 @@ COMPONENT('combo', function(self) {
 					builder.push('<div class="infopanel-combo"><b>{1}</b><span>{0}</span></div>'.format(votes[i].name, votes[i].combo));
 
 				el.html(builder.join(''));
-			}, 90, 50, true);
+			}, 90, 45, true);
 		});
 	};
 
