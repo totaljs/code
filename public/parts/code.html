@@ -142,9 +142,14 @@
 		var cache_scrollpos = {};
 		var reg_number = /^\d+$/;
 		var maxtyping = 0;
+		var combo = null;
 
 		FIND('editor', function(com) {
 			exports.editor = editor = com;
+		});
+
+		FIND('combo', function(com) {
+			combo = com;
 		});
 
 		exports.combo = function() {
@@ -161,7 +166,7 @@
 					maxtyping = 0;
 			}
 
-			FIND('combo').combo();
+			combo && combo.combo();
 		};
 
 		exports.refresh = function(callback) {

@@ -593,8 +593,10 @@ COMPONENT('editor', function(self, config) {
 			b && editor.doc.setCursor({ line: b.line, ch: b.ch });
 		});
 
+		var cursorfn = GET(config.cursor);
+
 		editor.on('cursorActivity', function() {
-			EXEC(config.cursor, editor);
+			cursorfn(editor);
 		});
 
 		editor.on('drop', function(data, e) {
@@ -7899,19 +7901,34 @@ COMPONENT('combo', function(self) {
 		return sum;
 	};
 
+	var ratingB = function() {
+		rating.animate({ 'margin-top': 25, opacity: 0, 'font-size': 12 }, 500);
+	};
+
+	var ratingA = function() {
+		rating.html(self.text() + '!');
+		rating.stop().css({ 'margin-top': 10, 'font-size': 20, opacity: 1 });
+		setTimeout(ratingB, 200);
+	};
+
+	var animB = function() {
+		count.css('color', '').html('0');
+		progress.css('background-color', '');
+		rating.css('color', '');
+		sum = 0;
+	};
+
+	var animA = function() {
+		progress.stop().animate({ width: '5%' }, 8000, animB);
+	};
+
 	self.combo = function() {
 
 		sum++;
 
 		var color = '';
 
-		setTimeout2('comborating', function() {
-			rating.html(self.text() + '!');
-			rating.stop().css({ 'margin-top': 10, 'font-size': 20, opacity: 1 });
-			setTimeout(function() {
-				rating.animate({ 'margin-top': 25, opacity: 0, 'font-size': 12 }, 500);
-			}, 200);
-		}, 800, 20);
+		setTimeout2('comborating', ratingA, 800, 20);
 
 		if (sum > 80)
 			color = '#E45A5A';
@@ -7932,17 +7949,8 @@ COMPONENT('combo', function(self) {
 		rating.css('color', color);
 		count.css('color', color);
 		count.html(sum + '');
-
 		count.stop().css('font-size', 24).animate({ 'font-size': 20 }, 300);
-
-		progress.stop().animate({ width: '100%' }, 100, function() {
-			progress.stop().animate({ width: '5%' }, 8000, function() {
-				count.css('color', '').html('0');
-				progress.css('background-color', '');
-				rating.css('color', '');
-				sum = 0;
-			});
-		});
+		progress.stop().animate({ width: '100%' }, 100, animA);
 	};
 });
 
