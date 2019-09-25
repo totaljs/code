@@ -446,6 +446,10 @@
 				items.push({ name: '@(Copy)', icon: '!far fa-copy', command: 'copy' });
 				items.push({ name: '@(Copy with syntax)', icon: 'print', value: 'copysyntax' });
 				items.push({ name: '@(Copy as Markdown)', icon: '!fab fa-markdown', value: 'copymarkdown' });
+
+				if (can && code.current.ext === 'js' && ((/varchar|int|boolean/i).test(text)))
+					items.push({ name: '@(Transform SQL to schema)', icon: 'database', value: 'sql2schema' });
+
 				items.push('-');
 
 				if ((/[:\|\='"\{]/).test(text))
@@ -459,7 +463,6 @@
 
 				if ((/css/).test(code.current.ext))
 					items.push({ name: '@(Clean)', icon: 'broom', value: 'clean' });
-
 
 				sub = [];
 				sub.push({ name: '@(Base64)', icon: 'chevron-right', value: 'btoa' });
@@ -581,6 +584,11 @@
 						FUNC.requestscript(code.data.id, code.current.path);
 					else
 						FUNC.request(text, editor.getValue());
+					return;
+				}
+
+				if (value.value === 'sql2schema') {
+					editor.replaceSelection(FUNC.sql2schema(text));
 					return;
 				}
 

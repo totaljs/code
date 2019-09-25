@@ -1,3 +1,63 @@
+FUNC.sql2schema = function(text) {
+	var arr = text.split('\n');
+	var reg = /_varchar|varchar|int|json|double|float|timestamp|bool|text/;
+	var beg = arr[0].indexOf('\t');
+	var tab = beg === -1 ? '' : ''.padLeft(beg + 1, '\t');
+	var builder = [];
+	for (var i = 0; i < arr.length; i++) {
+		var line = arr[i].trim();
+		var type = line.match(reg);
+		if (type) {
+			var length = line.match(/\(\d+\)/);
+			if (length) {
+				length = (length + '');
+				length = length.substring(1, length.length - 1);
+			}
+			type = type[0];
+			var val = line.split(' ');
+			var name = val[0].replace(/"/g, '');
+			switch (type) {
+				case 'text':
+					type = 'String';
+					break;
+				case 'varchar':
+					if (name.indexOf('email') !== -1)
+						type = '\'Email\'';
+					else if (name.indexOf('phone') !== -1)
+						type = '\'Phone\'';
+					else if (name.indexOf('url') !== -1)
+						type = '\'URL\'';
+					else if (name.indexOf('zip') !== -1)
+						type = '\'Zip\'';
+					else if (name.endsWith('id') && (length === '20' || length === '25' || length === '30'))
+						type = 'UID';
+					else
+						type = length ? ('\'String({0})\''.format(length)) : 'String';
+					break;
+				case '_varchar':
+					type = '\'[String]\'';
+					break;
+				case 'json':
+					type = '\'json\'';
+					break;
+				case 'int':
+				case 'double':
+				case 'float':
+					type = 'Number';
+					break;
+				case 'bool':
+					type = 'Boolean';
+					break;
+				case 'timestamp':
+					type = 'Date';
+					break;
+			}
+			builder.push(tab + 'schema.define(\'{0}\', {1});'.format(name, type));
+		}
+	}
+	return builder.join('\n');
+};
+
 FUNC.cleancss = function(text) {
 	return text.replace(/\n\n/g, '\0').replace(/\n|\t/g, '').replace(/:(\w|'|")/g, function(text) {
 		return ': ' + text.substring(1);
