@@ -537,6 +537,32 @@ COMPONENT('editor', function(self, config) {
 						}
 					}
 				}
+
+				for (var i = 0; i < components.length; i++) {
+					var com = components[i];
+					var next = components[i + 1];
+					if (next == null) {
+						com.lineto = lines.length;
+						break;
+					}
+
+					var endWith = '';
+					var begWith = 0;
+					for (var j = com.line; j < (com.line + 2000); j++) {
+						var line = lines[j];
+						if (!line)
+							continue;
+						if (j === com.line) {
+							begWith = line.length - line.trim().length;
+							endWith = line.indexOf('=') === - 1 ? '});' : '};';
+						} else {
+							if (begWith ? line.substring(begWith) === endWith : line === endWith) {
+								com.lineto = j;
+								break;
+							}
+						}
+					}
+				}
 			}
 
 			EXEC(config.components, components);
