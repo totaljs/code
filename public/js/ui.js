@@ -548,7 +548,7 @@ COMPONENT('editor', function(self, config) {
 
 					var endWith = '';
 					var begWith = 0;
-					for (var j = com.line; j < (com.line + 2000); j++) {
+					for (var j = com.line; j < (com.line + 6000); j++) {
 						var line = lines[j];
 						if (!line)
 							continue;
