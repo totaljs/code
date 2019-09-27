@@ -7155,9 +7155,8 @@ COMPONENT('fontawesomebox', 'height:300', function(self, config) {
 
 	var cls = 'ui-fontawesomebox';
 	var cls2 = '.' + cls;
-	var container, input, icon, prev;
+	var container, input, icon;
 	var template = '<li data-search="{0}"><i class="{1}"></i></li>';
-	var skip = false;
 	var refresh = false;
 
 	self.init = function() {
@@ -7190,7 +7189,6 @@ COMPONENT('fontawesomebox', 'height:300', function(self, config) {
 			if (!el.hclass('selected'))
 				val = el.find('i').attr('class');
 
-			skip = true;
 			config.exec && EXEC(config.exec, val, self);
 			self.set(val);
 			self.change(true);
@@ -7264,34 +7262,11 @@ COMPONENT('fontawesomebox', 'height:300', function(self, config) {
 	};
 
 	self.setter = function(value, path, type) {
-		prev && prev.rclass('selected');
-		if (value) {
-
-			var skipped = skip;
-
-			if (value.indexOf('fa-') === -1)
-				value = 'fa-' + value;
-
-			var index = value.indexOf(' ');
-			if (index === -1)
-				value = '.' + value;
-			else
-				value = '.' + value.substring(index + 1);
-
-			var fa = container.find(value);
-			prev = fa.parent().aclass('selected');
-			setTimeout(function() {
-				!skipped && prev.length && prev.rescroll(-40);
-			}, 100);
-		}
-
 		if (type === 3) {
 			setTimeout(function() {
 				container[0].scrollTop = 0;
 			}, 100);
 		}
-
-		skip = false;
 		refresh = true;
 	};
 });
