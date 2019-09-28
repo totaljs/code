@@ -1756,7 +1756,7 @@ FUNC.snippets = function(type, text, tabs, line, words, chplus) {
 		for (var i = 0; i < words.length; i++) {
 			var snip = words[i];
 			if (snip.search.indexOf(text) !== -1 && snip.search !== text)
-				arr.push({ displayText: snip.code, text: snip.code, ch: snip.code.length + tabs.length + chplus, line: line });
+				arr.push({ displayText: snip.text, text: snip.code, ch: snip.code.length + tabs.length + chplus, line: line });
 		}
 	}
 
@@ -2800,7 +2800,7 @@ https://twitter.com/JoelBesada/status/670343885655293952
 				return;
 			state.query = state.queryText = null;
 			var search = $('.search');
-			search.find('input').val('');
+			//search.find('input').val('');
 			search.find('button').prop('disabled', true);
 			cm.removeOverlay(state.overlay);
 			if (state.annotate) {
@@ -2915,6 +2915,12 @@ https://twitter.com/JoelBesada/status/670343885655293952
 					t.value = '';
 					cm.execCommand('clearSearch');
 					cm.focus();
+					break;
+				case 40:
+				case 38:
+					cm.focus();
+					e.preventDefault();
+					e.stopPropagation();
 					break;
 			}
 			setTimeout2('searchinput', state, 500, null, t);

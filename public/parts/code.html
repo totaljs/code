@@ -25,6 +25,8 @@
 	</div>
 </div>
 
+<div id="currentcolor" class="hidden"></div>
+
 <div id="combo" data---="combo__editor.combo" data-bind="code.editor.path__show:code/showcombo" class="hidden" title="@(Scoreboard for the project)">
 	<div class="info">
 		<div>@(COMBO)</div>
@@ -452,11 +454,14 @@
 
 				items.push('-');
 
+				if ((/(#)?[a-z0-9]{6}/i).test(text))
+					items.push({ name: '@(Convert to RGBA)', icon: 'palette', value: 'hex2rgba' });
+
 				if ((/[:\|\='"\{]/).test(text))
 					items.push({ name: '@(Align)', icon: 'align-left', value: 'align' });
 
 				if ((/js|css|html/).test(code.current.ext))
-					items.push({ name: '@(Comment)', icon: 'code', value: 'comment' });
+					items.push({ name: '@(Comment)', icon: 'comment-alt', value: 'comment' });
 
 				if (text.indexOf('\n') !== -1)
 					items.push({ name: '@(Sort)', icon: 'sort-alpha-down', value: 'sort' });
@@ -550,6 +555,11 @@
 					setTimeout(function() {
 						document.execCommand(value.command, true);
 					}, 100);
+					return;
+				}
+
+				if (value.value === 'hex2rgba') {
+					editor.replaceSelection(FUNC.hex2rgba(text));
 					return;
 				}
 
@@ -2199,6 +2209,25 @@
 			setTimeout2('clipboardsave', function(el) {
 				AJAX('POST /api/clipboard/', { body: el.value });
 			}, 1000, null, el);
+		});
+
+		var iscolor = false;
+
+		$(document).on('mousedown', '.cm-atom', function(e) {
+			var html = this.innerHTML;
+			if (html.charAt(0) === '#') {
+				$('#currentcolor').css('background-color', html).attrd('color', html).rclass('hidden');
+				iscolor = true;
+				setTimeout2('iscolor', function() {
+					iscolor = false;
+				}, 500);
+			}
+		}).on('mousedown', function(e) {
+			if (iscolor)
+				return;
+			if (e.target.id === 'currentcolor')
+				SETTER('clipboard', 'copy', e.target.getAttribute('data-color'));
+			$('#currentcolor').aclass('hidden');
 		});
 	});
 

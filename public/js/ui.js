@@ -411,7 +411,7 @@ COMPONENT('editor', function(self, config) {
 					el = arr[i];
 					var html = el.innerHTML;
 					if (html.charAt(0) === '#' && (html.length === 4 || html.length === 7))
-						el.style = 'border-radius:2px;border:2px solid ' + html;
+						el.style = 'border-bottom:4px solid {0}'.format(html);
 				}
 			}
 		});
@@ -574,7 +574,7 @@ COMPONENT('editor', function(self, config) {
 		var cache_snip = {};
 		var snippetsoptions = { completeSingle: false, hint: function(cm) {
 
-			if (snippets.text.length < 2) {
+			if (snippets.text.length < 2 && snippets.text !== '#') {
 				cache_snip.list = EMPTYARRAY;
 				cache_snip.from = 0;
 				cache_snip.to = 0;
@@ -607,10 +607,10 @@ COMPONENT('editor', function(self, config) {
 			cache_snip.from = CodeMirror.Pos(cur.line, start);
 			cache_snip.to = CodeMirror.Pos(cur.line, end);
 
-			if (snippets.text.length < 2)
+			if (snippets.text.length < 2 && snippets.text !== '#')
 				cache_snip.list = EMPTYARRAY;
 			else
-				cache_snip.list = FUNC.snippets(FUNC.getext(mode.helperType || mode.name), snippets.text, tabs, cur.line, autocomplete, index);
+				cache_snip.list = FUNC.snippets(FUNC.getext(mode.helperType || mode.name), snippets.text, tabs, cur.line, autocomplete, index).take(10);
 
 			return cache_snip;
 		}};
@@ -855,7 +855,7 @@ COMPONENT('editor', function(self, config) {
 		var max = 100000;
 		if (words.length > max)
 			words = words.substring(0, max);
-		words = words.match(/[a-zA-Z0-9_-]{3,30}/g);
+		words = words.match(/(#)?[a-zA-Z0-9_-]{3,30}/g);
 		if (words) {
 			var unique = {};
 			for (var i = 0; i < words.length; i++) {
@@ -874,7 +874,7 @@ COMPONENT('editor', function(self, config) {
 
 			for (var i = 0; i < autocomplete.length; i++) {
 				var s = autocomplete[i];
-				autocomplete[i] = { search: s, code: unique[s] };
+				autocomplete[i] = { search: s, text: (s.charAt(0) === '#' && s.length === 7 ? '<i class="fa fa-square mr5" style="color:{0}"></i>'.format(s) : '') + s, code: unique[s] };
 			}
 
 			if (code.componentsdb) {
