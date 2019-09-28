@@ -352,7 +352,7 @@ header .tools .external { color: #a2a286; }
 .status-collaborators { position: relative; float: right; margin: 0; }
 .status .initials { width: 30px; height: 35px; line-height: 35px; font-size: 12px; border-radius: 0; float: left; padding: 0; }
 
-.statusform { position: absolute; bottom: 36px; background-color: #F0F0F0; left: 0; right: 0; height: 40px; z-index: 6; border-top: 1px solid #E0E0E0; padding: 8px 10px 0; }
+.statusform { position: absolute; bottom: 36px; background-color: #F0F0F0; left: 0; right: 0; height: 40px; z-index: 26; border-top: 1px solid #E0E0E0; padding: 8px 10px 0; }
 .statusform-item input { width: 100%; outline: 0; border: 0; background-color: #F0F0F0; }
 
 /* THEME DARK */

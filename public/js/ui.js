@@ -5000,18 +5000,23 @@ COMPONENT('statusform', function(self, config) {
 
 	self.make = function() {
 		el = self.find('.statusform-item');
+		input = self.find('input');
 		self.event('keydown', 'input', function(e) {
 			if (e.which === 13) {
-				var input = $(this);
-				EXEC(config.exec, input.parent().attrd('name'), input.val().toLowerCase().replace(/[^a-z0-9./\-_]/gi, ''), formtype);
+				self.submit();
 				self.set('');
 			}
 		});
 	};
 
-	self.val = function(value, type) {
+	self.submit = function(){
+		EXEC(config.exec, input.parent().attrd('name'), input.val().toLowerCase().replace(/[^a-z0-9./\-_]/gi, ''), formtype);
+	};
+
+	self.val = function(value, type, submit) {
 		input && input.val(value);
 		formtype = type;
+		submit && self.submit();
 	};
 
 	self.setter = function(value) {

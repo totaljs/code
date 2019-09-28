@@ -1177,13 +1177,49 @@
 
 			var items = [];
 
-			if (node.name === 'bundles') {
+			if (node.name === 'bundles')
 				items.push({ value: 'bundles', name: '@(Download bundles)', icon: 'cloud-download', classname: 'b' });
-				items.push('-');
+
+			if (node.name === 'definitions') {
+				if (!node.children.findItem('name', 'auth.js'))
+					items.push({ makefile: true, name: '@(Create:) auth.js', icon: 'file-text-o' });
+				if (!node.children.findItem('name', 'db.js'))
+					items.push({ makefile: true, name: '@(Create:) db.js', icon: 'file-text-o' });
+				if (!node.children.findItem('name', 'func.js'))
+					items.push({ makefile: true, name: '@(Create:) func.js', icon: 'file-text-o' });
+				if (!node.children.findItem('name', 'main.js'))
+					items.push({ makefile: true, name: '@(Create:) main.js', icon: 'file-text-o' });
+				if (!node.children.findItem('name', 'merge.js'))
+					items.push({ makefile: true, name: '@(Create:) merge.js', icon: 'file-text-o' });
 			}
+
+			if (node.name === 'controllers') {
+				if (!node.children.findItem('name', 'api.js'))
+					items.push({ makefile: true, name: '@(Create:) api.js', icon: 'file-text-o' });
+				if (!node.children.findItem('name', 'default.js'))
+					items.push({ makefile: true, name: '@(Create:) default.js', icon: 'file-text-o' });
+			}
+
+			if (node.name === 'resources') {
+				if (!node.children.findItem('name', 'default.resource'))
+					items.push({ makefile: true, name: '@(Create:) default.resource', icon: 'file-text-o' });
+			}
+
+			if (items.length)
+				items.push('-');
 
 			if (node.name === 'packages') {
 				items.push({ value: 'packages', name: '@(Download packages)', icon: 'cloud-download', classname: 'b' });
+				items.push('-');
+			}
+
+			if (node.name === 'modules') {
+				items.push({ value: 'modules', name: '@(Download modules)', icon: 'cloud-download', classname: 'b' });
+				items.push('-');
+			}
+
+			if (node.name === 'schemas') {
+				items.push({ value: 'schemas', name: '@(Download schemas)', icon: 'cloud-download', classname: 'b' });
 				items.push('-');
 			}
 
@@ -1197,9 +1233,19 @@
 			items.push({ value: 255, name: '@(Remove)', icon: 'times-circle red' });
 
 			SETTER('menu', 'show', 'right', el, items, function(item) {
+
+				if (item.makefile) {
+					var name = node.path + item.name.substring(item.name.indexOf(':') + 1).trim();
+					SET('code.statusform.name', '');
+					exports.statusform('file',name);
+					return;
+				}
+
 				switch (item.value) {
 					case 'bundles':
 					case 'packages':
+					case 'modules':
+					case 'schemas':
 						SET('common.form', item.value);
 						break;
 					case 'file':

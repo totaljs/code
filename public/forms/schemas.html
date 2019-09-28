@@ -1,0 +1,40 @@
+<div data---="panel__common.form__if:schemas;width:350;title:@(Download schemas);icon:cloud-download;reload:schemaspanel/reload;bg:false;autofocus:true;bottom:87;top:50" class="hidden">
+	<div data---="viewbox__common.form__height:100;margin:51;parent:.ui-panel;scrolltop:1">
+		<div data-bind="schemaspanel.items__template">
+			<script type="text/html">
+				{{ foreach m in value }}
+					<div class="listitem exec" data-exec="schemaspanel/download" data-url="{{ m.url }}" data-name="{{ m.filename }}"><i class="far fa-copy"></i> {{ m.name }}</div>
+				{{ end }}
+			</script>
+		</div>
+	</div>
+</div>
+
+<script>
+	PLUGIN('schemaspanel', function(exports) {
+		exports.reload = function() {
+			exports.refresh();
+		};
+
+		exports.refresh = function() {
+			AJAX('GET /api/external/schemas/', function(response) {
+				response.quicksort('name');
+				SET('?.items', response);
+			});
+		};
+
+		exports.download = function(el) {
+			SETTER('confirm', 'show', '@(Are you sure you want to download selected schema?)', ['"cloud-download" @(Yes)', '@(Cancel)'], function(index) {
+				if (index)
+					return;
+				SETTER('loading', 'show');
+				AJAX('POST /api/external/schemas/' + code.data.id, { url: el.attrd('url'), name: el.attrd('name') }, function() {
+					SETTER('loading', 'hide', 500);
+					EXEC('code/refresh');
+					NULL('common.form');
+					SETTER('snackbar', 'success', '@(Schema has been downloaded succesfully.)');
+				});
+			});
+		};
+	})
+</script>

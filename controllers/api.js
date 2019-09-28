@@ -69,6 +69,10 @@ exports.install = function() {
 		ROUTE('POST   /api/external/packages/{id}/           *ExternalPackage  --> @save', [10000]);
 		ROUTE('GET    /api/external/templates/               *ExternalTemplate --> @query');
 		ROUTE('POST   /api/external/templates/{id}/          *ExternalTemplate --> @save', [10000]);
+		ROUTE('GET    /api/external/modules/                 *ExternalModule   --> @query');
+		ROUTE('POST   /api/external/modules/{id}/            *ExternalModule   --> @save', [10000]);
+		ROUTE('GET    /api/external/schemas/                 *ExternalSchema   --> @query');
+		ROUTE('POST   /api/external/schemas/{id}/            *ExternalSchema   --> @save', [10000]);
 	});
 
 	GROUP(['unauthorize'], function() {

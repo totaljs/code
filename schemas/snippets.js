@@ -37,7 +37,6 @@ NEWSCHEMA('Snippets', function(schema) {
 
 });
 
-
 FUNC.parsesnippet = function(html) {
 
 	var beg = -1;
