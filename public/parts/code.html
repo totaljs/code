@@ -519,6 +519,13 @@
 			sub.push({ name: '@(IP address - server)', icon: 'chevron-right', value: 'ipserver' });
 			sub.push({ name: '@(Date / Time)', icon: 'chevron-right', value: 'date' });
 
+			sub.push('-');
+			sub.push({ name: '<>="\'`', icon: 'keyboard', id: 'char' });
+			sub.push({ name: '()[]{}', icon: 'keyboard', id: 'char' });
+			sub.push({ name: ':+-*\\/|', icon: 'keyboard', id: 'char' });
+			sub.push({ name: '_&*~$', icon: 'keyboard', id: 'char' });
+			sub.push({ name: '%!@#°^', icon: 'keyboard', id: 'char' });
+
 			items.push({ name: '@(Insert)', icon: 'plus-circle green', value: 'insert', children: sub });
 			items.push({ name: '@(Insert emoji)', icon: 'smile yellow', value: 'emoji' });
 			items.push({ name: '@(Insert color)', icon: 'fill-drip colorize', value: 'colorpicker' });
@@ -545,6 +552,7 @@
 					sub.push({ name: '@(j-Window)', icon: 'code', value: 'template', id: 'window' });
 					sub.push({ name: '@(Plugin)', icon: 'code', value: 'template', id: 'plugin' });
 				}
+
 				items.push({ name: '@(Insert template)', icon: 'plus-circle', value: 'template', children: sub });
 			}
 
@@ -555,6 +563,11 @@
 					setTimeout(function() {
 						document.execCommand(value.command, true);
 					}, 100);
+					return;
+				}
+
+				if (value.id === 'char') {
+					editor.replaceSelection(value.name);
 					return;
 				}
 
