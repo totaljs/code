@@ -17,6 +17,7 @@ html,body { margin: 0; padding: 0; overflow: hidden; }
 
 #currentcolor { position: absolute; right: 30px; top: 150px; width: 60px; height: 60px; background-color: red; z-index: 10; border: 1px solid rgba(0,0,0,0.2); box-shadow: 0 3px 5px rgba(0,0,0,0.1); }
 .codepanel #currentcolor { right: 380px; }
+.electron #currentcolor { top: 170px; }
 
 .search { height: 28px; border-bottom: 1px solid #E0E0E0; font-size: 12px; }
 .search > span { width: 74px; border-right: 1px solid #E0E0E0; float: left; line-height: 28px; text-align: center; color: #A0A0A0; }
