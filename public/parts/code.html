@@ -1223,6 +1223,11 @@
 				items.push('-');
 			}
 
+			if (node.name === 'operations') {
+				items.push({ value: 'operations', name: '@(Download operations)', icon: 'cloud-download', classname: 'b' });
+				items.push('-');
+			}
+
 			if (node.children) {
 				items.push({ value: 'file', name: '@(Create file)', icon: '!far fa-file-text-o' });
 				items.push({ value: 'directory', name: '@(Create directory)', icon: '!far fa-folder-o' });
@@ -1246,6 +1251,7 @@
 					case 'packages':
 					case 'modules':
 					case 'schemas':
+					case 'operations':
 						SET('common.form', item.value);
 						break;
 					case 'file':

@@ -159,3 +159,26 @@ NEWSCHEMA('ExternalSchema', function(schema) {
 		F.download(model.url, Path.join(project.path, 'schemas', model.name), $.done());
 	});
 });
+
+NEWSCHEMA('ExternalOperation', function(schema) {
+
+	schema.define('url', 'String', true);
+	schema.define('name', 'String', true);
+
+	schema.setQuery(function($) {
+		RESTBuilder.GET(CONF.cdn_schemas || 'https://cdn.totaljs.com/code/operations.json').exec($.callback);
+	});
+
+	schema.setSave(function($) {
+
+		var project = MAIN.projects.findItem('id', $.id);
+		if (project == null) {
+			$.invalid('error-project');
+			return;
+		}
+
+		var model = $.model;
+		MAIN.log($.user, 'download_operation', project, model.url);
+		F.download(model.url, Path.join(project.path, 'operations', model.name), $.done());
+	});
+});

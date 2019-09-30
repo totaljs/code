@@ -1,0 +1,40 @@
+<div data---="panel__common.form__if:operations;width:350;title:@(Download operations);icon:cloud-download;reload:operationspanel/reload;bg:false;autofocus:true;bottom:87;top:50" class="hidden">
+	<div data---="viewbox__common.form__height:100;margin:51;parent:.ui-panel;scrolltop:1">
+		<div data-bind="operationspanel.items__template">
+			<script type="text/html">
+				{{ foreach m in value }}
+					<div class="listitem exec" data-exec="operationspanel/download" data-url="{{ m.url }}" data-name="{{ m.filename }}"><i class="far fa-copy"></i> {{ m.name }}</div>
+				{{ end }}
+			</script>
+		</div>
+	</div>
+</div>
+
+<script>
+	PLUGIN('operationspanel', function(exports) {
+		exports.reload = function() {
+			exports.refresh();
+		};
+
+		exports.refresh = function() {
+			AJAX('GET /api/external/operations/', function(response) {
+				response.quicksort('name');
+				SET('?.items', response);
+			});
+		};
+
+		exports.download = function(el) {
+			SETTER('confirm', 'show', '@(Are you sure you want to download selected operation?)', ['"cloud-download" @(Yes)', '@(Cancel)'], function(index) {
+				if (index)
+					return;
+				SETTER('loading', 'show');
+				AJAX('POST /api/external/operations/' + code.data.id, { url: el.attrd('url'), name: el.attrd('name') }, function() {
+					SETTER('loading', 'hide', 500);
+					EXEC('code/refresh');
+					NULL('common.form');
+					SETTER('snackbar', 'success', '@(Operation has been downloaded succesfully.)');
+				});
+			});
+		};
+	})
+</script>
