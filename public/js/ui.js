@@ -138,7 +138,7 @@ COMPONENT('editor', function(self, config) {
 		checksum = -1;
 	};
 
-	self.diffgutter = function(line, nullable) {
+	self.diffgutter = function(line, nullable, nochange) {
 		var key = line + '';
 
 		if (nullable)
@@ -151,11 +151,22 @@ COMPONENT('editor', function(self, config) {
 		editor.setGutterMarker(line, 'GutterDiff', nullable ? null : GutterDiff());
 
 		var info = editor.lineInfo(line);
+		var prev;
+
+		if (nochange) {
+			prev = cache_users[key];
+			if (prev)
+				editor.setGutterMarker(line, 'GutterUser', prev.el);
+			else
+				editor.setGutterMarker(line, 'GutterUser', null);
+			return;
+		}
+
 		var key = line + '';
 
 		if (nullable) {
 			// restore previous user
-			var prev = cache_users[key];
+			prev = cache_users[key];
 			if (prev) {
 				editor.setGutterMarker(line, 'GutterUser', prev.el);
 				delete cache_users[key];
@@ -664,10 +675,19 @@ COMPONENT('editor', function(self, config) {
 				var count = 0;
 
 				for (var i = b.from.line; i < (b.from.line + b.text.length); i++) {
-					var is = cache_lines && cache_lines[i] === editor.getLine(i);
+
+					var is = false;
+					var nochange = false;
+
+					if (cache_lines) {
+						is = cache_lines[i] === editor.getLine(i);
+						nochange = cache_lines[i] ? cache_lines[i].trim() === editor.getLine(i).trim() : is;
+					}
+
 					if (!is)
 						count++;
-					self.diffgutter(i, is);
+
+					self.diffgutter(i, is, nochange);
 				}
 
 				if (b.origin && b.origin.charAt(1) !== 'd')
