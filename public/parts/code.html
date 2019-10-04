@@ -583,7 +583,10 @@
 					div.appendChild(el);
 					document.body.appendChild(div);
 					var cur = editor.getModeAt(editor.getCursor());
-					CodeMirror.runMode(FUNC.strim(text).replace(/\t/g, '  '), cur.helperType || cur.name, el);
+					var t = cur.helperType || cur.name;
+					if (t === 'json')
+						t = 'application/ld+json';
+					CodeMirror.runMode(FUNC.strim(text).replace(/\t/g, '  '), t, el);
 					el.setAttribute('class', 'cm-s-default');
 					el.setAttribute('contenteditable', 'true');
 					el.focus();
