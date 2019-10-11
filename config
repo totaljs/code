@@ -7,3 +7,4 @@ cookie                : __sauth
 authkey               : seEdCollabo
 
 backup                : /www/tmp/backup/
+autodiscover          : /www/www/

@@ -158,7 +158,7 @@ NEWSCHEMA('Projects', function(schema) {
 
 	schema.setSave(function($) {
 
-		if (!$.user.sa) {
+		if ($.user && !$.user.sa) {
 			$.invalid('error-permissions');
 			return;
 		}
@@ -193,7 +193,7 @@ NEWSCHEMA('Projects', function(schema) {
 			}
 		} else {
 			model.id = UID();
-			model.ownerid = $.user.id;
+			model.ownerid = $.user ? $.user.id : null;
 			model.created = NOW;
 			MAIN.projects.push(model);
 		}
@@ -447,7 +447,6 @@ NEWSCHEMA('Projects', function(schema) {
 			}
 
 			var pathtmp = path.replace(/-\d+_[a-z0-9]/, '');
-
 			if (!MAIN.authorize(project, $.user, pathtmp)) {
 				$.invalid('error-permissions');
 				return;
@@ -502,4 +501,68 @@ NEWSCHEMA('Projects', function(schema) {
 		Fs.truncate(filename, NOOP);
 		$.success();
 	});
+});
+
+
+ON('service', function() {
+
+	if (!CONF.autodiscover)
+		return;
+
+	Fs.readdir(CONF.autodiscover, function(err, directories) {
+
+		var projects = MAIN.projects;
+		var ischange = false;
+
+		directories.wait(function(p, next) {
+
+			p = U.path(p.replace(/\/\//g, '/').replace(/\\\\/g, '\\'));
+
+			var model = {};
+			model.path = Path.join(CONF.autodiscover, p);
+
+			Fs.stat(model.path, function(err, stat) {
+
+				if (err || !stat.isDirectory()) {
+					var index = projects.findIndex('path', model.path);
+					if (index !== -1) {
+						projects.splice(index, 1);
+						ischange = true;
+					}
+					next();
+					return;
+				}
+
+				var item = projects.findItem('path', model.path);
+				if (item != null) {
+					next();
+					return;
+				}
+
+				model.name = p.substring(0, p.length - 1);
+
+				var arr = model.name.replace(/_/g, '.').split('-');
+				arr.reverse();
+
+				model.url = 'https://' + arr.join('.');
+				model.permissions = '';
+				model.documentation = 'https://wiki.totaljs.com';
+				model.support = 'https://messenger.totaljs.com';
+				model.logfile = '';
+				model.users = [];
+				model.backup = true;
+				model.skipsrc = true;
+				model.skiptmp = true;
+				model.skipnm = true;
+				model.allowbundle = true;
+				model.allowscripts = true;
+
+				// new projects
+				$SAVE('Projects', model, next);
+			});
+		}, function() {
+			ischange && MAIN.save(2);
+		});
+	});
+
 });
