@@ -285,7 +285,7 @@ WAIT('CodeMirror.defineMode', function() {
 	});
 
 	CodeMirror.defineMode('totaljsresources', function() {
-		var REG_KEY = /^[a-z0-9_\-.#]+/i;
+		var REG_KEY = /^[a-z0-9_/>\-.#]+/i;
 		return {
 
 			startState: function() {
