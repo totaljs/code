@@ -429,6 +429,10 @@
 			code.editor && TOGGLE('common.debug');
 		}, true);
 
+		SETTER(true, 'shortcuts', 'register', 'F8', function(e) {
+			$('.project').trigger('click');
+		}, true);
+
 		SETTER(true, 'shortcuts', 'register', 'F11', function(e) {
 			code.editor && EXEC('code/clipboard');
 		}, true);

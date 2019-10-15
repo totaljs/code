@@ -119,7 +119,7 @@ NEWSCHEMA('Projects', function(schema) {
 					}
 
 					var key = 'T' + command.command.hash();
-					var file = filename.substring(item.path.length + 1);
+					var file = filename.substring(item.path.length);
 
 					texts[key] = command.command;
 

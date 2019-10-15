@@ -17,3 +17,4 @@
 - fixed tab tag completion
 - press F1 and type :LINENUMBER:CHARNUMBER
 - `sitemap` supprots custom `align` function
+- F8 shows projects
