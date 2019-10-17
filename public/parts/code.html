@@ -1240,12 +1240,17 @@
 			!node.children && items.push({ value: 2, name: '@(Duplicate)', icon: 'copy' });
 			items.push({ value: 255, name: '@(Remove)', icon: 'times-circle red' });
 
+			var path = node.path;
+
 			SETTER('menu', 'show', 'right', el, items, function(item) {
 
 				if (item.makefile) {
-					var name = node.path + item.name.substring(item.name.indexOf(':') + 1).trim();
+					var name = path + item.name.substring(item.name.indexOf(':') + 1).trim();
 					SET('code.statusform.name', '');
-					exports.statusform('file',name);
+					if (!code.statusform)
+						code.statusform = {};
+					code.statusform.path = '';
+					exports.statusform('file', name);
 					return;
 				}
 
