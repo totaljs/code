@@ -138,7 +138,7 @@
 
 	PLUGIN('code', function(exports) {
 
-		code.cursor = { TYPE: 'synccur', id: user.id };
+		code.cursor = { TYPE: 'synccur', id: user.id, connid: common.id };
 
 		var editor;
 		var cache_scrollpos = {};
@@ -160,9 +160,6 @@
 
 		exports.combo = function() {
 
-			if (!common.powermode)
-				return;
-
 			var old = code.lastchange;
 			code.lastchange = Date.now();
 
@@ -175,7 +172,7 @@
 					maxtyping = 0;
 			}
 
-			combo && combo.combo();
+			common.powermode && combo && combo.combo();
 		};
 
 		exports.refresh = function(callback) {
@@ -312,7 +309,8 @@
 
 			for (var i = 0; i < code.usersfile.length; i++) {
 				var usr = code.usersfile[i];
-				if (usr.id === user.id)
+
+				if (usr.connid === common.id)
 					continue;
 
 				if (!min) {
@@ -350,7 +348,7 @@
 			if (msg && msg.projectid === code.projectid)
 				setTimeout(exports.changelog, 2000);
 
-			if (!msg || msg instanceof jQuery || msg.id === user.id) {
+			if (!msg || msg instanceof jQuery || msg.id === common.id) {
 				SET(p, null);
 				return;
 			}
@@ -379,8 +377,8 @@
 		exports.synccursor = function(msg) {
 			for (var i = 0; i < code.usersfile.length; i++) {
 				var uf = code.usersfile[i];
-				if (uf.id === msg.id) {
-					editor.marker(uf.id, msg.fline, msg.fch, msg.tline, msg.tch, uf.color);
+				if (uf.connid === msg.connid) {
+					editor.marker(uf.connid, msg.fline, msg.fch, msg.tline, msg.tch, uf.color, uf.id);
 					return;
 				}
 			}
@@ -530,7 +528,7 @@
 			items.push({ name: '@(Insert emoji)', icon: 'smile yellow', value: 'emoji' });
 			items.push({ name: '@(Insert color)', icon: 'fill-drip colorize', value: 'colorpicker' });
 
-			if ((/js|json|html|todo|api/).test(code.current.ext)) {
+			if ((/js|json|html|todo|api|txt/).test(code.current.ext)) {
 				sub = [];
 				if (code.current.path.substring(0, 9) === '/scripts/' && code.current.ext === 'js') {
 					sub.push({ name: '@(Script)', icon: 'code', value: 'template', id: 'script' });
@@ -545,6 +543,8 @@
 					sub.push({ name: '@(TO-DO example)', icon: 'code', value: 'template', id: 'todo' });
 				} else if (code.current.ext === 'api') {
 					sub.push({ name: '@(API example)', icon: 'code', value: 'template', id: 'restapi' });
+				} else if (code.current.ext === 'txt') {
+					sub.push({ name: '@(MIT license)', icon: 'code', value: 'template', id: 'license' });
 				} else {
 					sub.push({ name: '@(HTML template)', icon: 'code', value: 'template', id: 'html' });
 					sub.push({ name: '@(j-Modal)', icon: 'code', value: 'template', id: 'modal' });
@@ -866,10 +866,11 @@
 
 		exports.sync = function(data) {
 			code.SYNCUSER = user.id;
+			code.SYNCID = common.id;
 			// Determines how many people is editing this file?
 			if (code.usersfile.length > 1 && code.SYNC) {
 				cache_sync.data = STRINGIFY(data);
-				cache_sync.id = common.id;
+				cache_sync.connid = common.id;
 				cache_sync.projectid = code.projectid;
 				cache_sync.userid = user.id;
 				FUNC.wssend(cache_sync);
@@ -956,6 +957,7 @@
 				return;
 
 			code.SYNCUSER = null;
+			code.SYNCID = null;
 
 			var tab = code.open.findItem('path', item.path);
 			if (tab && tab.loaded) {
@@ -1501,7 +1503,8 @@
 			setTimeout2('code.autocomplete', editor.rebuild_autocomplete, 1000);
 			code.current = tab;
 			editor.reconfigure('disabled:false;mode:' + mode);
-			code.SYNCUSER = '';
+			code.SYNCUSER = null;
+			code.SYNCID = null;
 
 			FUNC.wsopen(code.data.id, code.current.path, code.projectid);
 
@@ -1807,7 +1810,7 @@
 					code.current.diff = data.diff;
 
 				var diff = Math.ceil((now - code.lastchange) / 1000);
-				var max = 40; // minutes
+				var max = 80; // minutes
 
 				if ((diff / 60) < max)  // minutes
 					data.time = Math.ceil((now - code.current.time) / 1000);
@@ -1932,7 +1935,7 @@
 
 				// auto-sync
 				if (is) {
-					if (user.id === msg.userid) {
+					if (common.id === msg.connid) {
 						code.issyncing = true;
 						SETTER('loading', 'show');
 						setTimeout(exports.syncdata, 1000);
@@ -1946,9 +1949,10 @@
 			if (name instanceof jQuery) {
 
 				var dname = name.attrd('name');
+				var opt;
 
 				if (dname === 'directory') {
-					var opt = {};
+					opt = {};
 					opt.element = name;
 					opt.offsetY = -50;
 					opt.offsetX = -20;
@@ -2007,6 +2011,57 @@
 
 					opt.callback = function(item) {
 						exports.statusform('directory', item.value);
+						SET('code.statusform.name', '');
+					};
+
+					if (opt.items.length)
+						SETTER('menu', 'show', opt);
+
+				} else if (dname === 'file') {
+					opt = {};
+					opt.element = name;
+					opt.offsetY = -50;
+					opt.offsetX = 20;
+					opt.position = 'bottom';
+					opt.items = [];
+
+					var files = {};
+
+					for (var i = 0; i < code.tree.length; i++)
+						files[code.tree[i].name] = 1;
+
+					if (!files['.bundleignore'])
+						opt.items.push({ name: '<strong>@(Create):</strong> /.bundleignore', icon: '!far fa-file-text-o', value: '.bundleignore' });
+
+					if (!files['.gitignore'])
+						opt.items.push({ name: '<strong>@(Create):</strong> /.gitignore', icon: '!far fa-file-text-o', value: '.gitignore' });
+
+					if (!files.config)
+						opt.items.push({ name: '<strong>@(Create):</strong> /config', icon: '!far fa-file-text-o', value: 'config' });
+
+					if (!files['config-release'])
+						opt.items.push({ name: '<strong>@(Create):</strong> /config-release', icon: '!far fa-file-text-o', value: 'config-release' });
+
+					if (!files['config-debug'])
+						opt.items.push({ name: '<strong>@(Create):</strong> /config-debug', icon: '!far fa-file-text-o', value: 'config-debug' });
+
+					if (!files['license.txt'])
+						opt.items.push({ name: '<strong>@(Create):</strong> /license.txt', icon: '!far fa-file-text-o', value: 'license.txt' });
+
+					if (!files['package.json'])
+						opt.items.push({ name: '<strong>@(Create):</strong> /package.json', icon: '!far fa-file-text-o', value: 'package.json' });
+
+					if (!files['readme.api'])
+						opt.items.push({ name: '<strong>@(Create):</strong> /readme.api', icon: '!far fa-file-text-o', value: 'readme.api' });
+
+					if (!files['readme.md'])
+						opt.items.push({ name: '<strong>@(Create):</strong> /readme.md', icon: '!far fa-file-text-o', value: 'readme.md' });
+
+					if (!files['readme.todo'])
+						opt.items.push({ name: '<strong>@(Create):</strong> /readme.todo', icon: '!far fa-file-text-o', value: 'readme.todo' });
+
+					opt.callback = function(item) {
+						exports.statusform('file', item.value);
 						SET('code.statusform.name', '');
 					};
 

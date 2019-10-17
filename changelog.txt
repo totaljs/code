@@ -1,4 +1,4 @@
-========================= 1.1
+========================= 1.3
 
 - added snippets
 - added debug window, shortcut `F10`
@@ -18,3 +18,7 @@
 - press F1 and type :LINENUMBER:CHARNUMBER
 - `sitemap` supprots custom `align` function
 - F8 shows projects
+- user can open multiple windows
+- improved creating of files
+- improved creating of directories
+- time tracking

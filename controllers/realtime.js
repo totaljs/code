@@ -12,24 +12,35 @@ function realtime() {
 
 	self.on('open', function(client) {
 
-		var old = self.find(conn => conn.user === client.user && conn.id !== client.id);
-		if (old) {
-			old.send(MSG_EXIT);
-			setTimeout(() => old.close(), 1000);
-		}
+		//var old = self.find(conn => conn.user === client.user && conn.id !== client.id);
+		//if (old) {
+		//	old.send(MSG_EXIT);
+		//	setTimeout(() => old.close(), 1000);
+		//}
 
 		client.user.online = true;
+		client.code = { id: client.query.id };
 	});
 
 	self.on('close', function(client) {
+		// var offline = self.find(conn => conn.user === client.user && conn.id !== client.id) == null;
 		var offline = self.find(conn => conn.user === client.user && conn.id !== client.id) == null;
 		if (offline) {
+
+			client.code.ts = 0;
+			client.code.fileid && refresh_collaborators(self, client);
+
 			client.user.ts = 0;
-			client.user.fileid && refresh_collaborators(self, client.user);
 			client.user.openid = '';
 			client.user.projectid = '';
 			client.user.fileid = '';
 			client.user.online = false;
+			// client.user.ts = 0;
+			// client.user.fileid && refresh_collaborators(self, client.user);
+			// client.user.openid = '';
+			// client.user.projectid = '';
+			// client.user.fileid = '';
+			// client.user.online = false;
 		}
 	});
 
@@ -42,12 +53,12 @@ function realtime() {
 		// {"TYPE":"edit"
 		if (msg[9] === 'e') {
 			msg = msg.parseJSON();
-			client.user.fileid && refresh_collaborators(self, client.user);
-			client.user.projectid = msg.projectid || '';
-			client.user.fileid = msg.fileid;
-			client.user.openid = (msg.openid || 0).toString();
-			client.user.ts = Date.now();
-			refresh_collaborators(self, client.user, true);
+			client.code.fileid && refresh_collaborators(self, client);
+			client.code.projectid = msg.projectid || '';
+			client.code.fileid = msg.fileid;
+			client.code.openid = (msg.openid || 0).toString();
+			client.code.ts = Date.now();
+			refresh_collaborators(self, client, true);
 		} else if (msg[9] === 's' && msg[12] === 'e')
 			self.send2(msg);
 		else
@@ -59,29 +70,28 @@ function openidcomparer(client, msg) {
 	return msg.indexOf(client.user.openid) !== -1;
 }
 
-function refresh_collaborators(ws, user, add) {
+function refresh_collaborators(ws, client, add) {
 
-	MSG_OPEN.userid = user.id;
-	MSG_OPEN.projectid = user.projectid;
-	MSG_OPEN.fileid = user.fileid;
+	MSG_OPEN.connid = client.code.id;
+	MSG_OPEN.id = client.user.id;
+	MSG_OPEN.projectid = client.code.projectid;
+	MSG_OPEN.fileid = client.code.fileid;
 	MSG_OPEN.project = [];
 	MSG_OPEN.file = [];
 
-	for (var i = 0; i < MAIN.users.length; i++) {
+	for (var i = 0; i < ws._keys.length; i++) {
+		var key = ws._keys[i];
+		var con = ws.connections[key];
 
-		var item = MAIN.users[i];
-
-		if (!item.fileid || (item.id === user.id && !add))
+		if (!con.code.fileid || (con.code.id !== client.code.id && !add))
 			continue;
 
-		if (item.projectid === MSG_OPEN.projectid) {
-			MSG_OPEN.project.push({ id: item.id, name: item.name });
-			if (item.fileid === MSG_OPEN.fileid)
-				MSG_OPEN.file.push({ id: item.id, name: item.name, ts: item.ts });
+		if (con.code.projectid === MSG_OPEN.projectid) {
+			MSG_OPEN.project.push({ connid: con.code.id, id: con.user.id, name: con.user.name });
+			if (con.code.fileid === MSG_OPEN.fileid)
+				MSG_OPEN.file.push({ connid: con.code.id, id: con.user.id, name: con.user.name, ts: con.code.ts });
 		}
 	}
-
-	//if (MSG_OPEN.file.length) {
 
 	if (add)
 		MSG_OPEN.TYPE = 'open';
@@ -89,5 +99,4 @@ function refresh_collaborators(ws, user, add) {
 		MSG_OPEN.TYPE = 'close';
 
 	ws.send2(MSG_OPEN);
-	//}
 }

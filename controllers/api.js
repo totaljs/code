@@ -4,82 +4,78 @@ const Fs = require('fs');
 const Exec = require('child_process').exec;
 
 exports.install = function() {
-	GROUP(['authorize'], function() {
 
-		ROUTE('GET     /api/{schema}/                         *{schema}         --> @query');
-		ROUTE('GET     /api/{schema}/{id}/                    *{schema}         --> @read');
-		ROUTE('POST    /api/{schema}/                         *{schema}         --> @save');
-		ROUTE('DELETE  /api/{schema}/{id}/                    *{schema}         --> @remove');
-		ROUTE('POST    /api/{schema}/{id}/                    *{schema}         --> @save');
+	ROUTE('+GET     /api/{schema}/                         *{schema}         --> @query');
+	ROUTE('+GET     /api/{schema}/{id}/                    *{schema}         --> @read');
+	ROUTE('+POST    /api/{schema}/                         *{schema}         --> @save');
+	ROUTE('+DELETE  /api/{schema}/{id}/                    *{schema}         --> @remove');
+	ROUTE('+POST    /api/{schema}/{id}/                    *{schema}         --> @save');
 
-		// Files
-		ROUTE('POST    /api/files/{id}/rename/                *FilesRename      --> @exec');
-		ROUTE('POST    /api/files/{id}/remove/                *FilesRemove      --> @exec');
-		ROUTE('POST    /api/files/{id}/create/                *FilesCreate      --> @exec');
+	// Files
+	ROUTE('+POST    /api/files/{id}/rename/                *FilesRename      --> @exec');
+	ROUTE('+POST    /api/files/{id}/remove/                *FilesRemove      --> @exec');
+	ROUTE('+POST    /api/files/{id}/create/                *FilesCreate      --> @exec');
 
-		// Projects
-		ROUTE('GET     /api/projects/{id}/changelog/          *Files            --> @changelog');
-		ROUTE('GET     /api/projects/{id}/review/             *Files            --> @review', [10000]);
-		ROUTE('POST    /api/projects/{id}/upload/             *FilesUpload      --> @exec', ['upload'], 1024 * 50);
-		ROUTE('GET     /api/projects/{id}/files/              *Projects         --> @files');
-		ROUTE('GET     /api/projects/{id}/parts/              *Files            --> @parts');
-		ROUTE('DELETE  /api/projects/{id}/parts/              *FilesPartsClear  --> @remove');
-		ROUTE('GET     /api/projects/{id}/backups/            *Projects         --> @backups');
-		ROUTE('DELETE  /api/projects/{id}/backups/            *Projects         --> @backupsclear', [10000]);
-		ROUTE('DELETE  /api/projects/{id}/todo/               *FilesTodoClear   --> @remove');
-		ROUTE('GET     /api/projects/{id}/logfile/            *Projects',       files_logfile);
-		ROUTE('GET     /api/projects/{id}/logfile/clear/      *Projects         --> @logfileclear');
-		ROUTE('GET     /api/projects/{id}/restore/            *Projects',       files_restore);
-		ROUTE('GET     /api/projects/{id}/edit/               *Projects',       files_open);
-		ROUTE('GET     /api/projects/{id}/translate/          *Projects',       files_translate);
-		ROUTE('GET     /api/projects/{id}/changes/            *Projects',       files_changes);
-		ROUTE('GET     /api/projects/{id}/diff/',                               files_diff);
-		ROUTE('DELETE  /api/projects/{id}/diff/',                               files_diff_delete);
-		ROUTE('GET     /api/projects/{id}/changelogs/',                         changelogs);
-		ROUTE('GET     /api/projects/timespent/',                               timespent);
-		ROUTE('GET     /api/projects/{id}/modify/',                           	files_modify);
-		ROUTE('GET     /api/projects/{id}/bundle/',                           	makebundle, [10000]);
-		ROUTE('GET     /api/projects/{id}/localize/          *Projects         --> @localize', [10000]);
+	// Projects
+	ROUTE('+GET     /api/projects/{id}/changelog/          *Files            --> @changelog');
+	ROUTE('+GET     /api/projects/{id}/review/             *Files            --> @review', [10000]);
+	ROUTE('+POST    /api/projects/{id}/upload/             *FilesUpload      --> @exec', ['upload'], 1024 * 50);
+	ROUTE('+GET     /api/projects/{id}/files/              *Projects         --> @files');
+	ROUTE('+GET     /api/projects/{id}/parts/              *Files            --> @parts');
+	ROUTE('+DELETE  /api/projects/{id}/parts/              *FilesPartsClear  --> @remove');
+	ROUTE('+GET     /api/projects/{id}/backups/            *Projects         --> @backups');
+	ROUTE('+DELETE  /api/projects/{id}/backups/            *Projects         --> @backupsclear', [10000]);
+	ROUTE('+DELETE  /api/projects/{id}/todo/               *FilesTodoClear   --> @remove');
+	ROUTE('+GET     /api/projects/{id}/logfile/            *Projects',       files_logfile);
+	ROUTE('+GET     /api/projects/{id}/logfile/clear/      *Projects         --> @logfileclear');
+	ROUTE('+GET     /api/projects/{id}/restore/            *Projects',       files_restore);
+	ROUTE('+GET     /api/projects/{id}/edit/               *Projects',       files_open);
+	ROUTE('+GET     /api/projects/{id}/translate/          *Projects',       files_translate);
+	ROUTE('+GET     /api/projects/{id}/changes/            *Projects',       files_changes);
+	ROUTE('+GET     /api/projects/{id}/diff/',                               files_diff);
+	ROUTE('+DELETE  /api/projects/{id}/diff/',                               files_diff_delete);
+	ROUTE('+GET     /api/projects/{id}/changelogs/',                         changelogs);
+	ROUTE('+GET     /api/projects/timespent/',                               timespent);
+	ROUTE('+GET     /api/projects/{id}/modify/',                           	 files_modify);
+	ROUTE('+GET     /api/projects/{id}/bundle/',                           	 makebundle, [10000]);
+	ROUTE('+GET     /api/projects/{id}/localize/          *Projects          --> @localize', [10000]);
 
-		// Clipboard
-		ROUTE('GET     /api/clipboard/                        *Clipboard       --> @get');
-		ROUTE('POST    /api/clipboard/                        *Clipboard       --> @save');
+	// Clipboard
+	ROUTE('+GET     /api/clipboard/                        *Clipboard        --> @get');
+	ROUTE('+POST    /api/clipboard/                        *Clipboard        --> @save');
 
-		// Other
-		ROUTE('GET     /api/templates/{id}/',                                  template);
-		ROUTE('GET     /api/download/{id}/',                                   files_download);
-		ROUTE('POST    /api/files/minify/                     *Minify',        files_minify);
-		ROUTE('GET     /logout/',                                              redirect_logout);
+	// Other
+	ROUTE('+GET     /api/templates/{id}/',                                   template);
+	ROUTE('+GET     /api/download/{id}/',                                    files_download);
+	ROUTE('+POST    /api/files/minify/                     *Minify',         files_minify);
+	ROUTE('+GET     /logout/',                                               redirect_logout);
 
-		ROUTE('GET    /api/users/online/',                                     users_online);
-		ROUTE('GET    /api/users/refresh/',                                    users_refresh);
-		ROUTE('GET    /api/common/directories/',                               directories);
-		ROUTE('GET    /api/common/uid/',                                       custom_uid);
-		ROUTE('GET    /api/common/ip/',                                        custom_ip);
-		ROUTE('GET    /api/common/ipserver/',                                  custom_ipsever);
-		ROUTE('POST   /api/common/encrypt/                   *Encoder          --> @exec');
-		ROUTE('GET    /api/componentator/download/           *Componentator    --> @download');
+	ROUTE('+GET    /api/users/online/',                                      users_online);
+	ROUTE('+GET    /api/users/refresh/',                                     users_refresh);
+	ROUTE('+GET    /api/common/directories/',                                directories);
+	ROUTE('+GET    /api/common/uid/',                                        custom_uid);
+	ROUTE('+GET    /api/common/ip/',                                         custom_ip);
+	ROUTE('+GET    /api/common/ipserver/',                                   custom_ipsever);
+	ROUTE('+POST   /api/common/encrypt/                   *Encoder           --> @exec');
+	ROUTE('+GET    /api/componentator/download/           *Componentator     --> @download');
 
-		ROUTE('POST   /api/request/',                                          makerequest, [20000]);
-		ROUTE('GET    /api/request/{id}/',                                     makerequestscript, [20000]);
+	ROUTE('+POST   /api/request/',                                           makerequest, [20000]);
+	ROUTE('+GET    /api/request/{id}/',                                      makerequestscript, [20000]);
 
-		ROUTE('GET    /api/external/bundles/                 *ExternalBundle    --> @query');
-		ROUTE('POST   /api/external/bundles/{id}/            *ExternalBundle    --> @save', [10000]);
-		ROUTE('GET    /api/external/packages/                *ExternalPackage   --> @query');
-		ROUTE('POST   /api/external/packages/{id}/           *ExternalPackage   --> @save', [10000]);
-		ROUTE('GET    /api/external/templates/               *ExternalTemplate  --> @query');
-		ROUTE('POST   /api/external/templates/{id}/          *ExternalTemplate  --> @save', [10000]);
-		ROUTE('GET    /api/external/modules/                 *ExternalModule    --> @query');
-		ROUTE('POST   /api/external/modules/{id}/            *ExternalModule    --> @save', [10000]);
-		ROUTE('GET    /api/external/schemas/                 *ExternalSchema    --> @query');
-		ROUTE('POST   /api/external/schemas/{id}/            *ExternalSchema    --> @save', [10000]);
-		ROUTE('GET    /api/external/operations/              *ExternalOperation --> @query');
-		ROUTE('POST   /api/external/operations/{id}/         *ExternalOperation --> @save', [10000]);
-	});
+	ROUTE('+GET    /api/external/bundles/                 *ExternalBundle    --> @query');
+	ROUTE('+POST   /api/external/bundles/{id}/            *ExternalBundle    --> @save', [10000]);
+	ROUTE('+GET    /api/external/packages/                *ExternalPackage   --> @query');
+	ROUTE('+POST   /api/external/packages/{id}/           *ExternalPackage   --> @save', [10000]);
+	ROUTE('+GET    /api/external/templates/               *ExternalTemplate  --> @query');
+	ROUTE('+POST   /api/external/templates/{id}/          *ExternalTemplate  --> @save', [10000]);
+	ROUTE('+GET    /api/external/modules/                 *ExternalModule    --> @query');
+	ROUTE('+POST   /api/external/modules/{id}/            *ExternalModule    --> @save', [10000]);
+	ROUTE('+GET    /api/external/schemas/                 *ExternalSchema    --> @query');
+	ROUTE('+POST   /api/external/schemas/{id}/            *ExternalSchema    --> @save', [10000]);
+	ROUTE('+GET    /api/external/operations/              *ExternalOperation --> @query');
+	ROUTE('+POST   /api/external/operations/{id}/         *ExternalOperation --> @save', [10000]);
 
-	GROUP(['unauthorize'], function() {
-		ROUTE('POST    /api/login/                    *Login        --> @save');
-	});
+	ROUTE('-POST    /api/login/                           *Login             --> @save');
 
 };
 
@@ -217,16 +213,19 @@ function users_online() {
 	var self = this;
 	var arr = [];
 
-	for (var i = 0; i < MAIN.users.length; i++) {
-		var user = MAIN.users[i];
-		if (user.online) {
-			var item = {};
-			var project = MAIN.projects.findItem('id', user.projectid);
-			if (project)
-				item.project = project.name + (user.fileid || '');
-			item.name = user.name;
-			arr.push(item);
-		}
+	for (var i = 0; i < MAIN.ws._keys.length; i++) {
+		var key = MAIN.ws._keys[i];
+		var conn = MAIN.ws.connections[key];
+
+		var item = {};
+
+		var project = conn.code.projectid ? MAIN.projects.findItem('id', conn.code.projectid) : null;
+		if (project)
+			item.project = project.name + (conn.code.fileid || '');
+
+		item.name = conn.user.name;
+		item.ip = conn.ip;
+		arr.push(item);
 	}
 
 	self.json(arr);

@@ -152,7 +152,7 @@ NEWSCHEMA('Files', function(schema) {
 			}
 		}
 
-		if (model.time > 2700)
+		if (model.time > 5400)
 			model.time = 0;
 
 		if (model.time) {

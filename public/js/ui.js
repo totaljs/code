@@ -176,7 +176,8 @@ COMPONENT('editor', function(self, config) {
 		} else if (info && info.text) {
 
 			var usr = user;
-			if (code.SYNCUSER && code.SYNCUSER !== user.id) {
+			if (code.SYNCUSER && code.SYNCID !== common.id) {
+				//  && code.SYNCUSER !== user.id
 				usr = code.data.users.findItem('id', code.SYNCUSER);
 				if (usr == null)
 					return;
@@ -738,7 +739,7 @@ COMPONENT('editor', function(self, config) {
 	var cache_mt_t = {};
 	var cache_mt_css = { css: {} };
 
-	self.marker = function(id, fline, fch, tline, tch, color) {
+	self.marker = function(id, fline, fch, tline, tch, color, userid) {
 
 		markers[id] && markers[id].clear();
 
@@ -754,11 +755,11 @@ COMPONENT('editor', function(self, config) {
 
 		cache_mt_css.css = 'background-color:' + hexrgba(color, 0.5);
 		cache_mt_css.className = 'cm-user cm-user-' + id;
-		cache_mt_css.title = id;
+		cache_mt_css.title = userid;
 
 		markers[id] = editor.markText(cache_mt_f, cache_mt_t, cache_mt_css);
 		self.find('.cm-uname-' + id).remove();
-		self.find('.cm-user-' + id).eq(0).prepend('<span class="cm-uname cm-uname-{1}" style="border-left:1px solid {0}"><b style="background-color:{0}">{1}</b></span>'.format(hexrgba(color, 0.5), id));
+		self.find('.cm-user-' + id).eq(0).prepend('<span class="cm-uname cm-uname-{1}" style="border-left:1px solid {0}"><b style="background-color:{0}">{2}</b></span>'.format(hexrgba(color, 0.5), id, userid));
 	};
 
 	self.copy = function(history) {
@@ -4481,7 +4482,8 @@ COMPONENT('websocket', 'reconnect:3000', function(self, config) {
 	self.nocompile();
 
 	self.make = function() {
-		url = (config.url || '').env(true);
+		// hardcoded
+		url = (config.url || '').env(true) + '?id=' + common.id;
 		if (!url.match(/^(ws|wss):\/\//))
 			url = (location.protocol.length === 6 ? 'wss' : 'ws') + '://' + location.host + (url.substring(0, 1) !== '/' ? '/' : '') + url;
 		setTimeout(self.connect, 500);

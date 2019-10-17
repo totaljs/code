@@ -194,7 +194,7 @@
 					break;
 				case 'open':
 
-					if (code.data && code.current && msg.userid !== user.id && msg.projectid === code.data.id && msg.fileid === code.current.path)
+					if (code.data && code.current && msg.connid !== common.id && msg.projectid === code.data.id && msg.fileid === code.current.path)
 						EXEC('code/readonly', true);
 
 					EXEC('code/collaboration', msg);
@@ -207,10 +207,11 @@
 					EXEC('code/collaboration', msg);
 					break;
 				case 'sync':
-					if (code.SYNC && msg.projectid === code.projectid && msg.id !== common.id) {
+					if (code.SYNC && msg.projectid === code.projectid && msg.connid !== common.id) {
 						var data = PARSE(msg.data);
 						code.SYNC = false;
 						code.SYNCUSER = msg.userid;
+						code.SYNCID = msg.connid;
 						EDITOR.editor.replaceRange(data.text, data.from, data.to);
 						var history = EDITOR.editor.doc.history.done;
 						history.pop();
@@ -218,8 +219,8 @@
 						code.SYNC = true;
 					}
 					break;
-				case 'syncsend':
 
+				case 'syncsend':
 					if (msg.projectid === code.projectid && msg.connid !== common.id) {
 						EXEC('code/readonly', true);
 						code.SYNC = false;
@@ -234,7 +235,9 @@
 						}
 					}
 					break;
+
 				case 'syncbody':
+
 					if (msg.projectid === code.projectid && msg.connid === common.id) {
 						clearTimeout(common.synctimeout);
 						common.synctimeout = null;
@@ -253,6 +256,7 @@
 						FUNC.wssend(msg);
 					}
 					break;
+
 				case 'syncdone':
 					if (msg.projectid === code.projectid) {
 						clearTimeout(common.synctimeout);
@@ -265,13 +269,14 @@
 						SETTER('loading', 'hide');
 					}
 					break;
+
 				case 'synccur':
-					if (msg.projectid === code.projectid && msg.id !== user.id && code.SYNC)
+					if (msg.projectid === code.projectid && msg.connid !== common.id && code.SYNC)
 						EXEC('code/synccursor', msg);
 					break;
 				case 'save':
 					if (W.code) {
-						if (msg.projectid === code.projectid && msg.id !== user.id)
+						if (msg.projectid === code.projectid && msg.connid !== common.id)
 							EXEC('code/syncsave', msg);
 						else if (code) {
 							msg.date = new Date();
