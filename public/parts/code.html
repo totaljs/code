@@ -1243,6 +1243,9 @@
 			if (node.children) {
 				items.push({ value: 'file', name: '@(Create file)', icon: '!far fa-file-text-o' });
 				items.push({ value: 'directory', name: '@(Create directory)', icon: '!far fa-folder-o' });
+			} else {
+				items.push({ value: 'download', name: '@(Download file)', icon: 'cloud-download', classname: 'b' });
+				items.push('-');
 			}
 
 			items.push({ value: 3, name: '@(Rename)', icon: 'pencil' });
@@ -1264,6 +1267,9 @@
 				}
 
 				switch (item.value) {
+					case 'download':
+						location.href = '/api/download/' + code.data.id + '/?path=' + encodeURIComponent(path);
+						break;
 					case 'bundles':
 					case 'packages':
 					case 'modules':
