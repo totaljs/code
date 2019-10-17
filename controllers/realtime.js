@@ -1,5 +1,4 @@
 const MSG_OPEN = { TYPE: 'open' };
-const MSG_EXIT = { TYPE: 'exit' };
 
 exports.install = function() {
 	WEBSOCKET('/', realtime, ['authorize'], 1024);
@@ -11,37 +10,19 @@ function realtime() {
 	MAIN.ws = self;
 
 	self.on('open', function(client) {
-
-		//var old = self.find(conn => conn.user === client.user && conn.id !== client.id);
-		//if (old) {
-		//	old.send(MSG_EXIT);
-		//	setTimeout(() => old.close(), 1000);
-		//}
-
 		client.user.online = true;
 		client.code = { id: client.query.id };
 	});
 
 	self.on('close', function(client) {
+
+		client.code.ts = 0;
+		client.code.fileid && refresh_collaborators(self, client);
+
 		// var offline = self.find(conn => conn.user === client.user && conn.id !== client.id) == null;
-		var offline = self.find(conn => conn.user === client.user && conn.id !== client.id) == null;
-		if (offline) {
-
-			client.code.ts = 0;
-			client.code.fileid && refresh_collaborators(self, client);
-
-			client.user.ts = 0;
-			client.user.openid = '';
-			client.user.projectid = '';
-			client.user.fileid = '';
+		var offline = self.find(conn => conn.user === client.user) == null;
+		if (offline)
 			client.user.online = false;
-			// client.user.ts = 0;
-			// client.user.fileid && refresh_collaborators(self, client.user);
-			// client.user.openid = '';
-			// client.user.projectid = '';
-			// client.user.fileid = '';
-			// client.user.online = false;
-		}
 	});
 
 	self.on('message', function(client, msg) {
@@ -67,7 +48,7 @@ function realtime() {
 }
 
 function openidcomparer(client, msg) {
-	return msg.indexOf(client.user.openid) !== -1;
+	return msg.indexOf('":' + client.code.openid) !== -1;
 }
 
 function refresh_collaborators(ws, client, add) {

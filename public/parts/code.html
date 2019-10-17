@@ -1,7 +1,14 @@
 <div id="panel">
 	<section class="project exec" data-exec="code/projects" data-bind="!code.data__html b:value.name__title:value.name"><i class="fa fa-caret-down"></i><b>@(Choose project)</b></section>
 	<div class="panel-scroller fullheight noscrollbar" data-margin="36">
-		<div data---="tree__code.tree__exec:code/open;options:code/options;rename:code/rename;first:false;upload:code/upload;pk:path;extrabutton:code/templates;extralabel:@(Download template)"></div>
+		<div data-bind="common.recent__template__|__code.data__hide" class="hidden">
+			<script type="text/html">
+				{{ foreach m in value }}
+				<div data-id="{{ m.id }}" class="recent exec" data-exec="code/loadproject"><i class="fa fa-code-branch mr5"></i>{{ m.name }}</div>
+				{{ end }}
+			</script>
+		</div>
+		<div data-bind="code.data__show" data---="tree__code.tree__exec:code/open;options:code/options;rename:code/rename;first:false;upload:code/upload;pk:path;extrabutton:code/templates;extralabel:@(Download template)" class="hidden"></div>
 	</div>
 	<section class="status invisible" data-bind="code.data__invisible:!value">
 		<button title="@(Create file)" class="exec" data-name="file" data-exec="code/statusform"><i class="far fa-file-text-o"></i></button>
@@ -1656,7 +1663,7 @@
 
 			for (var i = 0; i < opt.items.length; i++) {
 				var item = opt.items[i];
-				item.template = '<i class="fa fa-project-diagram"></i>{{ if online }}<span>{{ online }}</span>{{ fi }}{{ name }}';
+				item.template = '<i class="fa fa-code-branch"></i>{{ if online }}<span>{{ online }}</span>{{ fi }}{{ name }}';
 				item.classname = code.data && code.data.id === item.id ? 'ui-directory-current' : '';
 			}
 
@@ -1666,11 +1673,19 @@
 			opt.class = 'ui-directory-projects';
 
 			opt.callback = function(item) {
+				common.recent = common.recent.remove('id', item.id);
+				if (common.recent.length > 20)
+					common.recent.pop();
+				PUSH('^common.recent', { id: item.id, name: item.name });
 				if (item && item.id)
 					REDIRECT('/?id=' + item.id);
 			};
 
 			SETTER('directory', 'show', opt);
+		};
+
+		exports.loadproject = function(el) {
+			REDIRECT('/?id=' + el.attrd('id'));
 		};
 
 		exports.savelocal = function(nowarning) {

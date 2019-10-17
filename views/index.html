@@ -99,6 +99,9 @@
 			if (common.electron && !common.ismac)
 				$('header').aclass('electron-header-border');
 
+			if (!common.recent)
+				common.recent = [];
+
 			common.online = true;
 			common.name = document.title;
 
@@ -121,6 +124,7 @@
 				$('body').aclass('electron');
 		}
 
+		CACHEPATH('common.recent', '1 year');
 		CACHEPATH('common.showparts', '1 year');
 		CACHEPATH('common.powermode', '1 year');
 		CACHEPATH('common.powermodeshaking', '1 year');
@@ -195,16 +199,16 @@
 				case 'open':
 
 					if (code.data && code.current && msg.connid !== common.id && msg.projectid === code.data.id && msg.fileid === code.current.path)
-						EXEC('code/readonly', true);
+						PLUGINS.code.readonly(true);
 
-					EXEC('code/collaboration', msg);
+					PLUGINS.code.collaboration(msg);
 					break;
 				case 'close':
 
 					if (code.current && msg.fileid === code.current.path)
-						EXEC('code/readonly', false);
+						PLUGINS.code.readonly(false);
 
-					EXEC('code/collaboration', msg);
+					PLUGINS.code.collaboration(msg);
 					break;
 				case 'sync':
 					if (code.SYNC && msg.projectid === code.projectid && msg.connid !== common.id) {
@@ -248,8 +252,8 @@
 						var history = EDITOR.editor.doc.history.done;
 						history.pop();
 						history.pop();
-						EXEC('code/restoreposition', true);
-						EXEC('code/readonly', true);
+						PLUGINS.code.restoreposition(true);
+						PLUGINS.code.readonly(true);
 						SET('code.current.diff', msg.diff);
 						msg.body = null;
 						msg.diff = null;
@@ -265,19 +269,19 @@
 						code.issyncing = false;
 						SET('code.backup', false);
 						SET('code.multiple', false);
-						EXEC('code/readonly', false);
+						PLUGINS.code.readonly(false);
 						SETTER('loading', 'hide');
 					}
 					break;
 
 				case 'synccur':
 					if (msg.projectid === code.projectid && msg.connid !== common.id && code.SYNC)
-						EXEC('code/synccursor', msg);
+						PLUGINS.code.synccursor(msg);
 					break;
 				case 'save':
 					if (W.code) {
 						if (msg.projectid === code.projectid && msg.connid !== common.id)
-							EXEC('code/syncsave', msg);
+							PLUGINS.code.syncsave(msg);
 						else if (code) {
 							msg.date = new Date();
 							code.changes[msg.projectid] = msg;
@@ -551,8 +555,8 @@
 			FUNC.autodarkmode();
 			common.idletime++;
 
-			// 5 minutes idle time
-			if (common.idletime > 5)
+			// 7 minutes idle time
+			if (common.idletime > 7)
 				location.href = $('.pause').attr('href');
 
 		});
