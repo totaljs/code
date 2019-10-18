@@ -355,7 +355,7 @@
 			if (msg && msg.projectid === code.projectid)
 				setTimeout(exports.changelog, 2000);
 
-			if (!msg || msg instanceof jQuery || msg.id === common.id) {
+			if (!msg || msg instanceof jQuery || msg.connid === common.id || msg.id === user.id) {
 				SET(p, null);
 				return;
 			}
@@ -1864,7 +1864,7 @@
 						exports.closeforce();
 
 					editor.diffgutterclear();
-					FUNC.wssend({ TYPE: 'save', projectid: code.projectid, id: user.id, user: user.name });
+					FUNC.wssend({ TYPE: 'save', connid: common.id, projectid: code.projectid, id: user.id, user: user.name });
 					FUNC.success((response.value === 'synchronized' ? '@(<b>{0}</b> saved and synchronized)' : '@(<b>{0}</b> saved)').format(data.path));
 					common.electron && code.data.repository && user.localsave && exports.savelocal();
 					SET('code.current.lastmodified', { user: user.name, updated: new Date() });
