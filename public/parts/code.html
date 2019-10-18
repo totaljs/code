@@ -1830,6 +1830,9 @@
 				if (code.current.diff)
 					code.current.diff = data.diff;
 
+
+				// Time is sent in seconds
+
 				var diff = Math.ceil((now - code.lastchange) / 1000);
 				var max = 80; // minutes
 
@@ -1841,6 +1844,9 @@
 				// Limit
 				if (data.time > ((max + 1) * 60))
 					data.time = (max + 1) * 60;
+
+				if (common.plustimespent)
+					data.time += common.plustimespent;
 
 				code.current.time = now;
 				code.lastchange = now;
