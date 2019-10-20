@@ -11,7 +11,7 @@
 					<div data---="textbox__?.phone__type:phone" class="m">@(Phone number)</div>
 
 					<div data-bind="user.sa__show" class="hidden m">
-						<div data---="input__?.token__maxlength:100;camouflage:*;icon:check green;placeholder:@(Enter a token)">@(Token for code review)</div>
+						<div data---="input__?.token__maxlength:100;camouflage:•;icon:check green;placeholder:@(Enter a token)">@(Token for code review)</div>
 						<div class="help">@(Total.js Team offers a professional code review. You can obtain a token on) <a href="https://my.totaljs.com" target="_blank">https://my.totaljs.com</a></div>
 					</div>
 
@@ -22,7 +22,7 @@
 					<div data---="checkbox__?.ispassword" class="b m">@(Change password)</div>
 
 					<div bind="?.ispassword__show" class="hidden m">
-						<div data---="input__?.password__camouflage:true;required:true">@(New password)</div>
+						<div data---="input__?.password__camouflage:•;required:true">@(New password)</div>
 					</div>
 
 					<div data---="error__?.response"></div>

@@ -1,0 +1,2 @@
+/js/default.js        : auto
+/css/default.css      : auto
