@@ -339,6 +339,7 @@
 			}
 
 			SETTER('features', 'show', arr, function(value) {
+
 				if (value.filename) {
 					EXEC('code/open', { path: value.name, name: value.filename });
 				} else {
@@ -406,6 +407,12 @@
 						SETTER('editor', 'gotoline', (tmp[0] || '').parseInt(), (tmp[1] || '').parseInt());
 					}, 500);
 					return;
+				} else if (search.toLowerCase().indexOf('hours') !== -1 && code.data && code.data.id) {
+					var hours = search.match(/[-0-9\,\.]+/g);
+					if (hours) {
+						var val = hours[0].parseFloat();
+						val && AJAX('POST /api/projects/{0}/hours/'.format(code.data.id), { value: val }, FUNC.messageresponse('@(Hours have been added successfully.)'));
+					}
 				}
 			});
 

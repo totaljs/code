@@ -405,6 +405,28 @@
 				response.quicksort('name');
 				SET('code.projects', response);
 
+				var index = 0;
+				var isrecent = false;
+
+				while (true) {
+					var recent = common.recent[index];
+					if (!recent)
+						break;
+					var project = response.findItem('id', recent.id);
+					if (project == null) {
+						isrecent = true;
+						common.recent.splice(index - 1, 1);
+					} else {
+						if (recent.name !== project.name) {
+							isrecent = true;
+							recent.name = project.name;
+						}
+						index++;
+					}
+				}
+
+				isrecent && UPD('common.recent');
+
 				var keys = Object.keys(localStorage);
 				var projects = {};
 

@@ -22,3 +22,5 @@
 - improved creating of files
 - improved creating of directories
 - time tracking
+- `F1` supports `hours 2` command for updating of hours
+- added recent projects

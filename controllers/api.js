@@ -32,6 +32,7 @@ exports.install = function() {
 	ROUTE('+GET     /api/projects/{id}/edit/               *Projects',       files_open);
 	ROUTE('+GET     /api/projects/{id}/translate/          *Projects',       files_translate);
 	ROUTE('+GET     /api/projects/{id}/changes/            *Projects',       files_changes);
+	ROUTE('+POST    /api/projects/{id}/hours/              *Hours            --> @save');
 	ROUTE('+GET     /api/projects/{id}/diff/',                               files_diff);
 	ROUTE('+DELETE  /api/projects/{id}/diff/',                               files_diff_delete);
 	ROUTE('+GET     /api/projects/{id}/changelogs/',                         changelogs);

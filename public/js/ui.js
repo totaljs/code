@@ -7354,28 +7354,6 @@ COMPONENT('message', function(self, config) {
 		self.content(cls + '-success', message, icon || 'check-circle');
 	};
 
-	FUNC.messageresponse = function(success, callback) {
-		return function(response, err) {
-			if (err || response instanceof Array) {
-
-				var msg = [];
-				var template = '<div class="' + cls + '-error"><i class="fa fa-warning"></i>{0}</div>';
-
-				if (response instanceof Array) {
-					for (var i = 0; i < response.length; i++)
-						msg.push(template.format(response[i].error));
-					msg = msg.join('');
-				} else
-					msg = template.format(err.toString());
-
-				self.warning(msg);
-			} else {
-				self.success(success);
-				callback && callback(response);
-			}
-		};
-	};
-
 	self.hide = function() {
 		self.callback && self.callback();
 		self.aclass('hidden');
@@ -7402,6 +7380,28 @@ COMPONENT('message', function(self, config) {
 		}, 100);
 	};
 });
+
+FUNC.messageresponse = function(success, callback) {
+	return function(response, err) {
+		if (err || response instanceof Array) {
+
+			var msg = [];
+			var template = '<div class="' + cls + '-error"><i class="fa fa-warning"></i>{0}</div>';
+
+			if (response instanceof Array) {
+				for (var i = 0; i < response.length; i++)
+					msg.push(template.format(response[i].error));
+				msg = msg.join('');
+			} else
+				msg = template.format(err.toString());
+
+			SETTER('message', 'warning', msg);
+		} else {
+			SETTER('message', 'success', success);
+			callback && callback(response);
+		}
+	};
+};
 
 COMPONENT('emoji', 'categories:128342,128578,128161,127944,128008,128690,128172,127828,127937;height:295;history:49;empty:No emoji match your search;emptyemoji:128557;speed:500;footer:Choose skin tone;toneemoji:9995', function(self, config) {
 

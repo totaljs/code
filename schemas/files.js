@@ -49,6 +49,7 @@ NEWSCHEMA('FilesTodoClear', function(schema) {
 
 		var count = project.todo.length;
 		project.todo = project.todo.remove('path', model.path);
+
 		if (count !== project.todo.length)
 			setTimeout2('combo', MAIN.save, 2000, null, 2);
 
