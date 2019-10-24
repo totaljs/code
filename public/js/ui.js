@@ -7386,7 +7386,7 @@ FUNC.messageresponse = function(success, callback) {
 		if (err || response instanceof Array) {
 
 			var msg = [];
-			var template = '<div class="' + cls + '-error"><i class="fa fa-warning"></i>{0}</div>';
+			var template = '<div class="ui-message-error"><i class="fa fa-warning"></i>{0}</div>';
 
 			if (response instanceof Array) {
 				for (var i = 0; i < response.length; i++)

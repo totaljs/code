@@ -25,6 +25,9 @@ NEWSCHEMA('Hours', function(schema) {
 		var time = project.time[user.id];
 		var ym = NOW.format('yyyyMM');
 
+		if (time == null)
+			time = project.time[user.id] = {};
+
 		if (time[ym])
 			time[ym] += value;
 		else
