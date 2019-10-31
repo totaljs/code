@@ -352,7 +352,7 @@
 									return;
 
 								SETTER('loading', 'show');
-								var allowed = { logs: 1, 'debug.js': 1, 'release.js': 1, 'debug.pid': 1, config: 1 };
+								var allowed = { logs: 1, 'debug.js': 1, 'release.js': 1, 'debug.pid': 1 };
 								code.tree.wait(function(item, next) {
 
 									if (allowed[item.name]) {
