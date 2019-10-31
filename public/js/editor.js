@@ -1702,7 +1702,10 @@ WAIT('CodeMirror.defineMode', function() {
 
 var SNIPPETS = [];
 SNIPPETS.push({ type: 'css', search: 'hellip overflow', text: '<b>hellip</b>', code: 'text-overflow: ellipsis; white-space: nowrap; overflow: hidden;', ch: 64 });
+SNIPPETS.push({ type: 'css', search: 'line height', text: '<b>line</b>-height', code: 'linear-height: ;', ch: 16 });
 SNIPPETS.push({ type: 'css', search: 'linear gradient', text: '<b>linear</b>-gradient', code: 'background: linear-gradient(0deg,#F0F0F0,#D0D0D0);', ch: 34 });
+SNIPPETS.push({ type: 'css', search: 'appearance', text: '<b>appearance</b>', code: 'appearance: ;', ch: 13 });
+SNIPPETS.push({ type: 'css', search: '!important', text: '<b>!important</b>', code: '!important;', ch: 12 });
 SNIPPETS.push({ type: 'css', search: 'radial gradient', text: '<b>radial</b>-gradient', code: 'background: radial-gradient(#F0F0F0,#D0D0D0);', ch: 29 });
 SNIPPETS.push({ type: 'css', search: 'media', text: 'Media', code: '@media(max-width: 768px) {\n\n}', ch: 30 });
 SNIPPETS.push({ type: 'html', search: 'link', text: '<b>Link</b>', code: '<link rel="stylesheet" href="/css/.css" />', ch: 35 });
