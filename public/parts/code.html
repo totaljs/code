@@ -481,7 +481,7 @@
 
 				items.push('-');
 
-				if ((/(#)?[a-z0-9]{6}/i).test(text))
+				if ((/(#)?[A-F0-9]{6}/i).test(text))
 					items.push({ name: '@(Convert to RGBA)', icon: 'palette', value: 'hex2rgba' });
 
 				if ((/[:\|\='"\{]/).test(text))
@@ -535,7 +535,7 @@
 			sub = [];
 			if ((/^(js|css|html)$/).test(code.current.ext)) {
 				sub.push({ name: '@(UI components)', icon: 'chevron-right', value: 'ui' });
-				sub.push({ name: '@(Snippet)', icon: 'chevron-right', value: 'snippet' });
+				// sub.push({ name: '@(Snippet)', icon: 'chevron-right', value: 'snippet' });
 			}
 
 			sub.push({ name: '@(UID)', icon: 'chevron-right', value: 'uid' });
@@ -1087,7 +1087,7 @@
 			var is = !!code.editor.path;
 
 			is && code.components && code.components.length && items.push({ value: 8, name: '@(Used parts)', icon: 'puzzle-piece', shortcut: 'F2' });
-			is && items.push({ value: 10, name: '@(Insert snippet)', icon: 'paste', shortcut: 'F4' });
+			// is && items.push({ value: 10, name: '@(Insert snippet)', icon: 'paste', shortcut: 'F4' });
 			is && (/js|css|html/).test(code.current.ext) && items.push({ value: 12, name: '@(Insert icon)', icon: 'images', shortcut: 'F6' });
 			is && items.push('-');
 			is && items.push({ value: 1, name: '@(Reload)', icon: 'refresh', shortcut: 'F5' });
@@ -2046,6 +2046,9 @@
 					if (!directory.schemas)
 						opt.items.push({ name: '<strong>@(Create):</strong> /schemas', icon: '!far fa-folder', value: 'schemas' });
 
+					if (!directory.scripts)
+						opt.items.push({ name: '<strong>@(Create):</strong> /scripts', icon: '!far fa-folder', value: 'scripts' });
+
 					if (!directory.tasks)
 						opt.items.push({ name: '<strong>@(Create):</strong> /tasks', icon: '!far fa-folder', value: 'tasks' });
 
@@ -2099,6 +2102,9 @@
 
 					if (!files['package.json'])
 						opt.items.push({ name: '<strong>@(Create):</strong> /package.json', icon: '!far fa-file-text-o', value: 'package.json' });
+
+					if (!files['openplatform.json'])
+						opt.items.push({ name: '<strong>@(Create):</strong> /openplatform.json', icon: '!far fa-file-text-o', value: 'openplatform.json' });
 
 					if (!files['readme.api'])
 						opt.items.push({ name: '<strong>@(Create):</strong> /readme.api', icon: '!far fa-file-text-o', value: 'readme.api' });

@@ -165,11 +165,13 @@
 			SET('common.page', 'timespent');
 		});
 
+/*
 		ROUTE('/snippets/', function() {
 			SET('common.debug', false);
 			SET('common.form', '');
 			SET('common.page', 'snippets');
 		});
+*/
 
 		ON('online', function(is) {
 
@@ -428,10 +430,11 @@
 			code.current && (/js|css|html/).test(code.current.ext) && SET('common.form', common.form === n ? '' : n);
 		}, true);
 
+		/*
 		SETTER(true, 'shortcuts', 'register', 'F4', function(e) {
 			var n = 'snippets';
 			code.current && (/js|css|html/).test(code.current.ext) && SET('common.form', common.form === n ? '' : n);
-		}, true);
+		}, true);*/
 
 		SETTER(true, 'shortcuts', 'register', 'F6', function(e) {
 			var n = 'icons';

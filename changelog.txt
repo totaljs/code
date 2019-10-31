@@ -16,7 +16,7 @@
 - improved tasks
 - fixed tab tag completion
 - press F1 and type :LINENUMBER:CHARNUMBER
-- `sitemap` supprots custom `align` function
+- `sitemap` supports custom `align` function
 - F8 shows projects
 - user can open multiple windows
 - improved creating of files
