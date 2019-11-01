@@ -3,6 +3,11 @@
 $font     : Arial;
 $color    : #4285F4;
 
+@font-face {
+	font-family: 'Menlo';
+	src: url('../webfonts/menlo.woff2') format('woff2'), url('../webfonts/menlo.woff') format('woff'), url('../webfonts/menlo.ttf') format('truetype');
+}
+
 html,body { margin: 0; padding: 0; overflow: hidden; }
 
 ::selection { background: #60307F; color: white; }
