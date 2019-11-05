@@ -14,6 +14,7 @@ MAIN.usersonline = {};
 MAIN.session = SESSION();
 MAIN.session.ondata = function(meta, next) {
 	var user = MAIN.users.findItem('id', meta.id);
+	user.logged = NOW;
 	next(null, !user || user.blocked ? null : user);
 };
 

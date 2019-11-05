@@ -154,12 +154,13 @@ COMPONENT('editor', function(self, config) {
 		var prev;
 
 		if (nochange) {
-			prev = cache_users[key];
-			if (prev)
-				editor.setGutterMarker(line, 'GutterUser', prev.el);
-			else
-				editor.setGutterMarker(line, 'GutterUser', null);
 			return;
+			// prev = cache_users[key];
+			// if (prev)
+			// 	editor.setGutterMarker(line, 'GutterUser', prev.el);
+			// else
+			// 	editor.setGutterMarker(line, 'GutterUser', null);
+			// return;
 		}
 
 		var key = line + '';
@@ -187,8 +188,9 @@ COMPONENT('editor', function(self, config) {
 				cache_users[key] = { el: info.gutterMarkers.GutterUser ? info.gutterMarkers.GutterUser.cloneNode(true) : null };
 
 			self.diffuser(line, usr.id, usr.name, NOW);
-		} else
+		} else {
 			editor.setGutterMarker(line, 'GutterUser', null);
+		}
 	};
 
 	var GutterUser = function(userid, username, updated) {
@@ -205,6 +207,7 @@ COMPONENT('editor', function(self, config) {
 	};
 
 	self.diffuser = function(line, userid, name, updated) {
+
 		editor.setGutterMarker(line, 'GutterUser', name ? GutterUser(userid, name, updated) : null);
 	};
 
