@@ -7,6 +7,7 @@
 
 		<div class="toolbar">
 			<button class="exec" data-exec="users/create"><i class="fa fa-plus-circle"></i>@(Add)</button>
+			<button class="exec" data-exec="users/export"><i class="fa fa-cloud"></i>@(Export / Import)</button>
 			<button data-bind="users.checked__disabled:!value || !value.length" class="exec" data-exec="users/options" disabled><i class="fa fa-check-circle"></i>@(Selected)</button>
 		</div>
 
@@ -25,6 +26,18 @@
 			</script>
 		</div>
 
+	</div>
+</div>
+
+<div data---="panel__common.form__if:usersformexport;bg:true;title:@(Export/Import);icon:cloud;width:400;autofocus:true" class="hidden">
+	<div data-scope="usersformexport">
+		<div class="padding npb">
+			<div data---="textarea__?.data__required:true;height:500" class="m">@(Data)</div>
+		</div>
+		<hr />
+		<div data---="validation__?" class="padding npt">
+			<button name="submit" disabled="disabled" class="exec button button-small b" data-exec="users/import"><i class="fa fa-cloud-download"></i>Import</button>
+		</div>
 	</div>
 </div>
 
@@ -92,6 +105,38 @@
 			});
 		};
 
+		exports.export = function() {
+			AJAX('GET /api/users/export/', function(data) {
+				SETR('usersformexport.data', ENCRYPT(data, 'totaljscode'));
+				SET('common.form', 'usersformexport');
+			});
+		};
+
+		exports.import = function() {
+
+			var data = DECRYPT(usersformexport.data, 'totaljscode');
+			if (!data) {
+				INVALID('usersformexport.data');
+				return;
+			}
+
+			var count = 0;
+
+			data.wait(function(item, next) {
+				if (!users.grid.findItem('id', item.id)) {
+					AJAX('POST /api/users/', item, function(response) {
+						count++;
+						next();
+					});
+				} else
+					next();
+			}, function() {
+				count && exports.refresh();
+				SETTER('snackbar', 'success', '@(<b>{0} users</b> have been imported successfully.)'.format(count));
+			});
+
+			NULL('common.form');
+		};
 	});
 
 </script>

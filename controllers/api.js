@@ -53,6 +53,7 @@ exports.install = function() {
 
 	ROUTE('+GET    /api/users/online/',                                      users_online);
 	ROUTE('+GET    /api/users/refresh/',                                     users_refresh);
+	ROUTE('+GET    /api/users/export/',                                      users_export);
 	ROUTE('+GET    /api/common/directories/',                                directories);
 	ROUTE('+GET    /api/common/uid/',                                        custom_uid);
 	ROUTE('+GET    /api/common/ip/',                                         custom_ip);
@@ -194,13 +195,13 @@ function files_download(id) {
 					data = data.substring(0, data.lastIndexOf('}') + 1).parseJSON();
 					meta.start = 2000;
 					delete meta.end;
-					self.stream(data.type || U.getExtension('unknown'), Fs.createReadStream(filename, meta), U.getName(path));
+					self.stream(data.type || U.getExtension('unknown'), Fs.createReadStream(filename, meta), self.query.preview ? null : U.getName(path));
 				}).on('end', function() {
 					// Fallback
 					!meta.start && self.throw404();
 				});
 			} else
-				self.stream(U.getContentType(ext), Fs.createReadStream(filename, meta), U.getName(path));
+				self.stream(U.getContentType(ext), Fs.createReadStream(filename, meta), self.query.preview ? null : U.getName(path));
 
 		});
 	} else {
@@ -548,4 +549,24 @@ function makebundle(id) {
 		else
 			makebundle(err, data);
 	});
+}
+
+function users_export() {
+
+	var self = this;
+
+	if (!self.user.sa) {
+		self.invalid('error-permissions');
+		return;
+	}
+
+	var arr = [];
+
+	for (var i = 0; i < MAIN.users.length; i++) {
+		var user = MAIN.users[i];
+		if (!user.blocked)
+			arr.push({ id: user.id, name: user.name, email: user.email, phone: user.phone, position: user.position, password: 'sha256:' + user.password, sa: user.sa, darkmode: user.darkmode, localsave: user.localsave });
+	}
+
+	self.json(arr);
 }

@@ -1032,6 +1032,8 @@
 				case 'jpeg':
 				case 'png':
 				case 'gif':
+					W.open('/api/download/{0}/?path={1}&preview=1'.format(code.data.id, encodeURIComponent(item.path)));
+					return;
 				case 'xls':
 				case 'xlsx':
 				case 'docx':

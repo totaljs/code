@@ -8,7 +8,7 @@ NEWSCHEMA('Users', function(schema) {
 	schema.define('position', 'String(50)');
 	schema.define('phone', 'Phone');
 	schema.define('email', 'Email', true);
-	schema.define('password', 'String(40)', true);
+	schema.define('password', 'String(100)', true);
 	schema.define('blocked', Boolean);
 	schema.define('sa', Boolean);
 	schema.define('darkmode', Number);
@@ -63,13 +63,16 @@ NEWSCHEMA('Users', function(schema) {
 			item.localsave = model.localsave;
 			item.initials = model.initials;
 
-			if (model.password.substring(0, 3) !== '***')
-				item.password = model.password.sha256();
+			if (model.password.substring(0, 3) !== '***') {
+				if (model.password.substring(0, 7) === 'sha256:')
+					item.password = model.password.substring(7);
+				else
+					item.password = model.password.sha256();
+			}
 
 			if (item.blocked && MAIN.ws)
 				MAIN.ws.send2(WSBLOCKED, client => client.user.id === item.id);
 		}
-
 
 		MAIN.save(1);
 		$.success();

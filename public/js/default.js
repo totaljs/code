@@ -1,3 +1,26 @@
+W.DECRYPT = function(hex, key) {
+	var index = hex.lastIndexOf('x');
+	if (index === -1)
+		return;
+	var hash = +hex.substring(index + 1);
+	var o = hex.substring(0, index);
+	if (HASH(o + (key || ''), true) === hash) {
+		o = decodeURIComponent(o.replace(/(..)/g, '%$1'));
+		var c = o.charAt(0);
+		return c === '[' || c === '{' || c === '"' ? PARSE(o) : o;
+	}
+};
+
+W.ENCRYPT = function(str, key) {
+	if (typeof(str) === 'object')
+		str = STRINGIFY(str);
+	var arr = unescape(encodeURIComponent(str)).split('');
+	for (var i = 0; i < arr.length; i++)
+		arr[i] = arr[i].charCodeAt(0).toString(16);
+	var o = arr.join('');
+	return o + 'x' + HASH(o + (key || ''), true);
+};
+
 ON('resize', function() {
 
 	var el = $('#body,#panel,#content,.fullheight');
