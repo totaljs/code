@@ -1701,8 +1701,20 @@ WAIT('CodeMirror.defineMode', function() {
 });
 
 var SNIPPETS = [];
+
+SNIPPETS.push({ type: 'css', search: 'position relative inline block', text: '<b>inline-block</b>', code: 'position: relative; display: inline-block;', ch: 43 });
+SNIPPETS.push({ type: 'css', search: 'position absolute', text: '<b>absolute</b>', code: 'position: absolute;', ch: 20 });
+SNIPPETS.push({ type: 'css', search: 'position fixed', text: '<b>fixed</b>', code: 'position: fixed;', ch: 17 });
+SNIPPETS.push({ type: 'css', search: 'position relative', text: '<b>relative</b>', code: 'position: relative;', ch: 20 });
+SNIPPETS.push({ type: 'css', search: 'vertical align middle', text: 'vertical-align: <b>middle</b>', code: 'vertical-align: middle;', ch: 24 });
+SNIPPETS.push({ type: 'css', search: 'background color', text: '<b>background-color</b>', code: 'background-color: ;', ch: 19 });
 SNIPPETS.push({ type: 'css', search: 'hellip overflow', text: '<b>hellip</b>', code: 'text-overflow: ellipsis; white-space: nowrap; overflow: hidden;', ch: 64 });
-SNIPPETS.push({ type: 'css', search: 'line height', text: '<b>line</b>-height', code: 'linear-height: ;', ch: 16 });
+SNIPPETS.push({ type: 'css', search: 'text align center', text: 'text-align: <b>center</b>', code: 'text-align: center;', ch: 20 });
+SNIPPETS.push({ type: 'css', search: 'text align right', text: 'text-align: <b>right</b>', code: 'text-align: right;', ch: 19 });
+SNIPPETS.push({ type: 'css', search: 'text align left', text: 'text-align: <b>left</b>', code: 'text-align: left;', ch: 18 });
+SNIPPETS.push({ type: 'css', search: 'text align justify', text: 'text-align: <b>justify</b>', code: 'text-align: justify;', ch: 21 });
+SNIPPETS.push({ type: 'css', search: 'decoration underline none', text: '<b>text-decoration: none</b>', code: 'text-decoration: none;', ch: 22 });
+SNIPPETS.push({ type: 'css', search: 'line height', text: '<b>line</b>-height', code: 'line-height: ;', ch: 14 });
 SNIPPETS.push({ type: 'css', search: 'linear gradient', text: '<b>linear</b>-gradient', code: 'background: linear-gradient(0deg,#F0F0F0,#D0D0D0);', ch: 34 });
 SNIPPETS.push({ type: 'css', search: 'appearance', text: '<b>appearance</b>', code: 'appearance: ;', ch: 13 });
 SNIPPETS.push({ type: 'css', search: '!important', text: '<b>!important</b>', code: '!important;', ch: 12 });
