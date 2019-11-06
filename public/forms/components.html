@@ -82,7 +82,7 @@
 			if (code.editor.path === prevpath)
 				return;
 
-			var value = code.componentsdb;
+			var value = code.componentsdb || EMPTYARRAY;
 			var arr = [];
 			var reg = (/\/(components|public|views|themes\/views)\//);
 			var isclient = reg.test(code.editor.path);
