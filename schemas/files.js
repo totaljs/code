@@ -220,7 +220,7 @@ NEWSCHEMA('Files', function(schema) {
 	});
 
 	schema.addWorkflow('parts', function($) {
-		NOSQL($.id + '_parts').find().rule(doc => doc.indexOf('-bk.js') === -1).callback($.callback);
+		NOSQL($.id + '_parts').find().rule(doc => doc.path.indexOf('-bk.js') === -1).callback($.callback);
 	});
 
 	schema.addWorkflow('changelog', function($) {
