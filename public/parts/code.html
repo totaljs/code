@@ -2117,6 +2117,9 @@
 					if (!files['readme.todo'])
 						opt.items.push({ name: '<strong>@(Create):</strong> /readme.todo', icon: '!far fa-file-text-o', value: 'readme.todo' });
 
+					if (!files['versions'])
+						opt.items.push({ name: '<strong>@(Create):</strong> /versions', icon: '!far fa-file-text-o', value: 'versions' });
+
 					opt.callback = function(item) {
 						exports.statusform('file', item.value);
 						SET('code.statusform.name', '');
