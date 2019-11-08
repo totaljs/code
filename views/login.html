@@ -18,8 +18,8 @@
 	<style type="text/css">
 		/*auto*/
 		html,body { overflow: hidden; height: 100%; }
-		body { background-color: white; }
-		.panel { max-width: 320px; width: 100%; position: absolute; left: 50%; top: 50%; margin: -300px 0 0 -140px; background-color: white; border: 1px solid #E0E0E0; border-radius: 3px; transition: all 0.5s; transform: scale(1.5); }
+		body { background-color: #F8F8F8; }
+		.panel { max-width: 320px; width: 100%; position: absolute; left: 50%; top: 50%; margin: -300px 0 0 -140px; background-color: white; border: 3px solid #E0E0E0; border-radius: 3px; transition: all 0.5s; transform: scale(1.5); }
 		.padding { padding: 20px; }
 		.panelshow { transform: scale(1); }
 
@@ -53,6 +53,8 @@
 		button:disabled { background-color: #F0F0F0; color: silver; cursor: not-allowed; box-shadow: none; opacity: 1; }
 		button .fa { margin-right: 5px; }
 		footer { font-size: 11px; text-align: center; color: #A0A0A0; margin: 20px 0 0 0; }
+		.logo { position: absolute; margin: -55px 0 0 -50px; width: 100px; left: 50%; }
+		.logo img { width: 100px; }
 
 		@media(max-width: 768px) {
 			.panel { margin: 20px; left: 0; position: relative; top: 0; width: auto; max-width: 1000px; }
@@ -63,9 +65,10 @@
 <body>
 
 	<div class="panel">
-		<h1><i class="fa fa-lock"></i>@{'%name'}</h1>
 		<form method="POST" onsubmit="return false">
+			<div class="logo"><img src="/img/icon.png" alt="Total.js Code Editor" /></div>
 			<div class="padding">
+				<br /><br />
 				<div class="m" data-jc="textbox__form.email__icon2:user;type:email;required:true;autofocus:true;autofill:true">@(Login name)</div>
 				<div class="m" data-jc="textbox__form.password__icon2:lock;required:true;type:password;autofill:true">@(Password)</div>
 				<div data-jc="error__form.response"></div>
@@ -73,7 +76,7 @@
 					<button name="submit" disabled="disabled"><i class="fa fa-lock"></i>@(Login)</button>
 				</div>
 				<footer>
-					<div>All rights reserved &copy; 2018-2019</div>
+					<div>All rights reserved &copy; 2019</div>
 					<a href="https://www.totaljs.com" target="_blank">www.totaljs.com</a>
 				</footer>
 			</div>
