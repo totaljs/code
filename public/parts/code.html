@@ -186,6 +186,16 @@
 			exports.load(code.data.id, true, callback);
 		};
 
+		exports.messenger = function() {
+			var obj = {};
+			obj.id = 'messenger';
+			obj.offset = { x: 600, y: 300, width: 600, height: 400, minwidth: 200, minheight: 200 };
+			obj.title = '@(Messenger)';
+			obj.html = '<div class="messenger"><{1} src="{0}" frameborder="0" scrolling="no" allowtransparency="true" allow="geolocation *; microphone *; camera *; midi *; encrypted-media *"></{1}></div>'.format(code.data.support, common.electron ? 'webview' : 'iframe');
+			obj.actions = { minimize: true, maximize: false, move: true, resize: true, close: true, autosave: true };
+			PUSH('windows', obj);
+		};
+
 		exports.statusinfo = function(value) {
 			var sel = ((value.tch || 0) - (value.fch || 0));
 			var plus = '';
