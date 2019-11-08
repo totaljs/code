@@ -557,7 +557,8 @@
 			items.push({ name: '@(Insert emoji)', icon: 'smile yellow', value: 'emoji' });
 			items.push({ name: '@(Insert color)', icon: 'fill-drip colorize', value: 'colorpicker' });
 
-			if ((/js|json|html|todo|api|txt/).test(code.current.ext)) {
+			if ((/js|json|html|todo|api|txt|versions|sitemap/).test(code.current.ext)) {
+
 				sub = [];
 				if (code.current.path.substring(0, 9) === '/scripts/' && code.current.ext === 'js') {
 					sub.push({ name: '@(Script)', icon: 'code', value: 'template', id: 'script' });
@@ -574,6 +575,10 @@
 					sub.push({ name: '@(API example)', icon: 'code', value: 'template', id: 'restapi' });
 				} else if (code.current.ext === 'txt') {
 					sub.push({ name: '@(MIT license)', icon: 'code', value: 'template', id: 'license' });
+				} else if (code.current.ext === '/versions') {
+					sub.push({ name: '@(Versions template)', icon: 'code', value: 'template', id: 'versions' });
+				} else if (code.current.ext === '/sitemap') {
+					sub.push({ name: '@(Sitemap template)', icon: 'code', value: 'template', id: 'sitemap' });
 				} else {
 					sub.push({ name: '@(HTML template)', icon: 'code', value: 'template', id: 'html' });
 					sub.push({ name: '@(j-Modal)', icon: 'code', value: 'template', id: 'modal' });

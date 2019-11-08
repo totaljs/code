@@ -1,0 +1,5 @@
+// ID           : TITLE                     --> URL               --> PARENT
+
+homepage        : @(Homepage)               --> /
+contact         : @(Contact)                --> /contact/         --> homepage
+terms           : @(Terms and Conditions)   --> /terms/           --> homepage
