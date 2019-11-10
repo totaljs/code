@@ -233,8 +233,6 @@
 		};
 
 		exports.debugclear = function() {
-			SETTER('loading', 'show');
-			SETTER('loading', 'hide', 1000);
 			AJAX('GET /api/projects/{id}/logfile/clear/'.arg(code.data), NOOP);
 		};
 
