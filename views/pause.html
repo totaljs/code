@@ -51,6 +51,8 @@
 			autoredirect && autoredirect();
 		});
 		window.addEventListener('keydown', function(e) {
+			if (e.metaKey || e.ctrlKey || e.shiftKey)
+				return;
 			autoredirect && autoredirect();
 		});
 	</script>
