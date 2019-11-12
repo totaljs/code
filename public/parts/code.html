@@ -233,7 +233,8 @@
 		};
 
 		exports.debugclear = function() {
-			AJAX('GET /api/projects/{id}/logfile/clear/'.arg(code.data), NOOP);
+			if (!BLOCKED('debugclear', 3000))
+				AJAX('GET /api/projects/{id}/logfile/clear/'.arg(code.data), NOOP);
 		};
 
 		exports.localize = function() {
