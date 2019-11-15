@@ -1046,6 +1046,8 @@
 				case 'jpeg':
 				case 'png':
 				case 'gif':
+				case 'file':
+				case 'nosql-binary':
 					W.open('/api/download/{0}/?path={1}&preview=1'.format(code.data.id, encodeURIComponent(item.path)));
 					return;
 				case 'xls':
@@ -1054,8 +1056,6 @@
 				case 'doc':
 				case 'zip':
 				case 'rar':
-				case 'file':
-				case 'nosql-binary':
 					W.open('/api/download/{0}/?path={1}'.format(code.data.id, encodeURIComponent(item.path)));
 					return;
 			}
