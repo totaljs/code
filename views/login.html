@@ -69,12 +69,14 @@
 			<div class="logo"><img src="/img/icon.png" alt="Total.js Code Editor" /></div>
 			<div class="padding">
 				<br /><br />
-				<div class="m" data-jc="textbox__form.email__icon2:user;type:email;required:true;autofocus:true;autofill:true">@(Login name)</div>
-				<div class="m" data-jc="textbox__form.password__icon2:lock;required:true;type:password;autofill:true">@(Password)</div>
-				<div data-jc="error__form.response"></div>
-				<div data-jc="validation__form">
-					<button name="submit" disabled="disabled"><i class="fa fa-lock"></i>@(Login)</button>
-				</div>
+				<form action="/" onsubmit="return false" method="POST">
+					<div class="m" data-jc="textbox__form.email__icon2:user;type:email;required:true;autofocus:true;autofill:true">@(Login name)</div>
+					<div class="m" data-jc="textbox__form.password__icon2:lock;required:true;type:password;autofill:true">@(Password)</div>
+					<div data-jc="error__form.response"></div>
+					<div data-jc="validation__form">
+						<button name="submit" disabled="disabled"><i class="fa fa-lock"></i>@(Login)</button>
+					</div>
+				</form>
 				<footer>
 					<div>All rights reserved &copy; 2019</div>
 					<a href="https://www.totaljs.com" target="_blank">www.totaljs.com</a>
