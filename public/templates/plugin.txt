@@ -1,19 +1,19 @@
-	<div data-scope="NAME">
-		<div class="padding">
-			YOUR CODE
-		</div>
+<div data-scope="NAME">
+	<div class="padding">
+		YOUR CODE
 	</div>
+</div>
 
-	<script>
+<script>
 
-		PLUGIN('NAME', function(exports) {
+	PLUGIN('NAME', function(exports) {
 
-			exports.reload = function() {
-			};
+		exports.reload = function() {
+		};
 
-			exports.refresh = function() {
-			};
+		exports.refresh = function() {
+		};
 
-		});
+	});
 
-	</script>
+</script>

@@ -1707,6 +1707,8 @@ SNIPPETS.push({ type: 'css', search: 'position absolute', text: '<b>absolute</b>
 SNIPPETS.push({ type: 'css', search: 'position fixed', text: '<b>fixed</b>', code: 'position: fixed;', ch: 17 });
 SNIPPETS.push({ type: 'css', search: 'position relative', text: '<b>relative</b>', code: 'position: relative;', ch: 20 });
 SNIPPETS.push({ type: 'css', search: 'vertical align middle', text: 'vertical-align: <b>middle</b>', code: 'vertical-align: middle;', ch: 24 });
+SNIPPETS.push({ type: 'css', search: 'vertical align top', text: 'vertical-align: <b>top</b>', code: 'vertical-align: top;', ch: 21 });
+SNIPPETS.push({ type: 'css', search: 'vertical align bottom', text: 'vertical-align: <b>bottom</b>', code: 'vertical-align: bottom;', ch: 24 });
 SNIPPETS.push({ type: 'css', search: 'background color', text: '<b>background-color</b>', code: 'background-color: ;', ch: 19 });
 SNIPPETS.push({ type: 'css', search: 'hellip overflow', text: '<b>hellip</b>', code: 'text-overflow: ellipsis; white-space: nowrap; overflow: hidden;', ch: 64 });
 SNIPPETS.push({ type: 'css', search: 'text align center', text: 'text-align: <b>center</b>', code: 'text-align: center;', ch: 20 });
@@ -1717,6 +1719,9 @@ SNIPPETS.push({ type: 'css', search: 'decoration underline none', text: '<b>text
 SNIPPETS.push({ type: 'css', search: 'line height', text: '<b>line</b>-height', code: 'line-height: ;', ch: 14 });
 SNIPPETS.push({ type: 'css', search: 'linear gradient', text: '<b>linear</b>-gradient', code: 'background: linear-gradient(0deg,#F0F0F0,#D0D0D0);', ch: 34 });
 SNIPPETS.push({ type: 'css', search: 'appearance', text: '<b>appearance</b>', code: 'appearance: ;', ch: 13 });
+SNIPPETS.push({ type: 'css', search: '@keyframes', text: 'keyframes', code: '@keyframes  {\n\t0% {}\n\t50% {}\n\t100% {}\n}', ch: 12 });
+SNIPPETS.push({ type: 'css', search: 'animation', text: 'animation', code: 'animation: NAME 1s infinite forwards;', ch: 12 });
+SNIPPETS.push({ type: 'css', search: 'forwards', text: 'forwards', code: 'forwards', ch: 9 });
 SNIPPETS.push({ type: 'css', search: '!important', text: '<b>!important</b>', code: '!important;', ch: 12 });
 SNIPPETS.push({ type: 'css', search: 'radial gradient', text: '<b>radial</b>-gradient', code: 'background: radial-gradient(#F0F0F0,#D0D0D0);', ch: 29 });
 SNIPPETS.push({ type: 'css', search: 'media', text: 'Media', code: '@media(max-width: 768px) {\n\n}', ch: 30 });
@@ -1812,11 +1817,13 @@ CodeMirror.defineExtension('centerLine', function(line) {
 			var error = errors[i];
 			if (error) {
 				var start = error.character - 1;
-				var end = start + 1;
+				// var end = start + 1;
 				if (error.evidence) {
 					var index = error.evidence.substring(start).search(/.\b/);
+					/*
 					if (index > -1)
 						end += index;
+					*/
 				}
 
 				// Convert to format expected by validation service
