@@ -1702,6 +1702,10 @@ WAIT('CodeMirror.defineMode', function() {
 
 var SNIPPETS = [];
 
+SNIPPETS.push({ type: 'css', search: '@media xs mobile', text: '<b>media: XS</b>', code: '@media(max-width:768px) {\n\t{0}\n}', ch: 29 });
+SNIPPETS.push({ type: 'css', search: '@media sm mobile', text: '<b>media: SM</b>', code: '@media(min-width:768px) and (max-width:991px) {\n\t{0}\n}', ch: 47 });
+SNIPPETS.push({ type: 'css', search: '@media md mobile', text: '<b>media: MD</b>', code: '@media(min-width:992px) and (max-width:1199px) {\n\t{0}\n}', ch: 48 });
+SNIPPETS.push({ type: 'css', search: '@media lg mobile', text: '<b>media: LG</b>', code: '@media(min-width:1200px) {\n\t{0}\n}', ch: 26 });
 SNIPPETS.push({ type: 'css', search: 'position relative inline block', text: '<b>inline-block</b>', code: 'position: relative; display: inline-block;', ch: 43 });
 SNIPPETS.push({ type: 'css', search: 'position absolute', text: '<b>absolute</b>', code: 'position: absolute;', ch: 20 });
 SNIPPETS.push({ type: 'css', search: 'position fixed', text: '<b>fixed</b>', code: 'position: fixed;', ch: 17 });
