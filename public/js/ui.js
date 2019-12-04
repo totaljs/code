@@ -1253,7 +1253,12 @@ COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 						el = el.closest('.children').prev();
 						if (!el.hclass('expand'))
 							break;
-						el.parent().aclass('show');
+						var parent = el.parent().aclass('show');
+						var tmp = +parent.find('> .item').attrd('index');
+						var item = cache[tmp];
+						var key = config.pk ? item[config.pk] : counter;
+						expanded[key] = 1;
+						item.isopen = true;
 					}
 				}
 			});
