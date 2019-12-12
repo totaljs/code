@@ -1257,6 +1257,23 @@
 					items.push({ makefile: true, name: '@(Create:) ui.css', icon: 'file-text-o' });
 			}
 
+			if (node.name === 'public') {
+				if (!node.children.findItem('name', 'css'))
+					items.push({ makedir: true, name: '@(Create:) css', icon: 'folder-o' });
+				if (!node.children.findItem('name', 'forms'))
+					items.push({ makedir: true, name: '@(Create:) forms', icon: 'folder-o' });
+				if (!node.children.findItem('name', 'js'))
+					items.push({ makedir: true, name: '@(Create:) js', icon: 'folder-o' });
+				if (!node.children.findItem('name', 'pages'))
+					items.push({ makedir: true, name: '@(Create:) pages', icon: 'folder-o' });
+				if (!node.children.findItem('name', 'panels'))
+					items.push({ makedir: true, name: '@(Create:) panels', icon: 'folder-o' });
+				if (!node.children.findItem('name', 'parts'))
+					items.push({ makedir: true, name: '@(Create:) parts', icon: 'folder-o' });
+				if (!node.children.findItem('name', 'templates'))
+					items.push({ makedir: true, name: '@(Create:) templates', icon: 'folder-o' });
+			}
+
 			if (node.name === 'js') {
 				if (!node.children.findItem('name', 'default.js'))
 					items.push({ makefile: true, name: '@(Create:) default.js', icon: 'file-text-o' });
@@ -1315,6 +1332,16 @@
 						code.statusform = {};
 					code.statusform.path = '';
 					exports.statusform('file', name);
+					return;
+				}
+
+				if (item.makedir) {
+					var name = path + item.name.substring(item.name.indexOf(':') + 1).trim();
+					SET('code.statusform.name', '');
+					if (!code.statusform)
+						code.statusform = {};
+					code.statusform.path = '';
+					exports.statusform('directory', name);
 					return;
 				}
 
