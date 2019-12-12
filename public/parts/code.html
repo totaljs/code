@@ -1250,6 +1250,20 @@
 					items.push({ makefile: true, name: '@(Create:) default.js', icon: 'file-text-o' });
 			}
 
+			if (node.name === 'css') {
+				if (!node.children.findItem('name', 'default.css'))
+					items.push({ makefile: true, name: '@(Create:) default.css', icon: 'file-text-o' });
+				if (!node.children.findItem('name', 'ui.css'))
+					items.push({ makefile: true, name: '@(Create:) ui.css', icon: 'file-text-o' });
+			}
+
+			if (node.name === 'js') {
+				if (!node.children.findItem('name', 'default.js'))
+					items.push({ makefile: true, name: '@(Create:) default.js', icon: 'file-text-o' });
+				if (!node.children.findItem('name', 'ui.js'))
+					items.push({ makefile: true, name: '@(Create:) ui.js', icon: 'file-text-o' });
+			}
+
 			if (node.name === 'resources') {
 				if (!node.children.findItem('name', 'default.resource'))
 					items.push({ makefile: true, name: '@(Create:) default.resource', icon: 'file-text-o' });
