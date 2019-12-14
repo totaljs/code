@@ -518,7 +518,9 @@ COMPONENT('editor', function(self, config) {
 						m = lines[i].match(REGCONSOLE);
 						if (m) {
 							name = m[0].length > 20 ? (m[0].substring(0, 30) + '...') : m[0];
-							components.push({ line: i, ch: m.index || 0, name: name, type: 'console' });
+							var tmpindex = lines[i].indexOf('//');
+							if (tmpindex === -1 || tmpindex > m.index)
+								components.push({ line: i, ch: m.index || 0, name: name, type: 'console' });
 						}
 
 						if (oldschema) {
