@@ -573,3 +573,78 @@ FUNC.hex2rgba = function(hex) {
 	c = '0x' + c.join('');
 	return 'rgba(' + [(c >> 16) & 255, (c >> 8) & 255, c & 255].join(',') + ',1)';
 };
+
+FUNC.alignrouting = function(text) {
+
+	var lines = text.split('\n');
+	var maxmethod = 0;
+	var maxurl = 0;
+	var maxschema = 0;
+
+	for (var i = 0; i < lines.length; i++) {
+		var line = lines[i];
+
+		if (!line || line.indexOf('ROUTE(\'') === -1)
+			continue;
+
+		var beg = line.indexOf('\'');
+		var end = line.indexOf('\'', beg + 2);
+		var str = line.substring(beg + 1, end);
+		var data = str.split(/\s{1,}|\t/);
+
+		if (data[0].length > maxmethod)
+			maxmethod = data[0].length;
+
+		if (data[1].length > maxurl)
+			maxurl = data[1].length;
+
+		if (data[2] && data[2].length > maxschema)
+			maxschema = data[2].length;
+
+		beg = line.indexOf(',');
+	}
+
+	maxmethod += 4;
+	maxurl += 4;
+	maxschema += 2;
+
+	for (var i = 0; i < lines.length; i++) {
+		var line = lines[i];
+
+		if (!line || line.indexOf('ROUTE(\'') === -1)
+			continue;
+
+		var beg = line.indexOf('\'');
+		var end = line.indexOf('\'', beg + 2);
+		var str = line.substring(beg + 1, end);
+		var data = str.split(/\s{1,}|\t/);
+		var builder = [];
+
+		for (var j = 0; j < data.length; j++) {
+			// method
+			switch (j) {
+
+				case 0: // method
+					builder.push(data[j].padRight(maxmethod, ' '));
+					break;
+
+				case 1: // url
+					builder.push(data[j].padRight(maxurl, ' '));
+					break;
+
+				case 2: // schema
+					builder.push(data[j].padRight(maxschema, ' '));
+					break;
+
+				default: // operations
+					builder.push(' ' + data[j]);
+					break;
+
+			}
+		}
+
+		lines[i] = line.substring(0, beg) + '\'' + builder.join('') + line.substring(end);
+	}
+
+	return lines.join('\n');
+};

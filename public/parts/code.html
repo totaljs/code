@@ -496,6 +496,9 @@
 				if ((/[:\|\='"\{]/).test(text))
 					items.push({ name: '@(Align)', icon: 'align-left', value: 'align' });
 
+				if (code.current.ext === 'js' && text.indexOf('ROUTE(') !== -1)
+					items.push({ name: '@(Align routes)', icon: 'align-justify', value: 'alignrouting' });
+
 				if ((/js|css|html/).test(code.current.ext))
 					items.push({ name: '@(Comment)', icon: 'comment-alt', value: 'comment' });
 
@@ -653,6 +656,11 @@
 						FUNC.requestscript(code.data.id, code.current.path);
 					else
 						FUNC.request(text, editor.getValue());
+					return;
+				}
+
+				if (value.value === 'alignrouting') {
+					editor.replaceSelection(FUNC.alignrouting(text));
 					return;
 				}
 
