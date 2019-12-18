@@ -1742,6 +1742,7 @@ SNIPPETS.push({ type: 'html', search: '--', text: '<b>Component</b>', code: '<di
 SNIPPETS.push({ type: 'html', search: 'scope', text: '<b>Scope</b>', code: '<div data-scope=""></div>', ch: 18 });
 SNIPPETS.push({ type: 'html', search: 'data-bind', text: '<b>Binder</b>', code: '<div data-bind="__"></div>', ch: 17 });
 SNIPPETS.push({ type: 'html', search: 'data-import', text: '<b>Importer</b>', code: '<div data-import="__"></div>', ch: 19 });
+SNIPPETS.push({ type: 'js', search: 'AUTH', text: '<b>AUTH</b>', code: 'AUTH(function($) {\n\t{0}$.success(USER_PROFILE);\n{0}});', ch: 30 });
 SNIPPETS.push({ type: 'js', search: 'PLUGIN', text: '<b>PLUGIN</b>', code: 'PLUGIN(\'\', function(exports) {\n\n\t{0}exports.refresh = function() {\n\t{0}};\n\n{0}});', ch: 9 });
 SNIPPETS.push({ type: 'js', search: 'COMPONENT', text: '<b>COMPONENT</b>', code: 'COMPONENT(\'\', \'\', function(self, config) {\n\t{0}\n{0}});', ch: 12 });
 SNIPPETS.push({ type: 'js', search: 'EXTENSION', text: '<b>EXTENSION</b>', code: 'EXTENSION(\'\', \'\', function(self, config) {\n\t{0}\n{0}});', ch: 12 });
