@@ -473,7 +473,11 @@ NEWSCHEMA('Projects', function(schema) {
 			return;
 		}
 
-		var filename = project.logfile ? project.logfile : Path.join(project.path, 'logs/debug.log');
+		var thread = $.query.thread;
+		if (thread && (/\/|\./).test(thread))
+			thread = null;
+
+		var filename = project.logfile ? project.logfile : Path.join(project.path, (thread ? ('logs/debug_' + thread + '.log') : 'logs/debug.log'));
 
 		Fs.stat(filename, function(err, stats) {
 			if (stats) {

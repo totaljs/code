@@ -247,13 +247,14 @@
 		};
 
 		function watchlogfile() {
-			AJAX('GET /api/projects/{id}/logfile/'.arg(code.data), function(response) {
+			var thread = code.current && code.current.path ? code.current.path.match(/\/threads\/\w+/) : null;
+			AJAX(('GET /api/projects/{id}/logfile/' + (thread ? '?thread=' + thread.toString().substring(9) : '')).arg(code.data), function(response) {
 				common.debug && setTimeout(watchlogfile, 1500);
-				if (response === common.debugprev)
-					return;
-				common.debugprev = response;
-				var el = $('#realtimewindowbody').html(Thelpers.encode(response).replace(/\n/g, '<br />'));
-				el[0].scrollTop = el[0].scrollHeight || 0;
+				if (response !== common.debugprev) {
+					common.debugprev = response;
+					var el = $('#realtimewindowbody').html(Thelpers.encode(response).replace(/\n/g, '<br />'));
+					el[0].scrollTop = el[0].scrollHeight || 0;
+				}
 			});
 		}
 
