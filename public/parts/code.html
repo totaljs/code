@@ -473,6 +473,7 @@
 			var text = sel.join('');
 			var can = text.length > 0;
 			var sub = [];
+			var tmp;
 
 			if (code.current.path.indexOf('/scripts/') !== -1)
 				items.push({ name: '@(Run script)', icon: 'play-circle red', value: 'run' });
@@ -500,8 +501,16 @@
 				if (code.current.ext === 'js' && text.indexOf('ROUTE(') !== -1)
 					items.push({ name: '@(Align routes)', icon: 'align-justify', value: 'alignrouting' });
 
-				if ((/js|css|html/).test(code.current.ext))
+				if ((/js|css|html/).test(code.current.ext)) {
 					items.push({ name: '@(Comment)', icon: 'comment-alt', value: 'comment' });
+					if (code.current.ext !== 'css') {
+						tmp = text.charAt(0);
+						if (tmp === '[' || tmp === '{')
+							items.push({ name: '@(Format JSON)', icon: 'broom', value: 'formatjson' });
+						/*else if (code.current.ext === 'html')
+							items.push({ name: '@(Beautify HTML)', icon: 'broom', value: 'formathtml' });*/
+					}
+				}
 
 				if (text.indexOf('\n') !== -1)
 					items.push({ name: '@(Sort)', icon: 'sort-alpha-down', value: 'sort' });
@@ -649,6 +658,18 @@
 					var cur = editor.getModeAt(editor.getCursor());
 					var syntax = FUNC.getext(cur.helperType || cur.name);
 					SETTER('clipboard', 'copy', '```' + syntax + '\n' + FUNC.strim(text).replace(/\t/g, '  ').trim() + '\n```');
+					return;
+				}
+
+				if (value.value === 'formatjson') {
+					try {
+						editor.replaceSelection(JSON.stringify(JSON.parse(text), null, '\t'));
+					} catch (e) {}
+					return;
+				}
+
+				if (value.value === 'formathtml') {
+					editor.replaceSelection(FUNC.formathtml(text));
 					return;
 				}
 

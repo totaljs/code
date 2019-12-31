@@ -1,3 +1,63 @@
+FUNC.formathtml = function(body) {
+
+	var index = 0;
+	var builder = [];
+	var count = 0;
+	var tmp;
+
+	if (body.indexOf('\t') !== -1)
+		return body;
+
+	var pad = function(count) {
+		return '\n'.padRight(count, '\t');
+	};
+
+	while (true) {
+
+		var c = body[index++];
+		var n = body[index];
+
+		if (index > body.length)
+			break;
+
+		if (c === '<' && n === 'd' && body.substring(index, index + 3) === 'div') {
+			tmp = index;
+			index = body.indexOf('>', index + 3) + 1;
+			builder.push(pad(count + 1) + body.substring(tmp - 1, index) + pad(count + 2));
+			count++;
+			continue;
+		}
+
+		if (c === '<' && n === '/' && body.substring(index, index + 4) === '/div') {
+			count--;
+			builder.push(pad(count + 1) + '</div>' + pad(count + 1));
+			index += 5;
+			continue;
+		}
+
+		builder.push(body.substring(index - 1, index));
+	}
+
+	for (var i = 0, length = builder.length; i < length; i++) {
+		var line = builder[i];
+		var next = builder[i + 1];
+		if (!next)
+			break;
+		var a = line.indexOf('>');
+		if (a === -1)
+			continue;
+		var b = next.indexOf('<');
+		if (b === -1)
+			continue;
+		next = next.substring(0, b);
+		if (line.indexOf('\n', a) === -1 || (next.indexOf('\n') === -1))
+			continue;
+		builder[i] = line.substring(0, a + 1) + line.substring(a + 2);
+	}
+
+	return builder.join('').replace(/\t{1,}\n/g, '\n').trim();
+};
+
 FUNC.sql2schema = function(text) {
 	var arr = text.split('\n');
 	var reg = /_varchar|varchar|int|json|double|float|timestamp|bool|text/;
