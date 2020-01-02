@@ -1775,7 +1775,7 @@ SNIPPETS.push({ type: 'js', search: 'console.error', text: '<b>console.error</b>
 FUNC.snippets = function(type, text, tabs, line, words, chplus) {
 
 	var arr = [];
-	var name = code.current.name.replace('.' + code.current.ext, '');
+	var name = code.current.name.replace('.' + code.current.ext, '').replace(/\/-\./g, '');
 
 	for (var i = 0; i < SNIPPETS.length; i++) {
 		var snip = SNIPPETS[i];
