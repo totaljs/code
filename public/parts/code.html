@@ -1135,7 +1135,7 @@
 			is && code.components && code.components.length && items.push({ value: 8, name: '@(Used parts)', icon: 'puzzle-piece', shortcut: 'F2' });
 			// is && items.push({ value: 10, name: '@(Insert snippet)', icon: 'paste', shortcut: 'F4' });
 			is && (/js|css|html/).test(code.current.ext) && items.push({ value: 12, name: '@(Insert icon)', icon: 'images', shortcut: 'F6' });
-			is && items.push('-');
+			is && items.length && items.push('-');
 			is && items.push({ value: 1, name: '@(Reload)', icon: 'refresh', shortcut: 'F5' });
 			is && items.push({ value: 2, name: '@(Find)', icon: 'search', command: 'find' });
 			// is && items.push({ value: 2, name: '@(Replace)', icon: 'search', command: 'replaceAll' });
