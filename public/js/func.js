@@ -708,3 +708,64 @@ FUNC.alignrouting = function(text) {
 
 	return lines.join('\n');
 };
+
+FUNC.colorize = function(css) {
+	var lines = css.split('\n');
+	var builder = [];
+
+	var findcolor = function(val) {
+		var color = val.match(/#[0-9A-F]{1,6}/i);
+		if (color)
+			return color + '';
+		var beg = val.indexOf('rgba(');
+		if (beg === -1)
+			return;
+		return val.substring(beg, val.indexOf(')', beg + 1));
+	};
+
+	for (var i = 0; i < lines.length; i++) {
+
+		var line = lines[i];
+
+		var beg = line.indexOf('{');
+		if (beg === -1)
+			continue;
+
+		var end = line.lastIndexOf('}');
+		if (end === -1)
+			continue;
+
+		var cmd = line.substring(beg + 1, end).split(';');
+		var cmdnew = [];
+
+		for (var j = 0; j < cmd.length; j++) {
+			var c = cmd[j].trim().split(':').trim();
+			switch (c[0]) {
+				case 'border':
+				case 'border-left':
+				case 'border-top':
+				case 'border-right':
+				case 'border-bottom':
+				case 'outline':
+					var color = findcolor(c[1]);
+					if (color)
+						cmdnew.push(c[0] + '-color: ' + color);
+					break;
+				case 'background':
+				case 'border-left-color':
+				case 'border-right-color':
+				case 'border-top-color':
+				case 'border-bottom-color':
+				case 'background-color':
+				case 'outline-color':
+				case 'color':
+					cmdnew.push(c[0] + ': ' + c[1]);
+					break;
+			}
+		}
+		if (cmdnew.length)
+			builder.push(line.substring(0, beg).trim() + ' { ' + cmdnew.join('; ') + '; }');
+	}
+
+	return builder.join('\n');
+};

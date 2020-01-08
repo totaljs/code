@@ -492,6 +492,9 @@
 
 				items.push('-');
 
+				if (code.current.ext === 'css')
+					items.push({ name: '@(Colorize CSS)', icon: 'tint', value: 'colorize' });
+
 				if ((/(#)?[A-F0-9]{6}/i).test(text))
 					items.push({ name: '@(Convert to RGBA)', icon: 'palette', value: 'hex2rgba' });
 
@@ -629,6 +632,11 @@
 
 				if (value.value === 'hex2rgba') {
 					editor.replaceSelection(FUNC.hex2rgba(text));
+					return;
+				}
+
+				if (value.value === 'colorize') {
+					editor.replaceSelection(FUNC.colorize(text));
 					return;
 				}
 
