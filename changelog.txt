@@ -25,3 +25,4 @@
 - `F1` supports `hours 2` command for updating of hours
 - added recent projects
 - added support for align of Total.js routing
+- added `Colorize CSS` feature
