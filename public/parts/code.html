@@ -2001,14 +2001,16 @@
 
 			var arr = [];
 
-			for (var i = 0; i < code.open.length; i++) {
-				var tab = code.open[i];
-				var data = {};
-				data.path = tab.path;
-				if (tab) {
-					if (tab.path === code.current.path)
-						data.focused = true;
-					arr.push(data);
+			if (code.current) {
+				for (var i = 0; i < code.open.length; i++) {
+					var tab = code.open[i];
+					var data = {};
+					data.path = tab.path;
+					if (tab) {
+						if (tab.path === code.current.path)
+							data.focused = true;
+						arr.push(data);
+					}
 				}
 			}
 
