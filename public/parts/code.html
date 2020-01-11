@@ -493,7 +493,7 @@
 				items.push('-');
 
 				if (code.current.ext === 'css')
-					items.push({ name: '@(Colorize CSS)', icon: 'tint', value: 'colorize' });
+					items.push({ name: '@(Transform for Dark mode)', icon: 'tint', value: 'darkmode' });
 
 				if ((/(#)?[A-F0-9]{6}/i).test(text))
 					items.push({ name: '@(Convert to RGBA)', icon: 'palette', value: 'hex2rgba' });
@@ -635,8 +635,8 @@
 					return;
 				}
 
-				if (value.value === 'colorize') {
-					editor.replaceSelection(FUNC.colorize(text));
+				if (value.value === 'darkmode') {
+					editor.replaceSelection(FUNC.colorize(text, '.ui-dark'));
 					return;
 				}
 

@@ -709,7 +709,7 @@ FUNC.alignrouting = function(text) {
 	return lines.join('\n');
 };
 
-FUNC.colorize = function(css) {
+FUNC.colorize = function(css, cls) {
 	var lines = css.split('\n');
 	var builder = [];
 
@@ -726,6 +726,11 @@ FUNC.colorize = function(css) {
 	for (var i = 0; i < lines.length; i++) {
 
 		var line = lines[i];
+
+		if (!line) {
+			builder.push('');
+			continue;
+		}
 
 		var beg = line.indexOf('{');
 		if (beg === -1)
@@ -763,8 +768,13 @@ FUNC.colorize = function(css) {
 					break;
 			}
 		}
-		if (cmdnew.length)
-			builder.push(line.substring(0, beg).trim() + ' { ' + cmdnew.join('; ') + '; }');
+		if (cmdnew.length) {
+			var selector = line.substring(0, beg).trim();
+			var sel = selector.split(',').trim();
+			for (var k = 0; k < sel.length; k++)
+				sel[k] = (cls ? (cls + ' ') : '') + sel[k].trim().replace(/\s{2,}/g, ' ');
+			builder.push(sel.join(', ') + ' { ' + cmdnew.join('; ') + '; }');
+		}
 	}
 
 	return builder.join('\n');
