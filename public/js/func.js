@@ -1,3 +1,12 @@
+var TIDYUPWHITE = new RegExp(String.fromCharCode(160), 'g');
+
+FUNC.tidyup = function(val) {
+	var lines = val.split('\n');
+	for (var i = 0, length = lines.length; i < length; i++)
+		lines[i] = lines[i].replace(/\s+$/, '');
+	return lines.join('\n').trim().replace(TIDYUPWHITE, ' ');
+};
+
 FUNC.formathtml = function(body) {
 
 	var index = 0;
@@ -307,7 +316,7 @@ FUNC.rtrim = function(value) {
 	var reg = /\s+$/;
 	for (var i = 0; i < lines.length; i++)
 		lines[i] = lines[i].replace(reg, '');
-	return lines.join('\n');
+	return lines.join('\n').replace(TIDYUPWHITE, ' ');
 };
 
 FUNC.wsopen = function(project, path, openid) {

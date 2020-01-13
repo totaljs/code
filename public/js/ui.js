@@ -706,7 +706,6 @@ COMPONENT('editor', function(self, config) {
 				return;
 
 			setTimeout2(self.id, function() {
-
 				var cur = editor.getCursor();
 				var line = editor.getLine(cur.line);
 				var index = fn.lastIndexOf(line, cur.ch, ' ', '>', '\t', ';', '.', '"', '\'', ')', '(', '<', ',');
@@ -720,19 +719,14 @@ COMPONENT('editor', function(self, config) {
 					}
 				}
 
-				var val = editor.getValue();
-				if (config.trim) {
-					var lines = val.split('\n');
-					for (var i = 0, length = lines.length; i < length; i++)
-						lines[i] = lines[i].replace(/\s+$/, '');
-					val = lines.join('\n').trim();
-				}
+				// var val = editor.getValue();
+				// self.getter2 && self.getter2(val);
+				// self.change(true);
+				// skip = true;
+				// self.set(val);
 
-				self.getter2 && self.getter2(val);
-				self.change(true);
 				skip = true;
-				self.set(val);
-				config.required && self.validate2();
+
 			}, 200);
 
 		});
