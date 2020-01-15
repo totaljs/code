@@ -719,11 +719,11 @@ COMPONENT('editor', function(self, config) {
 					}
 				}
 
-				// var val = editor.getValue();
-				// self.getter2 && self.getter2(val);
-				// self.change(true);
-				// skip = true;
-				// self.set(val);
+				var val = editor.getValue();
+				self.getter2 && self.getter2(val);
+				self.change(true);
+				skip = true;
+				self.set(val);
 
 				skip = true;
 
