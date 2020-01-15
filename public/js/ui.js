@@ -727,7 +727,7 @@ COMPONENT('editor', function(self, config) {
 
 				skip = true;
 
-			}, 200);
+			}, 100);
 
 		});
 
