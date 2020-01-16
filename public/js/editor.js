@@ -1780,7 +1780,9 @@ FUNC.snippets = function(type, text, tabs, line, words, chplus) {
 	for (var i = 0; i < SNIPPETS.length; i++) {
 		var snip = SNIPPETS[i];
 		if (snip.type === type && (snip.search.indexOf(text) !== -1 && (snip.search !== text || text.charAt(0) === '-')))
-			arr.push({ displayText: snip.text, text: snip.code.format(tabs || '', snip.search === 'NEWSCHEMA' ? (name.substring(0, 1).toUpperCase() + name.substring(1)) : name), ch: (snip.line ? snip.ch + tabs.length : tabs.length === 0 ? snip.ch - 1 : snip.ch + tabs.length - 1) + chplus, line: line + (snip.line || 0) });
+			arr.push({ displayText: snip.text, text: snip.code.format(tabs || '', snip.search === 'NEWSCHEMA' ? (name.substring(0, 1).toUpperCase() + name.substring(1).replace(/-(\w)/, function(text) {
+				return '/' + text.substring(1).toUpperCase();
+			})) : name), ch: (snip.line ? snip.ch + tabs.length : tabs.length === 0 ? snip.ch - 1 : snip.ch + tabs.length - 1) + chplus, line: line + (snip.line || 0) });
 	}
 
 	if (words && words.length) {
