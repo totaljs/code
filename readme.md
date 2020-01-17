@@ -18,11 +18,6 @@ Online collaboration tool for __Total Developers__. We recommend to use [__bundl
 - open browser `http://127.0.0.1:8000`
 - __IMPORTANT__: new version works with Total.js `+3.3.0` only
 
-## Default credentials
-
-- user: `info@totaljs.com`
-- pass: `123456`
-
 ---
 
 Best way how to provide __Code Editor__ is to install it via [Total.js SuperAdmin](https://www.totaljs.com/superadmin/).

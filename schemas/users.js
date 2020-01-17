@@ -78,6 +78,40 @@ NEWSCHEMA('Users', function(schema) {
 		$.success();
 	});
 
+	schema.addWorkflow('create', function($) {
+
+		if (MAIN.users.length) {
+			$.invalid('error-permissions');
+			return;
+		}
+
+		var model = $.model.$clean();
+		var tmp = model.name.split(' ');
+		model.initials = tmp[0][0] + (tmp.length > 1 ? tmp[1][0] : '');
+		model.id = model.id.slug().replace(/-/g, '');
+		model.password = model.password.sha256();
+		model.created = NOW;
+		model.sa = true;
+		model.blocked = false;
+		model.position = 'Administrator';
+		model.darkmode = 2;
+		model.localsave = true;
+
+		MAIN.users.push(model);
+		MAIN.save(1);
+
+		// Login
+		var opt = {};
+		opt.name = CONF.cookie;
+		opt.key = CONF.authkey;
+		opt.id = model.id;
+		opt.expire = '1 month';
+		opt.data = model;
+		opt.note = ($.headers['user-agent'] || '').parseUA() + ' ({0})'.format($.ip);
+		opt.options = {};
+		MAIN.session.setcookie($.controller, opt, $.done());
+	});
+
 	schema.setRemove(function($) {
 
 		var index = MAIN.users.findIndex('id', $.id);

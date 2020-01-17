@@ -78,6 +78,7 @@ exports.install = function() {
 	ROUTE('+POST   /api/external/operations/{id}/         *ExternalOperation --> @save', [10000]);
 
 	ROUTE('-POST    /api/login/                           *Login             --> @save');
+	ROUTE('-POST    /api/sign/                            *Users             --> @create');
 
 };
 
