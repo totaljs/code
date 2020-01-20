@@ -241,6 +241,8 @@ NEWSCHEMA('Files', function(schema) {
 			return;
 		}
 
+		var user = $.user;
+
 		if (!user.sa) {
 			if (project.users.indexOf(user.id) === -1) {
 				$.invalid('error-permissions');
@@ -256,7 +258,6 @@ NEWSCHEMA('Files', function(schema) {
 		var filename = Path.join(project.path, $.query.path);
 		var builder = RESTBuilder.url('https://review.totaljs.com/api/upload/review/');
 		var data = {};
-		var user = $.user;
 
 		data.ip = $.ip;
 		data.version = 1;
