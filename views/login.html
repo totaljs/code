@@ -100,10 +100,12 @@
 		<div class="padding">
 			<br /><br />
 			@{if R.signup}
+
 				<div class="alert m center"><i class="fa fa-user"></i> @(You will be the first developer in <b>Total.js Code Editor</b> on this server.)</div>
 				<div class="row">
 					<div class="col-md-6 m">
-						<div data---="input__form.id__required:true;placeholder:@(petersirka);type:lower;autofocus:1__''">@(ID)</div>
+						<div data---="input__form.id__required:true;placeholder:@(petersirka);type:lower;autofocus:1__''">@(Your ID)</div>
+						<div class="help">@(Keep lower-case and use A-Z chars only)</div>
 					</div>
 					<div class="col-md-6 m">
 						<div data---="input__form.name__required:true__''">@(User name)</div>
@@ -118,6 +120,7 @@
 						<div data---="input__form.password__icon2:lock;required:true;type:password">@(Password)</div>
 					</div>
 				</div>
+				<hr />
 
 				<div data---="error__form.response"></div>
 				<div data---="validation__form">
