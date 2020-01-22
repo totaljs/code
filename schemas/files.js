@@ -256,7 +256,7 @@ NEWSCHEMA('Files', function(schema) {
 		}
 
 		var filename = Path.join(project.path, $.query.path);
-		var builder = RESTBuilder.url('https://review.totaljs.com/api/upload/review/');
+		var builder = RESTBuilder.url('https://review.totaljs.com/upload/');
 		var data = {};
 
 		data.ip = $.ip;

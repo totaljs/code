@@ -11,8 +11,8 @@
 					<div data---="textbox__?.phone__type:phone" class="m">@(Phone number)</div>
 
 					<div data-bind="user.sa__show" class="hidden m">
-						<div data---="input__?.token__maxlength:100;camouflage:•;icon:check green;placeholder:@(Enter a token)">@(Token for code review)</div>
-						<div class="help">@(Total.js Team offers a professional code review. You can obtain a token on) <a href="https://my.totaljs.com" target="_blank">https://my.totaljs.com</a></div>
+						<div data---="input__?.token__maxlength:100;camouflage:•;icon:check-circle green;placeholder:@(Enter a token)">@(Token for chat and code review)</div>
+						<div class="help">@(Total.js Team offers a professional code review. You can obtain a token on) <a href="https://platform.totaljs.com" target="_blank">https://platform.totaljs.com</a></div>
 					</div>
 
 					<div data---="radiobutton__?.darkmode__items:@(Light mode)|0,@(Dark mode)|1,@(Day/Night)|2;type:number;inline:1__0"></div>
@@ -62,6 +62,10 @@
 			var data = CLONE(GETR('settings'));
 			AJAX('POST /api/accounts/', data, function(response) {
 				if (response.success) {
+
+					if (user.sa)
+						common.token = data.token;
+
 					SETTER('snackbar', 'show', '@(Account has been updated successfully.)');
 					user.darkmode = data.darkmode;
 					user.email = data.email;

@@ -1015,6 +1015,14 @@ COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 				return 'fab fa-php';
 			case 'pdf':
 				return 'far fa-file-' + ext;
+			case 'mp3':
+			case 'ogg':
+			case 'wav':
+				return 'far fa-file-audio';
+			case 'mp4':
+			case 'avi':
+			case 'mov':
+				return 'far fa-file-video';
 			case 'eot':
 			case 'ttf':
 			case 'woff':

@@ -45,8 +45,8 @@
 		<span class="version hidden" data-bind="common.page__show:value === 'code'">v@{MAIN.version}</span>
 		<div class="tools" data-jc="selected__common.page__selector:a.R">
 			<a href="@{#}/" title="@(Code)" class="R" data-if="code"><i class="fa fa-laptop-code"></i></a>
+			<a href="javascript:void(0)" data-exec="code/messenger" title="@(Support)" class="external exec"><i class="far fa-comments"></i></a>
 			<a href="#" data-bind="code.data.documentation__show__href" title="@(Documentation)" target="_blank" class="external hidden"><i class="fa fa-book-open"></i></a>
-			<a href="javascript:void(0)" data-bind="code.data.support__show__click:code/messenger" title="@(Support)" class="hidden"><i class="far fa-comments"></i></a>
 			@{if user.sa}
 			<a href="@{#}/projects/" title="@(Projects)" class="R" data-if="projects"><i class="fa fa-code-branch"></i></a>
 			<a href="@{#}/users/" title="@(Users)" class="R" data-if="users"><i class="fa fa-users"></i></a>
@@ -98,6 +98,7 @@
 			common.plustimespent = 33;
 			common.electron = navigator.userAgent.indexOf('Electron') !== -1 && window.require != null;
 			common.ismac = navigator.platform.substring(0, 3) === 'Mac';
+			common.token = '@{PREF.token}';
 
 			if (common.electron && !common.ismac)
 				$('header').aclass('electron-header-border');
