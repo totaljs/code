@@ -2391,13 +2391,8 @@
 				return;
 			}
 
-			SETTER('confirm', 'show', '@(Are you sure you want to send this file for <b>code review</b>?)', ['@(Review code)', '@(Cancel)'], function(index) {
-				!index && AJAX('GET /api/projects/{id}/review/?path='.arg(code.data) + encodeURIComponent(code.editor.path), function(response) {
-					if (response.success)
-						FUNC.success('@(File has been sent for code review successfully.)');
-					else
-						FUNC.warning(response);
-				});
+			SETTER('confirm', 'show2', '@(Are you sure you want to send this file for <b>Code Review</b>?)', ['"check-circle" @(Review code) #98BF61', '@(Cancel)'], function(index) {
+				AJAX('GET /api/projects/{id}/review/?path='.arg(code.data) + encodeURIComponent(code.editor.path), FUNC.messageresponse('<b><i class="fa fa-check mr5 green"></i>@(DONE)</b><br />@(File has been sent for code review successfully.)'));
 			});
 		};
 
