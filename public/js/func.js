@@ -1,5 +1,22 @@
 var TIDYUPWHITE = new RegExp(String.fromCharCode(160), 'g');
 
+FUNC.cleanduplicatedlines = function(val) {
+
+	var output = [];
+	val = val.split('\n');
+	for (var i = 0; i < val.length; i++) {
+		var line = val[i];
+		if (!line) {
+			output.push('');
+			continue;
+		}
+		if (output.indexOf(line) === -1)
+			output.push(line);
+	}
+
+	return output.join('\n');
+};
+
 FUNC.tidyup = function(val) {
 	var lines = val.split('\n');
 	for (var i = 0, length = lines.length; i < length; i++)

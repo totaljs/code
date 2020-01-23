@@ -128,14 +128,14 @@
 	</section>
 </div>
 
-<div data---="importer__common.form__if:tasks;url:/forms/tasks.html;cleaner:10"></div>
-<div data---="importer__common.form__if:backups;url:/forms/backups.html;cleaner:10"></div>
-<div data---="importer__common.form__if:changes;url:/forms/changes.html;cleaner:10"></div>
-<div data---="importer__common.form__if:componentator;url:/forms/componentator.html;cleaner:10"></div>
-<div data---="importer__common.form__if:components;url:/forms/components.html;cleaner:10"></div>
-<div data---="importer__common.form__if:snippets;url:/forms/snippets.html;cleaner:10"></div>
-<div data---="importer__common.form__if:snippets;url:/forms/snippets.html;cleaner:10"></div>
-<div data---="importer__common.form__if:icons;url:/forms/icons.html;cleaner:10"></div>
+<div data---="importer__common.form__if:tasks;url:/forms/tasks.html"></div>
+<div data---="importer__common.form__if:backups;url:/forms/backups.html"></div>
+<div data---="importer__common.form__if:changes;url:/forms/changes.html"></div>
+<div data---="importer__common.form__if:componentator;url:/forms/componentator.html"></div>
+<div data---="importer__common.form__if:components;url:/forms/components.html"></div>
+<div data---="importer__common.form__if:snippets;url:/forms/snippets.html"></div>
+<div data---="importer__common.form__if:snippets;url:/forms/snippets.html"></div>
+<div data---="importer__common.form__if:icons;url:/forms/icons.html"></div>
 <div data---="importer__common.form__if:output;url:/forms/output.html"></div>
 <div data---="importer__common.form__if:timespentform;url:/forms/timespent.html"></div>
 
@@ -537,14 +537,14 @@
 				sub.push({ name: '@(CRC-32)', icon: 'chevron-right', value: 'crc32', server: true });
 				sub.push({ name: '@(CRC-32 unsigned)', icon: 'chevron-right', value: 'crc32unsigned', server: true });
 				sub.push({ name: '@(Optimize for search)', icon: 'search', value: 'search' });
-				items.push({ name: '@(Encode)', icon: 'code', value: 'encode', children: sub });
+				items.push({ name: '@(Encode)', icon: 'lock', value: 'encode', children: sub });
 
 				sub = [];
 				sub.push({ name: '@(Hex)', icon: 'chevron-right', value: 'hexd', server: true });
 				sub.push({ name: '@(Base64)', icon: 'chevron-right', value: 'atob' });
 				sub.push({ name: '@(Decode URI)', icon: 'chevron-right', value: 'decodeURIComponent' });
 				sub.push({ name: '@(Unescape)', icon: 'chevron-right', value: 'unescape' });
-				items.push({ name: '@(Decode)', icon: 'broom', value: 'decode', children: sub });
+				items.push({ name: '@(Decode)', icon: 'unlock', value: 'decode', children: sub });
 
 				sub = [];
 				sub.push({ name: '@(JavaScript)', icon: 'chevron-right', value: 'js' });
@@ -555,6 +555,7 @@
 
 				items.push({ name: '@(Upper Case)', icon: 'font', value: 'upper' });
 				items.push({ name: '@(Lower Case)', icon: 'font', value: 'lower' });
+				items.push({ name: '@(Clean duplicated lines)', icon: 'broom', value: 'cleanduplicatedlines' });
 				items.push('-');
 			}
 
@@ -638,6 +639,11 @@
 
 				if (value.value === 'darkmode') {
 					editor.replaceSelection(FUNC.colorize(text, '.ui-dark'));
+					return;
+				}
+
+				if (value.value === 'cleanduplicatedlines') {
+					editor.replaceSelection(FUNC.cleanduplicatedlines(text));
 					return;
 				}
 
