@@ -26,3 +26,5 @@
 - added recent projects
 - added support for align of Total.js routing
 - added `Colorize CSS` feature
+- added docs generator
+- improved parser for parts
