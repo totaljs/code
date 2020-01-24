@@ -312,12 +312,16 @@ NEWSCHEMA('Projects', function(schema) {
 
 	schema.setRemove(function($) {
 
-		if (!$.user.sa) {
+		var id = $.id || $.options.id;
+
+		if ($.user && $.user.sa) {
 			$.invalid('error-permissions');
 			return;
 		}
 
-		var index = MAIN.projects.findIndex('id', $.id);
+		$WORKFLOW('Projects', 'backupsclear', { id: id, internal: $.options.internal }, NOOP);
+
+		var index = MAIN.projects.findIndex('id', id);
 		var item = MAIN.projects[index];
 
 		if (index !== -1) {
@@ -325,20 +329,22 @@ NEWSCHEMA('Projects', function(schema) {
 			MAIN.save(2);
 		}
 
-		MAIN.log($.user, 'projects_remove', item, null);
-		NOSQL($.id + '_parts').drop();
+		$.user && MAIN.log($.user, 'projects_remove', item, null);
+		NOSQL(id + '_parts').drop();
 
 		$.success();
 	});
 
 	schema.addWorkflow('backupsclear', function($) {
 
-		if (!$.user.sa) {
+		var id = $.id || $.options.id;
+
+		if ($.user && $.user.sa) {
 			$.invalid('error-permissions');
 			return;
 		}
 
-		var project = MAIN.projects.findItem('id', $.id);
+		var project = MAIN.projects.findItem('id', id);
 		if (project == null) {
 			$.invalid('error-project');
 			return;
@@ -517,6 +523,7 @@ ON('service', function() {
 
 		var projects = MAIN.projects;
 		var ischange = false;
+		var cache = {};
 
 		directories.wait(function(p, next) {
 
@@ -524,6 +531,7 @@ ON('service', function() {
 
 			var model = {};
 			model.path = Path.join(CONF.autodiscover, p);
+			cache[model.path] = 1;
 
 			Fs.stat(model.path, function(err, stat) {
 
@@ -565,6 +573,24 @@ ON('service', function() {
 				$SAVE('Projects', model, next);
 			});
 		}, function() {
+
+			var remove;
+
+			for (var i = 0; i < MAIN.projects.length; i++) {
+				var project = MAIN.projects[i];
+				if (project.path.substring(0, CONF.autodiscover.length) !== CONF.autodiscover)
+					continue;
+				if (!cache[project.path]) {
+					if (!remove)
+						remove = [];
+					remove.push(project.id);
+				}
+			}
+
+			remove && remove.wait(function(id, next) {
+				$REMOVE('Projects', { id: id, internal: true }, console.log);
+			});
+
 			ischange && MAIN.save(2);
 		});
 	});
