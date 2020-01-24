@@ -565,6 +565,7 @@ COMPONENT('editor', function(self, config) {
 
 					var endWith = '';
 					var begWith = 0;
+
 					for (var j = com.line; j < (com.line + 6000); j++) {
 						var line = lines[j];
 						if (!line)
@@ -573,9 +574,27 @@ COMPONENT('editor', function(self, config) {
 							begWith = line.length - line.trim().length;
 							endWith = line.indexOf('=') === - 1 ? '});' : '};';
 						} else {
-							if (begWith ? line.substring(begWith) === endWith : line === endWith) {
-								com.lineto = j;
-								break;
+
+							if (begWith) {
+								if (line.substring(begWith) === endWith) {
+									com.lineto = j;
+									break;
+								}
+							} else {
+								if (line === endWith) {
+									com.lineto = j;
+									break;
+								}
+							}
+
+							if (com.type === 'component') {
+								var c = line.substring(com.ch, com.ch + 1);
+								if (c !== ' ' && c !== '\t') {
+									if (line.substring(line.length - 3) === ']);') {
+										com.lineto = j;
+										break;
+									}
+								}
 							}
 						}
 					}
