@@ -329,7 +329,7 @@ NEWSCHEMA('Projects', function(schema) {
 			MAIN.save(2);
 		}
 
-		$.user && MAIN.log($.user, 'projects_remove', item, null);
+		MAIN.log($.user, 'projects_remove', item, null);
 		NOSQL(id + '_parts').drop();
 
 		$.success();

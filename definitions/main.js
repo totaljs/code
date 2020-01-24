@@ -129,7 +129,7 @@ MAIN.diff = function(project, path, diff) {
 MAIN.log = function(user, type, projectid, path) {
 	if (typeof(projectid) === 'string')
 		projectid = MAIN.projects.findItem('id', projectid);
-	LOGGER(user.id, user.ip, type, projectid.name, path);
+	LOGGER(user ? user.id : 'root', user ? user.ip : 'localhost', type, projectid.name, path);
 };
 
 MAIN.change = function(type, user, project, path, combo, time, changes) {
