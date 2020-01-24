@@ -587,11 +587,12 @@ ON('service', function() {
 				}
 			}
 
-			remove && remove.wait(function(id, next) {
-				$REMOVE('Projects', { id: id, internal: true }, console.log);
-			});
-
-			ischange && MAIN.save(2);
+			if (remove) {
+				remove.wait(function(id, next) {
+					$REMOVE('Projects', { id: id, internal: true }, next);
+				}, () => MAIN.save(2));
+			} else
+				ischange && MAIN.save(2);
 		});
 	});
 
