@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>NAME</title>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+	<meta http-equiv="X-UA-Compatible" content="IE=10" />
+	<meta name="robots" content="all,follow" /><link href="https://cdn.componentator.com/spa.min@18.css" rel="stylesheet" type="text/css" />
+	<script src="https://cdn.componentator.com/spa.min@18.js"></script>
+	<style>
+		body { margin: 0; padding: 0 20px; background-color: #F0F0F0; color: black; }
+		h1 { font-family: Arial; font-size: 30px; margin: 10px 0 0; padding: 0; }
+		.parts { column-width: 400px; column-gap: 20px; width: 100%; margin: 10px auto; }
+		.parts figure { width: 100%; background: white; border: 1px solid #E0E0E0; margin: 0 2px 20px; padding: 15px; display: inline-block; column-break-inside: avoid; border-radius: 4px; line-height: 18px; }
+		.parts .date { font-size: 11px; color: #A0A0A0; margin-bottom: 10px; }
+		.parts figure .filename i { margin-right: 5px; }
+		.parts figure .filename { font-weight: bold; font-family: monospace; }
+		.parts figure img { border-radius: 3px; }
+		.parts figure ul { background-color: white; padding: 0; border-radius: 3px; list-style-type: none; margin: 5px 0 0; border: 1px solid #E0E0E0; }
+		.parts figure li { border-top: 1px solid #E0E0E0; padding: 2px 5px; font-size: 11px; }
+		.parts figure li i { width: 14px; margin-right: 5px; text-align: center; }
+		.parts figure li:first-child { border-top: 0; }
+		.parts figure p { margin-top: 0; margin-bottom: 15px; }
+		.parts figure li div { float: right; }
+		.parts .fa-align-left { color: #C8059B; }
+		.parts .fa-bolt { color: #047CA5; }
+		.parts .fa-drafting-compass { color: #C0C832; }
+		.parts .fa-filter { color: #C8059B; }
+		.parts .fa-code-branch { color: #70C832; }
+		.parts .fa-plug { color: #32C8C8; }
+		.parts .fa-tasks { color: #C0C832; }
+		.parts .fa-link { color: #FF3030; }
+		.parts .fa-font { color: #47B09D; }
+		.parts .fa-paste { color: #C0C832; }
+		.parts .fa-eye { color: #FE0086; }
+		.parts .fa-brain { color: #C58C61; }
+		.parts .fa-code { color: #F46372; }
+		.parts .fa-box { color: #8D69CF; }
+		.parts .fa-filter { color: #2CCF76; }
+	</style>
+</head>
+<body>
+
+	<div class="invisible">
+		<h1>NAME</h1>
+		<div data-bind="items__template" class="parts">
+			<script type="text/html">
+				{{ foreach m in value }}
+					<figure>
+						<div class="filename"><i class="far fa-file-alt"></i>{{ m.path }}</div>
+						<ul>
+						{{ foreach n in m.items }}
+							<li><div>{{ n.type | parttype }}</div><i class="fa fa-{{ if n.type === 'helper' }}align-left{{ else if n.type === 'FUNC' }}code{{ else if n.type === 'REPO' }}box{{ else if n.type === 'config' }}cog{{ else if n.type === 'plugin' }}plug{{ else if n.type === 'route' }}link{{ else if n.type === 'watcher' }}eye{{ else if n.type === 'event' }}bolt{{ else if n.type === 'middleware' }}filter{{ else if n.type === 'component' || n.type === 'extension' }}drafting-compass{{ else if n.type === 'schema' }}code-branch{{ else if n.type === 'console'}}font{{ else if n.type === 'operation' }}plug{{ else }}tasks{{ fi }}"></i>{{ n.name | partvariables }}</li>
+						{{ end }}
+						</ul>
+					</figure>
+				{{ end }}
+			</script>
+		</div>
+	</div>
+
+	<script type="text/json" id="metadata">DATA</script>
+
+	<script>
+		var items = PARSE('#metadata');
+
+		for (var i = 0; i < items.length; i++)
+			items[i].items.quicksort('type');
+
+		Thelpers.partvariables = function(val) {
+			var index = val.indexOf('(');
+			if (index === -1)
+				return val;
+			return Thelpers.encode(val.substring(0, index)) + '<span>' + Thelpers.encode(val.substring(index)) + '</span>';
+		};
+
+		Thelpers.parttype = function(val) {
+			switch (val) {
+				case 'FUNC':
+				case 'MAIN':
+				case 'REPO':
+				case 'Thelpers':
+				case 'helper':
+				case 'console':
+					return '';
+			}
+			return '<b>{0}</b>'.format(Thelpers.encode(val));
+		};
+
+		setTimeout(function() {
+			$('.invisible').rclass('invisible');
+		}, 500);
+
+	</script>
+
+</body>
+</html>
