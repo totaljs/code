@@ -409,7 +409,8 @@ COMPONENT('editor', function(self, config) {
 		var REGPARTCLEAN = /('|").*?('|")/;
 		var REGHELPER = /(Thelpers|FUNC|REPO|MAIN)\.[a-z0-9A-Z_$]+(\s)+=/g;
 		var REGCONSOLE = /console\.\w+\(.*?\)/g;
-		var REGSCHEMAOP = /\.(setQuery|setSave|setInsert|setUpdate|setPatch|setRead|setGet|setRemove|addWorkflow|addTransform|addOperation|addHook)\(.*?\)/g;
+		var REGSCHEMAOP = /\.(setQuery|setSave|setInsert|setUpdate|setPatch|setRead|setGet|setRemove|addWorkflow|addTransform|addOperation|addHook)(Extension)?\(.*?\)/g;
+		var REGSCHEMAOP_DEFINE = /\.define\(.*?\);/g;
 		var REGSCHEMAOP_REPLACE = /(\(|,(\s))function.*?$/g;
 		var REGPLUGINOP_REPLACE = /(\s)+=(\s)+function/g;
 		var REGFUNCTION = /((\s)+=(\s)+function)/;
@@ -520,14 +521,19 @@ COMPONENT('editor', function(self, config) {
 							name = m[0].length > 20 ? (m[0].substring(0, 30) + '...') : m[0];
 							var tmpindex = lines[i].indexOf('//');
 							if (tmpindex === -1 || tmpindex > m.index)
-								components.push({ line: i, ch: m.index || 0, name: name, type: 'console' });
+								components.push({ line: i, ch: 0, name: name, type: 'console' });
 						}
 
 						if (oldschema) {
 							m = lines[i].match(REGSCHEMAOP);
 							if (m) {
 								m = m[0].replace(REGSCHEMAOP_REPLACE, schemaoperation_replace);
-								components.push({ line: i, ch: m.index || 0, name: oldschema + m, type: 'schema' });
+								components.push({ line: i, ch: 0, name: oldschema + m, type: 'schema' });
+							}
+							m = lines[i].match(REGSCHEMAOP_DEFINE);
+							if (m) {
+								m = m[0].replace(REGSCHEMAOP_REPLACE, schemaoperation_replace);
+								components.push({ line: i, ch: 0, name: oldschema + m, type: 'schema' });
 							}
 						}
 
@@ -537,7 +543,7 @@ COMPONENT('editor', function(self, config) {
 								if (m) {
 									m = m[0].replace(REGPLUGINOP_REPLACE, '');
 									m = m.substring(0, m.indexOf(')') + 1).trim().substring(pluginvariable.length);
-									components.push({ line: i, ch: m.index || 0, name: oldplugin + m, type: 'plugin' });
+									components.push({ line: i, ch: 0, name: oldplugin + m, type: 'plugin' });
 								}
 							}
 						}
@@ -548,7 +554,7 @@ COMPONENT('editor', function(self, config) {
 								m = m[0].match(REGTASKOP);
 								if (m) {
 									m = m[0].replace(/"|'/g, '');
-									components.push({ line: i, ch: m.index || 0, name: oldtask + '.' + m, type: 'task' });
+									components.push({ line: i, ch: 0, name: oldtask + '.' + m, type: 'task' });
 								}
 							}
 						}
@@ -557,10 +563,10 @@ COMPONENT('editor', function(self, config) {
 
 				for (var i = 0; i < components.length; i++) {
 					var com = components[i];
-					var next = components[i + 1];
-					if (next == null) {
-						com.lineto = lines.length;
-						break;
+
+					if (com.name.indexOf('.define(') !== -1) {
+						com.lineto = com.line;
+						continue;
 					}
 
 					var endWith = '';
@@ -589,11 +595,18 @@ COMPONENT('editor', function(self, config) {
 
 							if (com.type === 'component') {
 								var c = line.substring(com.ch, com.ch + 1);
-								if (c !== ' ' && c !== '\t') {
-									if (line.substring(line.length - 3) === ']);') {
-										com.lineto = j;
-										break;
-									}
+								if (c === '}') {
+									com.lineto = j;
+									break;
+								}
+							} else if (com.type === 'schema') {
+								var c = line.substring(begWith, begWith + 1);
+								if (c === '}' && line.charAt(line.length - 1) === ';') {
+									tmp = line.indexOf('\'');
+									if (tmp !== -1)
+										com.filter = line.substring(tmp + 1, line.indexOf('\'', tmp + 2));
+									com.lineto = j;
+									break;
 								}
 							}
 						}
