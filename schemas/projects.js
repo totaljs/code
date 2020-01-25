@@ -34,7 +34,8 @@ NEWSCHEMA('Projects', function(schema) {
 			item.combo = undefined;
 			item.time = undefined;
 			$.callback(item);
-		}
+		} else
+			$.invalid('error-project');
 	});
 
 	schema.addWorkflow('edit', function($) {
@@ -511,89 +512,4 @@ NEWSCHEMA('Projects', function(schema) {
 		Fs.truncate(filename, NOOP);
 		$.success();
 	});
-});
-
-
-ON('service', function() {
-
-	if (!CONF.autodiscover)
-		return;
-
-	Fs.readdir(CONF.autodiscover, function(err, directories) {
-
-		var projects = MAIN.projects;
-		var ischange = false;
-		var cache = {};
-
-		directories.wait(function(p, next) {
-
-			p = U.path(p.replace(/\/\//g, '/').replace(/\\\\/g, '\\'));
-
-			var model = {};
-			model.path = Path.join(CONF.autodiscover, p);
-			cache[model.path] = 1;
-
-			Fs.stat(model.path, function(err, stat) {
-
-				if (err || !stat.isDirectory()) {
-					var index = projects.findIndex('path', model.path);
-					if (index !== -1) {
-						projects.splice(index, 1);
-						ischange = true;
-					}
-					next();
-					return;
-				}
-
-				var item = projects.findItem('path', model.path);
-				if (item != null) {
-					next();
-					return;
-				}
-
-				model.name = p.substring(0, p.length - 1);
-
-				var arr = model.name.replace(/_/g, '.').split('-');
-				arr.reverse();
-
-				model.url = 'https://' + arr.join('.');
-				model.permissions = '';
-				model.documentation = 'https://wiki.totaljs.com';
-				model.support = 'https://messenger.totaljs.com';
-				model.logfile = '';
-				model.users = [];
-				model.backup = true;
-				model.skipsrc = true;
-				model.skiptmp = true;
-				model.skipnm = true;
-				model.allowbundle = true;
-				model.allowscripts = true;
-
-				// new projects
-				$SAVE('Projects', model, next);
-			});
-		}, function() {
-
-			var remove;
-
-			for (var i = 0; i < MAIN.projects.length; i++) {
-				var project = MAIN.projects[i];
-				if (project.path.substring(0, CONF.autodiscover.length) !== CONF.autodiscover)
-					continue;
-				if (!cache[project.path]) {
-					if (!remove)
-						remove = [];
-					remove.push(project.id);
-				}
-			}
-
-			if (remove) {
-				remove.wait(function(id, next) {
-					$REMOVE('Projects', { id: id, internal: true }, next);
-				}, () => MAIN.save(2));
-			} else
-				ischange && MAIN.save(2);
-		});
-	});
-
 });

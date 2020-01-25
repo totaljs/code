@@ -40,6 +40,7 @@ exports.install = function() {
 	ROUTE('+GET     /api/projects/{id}/modify/',                           	 files_modify);
 	ROUTE('+GET     /api/projects/{id}/bundle/',                           	 makebundle, [10000]);
 	ROUTE('+GET     /api/projects/{id}/localize/          *Projects          --> @localize', [10000]);
+	ROUTE('+GET     /api/projects/discover/',                                autodiscover);
 
 	// Clipboard
 	ROUTE('+GET     /api/clipboard/                        *Clipboard        --> @get');
@@ -570,4 +571,14 @@ function users_export() {
 	}
 
 	self.json(arr);
+}
+
+function autodiscover() {
+	var self = this;
+	if (self.user.sa) {
+		console.log('SOM TU');
+		self.success(true);
+		FUNC.autodiscover();
+	} else
+		self.invalid('error-permissions');
 }

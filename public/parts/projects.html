@@ -3,8 +3,9 @@
 	<div class="fullheight">
 
 		<div class="toolbar">
-			<button class="exec" data-exec="projects/create"><i class="fa fa-plus-circle"></i>@(Add)</button>
+			<button class="exec" data-exec="projects/create"><i class="fa fa-plus-circle green"></i>@(Add)</button>
 			<button data-bind="projects.checked__disabled:!value || !value.length" class="exec" data-exec="projects/options" disabled><i class="fa fa-check-circle"></i>@(Selected)</button>
+			<button class="exec" data-exec="projects/autodiscover"><i class="fa fa-search-plus"></i>@(Auto-Discover)</button>
 		</div>
 
 		<div data---="datagrid__projects.grid__click:projects/edit;checked:projects/checked;highlight:true">
@@ -52,6 +53,18 @@
 
 		exports.checked = function(rows) {
 			SET('projects.checked', rows);
+		};
+
+		exports.autodiscover = function() {
+			SETTER('confirm', 'show2', '@(Are you sure you want to perform auto-discover of projects?)', ['"search-plus" @(Discover) #4285F4', '@(Cancel)'], function() {
+				SETTER('loading', 'show');
+				AJAX('GET /api/projects/discover/', function() {
+					setTimeout(function() {
+						SETTER('loading', 'hide', 500);
+						exports.refresh();
+					}, 4000);
+				});
+			});
 		};
 
 		exports.options = function(el) {
