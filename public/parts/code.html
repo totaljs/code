@@ -493,7 +493,7 @@
 
 				items.push('-');
 
-				if (code.current.ext === 'css')
+				if ((code.current.ext === 'css' || code.current.ext === 'html') && (/\:(\s)?#|#\w{6}|color\:/).test(text))
 					items.push({ name: '@(Transform for Dark mode)', icon: 'tint', value: 'darkmode' });
 
 				if ((/(#)?[A-F0-9]{6}/i).test(text))
