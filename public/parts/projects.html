@@ -3,9 +3,9 @@
 	<div class="fullheight">
 
 		<div class="toolbar">
+			<button class="exec" data-exec="projects/autodiscover"><i class="fa fa-search-plus"></i>@(Auto-Discover)</button>
 			<button class="exec" data-exec="projects/create"><i class="fa fa-plus-circle green"></i>@(Add)</button>
 			<button data-bind="projects.checked__disabled:!value || !value.length" class="exec" data-exec="projects/options" disabled><i class="fa fa-check-circle"></i>@(Selected)</button>
-			<button class="exec" data-exec="projects/autodiscover"><i class="fa fa-search-plus"></i>@(Auto-Discover)</button>
 		</div>
 
 		<div data---="datagrid__projects.grid__click:projects/edit;checked:projects/checked;highlight:true">

@@ -1286,6 +1286,8 @@
 					items.push({ makefile: true, name: '@(Create:) main.js', icon: 'file-text-o' });
 				if (!node.children.findItem('name', 'merge.js'))
 					items.push({ makefile: true, name: '@(Create:) merge.js', icon: 'file-text-o' });
+				if (!node.children.findItem('name', 'service.js'))
+					items.push({ makefile: true, name: '@(Create:) service.js', icon: 'file-text-o' });
 			}
 
 			if (node.name === 'controllers') {
@@ -1307,6 +1309,8 @@
 					items.push({ makedir: true, name: '@(Create:) css', icon: 'folder-o' });
 				if (!node.children.findItem('name', 'forms'))
 					items.push({ makedir: true, name: '@(Create:) forms', icon: 'folder-o' });
+				if (!node.children.findItem('name', 'img'))
+					items.push({ makedir: true, name: '@(Create:) img', icon: 'folder-o' });
 				if (!node.children.findItem('name', 'js'))
 					items.push({ makedir: true, name: '@(Create:) js', icon: 'folder-o' });
 				if (!node.children.findItem('name', 'pages'))
