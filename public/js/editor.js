@@ -1758,6 +1758,7 @@ SNIPPETS.push({ type: 'js', search: 'schema.addTransform', text: '<b>schema.addT
 SNIPPETS.push({ type: 'js', search: 'schema.addWorkflowExtension', text: '<b>schema.addWorkflowExtension</b>', code: 'schema.addWorkflowExtension(\'\', function($) {\n\t{0}\n{0}});', ch: 21 });
 SNIPPETS.push({ type: 'js', search: 'schema.addOperationExtension', text: '<b>schema.addOperationExtension</b>', code: 'schema.addOperationExtension(\'\', function($) {\n\t{0}\n{0}});', ch: 21 });
 SNIPPETS.push({ type: 'js', search: 'schema.addTransformExtension', text: '<b>schema.addTransformExtension</b>', code: 'schema.addTransformExtension(\'\', function($) {\n\t{0}\n{0}});', ch: 21 });
+SNIPPETS.push({ type: 'js', search: 'schema.middleware', text: '<b>schema.middleware</b>', code: 'schema.middleware(function($, next) {\n\t{0}\n{0}});', ch: 2, line: 1 });
 SNIPPETS.push({ type: 'js', search: 'schema.setSave', text: '<b>schema.setSave</b>', code: 'schema.setSave(function($) {\n\t{0}\n{0}});', ch: 21, line: 1 });
 SNIPPETS.push({ type: 'js', search: 'schema.setPatch', text: '<b>schema.setPatch</b>', code: 'schema.setPatch(function($) {\n\t{0}\n{0}});', ch: 22, line: 1 });
 SNIPPETS.push({ type: 'js', search: 'schema.setInsert', text: '<b>schema.setInsert</b>', code: 'schema.setInsert(function($) {\n\t{0}\n{0}});', ch: 2, line: 1 });
@@ -1784,6 +1785,9 @@ SNIPPETS.push({ type: 'js', search: 'console.warn', text: '<b>console.warn</b>',
 SNIPPETS.push({ type: 'js', search: 'console.error', text: '<b>console.error</b>', code: 'console.error();', ch: 15 });
 SNIPPETS.push({ search: 'openplatformid', text: 'openplatformid', code: 'openplatformid', ch: 15 });
 SNIPPETS.push({ search: 'componentator', text: 'componentator', code: 'componentator', ch: 14 });
+SNIPPETS.push({ search: 'RESTBuilder', text: 'RESTBuilder', code: 'RESTBuilder', ch: 12 });
+SNIPPETS.push({ search: 'exports.', text: 'exports.', code: 'exports.', ch: 9 });
+SNIPPETS.push({ search: 'controller', text: 'controller', code: 'controller', ch: 10 });
 
 FUNC.snippets = function(type, text, tabs, line, words, chplus) {
 
