@@ -1,0 +1,25 @@
+<div data---="panel__common.form__if:NAME;icon:hashtag;autofocus:true;reload:NAME/reload;scrollbar:1;submit:NAME/submit;width:500" class="hidden">
+	<div data-scope="NAME">
+		<div class="padding">
+			YOUR CODE
+		</div>
+	</div>
+	<nav data-validation="NAME">
+		<button name="submit" disabled>SUBMIT</button>
+		<button name="cancel">CANCEL</button>
+	</nav>
+</div>
+
+<script>
+
+	PLUGIN('NAME', function(exports) {
+
+		exports.reload = function(com) {
+			var model = GET('?');
+			var id = model ? model.id : null;
+			com.reconfigure({ title: id ? '@(Update)' : '@(Create)' });
+		};
+
+	});
+
+</script>
