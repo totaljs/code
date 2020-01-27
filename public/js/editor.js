@@ -1792,6 +1792,7 @@ SNIPPETS.push({ search: 'response', text: 'response', code: 'response', ch: 9 })
 SNIPPETS.push({ search: 'self', text: 'self', code: 'self', ch: 5 });
 SNIPPETS.push({ search: 'invalid', text: 'invalid', code: 'invalid', ch: 8 });
 SNIPPETS.push({ search: 'schema', text: 'schema', code: 'schema', ch: 7 });
+SNIPPETS.push({ search: 'language', text: 'language', code: 'language', ch: 9 });
 
 FUNC.snippets = function(type, text, tabs, line, words, chplus) {
 
