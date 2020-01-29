@@ -37,7 +37,7 @@
 		<label><i class="fa fa-pause red"></i> @(Paused coding)</label>
 		<div class="body">
 			<div class="center"><img src="/img/icon.png" width="100" alt="Total.js Code" /></div>
-			<div class="note">@(Do you want to continue?)</div>
+			<div class="note">@(Do you want to continue?)<br /><span id="hostnametext" class="b"></span></div>
 			<a href="@{query.url}" class="button"><i class="fa fa-play"></i>@(Play with code)</a>
 		</div>
 	</div>
@@ -46,6 +46,7 @@
 		var autoredirect = function() {
 			location.href = document.querySelector('.button').getAttribute('href') || '/';
 			autoredirect = null;
+
 		};
 		window.addEventListener('mousedown', function(e) {
 			autoredirect && autoredirect();
@@ -55,6 +56,8 @@
 				return;
 			autoredirect && autoredirect();
 		});
+
+		hostnametext.innerHTML = location.hostname;
 	</script>
 
 </body>
