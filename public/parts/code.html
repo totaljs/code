@@ -2149,6 +2149,9 @@
 					if (!directory.packages)
 						opt.items.push({ name: '<strong>@(Create):</strong> /packages', icon: '!far fa-folder', value: 'packages' });
 
+					if (!directory.plugins)
+						opt.items.push({ name: '<strong>@(Create):</strong> /plugins', icon: '!far fa-folder', value: 'plugins' });
+
 					if (!directory.public)
 						opt.items.push({ name: '<strong>@(Create):</strong> /public', icon: '!far fa-folder', value: 'public' });
 
