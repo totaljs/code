@@ -1784,6 +1784,8 @@ SNIPPETS.push({ type: 'js', search: 'console.log', text: '<b>console.log</b>', c
 SNIPPETS.push({ type: 'js', search: 'console.warn', text: '<b>console.warn</b>', code: 'console.warn();', ch: 14 });
 SNIPPETS.push({ type: 'js', search: 'console.error', text: '<b>console.error</b>', code: 'console.error();', ch: 15 });
 SNIPPETS.push({ search: 'openplatformid', text: 'openplatformid', code: 'openplatformid', ch: 15 });
+SNIPPETS.push({ search: 'encodeURIComponent', text: 'encodeURIComponent', code: 'encodeURIComponent', ch: 19 });
+SNIPPETS.push({ search: 'decodeURIComponent', text: 'decodeURIComponent', code: 'decodeURIComponent', ch: 19 });
 SNIPPETS.push({ search: 'componentator', text: 'componentator', code: 'componentator', ch: 14 });
 SNIPPETS.push({ search: 'RESTBuilder', text: 'RESTBuilder', code: 'RESTBuilder', ch: 12 });
 SNIPPETS.push({ search: 'exports.', text: 'exports.', code: 'exports.', ch: 9 });
@@ -1792,6 +1794,7 @@ SNIPPETS.push({ search: 'response', text: 'response', code: 'response', ch: 9 })
 SNIPPETS.push({ search: 'self', text: 'self', code: 'self', ch: 5 });
 SNIPPETS.push({ search: 'invalid', text: 'invalid', code: 'invalid', ch: 8 });
 SNIPPETS.push({ search: 'schema', text: 'schema', code: 'schema', ch: 7 });
+SNIPPETS.push({ search: 'language', text: 'language', code: 'language', ch: 9 });
 
 FUNC.snippets = function(type, text, tabs, line, words, chplus) {
 
