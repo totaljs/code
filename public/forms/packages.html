@@ -24,7 +24,7 @@
 		};
 
 		exports.download = function(el) {
-			SETTER('confirm', 'show', '@(Are you sure you want to download selected package?)', ['"cloud-download" @(Yes)', '@(Cancel)'], function(index) {
+			SETTER('confirm', 'show', '@(Are you sure you want to download selected package?)', ['"cloud-download" @(Download)', '@(Cancel)'], function(index) {
 				if (index)
 					return;
 				SETTER('loading', 'show');

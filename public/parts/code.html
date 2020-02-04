@@ -1432,7 +1432,7 @@
 						}, 500);
 						break;
 					case 255:
-						SETTER('confirm', 'show', '@(Are you sure you want to remove <b>{0}</b>?)'.format(node.path), ['"trash-o"@(Remove)', '@(Cancel)'], function(index) {
+						SETTER('confirm', 'show', '@(Are you sure you want to remove <b>{0}</b>?)'.format(node.path), ['"trash-o" @(Remove)', '@(Cancel)'], function(index) {
 							if (!index) {
 								var data = {};
 								data.path = node.path;
@@ -1460,7 +1460,7 @@
 			var tab = code.open.findItem('path', path);
 			if (tab) {
 				if (tab.modified) {
-					SETTER('confirm', 'show', '@(The content has been modified. <b>Do you want to <u>discard changes</u>?</b>)', ['"trash-o"@(Discard changes)', '@(Cancel)'], function(index) {
+					SETTER('confirm', 'show', '@(The content has been modified. <b>Do you want to <u>discard changes</u>?</b>)', ['"trash-o" @(Discard changes)', '@(Cancel)'], function(index) {
 						!index && exports.closeforce(tab.path);
 					});
 				} else
