@@ -145,7 +145,7 @@ FUNC.sql2schema = function(text) {
 };
 
 FUNC.cleancss = function(text) {
-	return text.replace(/\n\n/g, '\0').replace(/\n|\t/g, '').replace(/:(\w|'|")/g, function(text) {
+	return text.replace(/\n\n/g, '\0').replace(/\n|\t/g, '').replace(/:(-\w|'|")/g, function(text) {
 		return ': ' + text.substring(1);
 	}).replace(/\}/g, '}\n').replace(/\s{2,}/g, ' ').replace(/(\w|'|"|;)\}/g, function(text) {
 		var l = text.substring(text.length - 2, text.length - 1);
