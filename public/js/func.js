@@ -790,6 +790,8 @@ FUNC.colorize = function(css, cls) {
 				case 'background-color':
 				case 'outline-color':
 				case 'color':
+				case 'stroke':
+				case 'fill':
 					cmdnew.push(c[0] + ': ' + c[1]);
 					break;
 			}
