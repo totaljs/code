@@ -787,6 +787,7 @@ FUNC.colorize = function(css, cls) {
 				case 'border-right-color':
 				case 'border-top-color':
 				case 'border-bottom-color':
+				case 'border-color':
 				case 'background-color':
 				case 'outline-color':
 				case 'color':
