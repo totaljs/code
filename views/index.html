@@ -42,7 +42,7 @@
 
 	<header>
 		<button class="exec" data-exec="mainmenu"><i class="fa fa-navicon"></i></button>
-		<span class="version hidden" data-bind="common.page__show:value === 'code'">v@{MAIN.version}</span>
+		<span class="version hidden" data-bind="common.page__show:value==='code'">v@{MAIN.version}</span>
 		<div class="tools" data-jc="selected__common.page__selector:a.R">
 			<a href="@{#}/" title="@(Code)" class="R" data-if="code"><i class="fa fa-laptop-code"></i></a>
 			<a href="javascript:void(0)" data-exec="code/messenger" title="@(Support)" class="external exec"><i class="far fa-comments"></i></a>

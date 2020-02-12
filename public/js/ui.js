@@ -153,15 +153,8 @@ COMPONENT('editor', function(self, config) {
 		var info = editor.lineInfo(line);
 		var prev;
 
-		if (nochange) {
+		if (nochange)
 			return;
-			// prev = cache_users[key];
-			// if (prev)
-			// 	editor.setGutterMarker(line, 'GutterUser', prev.el);
-			// else
-			// 	editor.setGutterMarker(line, 'GutterUser', null);
-			// return;
-		}
 
 		var key = line + '';
 
@@ -712,7 +705,7 @@ COMPONENT('editor', function(self, config) {
 
 				var count = 0;
 
-				for (var i = b.from.line; i < (b.from.line + b.text.length); i++) {
+				for (var i = b.from.line; i < (b.from.line + b.text.length + 1); i++) {
 
 					var is = false;
 					var nochange = false;
