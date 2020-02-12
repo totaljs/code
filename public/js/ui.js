@@ -705,14 +705,37 @@ COMPONENT('editor', function(self, config) {
 
 				var count = 0;
 
-				for (var i = b.from.line; i < (b.from.line + b.text.length + 1); i++) {
+				var lf = b.from.line;
+				var lt = (b.from.line + b.text.length + 1);
+				var isremoved = 0;
+
+				if (b.removed[0] || b.removed.length > 1) {
+					isremoved = lt;
+					lt = cache_lines.length;
+				}
+
+				for (var i = lf; i < lt; i++) {
 
 					var is = false;
 					var nochange = false;
 
 					if (cache_lines) {
-						is = cache_lines[i] === editor.getLine(i);
-						nochange = cache_lines[i] ? cache_lines[i].trim() === editor.getLine(i).trim() : is;
+						var line = editor.getLine(i);
+
+						if (isremoved && line == null)
+							break;
+
+						is = cache_lines[i] === line;
+						if (line)
+							line = line.trim();
+
+						nochange = cache_lines[i] ? cache_lines[i].trim() === line : is;
+
+						if (!nochange && i >= isremoved) {
+							nochange = true;
+							lt = i;
+						}
+
 					}
 
 					if (!is)
