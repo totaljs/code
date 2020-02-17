@@ -37,11 +37,14 @@
 		.parts .fa-code { color: #F46372; }
 		.parts .fa-box { color: #8D69CF; }
 		.parts .fa-filter { color: #2CCF76; }
+		#download { float: right; margin: 10px 5px 0; color: black; }
+		#download i { margin-right: 5px; }
 	</style>
 </head>
 <body>
 
 	<div class="invisible">
+		<a href="" id="download"><i class="fa fa-floppy-o"></i>Download</a>
 		<h1>NAME</h1>
 		<div data-bind="items__template" class="parts">
 			<script type="text/html">
@@ -62,6 +65,7 @@
 	<script type="text/json" id="metadata">DATA</script>
 
 	<script>
+
 		var items = PARSE('#metadata');
 
 		for (var i = 0; i < items.length; i++)
@@ -88,6 +92,7 @@
 		};
 
 		setTimeout(function() {
+			$('#download').attr('href', location.href).attr('download', encodeURIComponent($('h1').html() + '.html'));
 			$('.invisible').rclass('invisible');
 		}, 500);
 
