@@ -1,0 +1,14 @@
+// Declaration
+NEWTASK('TASK_NAME', function(push) {
+
+	push('task1', function($) {
+		// $ === TaskBuilderOptions
+		$.next('task2');
+	});
+
+	push('task2', function($) {
+		// $ === TaskBuilderOptions
+		$.done();
+	});
+
+});
