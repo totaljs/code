@@ -732,7 +732,6 @@
 
 				if (value.value === 'parsekeys') {
 					tmp = FUNC.parsekeys(text);
-					tmp.quicksort();
 					editor.replaceSelection(tmp.join(','));
 					return;
 				}
