@@ -309,10 +309,12 @@ header .tools .external { color: #a2a286; }
 .status { height: 35px; border-top: 1px solid #E0E0E0; padding: 0 0 0 10px; font-size: 12px; }
 .status-alerts { padding: 9px 0 0; cursor: pointer; position: relative; display: inline-block; vertical-align: top; height: 34px; min-width: 42px; text-align: left; }
 .status i { margin-right: 5px; }
-.status-info { padding: 10px 0 0 10px; font-size: 12px; position: relative; display: inline-block; border-left: 1px solid #E0E0E0; height: 34px; vertical-align: top; color: black; width: 250px; }
-.status-info code { background-color: rgba(100,100,100,0.2); padding: 1px 2px; border-radius: 2px; font-size: 12px; }
+.status-meta { padding: 10px 0 0 0; font-size: 11px; position: relative; display: inline-block; border-left: 1px solid #E0E0E0; height: 34px; vertical-align: top; color: black; width: 200px; font-family: Menlo; text-align: center; }
+.td .status-meta { border-left-color: #404040; color: white; }
+.status-info { padding: 10px 0 0 10px; font-size: 11px; position: relative; display: inline-block; border-left: 1px solid #E0E0E0; height: 34px; vertical-align: top; color: black; width: 200px; font-family: Menlo; }
+.status-info code { background-color: rgba(100,100,100,0.2); padding: 1px 2px; border-radius: 2px; font-size: 11px; }
 .td .status-info code { background-color: rgba(100,100,100,0.5); }
-.td .status-info { border-left-color: #404040; color: white; font-family: Menlo,Consolas,monospace; }
+.td .status-info { border-left-color: #404040; color: white; }
 
 .status-diff { position: relative; display: inline-block; height: 35px; border-left: 1px solid #E0E0E0; }
 .status-diff button { width: 35px; height: 35px; border: 0; background: transparent; margin: 0; color: black; }

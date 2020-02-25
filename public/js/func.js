@@ -1,5 +1,42 @@
 var TIDYUPWHITE = new RegExp(String.fromCharCode(160), 'g');
 
+FUNC.newlineslength = function(str) {
+
+	if (!str)
+		return 0;
+
+	var count = 0;
+	var beg = 0;
+	while (true) {
+		var tmp = str.indexOf('\n', beg);
+		if (tmp !== -1) {
+			count++;
+			beg = tmp + 1;
+		} else
+			break;
+	}
+	return count;
+};
+
+FUNC.bytelength = function(str) {
+
+	if (!str)
+		return 0;
+
+	// returns the byte length of an utf8 string
+	var s = str.length;
+	for (var i = str.length - 1; i >= 0; i--) {
+		var code = str.charCodeAt(i);
+		if (code > 0x7f && code <= 0x7ff)
+			s++;
+		else if (code > 0x7ff && code <= 0xffff)
+			s += 2;
+		if (code >= 0xDC00 && code <= 0xDFFF)
+			i--; //trail surrogate
+	}
+	return s;
+};
+
 FUNC.cleanduplicatedlines = function(val) {
 
 	var output = [];
@@ -807,4 +844,39 @@ FUNC.colorize = function(css, cls) {
 	}
 
 	return builder.join('\n');
+};
+
+FUNC.parsekeys = function(value) {
+	var lines = value.split('\n');
+	var fields = {};
+	var regnumber = /^\d+$/;
+	var regchar = /["';,.()\[\]{}]/;
+	var regsplit = /\t|\||\s|;/;
+
+	for (var i = 0; i < lines.length; i++) {
+
+		var line = lines[i].trim();
+		var w;
+
+		if (line[0] === '"') {
+			w = line.substring(1, line.indexOf('"', 1));
+			if (w && w.indexOf(' ') === -1 && !regchar.test(w))
+				fields[w] = 1;
+			continue;
+		}
+
+		var words = line.split(regsplit);
+		var w;
+
+		if (regnumber.test(words[0])) {
+			if (words[1])
+				w = words[1];
+		} else if (words[0])
+			w = words[0];
+
+		if (w && w.indexOf(' ') === -1 && !regchar.test(w))
+			fields[w] = 1;
+	}
+
+	return Object.keys(fields);
 };

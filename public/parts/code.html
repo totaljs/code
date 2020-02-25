@@ -97,6 +97,7 @@
 				{{ fi }}
 			</script>
 		</div>
+		<div class="status-meta" data-bind="code.editor.body__html:code/statusmeta__delay:500">---</div>
 		<div class="status-info" data-bind="code.cursor__html:code/statusinfo" title="@(Line : Char index : Selected chars)"></div>
 	</section>
 </div>
@@ -197,6 +198,14 @@
 			PUSH('windows', obj);
 		};
 
+		exports.statusmeta = function(value, path, el) {
+			var bytes = FUNC.bytelength(value);
+			var size = Thelpers.filesize(bytes);
+			var isbig = bytes > 30000;
+			el.tclass('red b', isbig);
+			return (isbig ? '<i class="fa fa-exclamation-circle mr5"></i>' : '') + size + ' / ' + FUNC.newlineslength(value).pluralize('@(# lines,# line,# lines,# lines)');
+		};
+
 		exports.statusinfo = function(value) {
 			var sel = ((value.tch || 0) - (value.fch || 0));
 			var plus = '';
@@ -206,10 +215,10 @@
 				var l = text.length - 1;
 				plus = text.charAt(l) + ' = <code>{0}</code>'.format(text.charCodeAt(l));
 				if (reg_number.test(text) && (+text) > 32)
-					plus += (plus ? ' &nbsp; ' : '') + text + ' = <code>{0}</code>'.format(String.fromCharCode(text));
+					plus += (plus ? ' ' : '') + text + ' = <code>{0}</code>'.format(String.fromCharCode(text));
 			}
 
-			return ((value.fline || 0) + 1) + ':' + (value.fch || 0) + (value.fline === value.tline ? (':' + sel) : '') + (plus ? (' &nbsp; ' + plus) : '');
+			return ((value.fline || 0) + 1) + ':' + (value.fch || 0) + (value.fline === value.tline ? (':' + sel) : '') + (plus ? (' ' + plus) : '');
 		};
 
 		exports.components = function(components) {
@@ -474,6 +483,7 @@
 			var text = sel.join('');
 			var can = text.length > 0;
 			var sub = [];
+			var tools = [];
 			var tmp;
 
 			if (code.current.path.indexOf('/scripts/') !== -1)
@@ -488,10 +498,13 @@
 				items.push({ name: '@(Copy with syntax)', icon: 'print', value: 'copysyntax' });
 				items.push({ name: '@(Copy as Markdown)', icon: '!fab fa-markdown', value: 'copymarkdown' });
 
-				if (can && code.current.ext === 'js' && ((/varchar|int|boolean/i).test(text)))
-					items.push({ name: '@(Transform SQL to schema)', icon: 'database', value: 'sql2schema' });
-
 				items.push('-');
+
+				if (can && code.current.ext === 'js') {
+					tmp = ((/varchar|int|boolean/i).test(text));
+					tmp && items.push({ name: '@(Transform SQL to schema)', icon: 'database', value: 'sql2schema' });
+					tools.push({ name: '@(Parse keys)', icon: 'barcode', value: 'parsekeys' });
+				}
 
 				if ((code.current.ext === 'css' || code.current.ext === 'html') && (/\:(\s)?#|#\w{6}|color\:/).test(text))
 					items.push({ name: '@(Transform for Dark mode)', icon: 'tint', value: 'darkmode' });
@@ -553,9 +566,10 @@
 				sub.push({ name: '@(JSON)', icon: 'chevron-right', value: 'json' });
 				items.push({ name: '@(Minify code)', icon: 'compress', value: 'minify', children: sub });
 
-				items.push({ name: '@(Upper Case)', icon: 'font', value: 'upper' });
-				items.push({ name: '@(Lower Case)', icon: 'font', value: 'lower' });
-				items.push({ name: '@(Clean duplicated lines)', icon: 'broom', value: 'cleanduplicatedlines' });
+				items.push({ name: '@(Tools)', icon: 'wrench', children: tools });
+				tools.push({ name: '@(Upper Case)', icon: 'font', value: 'upper' });
+				tools.push({ name: '@(Lower Case)', icon: 'font', value: 'lower' });
+				tools.push({ name: '@(Clean duplicated lines)', icon: 'broom', value: 'cleanduplicatedlines' });
 				items.push('-');
 			}
 
@@ -713,6 +727,13 @@
 
 				if (value.value === 'sql2schema') {
 					editor.replaceSelection(FUNC.sql2schema(text));
+					return;
+				}
+
+				if (value.value === 'parsekeys') {
+					tmp = FUNC.parsekeys(text);
+					tmp.quicksort();
+					editor.replaceSelection(tmp.join(','));
 					return;
 				}
 
@@ -942,9 +963,10 @@
 			var parent = el.closest('.alert');
 			switch (parent.attrd('name')) {
 				case 'backup':
-					if (el.attrd('name') === 'restore')
-						SET('code.editor.body', exports.cache_get(code.editor.path));
-					else
+					if (el.attrd('name') === 'restore') {
+						editor.restore(exports.cache_get(code.editor.path));
+						exports.restoreposition();
+					} else
 						exports.cache_rem(code.editor.path);
 					SET('code.backup', false);
 					break;
