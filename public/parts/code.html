@@ -203,10 +203,11 @@
 			var size = Thelpers.filesize(bytes);
 			var isbig = bytes > 30000;
 			el.tclass('red b', isbig);
-			return (isbig ? '<i class="fa fa-exclamation-circle mr5"></i>' : '') + size + ' / ' + FUNC.newlineslength(value).pluralize('@(# lines,# line,# lines,# lines)');
+			return value ? (isbig ? '<i class="fa fa-exclamation-circle mr5"></i>' : '') + size + ' / ' + FUNC.newlineslength(value).pluralize('@(# lines,# line,# lines,# lines)') : DEF.empty;
 		};
 
 		exports.statusinfo = function(value) {
+
 			var sel = ((value.tch || 0) - (value.fch || 0));
 			var plus = '';
 
