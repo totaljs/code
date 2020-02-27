@@ -15,7 +15,7 @@
 					{{ if value.length }}
 					<div class="partscurrent">
 						{{ foreach m in value }}
-							<div class="part exec" data-exec="components/find" data-search="{{ m.name }}" data-index="{{ $index }}" title="@(Line:) {{ m.line }}"><i class="fa fa-{{ if m.type === 'helper' }}align-left{{ else if m.type === 'FUNC' }}code{{ else if m.type === 'REPO' }}box{{ else if m.type === 'config' }}cog{{ else if m.type === 'plugin' }}plug{{ else if m.type === 'route' }}link{{ else if m.type === 'watcher' }}eye{{ else if m.type === 'event' }}bolt{{ else if m.type === 'middleware' }}filter{{ else if m.type === 'component' || m.type === 'extension' }}drafting-compass{{ else if m.type === 'schema' }}code-branch{{ else if m.type === 'console'}}font{{ else if m.type === 'operation' }}plug{{ else }}tasks{{ fi }}"></i>{{ m.type | parttype }}{{ m.name | partvariables }}</div>
+							<div class="part exec" data-exec="components/find" data-search="{{ m.name }}" data-index="{{ $index }}" title="@(Line:) {{ m.line }}"><i class="fa fa-{{ if m.type === 'helper' }}align-left{{ else if m.type === 'FUNC' }}code{{ else if m.type === 'REPO' }}box{{ else if m.type === 'config' }}cog{{ else if m.type === 'plugin' }}plug{{ else if m.type === 'route' }}link{{ else if m.type === 'watcher' }}eye{{ else if m.type === 'event' }}bolt{{ else if m.type === 'middleware' }}filter{{ else if m.type === 'htmlcomponent' }}crosshairs{{ else if m.type === 'component' || m.type === 'extension' }}drafting-compass{{ else if m.type === 'schema' }}code-branch{{ else if m.type === 'console'}}font{{ else if m.type === 'operation' }}plug{{ else }}tasks{{ fi }}"></i>{{ m.type | parttype }}{{ m | partvariables }}</div>
 						{{ end }}
 					</div>
 					<br />
@@ -29,7 +29,7 @@
 							<div class="partgroup">{{ n.path }}</div>
 						{{ fi }}
 						{{ foreach m in n.items }}
-							<div class="part exec" data-path="{{ n.path }}" data-exec="components/open" data-line="{{ m.line }}" data-ch="{{ m.ch }}" data-search="{{ m.name }}" data-index="{{ $index }}" title="@(Line:) {{ m.line }}"><i class="fa fa-{{ if m.type === 'helper' }}align-left{{ else if m.type === 'FUNC' }}code{{ else if m.type === 'REPO' }}box{{ else if m.type === 'config' }}cog{{ else if m.type === 'plugin' }}plug{{ else if m.type === 'route' }}link{{ else if m.type === 'watcher' }}eye{{ else if m.type === 'event' }}bolt{{ else if m.type === 'middleware' }}filter{{ else if m.type === 'component' || m.type === 'extension' }}drafting-compass{{ else if m.type === 'schema' }}code-branch{{ else if m.type === 'console'}}font{{ else if m.type === 'operation' }}plug{{ else }}tasks{{ fi }}"></i>{{ m.type | parttype }}{{ if m.type === 'extension' }}<span class="b mr5">@(extension:)</span>{{ fi }}{{ m.name | partvariables }}</div>
+							<div class="part exec" data-path="{{ n.path }}" data-exec="components/open" data-line="{{ m.line }}" data-ch="{{ m.ch }}" data-search="{{ m.name }}" data-index="{{ $index }}" title="@(Line:) {{ m.line }}"><i class="fa fa-{{ if m.type === 'helper' }}align-left{{ else if m.type === 'FUNC' }}code{{ else if m.type === 'REPO' }}box{{ else if m.type === 'config' }}cog{{ else if m.type === 'plugin' }}plug{{ else if m.type === 'route' }}link{{ else if m.type === 'watcher' }}eye{{ else if m.type === 'event' }}bolt{{ else if m.type === 'middleware' }}filter{{ else if m.type === 'htmlcomponent' }}code{{ else if m.type === 'component' || m.type === 'extension' }}drafting-compass{{ else if m.type === 'schema' }}code-branch{{ else if m.type === 'console'}}font{{ else if m.type === 'operation' }}plug{{ else }}tasks{{ fi }}"></i>{{ m.type | parttype }}{{ if m.type === 'extension' }}<span class="b mr5">@(extension:)</span>{{ fi }}{{ m | partvariables }}</div>
 						{{ end }}
 					{{ end }}
 				</script>
@@ -104,10 +104,31 @@
 		WATCH('code.components', rebind, true);
 	});
 
-	Thelpers.partvariables = function(val) {
+	Thelpers.partvariables = function(item) {
+		var val = item.name;
 		var index = val.indexOf('(');
-		if (index === -1)
-			return val;
+		if (index === -1) {
+			var plus = '';
+			if (item.type === 'component') {
+				plus = ' <i class="pull-right fa fa-exclamation-circle red mt2"></i>';
+				var stop = false;
+				for (var i = 0; i < code.componentsdb.length; i++) {
+					var sub = code.componentsdb[i];
+					for (var j = 0; j < sub.items.length; j++) {
+						var tmp = sub.items[j];
+						if (tmp.type === 'htmlcomponent' && tmp.name === item.name) {
+							plus = '';
+							stop = true;
+							break;
+						}
+					}
+					if (stop)
+						break;
+				}
+			}
+			return val + plus;
+		}
+
 		return Thelpers.encode(val.substring(0, index)) + '<span>' + Thelpers.encode(val.substring(index)) + '</span>';
 	};
 
@@ -120,6 +141,8 @@
 			case 'helper':
 			case 'console':
 				return '';
+			case 'htmlcomponent':
+				return '<b>component</b>';
 		}
 		return '<b>{0}</b>'.format(Thelpers.encode(val));
 	};

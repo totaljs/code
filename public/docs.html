@@ -37,6 +37,7 @@
 		.parts .fa-code { color: #F46372; }
 		.parts .fa-box { color: #8D69CF; }
 		.parts .fa-filter { color: #2CCF76; }
+		.parts .fa-crosshairs { color: #9DCEDF; }
 		#download { float: right; margin: 10px 5px 0; color: black; }
 		#download i { margin-right: 5px; }
 	</style>
@@ -53,7 +54,7 @@
 						<div class="filename"><i class="far fa-file-alt"></i>{{ m.path }}</div>
 						<ul>
 						{{ foreach n in m.items }}
-							<li><div>{{ n.type | parttype }}</div><i class="fa fa-{{ if n.type === 'helper' }}align-left{{ else if n.type === 'FUNC' }}code{{ else if n.type === 'REPO' }}box{{ else if n.type === 'config' }}cog{{ else if n.type === 'plugin' }}plug{{ else if n.type === 'route' }}link{{ else if n.type === 'watcher' }}eye{{ else if n.type === 'event' }}bolt{{ else if n.type === 'middleware' }}filter{{ else if n.type === 'component' || n.type === 'extension' }}drafting-compass{{ else if n.type === 'schema' }}code-branch{{ else if n.type === 'console'}}font{{ else if n.type === 'operation' }}plug{{ else }}tasks{{ fi }}"></i>{{ n.name | partvariables }}</li>
+							<li><div>{{ n.type | parttype }}</div><i class="fa fa-{{ if n.type === 'helper' }}align-left{{ else if n.type === 'FUNC' }}code{{ else if n.type === 'REPO' }}box{{ else if n.type === 'config' }}cog{{ else if n.type === 'plugin' }}plug{{ else if n.type === 'route' }}link{{ else if n.type === 'watcher' }}eye{{ else if n.type === 'event' }}bolt{{ else if n.type === 'middleware' }}filter{{ else if n.type === 'htmlcomponent' }}crosshairs{{ else if n.type === 'component' || n.type === 'extension' }}drafting-compass{{ else if n.type === 'schema' }}code-branch{{ else if n.type === 'console'}}font{{ else if n.type === 'operation' }}plug{{ else }}tasks{{ fi }}"></i>{{ n.name | partvariables }}</li>
 						{{ end }}
 						</ul>
 					</figure>

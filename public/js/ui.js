@@ -408,6 +408,7 @@ COMPONENT('editor', function(self, config) {
 		var REGPLUGINOP_REPLACE = /(\s)+=(\s)+function/g;
 		var REGFUNCTION = /((\s)+=(\s)+function)/;
 		var REGTASKOP = /('|").*?('|")/g;
+		var REGJC = /data---=".*?(__|")/g;
 
 		var schemaoperation_replace = function(text) {
 			return text.charAt(0) === '(' ? '()' : ')';
@@ -454,6 +455,13 @@ COMPONENT('editor', function(self, config) {
 						if (is != null && lines[i].substring(is, 3) === '});') {
 							components[components.length - 1].lineto = i;
 							is = null;
+						}
+
+						m = lines[i].match(REGJC);
+						if (m) {
+							name = m[0].replace(/data---="|_{2,}|"/g, '').trim();
+							if (components.findIndex('name', name ) === -1)
+								components.push({ line: i, ch: m.index || 0, name: name, type: 'htmlcomponent' });
 						}
 
 						m = lines[i].match(REGPART);

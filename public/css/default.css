@@ -17,6 +17,7 @@ html,body { margin: 0; padding: 0; overflow: hidden; }
 .electron .version { top: 77px; }
 .yellow { color: #d7cd17 !important; }
 .gray { color: gray; }
+.mt2 { margin-top: 2px; }
 .ml5 { margin-left: 5px; }
 .mb10 { margin-bottom: 10px; }
 
@@ -627,6 +628,7 @@ header .tools .external { color: #a2a286; }
 .td .part span { color: #666666; }
 .td .part { color: #A0A0A0; border-color: #202020; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: Menlo,Consolas,monospace; }
 .td .partgroup { color: white; }
+.part .fa-crosshairs { color: #9DCEDF; }
 .part .fa-align-left { color: #C8059B; }
 .part .fa-bolt { color: #047CA5; }
 .part .fa-drafting-compass { color: #C0C832; }
