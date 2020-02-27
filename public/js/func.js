@@ -1,5 +1,50 @@
 var TIDYUPWHITE = new RegExp(String.fromCharCode(160), 'g');
 
+FUNC.unlinkpath = function(path, callback) {
+
+	var electronpath = require('electron').ipcRenderer.sendSync('getPath', { url: location.protocol + '//' + location.hostname + (location.port ? ':' + location.port : '') });
+	if (!electronpath)
+		return false;
+
+	var Path = require('path');
+	var Fs = require('fs');
+
+	var async = function(arr, next, callback) {
+		var item = arr.pop();
+		if (item)
+			next(item, () => async(arr, next, callback));
+		else if (callback)
+			callback();
+	};
+
+	var remove = function(path, callback) {
+		Fs.stat(path, function(err, stat) {
+
+			if (err) {
+				callback && callback();
+				return;
+			}
+
+			if (stat.isFile()) {
+				Fs.unlink(path, () => callback && callback());
+				return;
+			}
+
+			Fs.readdir(path, { withFileTypes: true }, function(err, items) {
+				async(items, function(item, next) {
+					var filename = Path.join(path, item.name);
+					if (item.isDirectory())
+						remove(filename, () => Fs.rmdir(filename, next));
+					else
+						Fs.unlink(filename, next);
+				}, () => Fs.rmdir(path, () => callback && callback()));
+			});
+		});
+	};
+
+	remove(Path.join(electronpath, path), callback);
+};
+
 FUNC.newlineslength = function(str) {
 
 	if (!str)

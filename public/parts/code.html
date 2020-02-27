@@ -1472,9 +1472,9 @@
 									FUNC.success('@(Removed successfully: <b>{0}</b>.)'.format(data.path));
 									var el = exports.element.find('.tabs');
 									el = el.find('span[data-value="{0}"]'.format(data.path));
-									if (el.length)
-										el.find('i').trigger('click');
+									el.length && el.find('i').trigger('click');
 									SET('code.tree', FUNC.treeremove(code.tree, node.path));
+									common.electron && code.data.repository && user.localsave && FUNC.unlinkpath(require('path').join(FUNC.getName(code.data.repository.replace(/\.git$/i, '')), node.path));
 								});
 							}
 						});

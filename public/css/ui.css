@@ -103,7 +103,7 @@ div.CodeMirror span.CodeMirror-matchingbracket { border-bottom: 2px solid blue; 
 .ui-tree .children7 .item { padding-left: 123px; }
 .ui-tree .children8 .item { padding-left: 138px; }
 .ui-tree .children9 .item { padding-left: 153px; }
-.ui-tree input { padding: 0 2px; margin: 0; outline: 0; background-color: white; border: 1px solid #E0E0E0; line-height: 0; color: black; }
+.ui-tree input { padding: 0 2px; margin: 0; outline: 0; border: 0; line-height: 0; color: black; height: 12px; background-color: transparent; }
 .td .ui-tree .extrabutton { border-bottom: 1px solid #303030; background-color: #181818; color: #888888; }
 .td .ui-tree .extrabutton:hover { background-color: #303030; }
 .td .ui-tree input { background-color: #202020; color: white; border-color: #404040; }
