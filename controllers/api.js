@@ -521,6 +521,10 @@ function makebundle(id) {
 		data.push('/readme.md');
 		data.push('/bundle.json');
 		data.push('/config');
+		data.push('/debug.js.json');
+		data.push('/release.js.json');
+		data.push('/index.js.json');
+		data.push('/bundle.sh');
 		data.push('/config-release');
 		data.push('/config-debug');
 		data.push('/app.bundle');
