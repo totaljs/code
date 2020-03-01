@@ -544,8 +544,14 @@ function makebundle(id) {
 		F.backup(filename, project.path, function(err) {
 			if (err)
 				self.invalid(err);
-			else
-				self.file('~' + filename, 'app.bundle', null, () => Fs.unlink(filename, NOOP));
+			else {
+				// Synchronize
+				if (self.xhr) {
+					F.path.mkdir(Path.join(project.pathsync, 'bundles'));
+					Fs.rename(filename, Path.join(project.pathsync, 'bundles/app.bundle'), self.done());
+				} else
+					self.file('~' + filename, 'app.bundle', null, () => Fs.unlink(filename, NOOP));
+			}
 		}, path => path === '/' || (ignore(path) === true));
 	};
 

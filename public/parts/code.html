@@ -1205,7 +1205,8 @@
 
 			if (code.data.allowbundle) {
 				items.push('-');
-				items.push({ value: 19, name: '@(Make a bundle)', icon: 'box', classname: 'b' });
+				code.data.pathsync && items.push({ value: 21, name: '@(Synchronize bundle)', icon: 'truck' });
+				items.push({ value: 19, name: '@(Download bundle)', icon: 'box', classname: 'b' });
 			}
 
 			SETTER('menu', 'show', 'left', el, items, function(item) {
@@ -1279,8 +1280,14 @@
 						editor.diffuserclear();
 						break;
 					case 19:
-						// SETTER('loading', 'show');
 						location.href = '/api/projects/{id}/bundle/'.arg(code.data);
+						break;
+					case 21:
+						SETTER('loading', 'show');
+						AJAX('GET /api/projects/{id}/bundle/'.arg(code.data), function() {
+							SETTER('loading', 'hide', 1000);
+							FUNC.success('@(Done, bundle has been synchronized)');
+						});
 						break;
 				}
 			}, -5, -5);
@@ -1295,7 +1302,7 @@
 						}, 1000);
 						FUNC.success('@(Localized dictionary has been copied into the clipboard)');
 					} else
-						FUNC.warning('@(This file doesn\'t contain any localization markup.)');
+						FUNC.warning('@(This file doesn\'t contain any localization markup)');
 				}
 			});
 		};
@@ -1470,7 +1477,7 @@
 								SETTER('loading', 'show');
 								AJAX('POST /api/files/{id}/remove/'.arg(code.data), data, function() {
 									SETTER('loading', 'hide', 100);
-									FUNC.success('@(Removed successfully: <b>{0}</b>.)'.format(data.path));
+									FUNC.success('@(Removed successfully: <b>{0}</b>)'.format(data.path));
 									var el = exports.element.find('.tabs');
 									el = el.find('span[data-value="{0}"]'.format(data.path));
 									el.length && el.find('i').trigger('click');
