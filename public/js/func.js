@@ -811,7 +811,8 @@ FUNC.alignrouting = function(text) {
 			}
 		}
 
-		lines[i] = line.substring(0, beg) + '\'' + builder.join('') + line.substring(end);
+		var clean = line.substring(end).replace(/\s{2,}/, ' ');
+		lines[i] = line.substring(0, beg) + '\'' + builder.join('') + clean;
 	}
 
 	return lines.join('\n');

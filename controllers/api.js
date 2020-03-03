@@ -473,8 +473,17 @@ function files_modify(id) {
 	}
 
 	var dt = new Date();
-	Fs.utimes(Path.join(project.path, self.query.path), dt, dt, NOOP);
-	self.success();
+	var filename = Path.join(project.path, self.query.path);
+	Fs.utimes(filename, dt, dt, NOOP);
+
+	if (self.query.sync) {
+		var name = U.getName(self.query.path);
+		var target = Path.join(project.pathsync, self.query.path);
+		F.path.mkdir(target.substring(0, target.length - name.length));
+		Fs.createReadStream(filename).on('error', NOOP).pipe(Fs.createWriteStream(target).on('error', NOOP));
+		self.success('synchronized');
+	} else
+		self.success();
 }
 
 function makebundle(id) {

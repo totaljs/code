@@ -1205,8 +1205,8 @@
 
 			if (code.data.allowbundle) {
 				items.push('-');
+				items.push({ value: 19, name: '@(Download bundle locally)', icon: 'box', classname: 'b' });
 				code.data.pathsync && items.push({ value: 21, name: '@(Synchronize bundle)', icon: 'truck' });
-				items.push({ value: 19, name: '@(Download bundle)', icon: 'box', classname: 'b' });
 			}
 
 			SETTER('menu', 'show', 'left', el, items, function(item) {
@@ -1963,7 +1963,16 @@
 				var hashsum = HASH(data.body);
 				if (hashsum === code.current.hashsum && !changes) {
 					code.current.hashsum = hashsum;
-					AJAX('GET /api/projects/{id}/modify/ REPEAT'.arg(code.data), { path: code.editor.path });
+					data = {};
+					data.path = code.editor.path;
+
+					if (sync)
+						data.sync = sync;
+
+					AJAX('GET /api/projects/{id}/modify/ REPEAT'.arg(code.data), data, function(response) {
+						FUNC.success((response.value === 'synchronized' ? '@(<b>{0}</b> saved and synchronized)' : '@(<b>{0}</b> saved)').format(data.path));
+					});
+
 					SETTER('loading', 'hide');
 					return;
 				}
