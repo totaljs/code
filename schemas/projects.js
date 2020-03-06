@@ -101,6 +101,8 @@ NEWSCHEMA('Projects', function(schema) {
 			var resource = {};
 			var texts = {};
 			var max = 0;
+			var file;
+			var key;
 
 			for (var i = 0, length = files.length; i < length; i++) {
 				var filename = files[i];
@@ -119,20 +121,57 @@ NEWSCHEMA('Projects', function(schema) {
 						continue;
 					}
 
-					var key = 'T' + command.command.hash();
-					var file = filename.substring(item.path.length);
+					key = 'T' + command.command.hash();
+					file = filename.substring(item.path.length);
 
 					texts[key] = command.command;
 
 					if (resource[key]) {
 						if (resource[key].indexOf(file) === -1)
 							resource[key] += ', ' + file;
-					}
-					else
+					} else
 						resource[key] = file;
 
 					max = Math.max(max, key.length);
 					command = Internal.findLocalization(content, command.end);
+				}
+
+				if (ext === 'js') {
+					// ErrorBuilder
+					var tmp = content.match(/\$\.invalid\('[a-z-0-9]+'\)/gi);
+					if (tmp) {
+						for (var j = 0; j < tmp.length; j++) {
+							var m = (tmp[j] + '');
+							m = m.substring(11, m.length - 2);
+							key = 'T' + m.hash();
+							file = filename.substring(item.path.length);
+							texts[key] = m;
+							if (resource[key]) {
+								if (resource[key].indexOf(file) === -1)
+									resource[key] += ', ' + file;
+							} else
+								resource[key] = file;
+							max = Math.max(max, key.length);
+						}
+					}
+
+					// DBMS
+					tmp = content.match(/\.(error|err)\('[a-z-0-9]+'/gi);
+					if (tmp) {
+						for (var j = 0; j < tmp.length; j++) {
+							var m = (tmp[j] + '');
+							m = m.substring(m.indexOf('(') + 2, m.length - 1);
+							key = 'T' + m.hash();
+							file = filename.substring(item.path.length);
+							texts[key] = m;
+							if (resource[key]) {
+								if (resource[key].indexOf(file) === -1)
+									resource[key] += ', ' + file;
+							} else
+								resource[key] = file;
+							max = Math.max(max, key.length);
+						}
+					}
 				}
 			}
 
