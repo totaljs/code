@@ -561,7 +561,16 @@ function makebundle(id) {
 				} else
 					self.file('~' + filename, 'app.bundle', null, () => Fs.unlink(filename, NOOP));
 			}
-		}, path => path === '/' || (ignore(path) === true));
+		}, function(path, is) {
+
+			if (is) {
+				var index = path.indexOf('/databases/');
+				if (index !== -1 && path.indexOf('/', index + 12) !== -1)
+					return false;
+			}
+
+			return path === '/' || (ignore(path) === true);
+		});
 	};
 
 	Fs.readFile(Path.join(project.path, path), function(err, data) {
