@@ -2309,7 +2309,7 @@
 
 			var data = {};
 
-			data.path = (code.statusform.path || '') + value;
+			data.path = FUNC.cleanpath((code.statusform.path || '') + value);
 			data.folder = name !== 'file';
 			data.clone = type;
 

@@ -466,6 +466,8 @@ NEWSCHEMA('FilesCreate', function(schema) {
 			}
 		}
 
+		model.path = model.path.replace(/\/{2,}/g, '/');
+
 		var filename = Path.join(project.path, model.path);
 
 		MAIN.change('create', $.user, project, model.path);

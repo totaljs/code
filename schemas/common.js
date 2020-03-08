@@ -30,13 +30,16 @@ NEWSCHEMA('Encoder', function(schema) {
 
 	schema.addWorkflow('exec', function($) {
 		var model = $.model;
+		var is16 = !!$.query.is16;
 		for (var i = 0; i < model.body.length; i++) {
 			if (model.type === 'hexe')
 				model.body[i] = U.createBuffer(model.body[i]).toString('hex');
 			else if (model.type === 'hexd')
 				model.body[i] = U.createBuffer(model.body[i], 'hex').toString('utf8');
-			else
-				model.body[i] = model.body[i].hash(model.type).toString();
+			else {
+				var d = model.body[i].hash(model.type);
+				model.body[i] = is16 ? d.toString(16) : d.toString();
+			}
 		}
 		$.callback(model.body);
 	});
@@ -87,6 +90,11 @@ NEWSCHEMA('ExternalBundle', function(schema) {
 
 		var model = $.model;
 		MAIN.log($.user, 'download_bundle', project, model.url);
+
+		var p = Path.join('/bundles', model.name);
+		MAIN.changelog($.user, $.id, p);
+		MAIN.change('upload', $.user, project, p);
+
 		F.download(model.url, Path.join(project.path, 'bundles', model.name), $.done());
 	});
 });
@@ -110,6 +118,11 @@ NEWSCHEMA('ExternalPackage', function(schema) {
 
 		var model = $.model;
 		MAIN.log($.user, 'download_package', project, model.url);
+
+		var p = Path.join('/packages', model.name);
+		MAIN.changelog($.user, $.id, p);
+		MAIN.change('upload', $.user, project, p);
+
 		F.download(model.url, Path.join(project.path, 'packages', model.name), $.done());
 	});
 });
@@ -133,6 +146,11 @@ NEWSCHEMA('ExternalModule', function(schema) {
 
 		var model = $.model;
 		MAIN.log($.user, 'download_module', project, model.url);
+
+		var p = Path.join('/modules', model.name);
+		MAIN.changelog($.user, $.id, p);
+		MAIN.change('upload', $.user, project, p);
+
 		F.download(model.url, Path.join(project.path, 'modules', model.name), $.done());
 	});
 });
@@ -156,6 +174,11 @@ NEWSCHEMA('ExternalSchema', function(schema) {
 
 		var model = $.model;
 		MAIN.log($.user, 'download_schema', project, model.url);
+
+		var p = Path.join('/schemas', model.name);
+		MAIN.changelog($.user, $.id, p);
+		MAIN.change('upload', $.user, project, p);
+
 		F.download(model.url, Path.join(project.path, 'schemas', model.name), $.done());
 	});
 });
@@ -179,6 +202,11 @@ NEWSCHEMA('ExternalOperation', function(schema) {
 
 		var model = $.model;
 		MAIN.log($.user, 'download_operation', project, model.url);
+
+		var p = Path.join('/operations', model.name);
+		MAIN.changelog($.user, $.id, p);
+		MAIN.change('upload', $.user, project, p);
+
 		F.download(model.url, Path.join(project.path, 'operations', model.name), $.done());
 	});
 });

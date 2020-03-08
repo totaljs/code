@@ -1,5 +1,9 @@
 var TIDYUPWHITE = new RegExp(String.fromCharCode(160), 'g');
 
+FUNC.cleanpath = function(val) {
+	return val.replace(/\/{2,}/g, '/');
+};
+
 FUNC.unlinkpath = function(path, callback) {
 
 	var electronpath = require('electron').ipcRenderer.sendSync('getPath', { url: location.protocol + '//' + location.hostname + (location.port ? ':' + location.port : '') });
