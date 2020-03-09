@@ -290,17 +290,17 @@ div.CodeMirror span.CodeMirror-matchingbracket { border-bottom: 2px solid blue; 
 .ui-panel-body { overflow-scrolling: touch; overflow-y: auto; }
 .ui-panel-animate .ui-panel { transform: scale(1); opacity: 1; }
 .ui-panel-inline.ui-panel-animate { transition: box-shadow 0.5s; }
-.ui-panel-title { padding: 0 0 0 20px; font-size: 16px; user-select: none; color: black; background-color: white; border-bottom: 1px solid #E0E0E0; position: absolute; left: 0; right: 0; top: 0; height: 50px; }
+.ui-panel-title { padding: 0 0 0 10px; font-size: 16px; user-select: none; color: black; background-color: white; border-bottom: 1px solid #E0E0E0; position: absolute; left: 0; right: 0; top: 0; height: 50px; }
 .ui-panel-title .ui-panel-button-close { float: right; cursor: pointer; font-size: 18px; transition: all 0.2s; background: none; border: 0; outline: 0; height: auto; color: red; text-align: center; padding: 0; width: auto; border-left: 1px solid #E0E0E0; width: 48px; height: 50px; }
 .ui-panel-title .ui-panel-button-close:hover { background-color: #EB3324; color: white; }
 .ui-panel-title > span { font-weight: bold; max-width: 70%; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; position: relative; display: inline-block; vertical-align: middle; padding: 14px 0 0 0; }
 .ui-panel-title > .fa { margin: 16px 7px 0 0; float: left; }
 
 .td .ui-panel { background-color: #252525; }
-.td .ui-panel-title { color: white; background-color: #101010; border-bottom: 1px solid #101010; }
+.td .ui-panel-title { color: white; background-color: #101010; border-bottom: 1px solid #303030; }
 .td .ui-panel-container { background-color: rgba(0,0,0,0.8); }
 .td .ui-panel-inline { background-color: transparent; }
-.td .ui-panel-inline .ui-panel { border-left: 1px solid #202020; background-color: rgba(40,40,40,0.9); }
+.td .ui-panel-inline .ui-panel { border-left: 1px solid #303030; background-color: rgba(40,40,40,0.9); }
 
 .ui-selectbox { border: 1px solid #E0E0E0; font-size: 14px; color: black; }
 .ui-selectbox ul { list-style-type: none; width: 50%; height: 100%; float: left; overflow: auto; margin: 0; padding: 0; border-left: 1px solid #E0E0E0; font-weight: bold; overflow-scrolling: touch; }
