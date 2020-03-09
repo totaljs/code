@@ -1562,7 +1562,9 @@
 			}
 
 			code.editor.loaded = false;
-			editor && editor.clear(true);
+
+			if (!tab.reload)
+				editor && editor.clear(true);
 
 			var ext = tab.path.substring(tab.path.lastIndexOf('.') + 1).toLowerCase();
 			var mode;
@@ -1657,6 +1659,8 @@
 			code.editor.hash = HASH(tab.path);
 			code.projectid = HASH(code.data.id + '_' + tab.path);
 
+			var reload = tab.reload;
+
 			var change = code.changes[code.projectid];
 			if (change && tab.doc) {
 				exports.syncsave(change);
@@ -1672,9 +1676,17 @@
 				SETR('code.editor.body', tab.body, 'skip');
 				editor.paste(tab.doc);
 			} else {
+
 				editor.clear();
-				SETR('code.editor.body', tab.body, 2);
-				editor.paste(editor.copy(false));
+
+				if (reload) {
+					editor.editor.replaceRange(tab.body, { ch: 0, line: 0 }, { ch: 0, line: editor.editor.doc.lineCount() + 1 });
+					tab.reload = false;
+				} else {
+					SETR('code.editor.body', tab.body, 2);
+					editor.paste(editor.copy(false));
+				}
+
 				var history = editor.editor.doc.history;
 				history.done.pop();
 				history.done.pop();
@@ -1682,7 +1694,10 @@
 
 			setTimeout2('code.autocomplete', editor.rebuild_autocomplete, 1000);
 			code.current = tab;
-			editor.reconfigure('disabled:false;mode:' + mode);
+
+			if (!reload)
+				editor.reconfigure('disabled:false;mode:' + mode);
+
 			code.SYNCUSER = null;
 			code.SYNCID = null;
 
@@ -1690,6 +1705,7 @@
 
 			code.editor.loaded = true;
 			code.editor.loadedcache = false;
+
 			!tab.doc && setTimeout(function() {
 				editor.editor.refresh();
 				exports.restoreposition();

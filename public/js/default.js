@@ -59,6 +59,43 @@ ON('ready', function() {
 
 var TTIC = ['#1abc9c','#2ecc71','#3498db','#9b59b6','#34495e','#16a085','#2980b9','#8e44ad','#2c3e50','#f1c40f','#e67e22','#e74c3c','#d35400','#c0392b'];
 
+Thelpers.particon = function(type) {
+	switch (type) {
+		case 'helper':
+			return 'fa fa-align-left';
+		case 'FUNC':
+			return 'fa fa-code';
+		case 'REPO':
+			return 'fa fa-box';
+		case 'config':
+			return 'fa fa-cog';
+		case 'plugin':
+			return 'fa fa-plug';
+		case 'route':
+			return 'fa fa-link';
+		case 'watcher':
+			return 'fa fa-eye';
+		case 'event':
+			return 'fa fa-bolt';
+
+		case 'middleware':
+			return 'fa fa-filter';
+		case 'htmlcomponent':
+			return 'fa fa-code';
+		case 'component':
+		case 'extension':
+			return 'fa fa-drafting-compass';
+		case 'schema':
+			return 'fa fa-code-branch';
+		case 'console':
+			return 'fa fa-font';
+		case 'operation':
+			return 'fa fa-plug';
+		default:
+			return 'fa fa-tasks';
+	}
+};
+
 Thelpers.initials = function(value, coloronly) {
 	var index = value.indexOf('.');
 	var arr = value.substring(index + 1).replace(/\s{2,}/g, ' ').trim().split(' ');

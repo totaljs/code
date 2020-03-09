@@ -659,11 +659,26 @@ COMPONENT('editor', function(self, config) {
 
 			if (snippets.text.length < 2 && snippets.text !== '#')
 				cache_snip.list = EMPTYARRAY;
-			else
-				cache_snip.list = FUNC.snippets(FUNC.getext(mode.helperType || mode.name), snippets.text, tabs, cur.line, autocomplete, index).take(10);
+			else {
+				var arr = FUNC.snippets(FUNC.getext(mode.helperType || mode.name), snippets.text, tabs, cur.line, autocomplete, index);
+				arr.sort(autocomplete_sort);
+				cache_snip.list = arr.take(10);
+			}
 
 			return cache_snip;
 		}};
+
+		function autocomplete_sort(a, b) {
+
+			var an = a.displayText || a.text;
+			var bn = b.displayText || b.text;
+
+			if (an.length < bn.length)
+				return -1;
+			else if (an.length > bn.length)
+				return 1;
+			return 0;
+		}
 
 		editor.on('endCompletion', function(a, b) {
 			b && editor.doc.setCursor({ line: b.line, ch: b.ch });
@@ -958,7 +973,7 @@ COMPONENT('editor', function(self, config) {
 					var item = code.componentsdb[i];
 					for (var j = 0; j < item.items.length; j++) {
 						var n = item.items[j].name;
-						autocomplete.push({ search: n, code: n });
+						autocomplete.push({ html: '<i class="' + Thelpers.particon(item.items[j].type) + '"></i> <b>' + n + '</b>', search: n, code: n });
 					}
 				}
 			}

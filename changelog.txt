@@ -2,12 +2,15 @@
 
 ==== 1.3.3
 
-- improved restoring of files
 - added file size with count of lines information
 - divided some items in context menu to `Tools` section
 - added `Parse keys` in context menu
-- improved parts and added support for unused UI components
 - added `Synchronize bundle`
+- improved restoring of files
+- improved parts and added support for unused UI components
+- improved reloading of open file
+- improved changelog
+- improved autocomplete
 
 ==== 1.3.0
 

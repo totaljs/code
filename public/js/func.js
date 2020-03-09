@@ -447,11 +447,14 @@ FUNC.editor_reload = function() {
 	if (!window.code || !window.code.current)
 		return;
 
+	SETTER('loading', 'show');
 	var tab = code.open.findItem('path', code.current.path);
 	if (tab) {
 		tab.loaded = false;
 		tab.doc = null;
+		tab.reload = true;
 		EXEC('code/open', tab);
+		SETTER('loading', 'hide', 500);
 	}
 };
 

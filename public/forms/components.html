@@ -15,7 +15,7 @@
 					{{ if value.length }}
 					<div class="partscurrent">
 						{{ foreach m in value }}
-							<div class="part exec" data-exec="components/find" data-search="{{ m.name }}" data-index="{{ $index }}" title="@(Line:) {{ m.line }}"><i class="fa fa-{{ if m.type === 'helper' }}align-left{{ else if m.type === 'FUNC' }}code{{ else if m.type === 'REPO' }}box{{ else if m.type === 'config' }}cog{{ else if m.type === 'plugin' }}plug{{ else if m.type === 'route' }}link{{ else if m.type === 'watcher' }}eye{{ else if m.type === 'event' }}bolt{{ else if m.type === 'middleware' }}filter{{ else if m.type === 'htmlcomponent' }}crosshairs{{ else if m.type === 'component' || m.type === 'extension' }}drafting-compass{{ else if m.type === 'schema' }}code-branch{{ else if m.type === 'console'}}font{{ else if m.type === 'operation' }}plug{{ else }}tasks{{ fi }}"></i>{{ m.type | parttype }}{{ m | partvariables }}</div>
+							<div class="part exec" data-exec="components/find" data-search="{{ m.name }}" data-index="{{ $index }}" title="@(Line:) {{ m.line }}"><i class="{{ m.type | particon }}"></i>{{ m.type | parttype }}{{ m | partvariables }}</div>
 						{{ end }}
 					</div>
 					<br />
@@ -29,7 +29,7 @@
 							<div class="partgroup">{{ n.path }}</div>
 						{{ fi }}
 						{{ foreach m in n.items }}
-							<div class="part exec" data-path="{{ n.path }}" data-exec="components/open" data-line="{{ m.line }}" data-ch="{{ m.ch }}" data-search="{{ m.name }}" data-index="{{ $index }}" title="@(Line:) {{ m.line }}"><i class="fa fa-{{ if m.type === 'helper' }}align-left{{ else if m.type === 'FUNC' }}code{{ else if m.type === 'REPO' }}box{{ else if m.type === 'config' }}cog{{ else if m.type === 'plugin' }}plug{{ else if m.type === 'route' }}link{{ else if m.type === 'watcher' }}eye{{ else if m.type === 'event' }}bolt{{ else if m.type === 'middleware' }}filter{{ else if m.type === 'htmlcomponent' }}code{{ else if m.type === 'component' || m.type === 'extension' }}drafting-compass{{ else if m.type === 'schema' }}code-branch{{ else if m.type === 'console'}}font{{ else if m.type === 'operation' }}plug{{ else }}tasks{{ fi }}"></i>{{ m.type | parttype }}{{ if m.type === 'extension' }}<span class="b mr5">@(extension:)</span>{{ fi }}{{ m | partvariables }}</div>
+							<div class="part exec" data-path="{{ n.path }}" data-exec="components/open" data-line="{{ m.line }}" data-ch="{{ m.ch }}" data-search="{{ m.name }}" data-index="{{ $index }}" title="@(Line:) {{ m.line }}"><i class="{{ m.type | particon }}"></i>{{ m.type | parttype }}{{ if m.type === 'extension' }}<span class="b mr5">@(extension:)</span>{{ fi }}{{ m | partvariables }}</div>
 						{{ end }}
 					{{ end }}
 				</script>

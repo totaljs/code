@@ -1706,10 +1706,11 @@ SNIPPETS.push({ type: 'css', search: '@media xs mobile', text: '<b>media: XS</b>
 SNIPPETS.push({ type: 'css', search: '@media sm mobile', text: '<b>media: SM</b>', code: '@media(min-width:768px) and (max-width:991px) {\n\t{0}\n}', ch: 47 });
 SNIPPETS.push({ type: 'css', search: '@media md mobile', text: '<b>media: MD</b>', code: '@media(min-width:992px) and (max-width:1199px) {\n\t{0}\n}', ch: 48 });
 SNIPPETS.push({ type: 'css', search: '@media lg mobile', text: '<b>media: LG</b>', code: '@media(min-width:1200px) {\n\t{0}\n}', ch: 26 });
-SNIPPETS.push({ type: 'css', search: 'position relative inline block', text: '<b>inline-block</b>', code: 'position: relative; display: inline-block;', ch: 43 });
+SNIPPETS.push({ type: 'css', search: 'position relative inline block', text: 'display: <b>inline-block</b>', code: 'position: relative; display: inline-block;', ch: 43 });
 SNIPPETS.push({ type: 'css', search: 'position absolute', text: '<b>absolute</b>', code: 'position: absolute;', ch: 20 });
 SNIPPETS.push({ type: 'css', search: 'position fixed', text: '<b>fixed</b>', code: 'position: fixed;', ch: 17 });
 SNIPPETS.push({ type: 'css', search: 'position relative', text: '<b>relative</b>', code: 'position: relative;', ch: 20 });
+SNIPPETS.push({ type: 'css', search: 'display block', text: 'display: <b>block</b>', code: 'display: block;', ch: 16 });
 SNIPPETS.push({ type: 'css', search: 'vertical align top', text: 'vertical-align: <b>top</b>', code: 'vertical-align: top;', ch: 21 });
 SNIPPETS.push({ type: 'css', search: 'vertical align middle', text: 'vertical-align: <b>middle</b>', code: 'vertical-align: middle;', ch: 24 });
 SNIPPETS.push({ type: 'css', search: 'vertical align bottom', text: 'vertical-align: <b>bottom</b>', code: 'vertical-align: bottom;', ch: 24 });
@@ -1784,6 +1785,8 @@ SNIPPETS.push({ type: 'js', search: 'exports.install', text: '<b>exports.install
 SNIPPETS.push({ type: 'js', search: 'console.log', text: '<b>console.log</b>', code: 'console.log();', ch: 13 });
 SNIPPETS.push({ type: 'js', search: 'console.warn', text: '<b>console.warn</b>', code: 'console.warn();', ch: 14 });
 SNIPPETS.push({ type: 'js', search: 'console.error', text: '<b>console.error</b>', code: 'console.error();', ch: 15 });
+SNIPPETS.push({ type: 'js', search: 'null', text: '<b>null</b>', code: 'null', ch: 5 });
+SNIPPETS.push({ type: 'js', search: 'undefined', text: '<b>undefined</b>', code: 'undefined', ch: 10 });
 SNIPPETS.push({ search: 'openplatformid', text: 'openplatformid', code: 'openplatformid', ch: 15 });
 SNIPPETS.push({ search: 'encodeURIComponent', text: 'encodeURIComponent', code: 'encodeURIComponent', ch: 19 });
 SNIPPETS.push({ search: 'decodeURIComponent', text: 'decodeURIComponent', code: 'decodeURIComponent', ch: 19 });
@@ -1801,26 +1804,36 @@ FUNC.snippets = function(type, text, tabs, line, words, chplus) {
 
 	var arr = [];
 	var name = code.current.name.replace('.' + code.current.ext, '').replace(/\/-\./g, '');
+	var cache = {};
+	var tmp;
 
 	for (var i = 0; i < SNIPPETS.length; i++) {
 		var snip = SNIPPETS[i];
-		if ((!snip.type || snip.type === type) && (snip.search.indexOf(text) !== -1 && (snip.search !== text || text.charAt(0) === '-')))
-			arr.push({ displayText: snip.text, text: snip.code.format(tabs || '', snip.search === 'NEWSCHEMA' ? (name.substring(0, 1).toUpperCase() + name.substring(1).replace(/-(\w)/, function(text) {
+		if ((!snip.type || snip.type === type) && (snip.search.indexOf(text) !== -1 && (snip.search !== text || text.charAt(0) === '-'))) {
+			tmp = snip.code.format(tabs || '', snip.search === 'NEWSCHEMA' ? (name.substring(0, 1).toUpperCase() + name.substring(1).replace(/-(\w)/, function(text) {
 				return '/' + text.substring(1).toUpperCase();
-			})) : name), ch: (snip.line ? snip.ch + tabs.length : tabs.length === 0 ? snip.ch - 1 : snip.ch + tabs.length - 1) + chplus, line: line + (snip.line || 0) });
+			})) : name);
+			if (!cache[tmp]) {
+				cache[tmp] = 1;
+				arr.push({ displayText: snip.text, text: tmp, ch: (snip.line ? snip.ch + tabs.length : tabs.length === 0 ? snip.ch - 1 : snip.ch + tabs.length - 1) + chplus, line: line + (snip.line || 0) });
+			}
+		}
 	}
 
 	if (words && words.length) {
 		for (var i = 0; i < words.length; i++) {
 			var snip = words[i];
-			if (snip.search.indexOf(text) !== -1 && snip.search !== text)
-				arr.push({ displayText: snip.text, text: snip.code, ch: snip.code.length + tabs.length + chplus, line: line });
+			if (cache[snip.code])
+				continue;
+			if (snip.search.indexOf(text) !== -1 && snip.search !== text) {
+				cache[snip.code] = 1;
+				arr.push({ displayText: snip.html || snip.text, text: snip.code, ch: snip.code.length + tabs.length + chplus, line: line });
+			}
 		}
 	}
 
 	return arr;
 };
-
 
 CodeMirror.defineExtension('centerLine', function(line) {
 	var h = this.getScrollInfo().clientHeight;
