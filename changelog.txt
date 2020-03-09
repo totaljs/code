@@ -6,6 +6,7 @@
 - divided some items in context menu to `Tools` section
 - added `Parse keys` in context menu
 - added `Synchronize bundle`
+- added `HTTP status` for `REST API`
 - improved restoring of files
 - improved parts and added support for unused UI components
 - improved reloading of open file
