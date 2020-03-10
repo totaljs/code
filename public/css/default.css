@@ -456,7 +456,7 @@ header .tools .external { color: #a2a286; }
 .td .tabs nav .selected { background-color: #282c34; color: white; border-color: #181a1f; }
 .td .tabs nav span { border-color: #22242b; color: gray; background-color: #1d2027; }
 .td .CodeMirror { background-color: #282c34; }
-.td .CodeMirror-activeline-background { background-color: rgba(0,0,0,0.1); }
+.td .CodeMirror-activeline-background { background-color: rgba(92,95,169,0.15); }
 
 .td .cm-s-default .cm-qualifier { color: gray; }
 .td .cm-s-default .cm-meta { color: #ae81ff; }

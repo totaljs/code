@@ -150,6 +150,11 @@ COMPONENT('editor', function(self, config) {
 		cache_diffs_interval = setTimeout(cache_diffs_sum, 200);
 		editor.setGutterMarker(line, 'GutterDiff', nullable ? null : GutterDiff());
 
+		if (nullable)
+			editor.removeLineClass(line, null, 'cm-changed-line');
+		else
+			editor.addLineClass(line, null, 'cm-changed-line');
+
 		var info = editor.lineInfo(line);
 		var prev;
 
