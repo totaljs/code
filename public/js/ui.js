@@ -146,7 +146,7 @@ COMPONENT('editor', function(self, config) {
 		checksum = -1;
 	};
 
-	self.diffgutter = function(line, nullable, nochange) {
+	self.diffgutter = function(line, nullable, nochange, isdiffonly) {
 		var key = line + '';
 
 		if (nullable)
@@ -159,10 +159,12 @@ COMPONENT('editor', function(self, config) {
 
 		editor.setGutterMarker(line, 'GutterDiff', nullable ? null : GutterDiff());
 
-		if (nullable)
-			editor.removeLineClass(line, null, 'cm-changed-line');
-		else
-			editor.addLineClass(line, null, 'cm-changed-line');
+		if (isdiffonly) {
+			if (nullable)
+				editor.removeLineClass(line, null, 'cm-changed-line');
+			else
+				editor.addLineClass(line, null, 'cm-changed-line');
+		}
 
 		var info = editor.lineInfo(line);
 		var prev;
@@ -742,12 +744,12 @@ COMPONENT('editor', function(self, config) {
 				var count = 0;
 
 				var lf = b.from.line;
-				var lt = (b.from.line + b.text.length);
-				var isremoved = 0;
+				var lt = b.from.line + b.text.length;
+				var isremoved = -1;
 
 				if (b.removed[0] || b.removed.length > 1) {
-					isremoved = lt - 1;
-					lt = cache_lines.length - 1;
+					isremoved = lt;
+					lt = cache_lines.length;
 				}
 
 				for (var i = lf; i < lt; i++) {
@@ -767,16 +769,17 @@ COMPONENT('editor', function(self, config) {
 
 						nochange = cache_lines[i] ? cache_lines[i].trim() === line : is;
 
-						if (!nochange && i >= isremoved) {
+						if (!nochange && isremoved > -1 && i >= isremoved) {
 							nochange = true;
 							lt = i;
 						}
+
 					}
 
 					if (!is)
 						count++;
 
-					self.diffgutter(i, is, nochange);
+					self.diffgutter(i, is, nochange, i < lt);
 				}
 
 				if (b.origin && b.origin.charAt(1) !== 'd')

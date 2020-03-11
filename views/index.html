@@ -336,6 +336,7 @@
 					arr.unshift({ name: '@(Insert UI components)', id: 'componentator', icon: 'puzzle-piece' });
 					arr.unshift({ name: '@(Save)', id: 'save', icon: 'floppy-o' });
 					arr.unshift({ name: '@(Reload)', id: 'reload', icon: 'refresh', keywords: 'refresh' });
+					arr.push({ name: '@(Clear changes)', id: 'clearchanges', icon: 'trash-o', keywords: 'clear changes' });
 					code.data.review && arr.unshift({ name: '@(Code review)', id: 'review', icon: 'check-circle green' });
 					arr.unshift({ name: '@(History &amp; Backups)', id: 'history', icon: 'history', keywords: 'backups' });
 				}
@@ -373,6 +374,9 @@
 								});
 							});
 
+							break;
+						case 'clearchanges':
+							EXEC('code/clearchanges');
 							break;
 						case 'help':
 							window.open('https://wiki.totaljs.com/code/01-welcome/');

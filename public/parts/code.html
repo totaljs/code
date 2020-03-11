@@ -1192,7 +1192,7 @@
 			is && items.push({ value: 3, name: '@(Convert to Tabs)', icon: 'align-right' });
 			is && common.electron && code.data.repository && items.push({ value: 5, name: '@(Save locally)', icon: 'floppy-o' });
 			is && items.push({ value: 4, name: '@(Restore from backup)', icon: 'history' });
-			is && items.push({ value: 18, name: '@(Clear user changes)', icon: 'recycle red' });
+			is && items.push({ value: 18, name: '@(Clear changes)', icon: 'recycle red' });
 			is && code.data.pathsync && items.push({ value: 6, name: '@(Save synchronized)', icon: 'sync green' });
 			common.electron && code.data.repository && items.push({ value: 7, name: '@(Download <strong>last changes</strong>)', icon: 'floppy-o' });
 			is && items.push({ value: 99, name: '<strong>@(Code review)</strong>', icon: 'check-circle green' });
@@ -1277,10 +1277,7 @@
 						exports.review();
 						break;
 					case 18:
-						AJAX('DELETE /api/projects/{id}/diff/'.arg(code.data) + '?path=' + encodeURIComponent(code.current.path));
-						code.current.diff = [];
-						editor.diffuserclear();
-						editor.diffgutterclear();
+						exports.clearchanges();
 						break;
 					case 19:
 						location.href = '/api/projects/{id}/bundle/'.arg(code.data);
@@ -1294,6 +1291,20 @@
 						break;
 				}
 			}, -5, -5);
+		};
+
+		exports.clearchanges = function() {
+
+			AJAX('DELETE /api/projects/{id}/diff/'.arg(code.data) + '?path=' + encodeURIComponent(code.current.path));
+			code.current.diff = [];
+			editor.diffuserclear();
+
+			if (!code.SYNC) {
+				code.current.modified = false;
+				editor.diffgutterclear();
+				exports.element.find('section.tabs').find('span[data-value="{0}"]'.format(code.current.path)).rclass('modified');
+				clearTimeout2('code.modified');
+			}
 		};
 
 		exports.translate = function() {
