@@ -4,6 +4,7 @@
 
 - improved UI
 - improved diffs
+- improved auto-discover
 - fixed threads
 
 ==== 1.3.3

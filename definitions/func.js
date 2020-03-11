@@ -35,7 +35,7 @@ FUNC.makeignore = function(arr) {
 	return new Function('P', code.join(''));
 };
 
-FUNC.autodiscover = function() {
+FUNC.autodiscover = function(callback) {
 	Fs.readdir(CONF.autodiscover || '/www/www/', function(err, directories) {
 
 		var projects = MAIN.projects;
@@ -107,14 +107,35 @@ FUNC.autodiscover = function() {
 			if (remove) {
 				remove.wait(function(id, next) {
 					$REMOVE('Projects', { id: id, internal: true }, next);
-				}, () => MAIN.save(2));
-			} else
+				}, function() {
+					MAIN.save(2);
+					callback && callback();
+				});
+			} else {
 				ischange && MAIN.save(2);
+				callback && callback();
+			}
 		});
 	});
 };
 
-CONF.autodiscover && ON('service', function(counter) {
-	if (counter % 5 === 0)
-		FUNC.autodiscover();
-});
+if (CONF.autodiscover) {
+
+	ON('service', function(counter) {
+		if (counter % 5 === 0)
+			FUNC.autodiscover();
+	});
+
+	setTimeout(function() {
+		if (!PREF.autodiscover) {
+			var counter = 0;
+			var discover = function() {
+				if (counter++ < 360)
+					FUNC.autodiscover(() => setTimeout(discover, 10000));
+			};
+			discover();
+			PREF.set('autodiscover', 1);
+		} else
+			FUNC.autodiscover();
+	}, 5000);
+}
