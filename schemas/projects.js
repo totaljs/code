@@ -523,7 +523,7 @@ NEWSCHEMA('Projects', function(schema) {
 		if (thread && (/\/|\./).test(thread))
 			thread = null;
 
-		var filename = project.logfile ? project.logfile : Path.join(project.path, (thread ? ('logs/debug_' + thread + '.log') : 'logs/debug.log'));
+		var filename = project.logfile ? project.logfile : Path.join(project.path, (thread ? ('/threads/' + thread + '/logs/debug.log') : 'logs/debug.log'));
 
 		Fs.stat(filename, function(err, stats) {
 			if (stats) {
@@ -534,7 +534,6 @@ NEWSCHEMA('Projects', function(schema) {
 				Fs.createReadStream(filename, { start: start < 0 ? 0 : start }).on('data', chunk => buffer.push(chunk)).on('end', function() {
 					var buf = Buffer.concat(buffer);
 					$.callback(buf.toString('utf8'));
-					//  + ':' + (start + '/' + stats.size + ':' + buf.length).padLeft(15, '.')
 				});
 			} else
 				$.callback('');
@@ -547,7 +546,12 @@ NEWSCHEMA('Projects', function(schema) {
 			$.invalid('error-project');
 			return;
 		}
-		var filename = project.logfile ? project.logfile : Path.join(project.path, 'logs/debug.log');
+
+		var thread = $.query.thread;
+		if (thread && (/\/|\./).test(thread))
+			thread = null;
+
+		var filename = project.logfile ? project.logfile : Path.join(project.path, (thread ? ('/threads/' + thread + '/logs/debug.log') : 'logs/debug.log'));
 		Fs.truncate(filename, NOOP);
 		$.success();
 	});

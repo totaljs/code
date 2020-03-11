@@ -123,6 +123,7 @@ COMPONENT('editor', function(self, config) {
 		for (var i = 0; i < keys.length; i++) {
 			var line = +keys[i];
 			editor.removeLineClass(line);
+			editor.removeLineClass(line + 1);
 		}
 
 		editor.doc.clearGutter('GutterDiff');

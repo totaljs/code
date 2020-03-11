@@ -244,8 +244,10 @@
 		};
 
 		exports.debugclear = function() {
-			if (!BLOCKED('debugclear', 3000))
-				AJAX('GET /api/projects/{id}/logfile/clear/'.arg(code.data), NOOP);
+			if (!BLOCKED('debugclear', 3000)) {
+				var thread = code.current && code.current.path ? code.current.path.match(/\/threads\/\w+/) : null;
+				AJAX(('GET /api/projects/{id}/logfile/clear/' + (thread ? '?thread=' + thread.toString().substring(9) : '')).arg(code.data), NOOP);
+			}
 		};
 
 		exports.localize = function() {
@@ -1278,6 +1280,7 @@
 						AJAX('DELETE /api/projects/{id}/diff/'.arg(code.data) + '?path=' + encodeURIComponent(code.current.path));
 						code.current.diff = [];
 						editor.diffuserclear();
+						editor.diffgutterclear();
 						break;
 					case 19:
 						location.href = '/api/projects/{id}/bundle/'.arg(code.data);
