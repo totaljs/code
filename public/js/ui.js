@@ -10,6 +10,7 @@ COMPONENT('editor', function(self, config) {
 	var cache_lines = null;
 	var cache_lines_skip = false;
 	var cache_diffs = {};
+	var cache_diffs_highlight = {};
 	var cache_diffs_checksum = 0;
 	var cache_users = {};
 	var checksum = -1;
@@ -119,7 +120,8 @@ COMPONENT('editor', function(self, config) {
 
 	self.diffgutterclear = function() {
 
-		var keys = Object.keys(cache_diffs);
+		var keys = Object.keys(cache_diffs_highlight);
+
 		for (var i = 0; i < keys.length; i++) {
 			var line = +keys[i];
 			editor.removeLineClass(line);
@@ -129,6 +131,7 @@ COMPONENT('editor', function(self, config) {
 		editor.doc.clearGutter('GutterDiff');
 		cache_lines = editor.getValue().split('\n');
 		cache_diffs = {};
+		cache_diffs_highlight = {};
 		cache_diffs_checksum = 0;
 	};
 
@@ -160,10 +163,13 @@ COMPONENT('editor', function(self, config) {
 		editor.setGutterMarker(line, 'GutterDiff', nullable ? null : GutterDiff());
 
 		if (isdiffonly) {
-			if (nullable)
+			if (nullable) {
+				delete cache_diffs_highlight[line];
 				editor.removeLineClass(line, null, 'cm-changed-line');
-			else
+			} else {
+				cache_diffs_highlight[line] = 1;
 				editor.addLineClass(line, null, 'cm-changed-line');
+			}
 		}
 
 		var info = editor.lineInfo(line);
@@ -852,6 +858,7 @@ COMPONENT('editor', function(self, config) {
 		if (history) {
 			doc.cachedlines = cache_lines;
 			doc.cacheddiffs = cache_diffs;
+			doc.cachediffshighlight = cache_diffs_highlight;
 			doc.cachedusers = cache_users;
 		}
 		doc.cachedsearch = editor.state.search;
@@ -877,10 +884,13 @@ COMPONENT('editor', function(self, config) {
 
 		cache_lines = doc.cachedlines || editor.getValue().split('\n');
 		cache_diffs = doc.cacheddiffs || {};
+		cache_diffs_highlight = doc.cachediffshighlight || {};
 		cache_users = doc.cachedusers || {};
 
 		delete doc.cachedlines;
 		delete doc.cacheddiffs;
+		delete doc.cachediffshighlight;
+
 		editor.swapDoc(doc);
 		cache_lines_skip = true;
 		editor.refresh();
@@ -890,13 +900,21 @@ COMPONENT('editor', function(self, config) {
 		if (!cache_lines)
 			return;
 
+		var keys;
+
 		var changes = 0;
 		if (cache_diffs) {
-			var keys = Object.keys(cache_diffs);
+			keys = Object.keys(cache_diffs);
 			for (var i = 0; i < keys.length; i++) {
-				self.diffgutter(+keys[i], null, true);
+				self.diffgutter(+keys[i], null, true, false);
 				changes++;
 			}
+		}
+
+		if (cache_diffs_highlight) {
+			keys = Object.keys(cache_diffs_highlight);
+			for (var i = 0; i < keys.length; i++)
+				editor.addLineClass(+keys[i], null, 'cm-changed-line');
 		}
 
 		setTimeout2('EditorGutterColor', self.prerender_colors, 500, 20, changes);

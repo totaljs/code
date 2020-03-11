@@ -755,7 +755,7 @@ FUNC.rgba2hex = function(rgba) {
 	var m = rgba.match(/\d+,(\s)?\d+,(\s)?\d+/);
 	if (m) {
 		m = m[0].split(',').trim();
-		return '#' + (m[1] | 1 << 8).toString(16).slice(1) + (m[2] | 1 << 8).toString(16).slice(1) + (m[3] | 1 << 8).toString(16).slice(1);
+		return '#' + (m[0] | 1 << 8).toString(16).slice(1) + (m[1] | 1 << 8).toString(16).slice(1) + (m[2] | 1 << 8).toString(16).slice(1);
 	} else
 		return rgba;
 };
