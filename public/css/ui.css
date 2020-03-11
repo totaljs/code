@@ -35,8 +35,8 @@ button { outline: 0; }
 .cm-variable-R { background-color: rgba(196,210,90,.35); color: #97a728; font-weight: bold; }
 .cm-variable-B { background-color: rgba(228,228,228,.35); color: #2183e8; font-weight: bold; }
 .cm-variable-API { background-color: rgba(104,178,91,.3); color: black; font-weight: bold; }
-.cm-changed-line { background-color: rgba(255,247,4,.08); }
-.td .cm-changed-line { background-color: rgb(100,100,100,0.15); }
+.cm-changed-line { background-color: rgb(253,252,244); }
+.td .cm-changed-line { background-color: rgb(35,39,47); }
 .td .cm-variable-R { background-color: rgba(231,241,151,.16); color: #dcf339; }
 .cm-trailingspace { background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAACCAYAAAB/qH1jAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH3QUXCToH00Y1UgAAACFJREFUCNdjPMDBUc/AwNDAAAFMTAwMDA0OP34wQgX/AQBYgwYEx4f9lQAAAABJRU5ErkJggg==); background-position: bottom left; background-repeat: repeat-x; }
 .CodeMirror-matchingtag { background-color: rgba(200,200,200,0.6); }

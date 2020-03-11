@@ -751,6 +751,15 @@ FUNC.hex2rgba = function(hex) {
 	return 'rgba(' + [(c >> 16) & 255, (c >> 8) & 255, c & 255].join(',') + ',1)';
 };
 
+FUNC.rgba2hex = function(rgba) {
+	var m = rgba.match(/\d+,(\s)?\d+,(\s)?\d+/);
+	if (m) {
+		m = m[0].split(',').trim();
+		return '#' + (m[1] | 1 << 8).toString(16).slice(1) + (m[2] | 1 << 8).toString(16).slice(1) + (m[3] | 1 << 8).toString(16).slice(1);
+	} else
+		return rgba;
+};
+
 FUNC.alignrouting = function(text) {
 
 	var lines = text.split('\n');

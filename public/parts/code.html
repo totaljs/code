@@ -515,6 +515,9 @@
 				if ((/(#)?[A-F0-9]{6}/i).test(text))
 					items.push({ name: '@(Convert to RGBA)', icon: 'palette', value: 'hex2rgba' });
 
+				if (((/\d+,(\s)?\d+,(\s)?\d+/i)).test(text))
+					items.push({ name: '@(Convert to HEX)', icon: 'palette', value: 'rgba2hex' });
+
 				if ((/[:\|\='"\{]/).test(text))
 					items.push({ name: '@(Align)', icon: 'align-left', value: 'align' });
 
@@ -661,6 +664,11 @@
 
 				if (value.value === 'hex2rgba') {
 					editor.replaceSelection(FUNC.hex2rgba(text));
+					return;
+				}
+
+				if (value.value === 'rgba2hex') {
+					editor.replaceSelection(FUNC.rgba2hex(text));
 					return;
 				}
 
