@@ -118,6 +118,13 @@ COMPONENT('editor', function(self, config) {
 	};
 
 	self.diffgutterclear = function() {
+
+		var keys = Object.keys(cache_diffs);
+		for (var i = 0; i < keys.length; i++) {
+			var line = +keys[i];
+			editor.removeLineClass(line);
+		}
+
 		editor.doc.clearGutter('GutterDiff');
 		cache_lines = editor.getValue().split('\n');
 		cache_diffs = {};
@@ -148,6 +155,7 @@ COMPONENT('editor', function(self, config) {
 
 		cache_diffs_interval && clearTimeout(cache_diffs_interval);
 		cache_diffs_interval = setTimeout(cache_diffs_sum, 200);
+
 		editor.setGutterMarker(line, 'GutterDiff', nullable ? null : GutterDiff());
 
 		if (nullable)
@@ -205,7 +213,6 @@ COMPONENT('editor', function(self, config) {
 	};
 
 	self.diffuser = function(line, userid, name, updated) {
-
 		editor.setGutterMarker(line, 'GutterUser', name ? GutterUser(userid, name, updated) : null);
 	};
 
@@ -734,12 +741,12 @@ COMPONENT('editor', function(self, config) {
 				var count = 0;
 
 				var lf = b.from.line;
-				var lt = (b.from.line + b.text.length + 1);
+				var lt = (b.from.line + b.text.length);
 				var isremoved = 0;
 
 				if (b.removed[0] || b.removed.length > 1) {
-					isremoved = lt;
-					lt = cache_lines.length;
+					isremoved = lt - 1;
+					lt = cache_lines.length - 1;
 				}
 
 				for (var i = lf; i < lt; i++) {
@@ -763,7 +770,6 @@ COMPONENT('editor', function(self, config) {
 							nochange = true;
 							lt = i;
 						}
-
 					}
 
 					if (!is)
