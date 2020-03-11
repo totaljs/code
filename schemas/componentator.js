@@ -12,7 +12,7 @@ NEWSCHEMA('Componentator', function(schema) {
 			var filename = $.query.ext === 'html' ? 'example.html' : ('component.' + $.query.ext);
 			builder.url('https://raw.githubusercontent.com/totaljs/components/master/{0}/{1}'.format($.query.name, filename));
 			builder.exec(function(err, response, output) {
-				$.callback(output.response);
+				$.callback(output.status === 404 ? '' : output.response);
 			});
 		});
 	});
