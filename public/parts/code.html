@@ -191,7 +191,7 @@
 			var obj = {};
 			obj.id = 'messenger';
 			obj.offset = { x: 600, y: 300, width: 600, height: 400, minwidth: 200, minheight: 200 };
-			obj.title = '@(Messenger)';
+			obj.title = '<i class="fa fa-life-ring"></i>@(Chat support with contributors)';
 			var meta = $.param({ token: common.token, nick: user.name, position: user.position, darkmode: $(document.body).hclass('td') ? 1 : 0, reference: user.id, source: location.hostname });
 			obj.html = '<div class="messenger"><{1} src="{0}" frameborder="0" scrolling="no" allowtransparency="true" allow="geolocation *; microphone *; camera *; midi *; encrypted-media *"></{1}></div>'.format('https://support.totaljs.com/?' + meta, common.electron ? 'webview' : 'iframe');
 			obj.actions = { minimize: true, maximize: false, move: true, resize: true, close: true, autosave: true };
@@ -518,6 +518,11 @@
 				if (((/\d+,(\s)?\d+,(\s)?\d+/i)).test(text))
 					items.push({ name: '@(Convert to HEX)', icon: 'palette', value: 'rgba2hex' });
 
+				if ((/css/).test(code.current.ext)) {
+					items.push({ name: '@(Sort CSS properties)', icon: 'sort-alpha-down', value: 'sortcss' });
+					items.push({ name: '@(Clean CSS)', icon: 'broom', value: 'cleancss' });
+				}
+
 				if ((/[:\|\='"\{]/).test(text))
 					items.push({ name: '@(Align)', icon: 'align-left', value: 'align' });
 
@@ -537,9 +542,6 @@
 
 				if (text.indexOf('\n') !== -1)
 					items.push({ name: '@(Sort)', icon: 'sort-alpha-down', value: 'sort' });
-
-				if ((/css/).test(code.current.ext))
-					items.push({ name: '@(Clean)', icon: 'broom', value: 'clean' });
 
 				sub = [];
 				sub.push({ name: '@(Base64)', icon: 'chevron-right', value: 'btoa' });
@@ -588,7 +590,7 @@
 			sub.push({ name: '@(UID)', icon: 'chevron-right', value: 'uid' });
 			sub.push({ name: '@(GUID)', icon: 'chevron-right', value: 'guid' });
 			sub.push({ name: '@(Password)', icon: 'chevron-right', value: 'password' });
-			sub.push({ name: '@(Hostname)', icon: 'chevron-right', value: 'url' });
+			sub.push({ name: '@(URL / Hostname)', icon: 'chevron-right', value: 'url' });
 			sub.push({ name: '@(IP address - my)', icon: 'chevron-right', value: 'ip' });
 			sub.push({ name: '@(IP address - server)', icon: 'chevron-right', value: 'ipserver' });
 			sub.push({ name: '@(Date / Time)', icon: 'chevron-right', value: 'date' });
@@ -753,8 +755,8 @@
 					return;
 				}
 
-				if (value.value === 'clean') {
-					editor.replaceSelection(FUNC.cleancss(text));
+				if (value.value === 'cleancss' || value.value === 'sortcss') {
+					editor.replaceSelection(FUNC[value.value](text));
 					return;
 				}
 
@@ -2486,6 +2488,12 @@
 		};
 
 		exports.review = function(el) {
+
+
+			if (common.token === '1234567890') {
+				SETTER('message', 'warning', '@(You have invalid token for code review. More info: info@totaljs.com).');
+				return;
+			}
 
 			if (!code.data.review) {
 				SETTER('message', 'warning', '@(You do not have defined a <b>token</b> for code review. Click on the <b>Settings</b> button and set the token.)');

@@ -256,6 +256,22 @@ FUNC.usercolor = function(value) {
 	return { color: TTIC[sum % value.length], name: value, initials: initials };
 };
 
+FUNC.sortcss = function(value) {
+	var lines = value.split('\n');
+	for (var i = 0; i < lines.length; i++) {
+		var line = lines[i];
+		var beg = line.indexOf('{');
+		var end = line.indexOf('}');
+		if (beg === -1 || end === -1)
+			continue;
+		var tmp = line.substring(beg + 1, end).trim().split(';').trim();
+		tmp.quicksort();
+		lines[i] = line.substring(0, beg + 1) + ' ' + tmp.join('; ') + '; ' + line.substring(end);
+	}
+
+	return lines.join('\n');
+};
+
 FUNC.getName = function(path) {
 	var index = path.lastIndexOf('/');
 	return path.substring(index + 1);

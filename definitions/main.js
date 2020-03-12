@@ -163,3 +163,8 @@ Fs.readFile(F.path.databases('projects.json'), function(err, data) {
 	data && (MAIN.projects = data.toString('utf8').parseJSON(true));
 	MAIN.projects.quicksort('created', false);
 });
+
+ON('ready', function() {
+	if (!PREF.token)
+		PREF.set('token', '1234567890');
+});

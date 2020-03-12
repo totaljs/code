@@ -9,3 +9,4 @@ error-project-scripts  : Scripts are disabled for this project.
 error-timeout          : A timeout.
 error-bundles          : Bundle making is not allowed for this project.
 error-blocked-ip       : Your IP has been blocked.
+error-review-token     : You don't have valid access token for code review.

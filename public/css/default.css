@@ -159,7 +159,7 @@ h3 i { margin-right: 5px; color: $color; }
 #body.warning .tabs span.selected  { border-top-color: red; }
 #panel { width: 240px; float: left; overflow: hidden; }
 #content { overflow: hidden; }
-#panel .project { height: 50px; border-bottom: 1px solid #E0E0E0; background-color: #fffbed; color: black; cursor: pointer; font-size: 18px; padding: 12px 0 0 18px; font-weight: bold; }
+#panel .project { height: 50px; border-bottom: 1px solid #E0E0E0; background-color: #fffbed; color: black; cursor: pointer; font-size: 18px; padding: 12px 0 0 12px; font-weight: bold; }
 #panel .project i { float: right; margin: 3px 12px 0 0; }
 #panel .project b { margin-right: 40px; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 #panel .project:hover { background-color: #fef9e3; }
@@ -450,9 +450,13 @@ header .tools .external { color: #a2a286; }
 .td .projectslist li:hover { background-color: #202020; }
 .td .projectslist { background-color: #101010; border-color: #353535; }
 .td .ui-tree .expand { color: #a9aaae; }
-.td .ui-tree .item { border-bottom-color: #353535; }
-.td .ui-tree .item:hover { background-color: #303030; }
-.td .ui-tree .selected { background-color: #404040 !important; color: white; }
+/*.td .ui-tree .item { border-bottom-color: #353535; }
+.td .ui-tree .item:hover { background-color: #303030; }*/
+
+.td .ui-tree .item:hover { background-color: rgba(150,150,150,0.1); }
+.td .ui-tree .selected { background-color: rgba(150,150,150,0.08); color: white; }
+.td .ui-tree .item-ddhere { background-color: rgba(150,150,150,0.15) !important; }
+
 .td .tabs nav .selected { background-color: #282c34; color: white; border-color: #181a1f; }
 .td .tabs nav span { border-color: #22242b; color: gray; background-color: #1d2027; }
 .td .CodeMirror { background-color: #282c34; }
@@ -517,7 +521,7 @@ header .tools .external { color: #a2a286; }
 .td .CodeMirror-ruler { border-color: #505050; }
 .td .cm-tab { background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAMCAYAAAAkuj5RAAAALUlEQVR4AWNwL/AZ0njEe2DUA6Me+P//vzGQAaZBeCjwR5PQ4MGjHhj1wKgHANFXkNnNqgRuAAAAAElFTkSuQmCC) no-repeat 100% 50%; }
 .td .ui-panel-title .ui-panel-button-close { border-left-color: #303030; }
-.td hr { border-color: #181818; }
+.td hr { border-color: #353535; }
 
 .infopanel-line { font-size: 11px; cursor: pointer; padding: 1px 8px; }
 .infopanel-line b { float: right; width: 24px; text-align: right; color: red; }

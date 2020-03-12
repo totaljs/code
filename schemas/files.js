@@ -244,6 +244,7 @@ NEWSCHEMA('Files', function(schema) {
 		var user = $.user;
 
 		if (!user.sa) {
+
 			if (project.users.indexOf(user.id) === -1) {
 				$.invalid('error-permissions');
 				return;
@@ -253,6 +254,11 @@ NEWSCHEMA('Files', function(schema) {
 				$.invalid('error-permissions');
 				return;
 			}
+		}
+
+		if (!PREF.token || PREF.token === '123456') {
+			$.invalid('error-review-token');
+			return;
 		}
 
 		var filename = Path.join(project.path, $.query.path);
