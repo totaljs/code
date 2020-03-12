@@ -694,10 +694,16 @@ COMPONENT('editor', function(self, config) {
 			var an = a.displayText || a.text;
 			var bn = b.displayText || b.text;
 
+			if (a.priority && !b.priority)
+				return -1;
+			if (!a.priority && b.priority)
+				return 1;
+
 			if (an.length < bn.length)
 				return -1;
 			else if (an.length > bn.length)
 				return 1;
+
 			return 0;
 		}
 

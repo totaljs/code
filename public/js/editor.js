@@ -1752,31 +1752,31 @@ SNIPPETS.push({ type: 'js', search: 'CONFIG', text: '<b>CONFIG</b>', code: 'CONF
 SNIPPETS.push({ type: 'js', search: 'NEWSCHEMA', text: '<b>NEWSCHEMA</b>', code: 'NEWSCHEMA(\'{1}\', function(schema) {\n\t{0}schema.define(\'key\', String, true);\n{0}});', ch: 12 });
 SNIPPETS.push({ type: 'js', search: 'NEWOPERATION', text: '<b>NEWOPERATION</b>', code: 'NEWOPERATION(\'\', function($) {\n\t{0}\n{0}});', ch: 15 });
 SNIPPETS.push({ type: 'js', search: 'NEWTASK', text: '<b>NEWTASK</b>', code: 'NEWTASK(\'{1}\', function(push) {\n\n\t{0}push(\'TASK_NAME_1\', function($) {\n\t\t{0}$.next(\'TASK_NAME_2\');\n\t{0}});\n\n\t{0}push(\'TASK_NAME_2\', function($) {\n\t\t{0}$.done();\n\t{0}});\n\n{0}});', ch: 10 });
-SNIPPETS.push({ type: 'js', search: 'schema.define', text: '<b>schema.define</b>', code: 'schema.define(\'\', String, true);', ch: 16 });
-SNIPPETS.push({ type: 'js', search: 'schema.required', text: '<b>schema.required</b>', code: 'schema.required(\'\', model => model.age > 33);', ch: 18 });
-SNIPPETS.push({ type: 'js', search: 'schema.addWorkflow', text: '<b>schema.addWorkflow</b>', code: 'schema.addWorkflow(\'\', function($) {\n\t{0}\n{0}});', ch: 21 });
-SNIPPETS.push({ type: 'js', search: 'schema.addOperation', text: '<b>schema.addOperation</b>', code: 'schema.addOperation(\'\', function($) {\n\t{0}\n{0}});', ch: 21 });
-SNIPPETS.push({ type: 'js', search: 'schema.addTransform', text: '<b>schema.addTransform</b>', code: 'schema.addTransform(\'\', function($) {\n\t{0}\n{0}});', ch: 21 });
-SNIPPETS.push({ type: 'js', search: 'schema.addWorkflowExtension', text: '<b>schema.addWorkflowExtension</b>', code: 'schema.addWorkflowExtension(\'\', function($) {\n\t{0}\n{0}});', ch: 21 });
-SNIPPETS.push({ type: 'js', search: 'schema.addOperationExtension', text: '<b>schema.addOperationExtension</b>', code: 'schema.addOperationExtension(\'\', function($) {\n\t{0}\n{0}});', ch: 21 });
-SNIPPETS.push({ type: 'js', search: 'schema.addTransformExtension', text: '<b>schema.addTransformExtension</b>', code: 'schema.addTransformExtension(\'\', function($) {\n\t{0}\n{0}});', ch: 21 });
-SNIPPETS.push({ type: 'js', search: 'schema.middleware', text: '<b>schema.middleware</b>', code: 'schema.middleware(function($, next) {\n\t{0}\n{0}});', ch: 2, line: 1 });
-SNIPPETS.push({ type: 'js', search: 'schema.setSave', text: '<b>schema.setSave</b>', code: 'schema.setSave(function($) {\n\t{0}\n{0}});', ch: 21, line: 1 });
-SNIPPETS.push({ type: 'js', search: 'schema.setPatch', text: '<b>schema.setPatch</b>', code: 'schema.setPatch(function($) {\n\t{0}\n{0}});', ch: 22, line: 1 });
-SNIPPETS.push({ type: 'js', search: 'schema.setInsert', text: '<b>schema.setInsert</b>', code: 'schema.setInsert(function($) {\n\t{0}\n{0}});', ch: 2, line: 1 });
-SNIPPETS.push({ type: 'js', search: 'schema.setUpdate', text: '<b>schema.setUpdate</b>', code: 'schema.setUpdate(function($) {\n\t{0}\n{0}});', ch: 2, line: 1 });
-SNIPPETS.push({ type: 'js', search: 'schema.setRemove', text: '<b>schema.setRemove</b>', code: 'schema.setRemove(function($) {\n\t{0}\n{0}});', ch: 2, line: 1 });
-SNIPPETS.push({ type: 'js', search: 'schema.setQuery', text: '<b>schema.setQuery</b>', code: 'schema.setQuery(function($) {\n\t{0}\n{0}});', ch: 2, line: 1 });
-SNIPPETS.push({ type: 'js', search: 'schema.setRead', text: '<b>schema.setRead</b>', code: 'schema.setRead(function($) {\n\t{0}\n{0}});', ch: 2, line: 1 });
-SNIPPETS.push({ type: 'js', search: 'schema.setGet', text: '<b>schema.setGet</b>', code: 'schema.setGet(function($) {\n\t{0}\n{0}});', ch: 2, line: 1 });
-SNIPPETS.push({ type: 'js', search: 'schema.setSaveExtension', text: '<b>schema.setSaveExtension</b>', code: 'schema.setSaveExtension(function($) {\n\t{0}\n{0}});', ch: 21, line: 1 });
-SNIPPETS.push({ type: 'js', search: 'schema.setPatchExtension', text: '<b>schema.setPatchExtension</b>', code: 'schema.setPatchExtension(function($) {\n\t{0}\n{0}});', ch: 22, line: 1 });
-SNIPPETS.push({ type: 'js', search: 'schema.setInsertExtension', text: '<b>schema.setInsertExtension</b>', code: 'schema.setInsertExtension(function($) {\n\t{0}\n{0}});', ch: 2, line: 1 });
-SNIPPETS.push({ type: 'js', search: 'schema.setUpdateExtension', text: '<b>schema.setUpdateExtension</b>', code: 'schema.setUpdateExtension(function($) {\n\t{0}\n{0}});', ch: 2, line: 1 });
-SNIPPETS.push({ type: 'js', search: 'schema.setRemoveExtension', text: '<b>schema.setRemoveExtension</b>', code: 'schema.setRemoveExtension(function($) {\n\t{0}\n{0}});', ch: 2, line: 1 });
-SNIPPETS.push({ type: 'js', search: 'schema.setQueryExtension', text: '<b>schema.setQueryExtension</b>', code: 'schema.setQueryExtension(function($) {\n\t{0}\n{0}});', ch: 2, line: 1 });
-SNIPPETS.push({ type: 'js', search: 'schema.setReadExtension', text: '<b>schema.setReadExtension</b>', code: 'schema.setReadExtension(function($) {\n\t{0}\n{0}});', ch: 2, line: 1 });
-SNIPPETS.push({ type: 'js', search: 'schema.setGetExtension', text: '<b>schema.setGetExtension</b>', code: 'schema.setGetExtension(function($) {\n\t{0}\n{0}});', ch: 2, line: 1 });
+SNIPPETS.push({ type: 'js', search: 'schema.define', text: '<b>schema.define</b>', code: 'schema.define(\'\', String, true);', ch: 16, priority: 1 });
+SNIPPETS.push({ type: 'js', search: 'schema.required', text: '<b>schema.required</b>', code: 'schema.required(\'\', model => model.age > 33);', ch: 18, priority: 1 });
+SNIPPETS.push({ type: 'js', search: 'schema.addWorkflow', text: '<b>schema.addWorkflow</b>', code: 'schema.addWorkflow(\'\', function($) {\n\t{0}\n{0}});', ch: 21, priority: 1 });
+SNIPPETS.push({ type: 'js', search: 'schema.addOperation', text: '<b>schema.addOperation</b>', code: 'schema.addOperation(\'\', function($) {\n\t{0}\n{0}});', ch: 21, priority: 1 });
+SNIPPETS.push({ type: 'js', search: 'schema.addTransform', text: '<b>schema.addTransform</b>', code: 'schema.addTransform(\'\', function($) {\n\t{0}\n{0}});', ch: 21, priority: 1 });
+SNIPPETS.push({ type: 'js', search: 'schema.addWorkflowExtension', text: '<b>schema.addWorkflowExtension</b>', code: 'schema.addWorkflowExtension(\'\', function($) {\n\t{0}\n{0}});', ch: 21, priority: 1 });
+SNIPPETS.push({ type: 'js', search: 'schema.addOperationExtension', text: '<b>schema.addOperationExtension</b>', code: 'schema.addOperationExtension(\'\', function($) {\n\t{0}\n{0}});', ch: 21, priority: 1 });
+SNIPPETS.push({ type: 'js', search: 'schema.addTransformExtension', text: '<b>schema.addTransformExtension</b>', code: 'schema.addTransformExtension(\'\', function($) {\n\t{0}\n{0}});', ch: 21, priority: 1 });
+SNIPPETS.push({ type: 'js', search: 'schema.middleware', text: '<b>schema.middleware</b>', code: 'schema.middleware(function($, next) {\n\t{0}\n{0}});', ch: 2, line: 1, priority: 1 });
+SNIPPETS.push({ type: 'js', search: 'schema.setSave', text: '<b>schema.setSave</b>', code: 'schema.setSave(function($) {\n\t{0}\n{0}});', ch: 21, line: 1, priority: 1 });
+SNIPPETS.push({ type: 'js', search: 'schema.setPatch', text: '<b>schema.setPatch</b>', code: 'schema.setPatch(function($) {\n\t{0}\n{0}});', ch: 22, line: 1, priority: 1 });
+SNIPPETS.push({ type: 'js', search: 'schema.setInsert', text: '<b>schema.setInsert</b>', code: 'schema.setInsert(function($) {\n\t{0}\n{0}});', ch: 2, line: 1, priority: 1 });
+SNIPPETS.push({ type: 'js', search: 'schema.setUpdate', text: '<b>schema.setUpdate</b>', code: 'schema.setUpdate(function($) {\n\t{0}\n{0}});', ch: 2, line: 1, priority: 1 });
+SNIPPETS.push({ type: 'js', search: 'schema.setRemove', text: '<b>schema.setRemove</b>', code: 'schema.setRemove(function($) {\n\t{0}\n{0}});', ch: 2, line: 1, priority: 1 });
+SNIPPETS.push({ type: 'js', search: 'schema.setQuery', text: '<b>schema.setQuery</b>', code: 'schema.setQuery(function($) {\n\t{0}\n{0}});', ch: 2, line: 1, priority: 1 });
+SNIPPETS.push({ type: 'js', search: 'schema.setRead', text: '<b>schema.setRead</b>', code: 'schema.setRead(function($) {\n\t{0}\n{0}});', ch: 2, line: 1, priority: 1 });
+SNIPPETS.push({ type: 'js', search: 'schema.setGet', text: '<b>schema.setGet</b>', code: 'schema.setGet(function($) {\n\t{0}\n{0}});', ch: 2, line: 1, priority: 1 });
+SNIPPETS.push({ type: 'js', search: 'schema.setSaveExtension', text: '<b>schema.setSaveExtension</b>', code: 'schema.setSaveExtension(function($) {\n\t{0}\n{0}});', ch: 21, line: 1, priority: 1 });
+SNIPPETS.push({ type: 'js', search: 'schema.setPatchExtension', text: '<b>schema.setPatchExtension</b>', code: 'schema.setPatchExtension(function($) {\n\t{0}\n{0}});', ch: 22, line: 1, priority: 1 });
+SNIPPETS.push({ type: 'js', search: 'schema.setInsertExtension', text: '<b>schema.setInsertExtension</b>', code: 'schema.setInsertExtension(function($) {\n\t{0}\n{0}});', ch: 2, line: 1, priority: 1 });
+SNIPPETS.push({ type: 'js', search: 'schema.setUpdateExtension', text: '<b>schema.setUpdateExtension</b>', code: 'schema.setUpdateExtension(function($) {\n\t{0}\n{0}});', ch: 2, line: 1, priority: 1 });
+SNIPPETS.push({ type: 'js', search: 'schema.setRemoveExtension', text: '<b>schema.setRemoveExtension</b>', code: 'schema.setRemoveExtension(function($) {\n\t{0}\n{0}});', ch: 2, line: 1, priority: 1 });
+SNIPPETS.push({ type: 'js', search: 'schema.setQueryExtension', text: '<b>schema.setQueryExtension</b>', code: 'schema.setQueryExtension(function($) {\n\t{0}\n{0}});', ch: 2, line: 1, priority: 1 });
+SNIPPETS.push({ type: 'js', search: 'schema.setReadExtension', text: '<b>schema.setReadExtension</b>', code: 'schema.setReadExtension(function($) {\n\t{0}\n{0}});', ch: 2, line: 1, priority: 1 });
+SNIPPETS.push({ type: 'js', search: 'schema.setGetExtension', text: '<b>schema.setGetExtension</b>', code: 'schema.setGetExtension(function($) {\n\t{0}\n{0}});', ch: 2, line: 1, priority: 1 });
 SNIPPETS.push({ type: 'js', search: 'MERGE', text: '<b>MERGE</b>', code: 'MERGE(\'\', \'\');', ch: 8 });
 SNIPPETS.push({ type: 'js', search: 'ROUTE', text: '<b>ROUTE</b>', code: 'ROUTE(\'\', \'\');', ch: 8 });
 SNIPPETS.push({ type: 'js', search: 'WEBSOCKET', text: '<b>WEBSOCKET</b>', code: 'WEBSOCKET(\'\', action, [\'json\']);', ch: 12 });
@@ -1815,7 +1815,7 @@ FUNC.snippets = function(type, text, tabs, line, words, chplus) {
 			})) : name);
 			if (!cache[tmp]) {
 				cache[tmp] = 1;
-				arr.push({ displayText: snip.text, text: tmp, ch: (snip.line ? snip.ch + tabs.length : tabs.length === 0 ? snip.ch - 1 : snip.ch + tabs.length - 1) + chplus, line: line + (snip.line || 0) });
+				arr.push({ displayText: snip.text, text: tmp, ch: (snip.line ? snip.ch + tabs.length : tabs.length === 0 ? snip.ch - 1 : snip.ch + tabs.length - 1) + chplus, line: line + (snip.line || 0), priority: snip.priority });
 			}
 		}
 	}
