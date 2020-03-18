@@ -2713,6 +2713,7 @@
 				obj.offset = { x: WW - 1000, y: WH - 300, width: 600, height: 250, minwidth: 200, minheight: 200 };
 				obj.title = '<i class="fa fa-clipboard"></i>@(Clipboard)';
 				obj.hidden = false;
+				obj.resize = clipboardresize;
 				obj.html = '<div data-import="url:/partial/clipboard.html;reevaluate:1" style="width:100%;height:100%"></div>'.format(Date.now());
 				obj.actions = { minimize: false, maximize: false, move: true, resize: true, autosave: true, menu: false, hide: true };
 				obj.destroy = function() {

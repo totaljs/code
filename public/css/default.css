@@ -90,7 +90,7 @@ html,body { margin: 0; padding: 0; overflow: hidden; }
 .td #combo { color: white; }
 .td .timespent hr { border-color: #303030; border-top-width: 4px; }
 
-.realtimewindowbody { white-space: pre-wrap; font-family: Menlo,Consolas,monospace; overflow-y: scroll; overflow-x: hidden; color: black; font-size: 11px; margin-right: 40px; padding: 10px 30px 10px 10px; overflow-scrolling: touch; }
+.realtimewindowbody { white-space: pre-wrap; font-family: Menlo,Consolas,monospace; color: black; font-size: 11px; margin-right: 40px; padding: 10px 30px 10px 10px; overflow: hidden; }
 .td .realtimewindowbody { color: white; }
 
 .centered { width: 100%; display: table; }
