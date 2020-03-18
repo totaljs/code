@@ -307,6 +307,8 @@
 				if (response !== common.debugprev) {
 					common.debugprev = response;
 					SET('common.debughtml', Thelpers.encode(response).replace(/\n/g, '<br />'));
+					SETTER(true, '#viewboxdebug/scrollbottom', 0);
+					SETTER('#viewboxdebug/resizescrollbar');
 				}
 			});
 		}
