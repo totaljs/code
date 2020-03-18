@@ -54,9 +54,8 @@ COMPONENT('inputsearch', 'focus:true', function(self, config, cls) {
 		}
 	};
 
-	self.setter2 = function(path, value, type) {
-		if (!type || type === 1)
-			input.focus();
+	self.focus = function() {
+		input.focus();
 	};
 
 	self.getter2 = function() {

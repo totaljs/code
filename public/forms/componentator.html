@@ -26,6 +26,7 @@
 			SETTER('dockable/show', 'prop');
 			SET('?.search', '');
 			exports.refresh();
+			exports.element.SETTER(true, 'inputsearch/focus');
 		};
 
 		exports.refresh = function() {
