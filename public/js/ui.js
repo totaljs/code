@@ -1,3 +1,62 @@
+COMPONENT('inputsearch', 'focus:true', function(self, config, cls) {
+
+	var cls2 = '.' + cls;
+	var placeholder;
+	var isplaceholder = true;
+	var icon;
+	var input;
+
+	// self.readonly();
+
+	self.make = function() {
+		self.aclass(cls);
+		self.append('<div class="{0}-icon"><i class="fa fa-search"></i></div><div class="{0}-control"><span class="{0}-placeholder">{1}</span><input type="text" autocomplete="off" data-jc-bind="" /></div>'.format(cls, config.placeholder));
+
+		input = self.find('input');
+
+		self.event('click', cls2 + '-placeholder', function() {
+			self.find('input').focus();
+		});
+
+		self.event('click', cls2 + '-icon', function() {
+			var val = self.get();
+			if (val) {
+				icon.rclass('fa-times').aclass('fa-search');
+				placeholder.rclass('hidden');
+				isplaceholder = true;
+				self.set('');
+				self.find('input').val('');
+			}
+		});
+
+		self.find('input').on('input', function() {
+			var val = this.value;
+
+			if (val) {
+				if (isplaceholder) {
+					icon.rclass('fa-search').aclass('fa-times');
+					placeholder.aclass('hidden');
+					isplaceholder = false;
+
+				}
+			} else if (!isplaceholder) {
+				isplaceholder = true;
+				icon.rclass('fa-times').aclass('fa-search');
+				placeholder.rclass('hidden');
+			}
+		});
+
+		placeholder = self.find(cls2 + '-placeholder');
+		icon = self.find(cls2 + '-icon i');
+	};
+
+	self.setter = function(path, value, type) {
+		if (!type || type === 1)
+			input.focus();
+	};
+
+});
+
 COMPONENT('editor', function(self, config) {
 
 	var editor = null;
@@ -59,8 +118,9 @@ COMPONENT('editor', function(self, config) {
 	};
 
 	self.resize = function() {
-		var h = $('#content').css('height').parseInt();
-		self.find('.CodeMirror').css('height', h);
+		var h = self.element.closest('.ui-dockable-layout').height();
+		$('#content').css('height', h - 133);
+		self.find('.CodeMirror').css('height', h - 133);
 	};
 
 	self.gotoline = function(line, ch) {
@@ -1189,6 +1249,10 @@ COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 	self.template = Tangular.compile('<div class="item{{ if children }} expand{{ fi }}{{ name | treefilecolor }}" data-index="{{ $pointer }}" title="{{ name }}"><i class="icon {{ if children }}fa fa-folder{{ if isopen }}-open {{ fi }}{{ if name === \'threads\' }} special{{ fi }}{{ else }}{{ name | fileicon }}{{ fi }}"></i><span class="options"><i class="fa fa-ellipsis-h"></i></span><div>{{ name }}</div></div>');
 	self.readonly();
 
+	self.resizescrollbar = function() {
+		self.closest('.ui-viewbox').component().resizescrollbar();
+	};
+
 	self.make = function() {
 		self.aclass('ui-tree');
 
@@ -1310,6 +1374,7 @@ COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 
 			el.find('.icon').tclass('fa-folder', !is).tclass('fa-folder-open', is);
 			!noeval && config.exec && EXEC(config.exec, cache[index], true, is);
+			self.resizescrollbar();
 		} else {
 			!el.hclass(cls) && self.find('.' + cls).rclass(cls);
 			el.aclass(cls);
@@ -1377,6 +1442,7 @@ COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 				}
 			});
 		}
+		self.resizescrollbar();
 	};
 
 	self.collapse = function(index) {
@@ -1401,6 +1467,7 @@ COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 				}
 			});
 		}
+		self.resizescrollbar();
 	};
 
 	self.renderchildren = function(builder, item, level, selected) {
@@ -1521,6 +1588,9 @@ COMPONENT('part', 'hide:true', function(self, config) {
 					config.reload && EXEC(config.reload);
 					config.default && DEFAULT(config.default, true);
 					SETTER('loading', 'hide', 500);
+					setTimeout(function() {
+						self.rclass('invisible');
+					}, 500);
 				});
 			}, 200);
 		}
@@ -4591,6 +4661,38 @@ COMPONENT('snackbar', 'timeout:4000;button:OK', function(self, config) {
 		setTimeout2(self.ID, self.hide, config.timeout + 50);
 		show = false;
 	};
+
+	self.response = function(message, callback, response) {
+
+		var fn;
+
+		if (typeof(message) === 'function') {
+			response = callback;
+			fn = message;
+			message = null;
+		} else if (typeof(callback) === 'function')
+			fn = callback;
+		else {
+			response = callback;
+			fn = null;
+		}
+
+		if (response instanceof Array) {
+			var builder = [];
+			for (var i = 0; i < response.length; i++) {
+				var err = response[i].error;
+				err && builder.push(err);
+			}
+			self.warning(builder.join('<br />'));
+			SETTER('!loading/hide');
+		} else if (typeof(response) === 'string') {
+			self.warning(response);
+			SETTER('!loading/hide');
+		} else {
+			message && self.success(message);
+			fn && fn(response);
+		}
+	};
 });
 
 COMPONENT('websocket', 'reconnect:3000', function(self, config) {
@@ -5894,6 +5996,10 @@ COMPONENT('viewbox', 'margin:0;scroll:true;delay:100;scrollbar:0;visibleY:1;heig
 				break;
 			case 'minheight':
 			case 'margin':
+			case 'marginxs':
+			case 'marginsm':
+			case 'marginmd':
+			case 'marginlg':
 				!init && self.resize();
 				break;
 			case 'selector': // backward compatibility
@@ -5927,7 +6033,7 @@ COMPONENT('viewbox', 'margin:0;scroll:true;delay:100;scrollbar:0;visibleY:1;heig
 		if (config.scroll) {
 			if (config.scrollbar) {
 				if (MAIN.version > 17) {
-					scrollbar = window.SCROLLBAR(self.find(cls2 + '-body'), { visibleY: config.visibleY, visibleX: config.visibleX, parent: self.element });
+					scrollbar = W.SCROLLBAR(self.find(cls2 + '-body'), { visibleY: config.visibleY, visibleX: config.visibleX, orientation: config.visibleX ? null : 'y', parent: self.element });
 					self.scrolltop = scrollbar.scrollTop;
 					self.scrollbottom = scrollbar.scrollBottom;
 				} else
@@ -5951,9 +6057,15 @@ COMPONENT('viewbox', 'margin:0;scroll:true;delay:100;scrollbar:0;visibleY:1;heig
 		if (self.release())
 			return;
 
-		var el = config.parent ? config.parent === 'window' ? $(W) : config.parent === 'parent' ? self.parent() : self.element.closest(config.parent) : self.parent();
+		var el = self.parent(config.parent);
 		var h = el.height();
 		var w = el.width();
+		var width = WIDTH();
+		var margin = config.margin;
+		var responsivemargin = config['margin' + width];
+
+		if (responsivemargin != null)
+			margin = responsivemargin;
 
 		if (h === 0 || w === 0) {
 			self.$waiting && clearTimeout(self.$waiting);
@@ -5961,10 +6073,13 @@ COMPONENT('viewbox', 'margin:0;scroll:true;delay:100;scrollbar:0;visibleY:1;heig
 			return;
 		}
 
-		h = ((h / 100) * config.height) - config.margin;
+		h = ((h / 100) * config.height) - margin;
 
 		if (config.minheight && h < config.minheight)
 			h = config.minheight;
+
+		if (isNaN(h))
+			return;
 
 		css.height = h;
 		css.width = self.element.width();
@@ -5983,6 +6098,10 @@ COMPONENT('viewbox', 'margin:0;scroll:true;delay:100;scrollbar:0;visibleY:1;heig
 			self.rclass('invisible', 250);
 			init = true;
 		}
+	};
+
+	self.resizescrollbar = function() {
+		scrollbar && scrollbar.resize();
 	};
 
 	self.setter = function() {
@@ -7331,126 +7450,6 @@ COMPONENT('clipboard', function(self) {
 	};
 });
 
-COMPONENT('fontawesomebox', 'height:300', function(self, config) {
-
-	var cls = 'ui-fontawesomebox';
-	var cls2 = '.' + cls;
-	var container, input, icon;
-	var template = '<li data-search="{0}"><i class="{1}"></i></li>';
-	var refresh = false;
-
-	self.init = function() {
-		W.fontawesomeicons = 'fas fa-address-book,fas fa-address-card,fas fa-adjust,fas fa-align-center,fas fa-align-justify,fas fa-align-left,fas fa-align-right,fas fa-allergies,fas fa-ambulance,fas fa-american-sign-language-interpreting,fas fa-anchor,fas fa-angle-double-down,fas fa-angle-double-left,fas fa-angle-double-right,fas fa-angle-double-up,fas fa-angle-down,fas fa-angle-left,fas fa-angle-right,fas fa-angle-up,fas fa-archive,fas fa-arrow-alt-circle-down,fas fa-arrow-alt-circle-left,fas fa-arrow-alt-circle-right,fas fa-arrow-alt-circle-up,fas fa-arrow-circle-down,fas fa-arrow-circle-left,fas fa-arrow-circle-right,fas fa-arrow-circle-up,fas fa-arrow-down,fas fa-arrow-left,fas fa-arrow-right,fas fa-arrow-up,fas fa-arrows-alt,fas fa-arrows-alt-h,fas fa-arrows-alt-v,fas fa-assistive-listening-systems,fas fa-asterisk,fas fa-at,fas fa-audio-description,fas fa-backward,fas fa-balance-scale,fas fa-ban,fas fa-band-aid,fas fa-barcode,fas fa-bars,fas fa-baseball-ball,fas fa-basketball-ball,fas fa-bath,fas fa-battery-empty,fas fa-battery-full,fas fa-battery-half,fas fa-battery-quarter,fas fa-battery-three-quarters,fas fa-bed,fas fa-beer,fas fa-bell,fas fa-bell-slash,fas fa-bicycle,fas fa-binoculars,fas fa-birthday-cake,fas fa-blind,fas fa-bold,fas fa-bolt,fas fa-bomb,fas fa-book,fas fa-bookmark,fas fa-bowling-ball,fas fa-box,fas fa-box-open,fas fa-boxes,fas fa-braille,fas fa-briefcase,fas fa-briefcase-medical,fas fa-bug,fas fa-building,fas fa-bullhorn,fas fa-bullseye,fas fa-burn,fas fa-bus,fas fa-calculator,fas fa-calendar,fas fa-calendar-alt,fas fa-calendar-check,fas fa-calendar-minus,fas fa-calendar-plus,fas fa-calendar-times,fas fa-camera,fas fa-camera-retro,fas fa-capsules,fas fa-car,fas fa-caret-down,fas fa-caret-left,fas fa-caret-right,fas fa-caret-square-down,fas fa-caret-square-left,fas fa-caret-square-right,fas fa-caret-square-up,fas fa-caret-up,fas fa-cart-arrow-down,fas fa-cart-plus,fas fa-certificate,fas fa-chart-area,fas fa-chart-bar,fas fa-chart-line,fas fa-chart-pie,fas fa-check,fas fa-check-circle,fas fa-check-square,fas fa-chess,fas fa-chess-bishop,fas fa-chess-board,fas fa-chess-king,fas fa-chess-knight,fas fa-chess-pawn,fas fa-chess-queen,fas fa-chess-rook,fas fa-chevron-circle-down,fas fa-chevron-circle-left,fas fa-chevron-circle-right,fas fa-chevron-circle-up,fas fa-chevron-down,fas fa-chevron-left,fas fa-chevron-right,fas fa-chevron-up,fas fa-child,fas fa-circle,fas fa-circle-notch,fas fa-clipboard,fas fa-clipboard-check,fas fa-clipboard-list,fas fa-clock,fas fa-clone,fas fa-closed-captioning,fas fa-cloud,fas fa-cloud-download-alt,fas fa-cloud-upload-alt,fas fa-code,fas fa-code-branch,fas fa-coffee,fas fa-cog,fas fa-cogs,fas fa-columns,fas fa-comment,fas fa-comment-alt,fas fa-comment-dots,fas fa-comment-slash,fas fa-comments,fas fa-compass,fas fa-compress,fas fa-copy,fas fa-copyright,fas fa-couch,fas fa-credit-card,fas fa-crop,fas fa-crosshairs,fas fa-cube,fas fa-cubes,fas fa-cut,fas fa-database,fas fa-deaf,fas fa-desktop,fas fa-diagnoses,fas fa-dna,fas fa-dollar-sign,fas fa-dolly,fas fa-dolly-flatbed,fas fa-donate,fas fa-dot-circle,fas fa-dove,fas fa-download,fas fa-edit,fas fa-eject,fas fa-ellipsis-h,fas fa-ellipsis-v,fas fa-envelope,fas fa-envelope-open,fas fa-envelope-square,fas fa-eraser,fas fa-euro-sign,fas fa-exchange-alt,fas fa-exclamation,fas fa-exclamation-circle,fas fa-exclamation-triangle,fas fa-expand,fas fa-expand-arrows-alt,fas fa-external-link-alt,fas fa-external-link-square-alt,fas fa-eye,fas fa-eye-dropper,fas fa-eye-slash,fas fa-fast-backward,fas fa-fast-forward,fas fa-fax,fas fa-female,fas fa-fighter-jet,fas fa-file,fas fa-file-alt,fas fa-file-archive,fas fa-file-audio,fas fa-file-code,fas fa-file-excel,fas fa-file-image,fas fa-file-medical,fas fa-file-medical-alt,fas fa-file-pdf,fas fa-file-powerpoint,fas fa-file-video,fas fa-file-word,fas fa-film,fas fa-filter,fas fa-fire,fas fa-fire-extinguisher,fas fa-first-aid,fas fa-flag,fas fa-flag-checkered,fas fa-flask,fas fa-folder,fas fa-folder-open,fas fa-font,fas fa-football-ball,fas fa-forward,fas fa-frown,fas fa-futbol,fas fa-gamepad,fas fa-gavel,fas fa-gem,fas fa-genderless,fas fa-gift,fas fa-glass-martini,fas fa-globe,fas fa-golf-ball,fas fa-graduation-cap,fas fa-h-square,fas fa-hand-holding,fas fa-hand-holding-heart,fas fa-hand-holding-usd,fas fa-hand-lizard,fas fa-hand-paper,fas fa-hand-peace,fas fa-hand-point-down,fas fa-hand-point-left,fas fa-hand-point-right,fas fa-hand-point-up,fas fa-hand-pointer,fas fa-hand-rock,fas fa-hand-scissors,fas fa-hand-spock,fas fa-hands,fas fa-hands-helping,fas fa-handshake,fas fa-hashtag,fas fa-hdd,fas fa-heading,fas fa-headphones,fas fa-heart,fas fa-heartbeat,fas fa-history,fas fa-hockey-puck,fas fa-home,fas fa-hospital,fas fa-hospital-alt,fas fa-hospital-symbol,fas fa-hourglass,fas fa-hourglass-end,fas fa-hourglass-half,fas fa-hourglass-start,fas fa-i-cursor,fas fa-id-badge,fas fa-id-card,fas fa-id-card-alt,fas fa-image,fas fa-images,fas fa-inbox,fas fa-indent,fas fa-industry,fas fa-info,fas fa-info-circle,fas fa-italic,fas fa-key,fas fa-keyboard,fas fa-language,fas fa-laptop,fas fa-leaf,fas fa-lemon,fas fa-level-down-alt,fas fa-level-up-alt,fas fa-life-ring,fas fa-lightbulb,fas fa-link,fas fa-lira-sign,fas fa-list,fas fa-list-alt,fas fa-list-ol,fas fa-list-ul,fas fa-location-arrow,fas fa-lock,fas fa-lock-open,fas fa-long-arrow-alt-down,fas fa-long-arrow-alt-left,fas fa-long-arrow-alt-right,fas fa-long-arrow-alt-up,fas fa-low-vision,fas fa-magic,fas fa-magnet,fas fa-male,fas fa-map,fas fa-map-marker,fas fa-map-marker-alt,fas fa-map-pin,fas fa-map-signs,fas fa-mars,fas fa-mars-double,fas fa-mars-stroke,fas fa-mars-stroke-h,fas fa-mars-stroke-v,fas fa-medkit,fas fa-meh,fas fa-mercury,fas fa-microchip,fas fa-microphone,fas fa-microphone-slash,fas fa-minus,fas fa-minus-circle,fas fa-minus-square,fas fa-mobile,fas fa-mobile-alt,fas fa-money-bill-alt,fas fa-moon,fas fa-motorcycle,fas fa-mouse-pointer,fas fa-music,fas fa-neuter,fas fa-newspaper,fas fa-notes-medical,fas fa-object-group,fas fa-object-ungroup,fas fa-outdent,fas fa-paint-brush,fas fa-pallet,fas fa-paper-plane,fas fa-paperclip,fas fa-parachute-box,fas fa-paragraph,fas fa-paste,fas fa-pause,fas fa-pause-circle,fas fa-paw,fas fa-pen-square,fas fa-pencil-alt,fas fa-people-carry,fas fa-percent,fas fa-phone,fas fa-phone-slash,fas fa-phone-square,fas fa-phone-volume,fas fa-piggy-bank,fas fa-pills,fas fa-plane,fas fa-play,fas fa-play-circle,fas fa-plug,fas fa-plus,fas fa-plus-circle,fas fa-plus-square,fas fa-podcast,fas fa-poo,fas fa-pound-sign,fas fa-power-off,fas fa-prescription-bottle,fas fa-prescription-bottle-alt,fas fa-print,fas fa-procedures,fas fa-puzzle-piece,fas fa-qrcode,fas fa-question,fas fa-question-circle,fas fa-quidditch,fas fa-quote-left,fas fa-quote-right,fas fa-random,fas fa-recycle,fas fa-redo,fas fa-redo-alt,fas fa-registered,fas fa-reply,fas fa-reply-all,fas fa-retweet,fas fa-ribbon,fas fa-road,fas fa-rocket,fas fa-rss,fas fa-rss-square,fas fa-ruble-sign,fas fa-rupee-sign,fas fa-save,fas fa-search,fas fa-search-minus,fas fa-search-plus,fas fa-seedling,fas fa-server,fas fa-share,fas fa-share-alt,fas fa-share-alt-square,fas fa-share-square,fas fa-shekel-sign,fas fa-shield-alt,fas fa-ship,fas fa-shipping-fast,fas fa-shopping-bag,fas fa-shopping-basket,fas fa-shopping-cart,fas fa-shower,fas fa-sign,fas fa-sign-in-alt,fas fa-sign-language,fas fa-sign-out-alt,fas fa-signal,fas fa-sitemap,fas fa-sliders-h,fas fa-smile,fas fa-smoking,fas fa-snowflake,fas fa-sort,fas fa-sort-alpha-down,fas fa-sort-alpha-up,fas fa-sort-amount-down,fas fa-sort-amount-up,fas fa-sort-down,fas fa-sort-numeric-down,fas fa-sort-numeric-up,fas fa-sort-up,fas fa-space-shuttle,fas fa-spinner,fas fa-square,fas fa-square-full,fas fa-star,fas fa-star-half,fas fa-step-backward,fas fa-step-forward,fas fa-stethoscope,fas fa-sticky-note,fas fa-stop,fas fa-stop-circle,fas fa-stopwatch,fas fa-street-view,fas fa-strikethrough,fas fa-subscript,fas fa-subway,fas fa-suitcase,fas fa-sun,fas fa-superscript,fas fa-sync,fas fa-sync-alt,fas fa-syringe,fas fa-table,fas fa-table-tennis,fas fa-tablet,fas fa-tablet-alt,fas fa-tablets,fas fa-tachometer-alt,fas fa-tag,fas fa-tags,fas fa-tape,fas fa-tasks,fas fa-taxi,fas fa-terminal,fas fa-text-height,fas fa-text-width,fas fa-th,fas fa-th-large,fas fa-th-list,fas fa-thermometer,fas fa-thermometer-empty,fas fa-thermometer-full,fas fa-thermometer-half,fas fa-thermometer-quarter,fas fa-thermometer-three-quarters,fas fa-thumbs-down,fas fa-thumbs-up,fas fa-thumbtack,fas fa-ticket-alt,fas fa-times,fas fa-times-circle,fas fa-tint,fas fa-toggle-off,fas fa-toggle-on,fas fa-trademark,fas fa-train,fas fa-transgender,fas fa-transgender-alt,fas fa-trash,fas fa-trash-alt,fas fa-tree,fas fa-trophy,fas fa-truck,fas fa-truck-loading,fas fa-truck-moving,fas fa-tty,fas fa-tv,fas fa-umbrella,fas fa-underline,fas fa-undo,fas fa-undo-alt,fas fa-universal-access,fas fa-university,fas fa-unlink,fas fa-unlock,fas fa-unlock-alt,fas fa-upload,fas fa-user,fas fa-user-circle,fas fa-user-md,fas fa-user-plus,fas fa-user-secret,fas fa-user-times,fas fa-users,fas fa-utensil-spoon,fas fa-utensils,fas fa-venus,fas fa-venus-double,fas fa-venus-mars,fas fa-vial,fas fa-vials,fas fa-video,fas fa-video-slash,fas fa-volleyball-ball,fas fa-volume-down,fas fa-volume-off,fas fa-volume-up,fas fa-warehouse,fas fa-weight,fas fa-wheelchair,fas fa-wifi,fas fa-window-close,fas fa-window-maximize,fas fa-window-minimize,fas fa-window-restore,fas fa-wine-glass,fas fa-won-sign,fas fa-wrench,fas fa-x-ray,fas fa-yen-sign,far fa-address-book,far fa-address-card,far fa-arrow-alt-circle-down,far fa-arrow-alt-circle-left,far fa-arrow-alt-circle-right,far fa-arrow-alt-circle-up,far fa-bell,far fa-bell-slash,far fa-bookmark,far fa-building,far fa-calendar,far fa-calendar-alt,far fa-calendar-check,far fa-calendar-minus,far fa-calendar-plus,far fa-calendar-times,far fa-caret-square-down,far fa-caret-square-left,far fa-caret-square-right,far fa-caret-square-up,far fa-chart-bar,far fa-check-circle,far fa-check-square,far fa-circle,far fa-clipboard,far fa-clock,far fa-clone,far fa-closed-captioning,far fa-comment,far fa-comment-alt,far fa-comments,far fa-compass,far fa-copy,far fa-copyright,far fa-credit-card,far fa-dot-circle,far fa-edit,far fa-envelope,far fa-envelope-open,far fa-eye-slash,far fa-file,far fa-file-alt,far fa-file-archive,far fa-file-audio,far fa-file-code,far fa-file-excel,far fa-file-image,far fa-file-pdf,far fa-file-powerpoint,far fa-file-video,far fa-file-word,far fa-flag,far fa-folder,far fa-folder-open,far fa-frown,far fa-futbol,far fa-gem,far fa-hand-lizard,far fa-hand-paper,far fa-hand-peace,far fa-hand-point-down,far fa-hand-point-left,far fa-hand-point-right,far fa-hand-point-up,far fa-hand-pointer,far fa-hand-rock,far fa-hand-scissors,far fa-hand-spock,far fa-handshake,far fa-hdd,far fa-heart,far fa-hospital,far fa-hourglass,far fa-id-badge,far fa-id-card,far fa-image,far fa-images,far fa-keyboard,far fa-lemon,far fa-life-ring,far fa-lightbulb,far fa-list-alt,far fa-map,far fa-meh,far fa-minus-square,far fa-money-bill-alt,far fa-moon,far fa-newspaper,far fa-object-group,far fa-object-ungroup,far fa-paper-plane,far fa-pause-circle,far fa-play-circle,far fa-plus-square,far fa-question-circle,far fa-registered,far fa-save,far fa-share-square,far fa-smile,far fa-snowflake,far fa-square,far fa-star,far fa-star-half,far fa-sticky-note,far fa-stop-circle,far fa-sun,far fa-thumbs-down,far fa-thumbs-up,far fa-times-circle,far fa-trash-alt,far fa-user,far fa-user-circle,far fa-window-close,far fa-window-maximize,far fa-window-minimize,far fa-window-restore,fab fa-500px,fab fa-accessible-icon,fab fa-accusoft,fab fa-adn,fab fa-adversal,fab fa-affiliatetheme,fab fa-algolia,fab fa-amazon,fab fa-amazon-pay,fab fa-amilia,fab fa-android,fab fa-angellist,fab fa-angrycreative,fab fa-angular,fab fa-app-store,fab fa-app-store-ios,fab fa-apper,fab fa-apple,fab fa-apple-pay,fab fa-asymmetrik,fab fa-audible,fab fa-autoprefixer,fab fa-avianex,fab fa-aviato,fab fa-aws,fab fa-bandcamp,fab fa-behance,fab fa-behance-square,fab fa-bimobject,fab fa-bitbucket,fab fa-bitcoin,fab fa-bity,fab fa-black-tie,fab fa-blackberry,fab fa-blogger,fab fa-blogger-b,fab fa-bluetooth,fab fa-bluetooth-b,fab fa-btc,fab fa-buromobelexperte,fab fa-buysellads,fab fa-cc-amazon-pay,fab fa-cc-amex,fab fa-cc-apple-pay,fab fa-cc-diners-club,fab fa-cc-discover,fab fa-cc-jcb,fab fa-cc-mastercard,fab fa-cc-paypal,fab fa-cc-stripe,fab fa-cc-visa,fab fa-centercode,fab fa-chrome,fab fa-cloudscale,fab fa-cloudsmith,fab fa-cloudversify,fab fa-codepen,fab fa-codiepie,fab fa-connectdevelop,fab fa-contao,fab fa-cpanel,fab fa-creative-commons,fab fa-css3,fab fa-css3-alt,fab fa-cuttlefish,fab fa-d-and-d,fab fa-dashcube,fab fa-delicious,fab fa-deploydog,fab fa-deskpro,fab fa-deviantart,fab fa-digg,fab fa-digital-ocean,fab fa-discord,fab fa-discourse,fab fa-dochub,fab fa-docker,fab fa-draft2digital,fab fa-dribbble,fab fa-dribbble-square,fab fa-dropbox,fab fa-drupal,fab fa-dyalog,fab fa-earlybirds,fab fa-edge,fab fa-elementor,fab fa-ember,fab fa-empire,fab fa-envira,fab fa-erlang,fab fa-ethereum,fab fa-etsy,fab fa-expeditedssl,fab fa-facebook,fab fa-facebook-f,fab fa-facebook-messenger,fab fa-facebook-square,fab fa-firefox,fab fa-first-order,fab fa-firstdraft,fab fa-flickr,fab fa-flipboard,fab fa-fly,fab fa-font-awesome,fab fa-font-awesome-alt,fab fa-font-awesome-flag,fab fa-fonticons,fab fa-fonticons-fi,fab fa-fort-awesome,fab fa-fort-awesome-alt,fab fa-forumbee,fab fa-foursquare,fab fa-free-code-camp,fab fa-freebsd,fab fa-get-pocket,fab fa-gg,fab fa-gg-circle,fab fa-git,fab fa-git-square,fab fa-github,fab fa-github-alt,fab fa-github-square,fab fa-gitkraken,fab fa-gitlab,fab fa-gitter,fab fa-glide,fab fa-glide-g,fab fa-gofore,fab fa-goodreads,fab fa-goodreads-g,fab fa-google,fab fa-google-drive,fab fa-google-play,fab fa-google-plus,fab fa-google-plus-g,fab fa-google-plus-square,fab fa-google-wallet,fab fa-gratipay,fab fa-grav,fab fa-gripfire,fab fa-grunt,fab fa-gulp,fab fa-hacker-news,fab fa-hacker-news-square,fab fa-hips,fab fa-hire-a-helper,fab fa-hooli,fab fa-hotjar,fab fa-houzz,fab fa-html5,fab fa-hubspot,fab fa-imdb,fab fa-instagram,fab fa-internet-explorer,fab fa-ioxhost,fab fa-itunes,fab fa-itunes-note,fab fa-jenkins,fab fa-joget,fab fa-joomla,fab fa-js,fab fa-js-square,fab fa-jsfiddle,fab fa-keycdn,fab fa-kickstarter,fab fa-kickstarter-k,fab fa-korvue,fab fa-laravel,fab fa-lastfm,fab fa-lastfm-square,fab fa-leanpub,fab fa-less,fab fa-line,fab fa-linkedin,fab fa-linkedin-in,fab fa-linode,fab fa-linux,fab fa-lyft,fab fa-magento,fab fa-maxcdn,fab fa-medapps,fab fa-medium,fab fa-medium-m,fab fa-medrt,fab fa-meetup,fab fa-microsoft,fab fa-mix,fab fa-mixcloud,fab fa-mizuni,fab fa-modx,fab fa-monero,fab fa-napster,fab fa-nintendo-switch,fab fa-node,fab fa-node-js,fab fa-npm,fab fa-ns8,fab fa-nutritionix,fab fa-odnoklassniki,fab fa-odnoklassniki-square,fab fa-opencart,fab fa-openid,fab fa-opera,fab fa-optin-monster,fab fa-osi,fab fa-page4,fab fa-pagelines,fab fa-palfed,fab fa-patreon,fab fa-paypal,fab fa-periscope,fab fa-phabricator,fab fa-phoenix-framework,fab fa-php,fab fa-pied-piper,fab fa-pied-piper-alt,fab fa-pied-piper-pp,fab fa-pinterest,fab fa-pinterest-p,fab fa-pinterest-square,fab fa-playstation,fab fa-product-hunt,fab fa-pushed,fab fa-python,fab fa-qq,fab fa-quinscape,fab fa-quora,fab fa-ravelry,fab fa-react,fab fa-readme,fab fa-rebel,fab fa-red-river,fab fa-reddit,fab fa-reddit-alien,fab fa-reddit-square,fab fa-rendact,fab fa-renren,fab fa-replyd,fab fa-resolving,fab fa-rocketchat,fab fa-rockrms,fab fa-safari,fab fa-sass,fab fa-schlix,fab fa-scribd,fab fa-searchengin,fab fa-sellcast,fab fa-sellsy,fab fa-servicestack,fab fa-shirtsinbulk,fab fa-simplybuilt,fab fa-sistrix,fab fa-skyatlas,fab fa-skype,fab fa-slack,fab fa-slack-hash,fab fa-slideshare,fab fa-snapchat,fab fa-snapchat-ghost,fab fa-snapchat-square,fab fa-soundcloud,fab fa-speakap,fab fa-spotify,fab fa-stack-exchange,fab fa-stack-overflow,fab fa-staylinked,fab fa-steam,fab fa-steam-square,fab fa-steam-symbol,fab fa-sticker-mule,fab fa-strava,fab fa-stripe,fab fa-stripe-s,fab fa-studiovinari,fab fa-stumbleupon,fab fa-stumbleupon-circle,fab fa-superpowers,fab fa-supple,fab fa-telegram,fab fa-telegram-plane,fab fa-tencent-weibo,fab fa-themeisle,fab fa-trello,fab fa-tripadvisor,fab fa-tumblr,fab fa-tumblr-square,fab fa-twitch,fab fa-twitter,fab fa-twitter-square,fab fa-typo3,fab fa-uber,fab fa-uikit,fab fa-uniregistry,fab fa-untappd,fab fa-usb,fab fa-ussunnah,fab fa-vaadin,fab fa-viacoin,fab fa-viadeo,fab fa-viadeo-square,fab fa-viber,fab fa-vimeo,fab fa-vimeo-square,fab fa-vimeo-v,fab fa-vine,fab fa-vk,fab fa-vnv,fab fa-vuejs,fab fa-weibo,fab fa-weixin,fab fa-whatsapp,fab fa-whatsapp-square,fab fa-whmcs,fab fa-wikipedia-w,fab fa-windows,fab fa-wordpress,fab fa-wordpress-simple,fab fa-wpbeginner,fab fa-wpexplorer,fab fa-wpforms,fab fa-xbox,fab fa-xing,fab fa-xing-square,fab fa-y-combinator,fab fa-yahoo,fab fa-yandex,fab fa-yandex-international,fab fa-yelp,fab fa-yoast,fab fa-youtube,fab fa-youtube-square'.split(',');
-		$(W).on('resize', function() {
-			SETTER('fontawesomebox', 'resize');
-		});
-	};
-
-	self.readonly();
-	self.nocompile();
-
-	self.make = function() {
-
-		self.aclass(cls);
-		self.css('height', config.height + 'px');
-		self.append('<div class="{2}-search"><span><i class="fa fa-search clearsearch"></i></span><div><input type="text" maxlength="50" placeholder="{0}" /></div></div><div class="{2}-search-empty"></div><div class="{2}-icons"><ul style="height:{1}px" class="noscrollbar"></ul></div>'.format(config.search, typeof(config.height) === 'string' ? (config.height - 40) : '100%', cls));
-		container = $(self.find(cls2 + '-icons').find('ul')[0]);
-		input = self.find('input');
-		icon = self.find(cls2 + '-search').find('i');
-
-		self.event('click', '.clearsearch', function() {
-			input.val('').trigger('keydown');
-		});
-
-		self.event('click', 'li', function() {
-			var el = $(this);
-			var val = '';
-
-			if (!el.hclass('selected'))
-				val = el.find('i').attr('class');
-
-			config.exec && EXEC(config.exec, val, self);
-			self.set(val);
-			self.change(true);
-		});
-
-		self.event('keydown', 'input', function() {
-			var self = this;
-			setTimeout2(self.id, function() {
-				var hide = [];
-				var show = [];
-				var value = self.value.toSearch();
-				container.find('li').each(function() {
-					if (value && this.getAttribute('data-search').toSearch().indexOf(value) === -1)
-						hide.push(this);
-					else
-						show.push(this);
-				});
-				$(hide).aclass('hidden');
-				$(show).rclass('hidden');
-				icon.tclass('fa-times', !!value).tclass('fa-search', !value);
-			}, 300);
-		});
-
-		setTimeout(self.resize, 500);
-	};
-
-	self.resize = function() {
-		var value = config.height;
-		if (typeof(value) === 'number') {
-			self.css('height', value + 'px');
-			container.css('height', (value - 38) + 'px');
-		} else {
-			var el = self.element.closest(value);
-			var h = el.height() - (config.margin || 0);
-			self.css('height', h + 'px');
-			container.css('height', (h - 38) + 'px');
-		}
-	};
-
-	self.configure = function (key, value, init) {
-
-		if (init)
-			return;
-
-		switch (key) {
-			case 'height':
-				self.resize();
-				break;
-		}
-	};
-
-	self.released = function(is) {
-		if (is) {
-			container.empty();
-		} else {
-			self.render();
-			refresh && self.refresh();
-		}
-	};
-
-	self.render = function() {
-		var builder = [];
-		var icons = W.fontawesomeicons;
-		for (var i = 0, length = icons.length; i < length; i++) {
-			var icon = icons[i];
-			builder.push(template.format(icon, icon));
-		}
-		container.empty();
-		input.val('').trigger('keydown');
-		container.html(builder.join(''));
-	};
-
-	self.setter = function(value, path, type) {
-		if (type === 3) {
-			setTimeout(function() {
-				container[0].scrollTop = 0;
-			}, 100);
-		}
-		refresh = true;
-	};
-});
-
 COMPONENT('message', function(self, config) {
 
 	var cls = 'ui-message';
@@ -7526,6 +7525,38 @@ COMPONENT('message', function(self, config) {
 				self.find(cls2 + '-icon').aclass(cls + '-icon-animate');
 			}, 300);
 		}, 100);
+	};
+
+	self.response = function(message, callback, response) {
+
+		var fn;
+
+		if (typeof(message) === 'function') {
+			response = callback;
+			fn = message;
+			message = null;
+		} else if (typeof(callback) === 'function')
+			fn = callback;
+		else {
+			response = callback;
+			fn = null;
+		}
+
+		if (response instanceof Array) {
+			var builder = [];
+			for (var i = 0; i < response.length; i++) {
+				var err = response[i].error;
+				err && builder.push(err);
+			}
+			self.warning(builder.join('<br />'));
+			SETTER('!loading/hide');
+		} else if (typeof(response) === 'string') {
+			self.warning(response);
+			SETTER('!loading/hide');
+		} else {
+			message && self.success(message);
+			fn && fn(response);
+		}
 	};
 });
 
@@ -8316,7 +8347,7 @@ COMPONENT('tooltip', function(self) {
 
 });
 
-COMPONENT('windows', 'menuicon:fa fa-navicon', function(self, config) {
+COMPONENT('windows', 'menuicon:fa fa-navicon;reoffsetresize:1', function(self, config) {
 
 	var cls = 'ui-' + self.name;
 	var cls2 = '.' + cls;
@@ -8327,6 +8358,8 @@ COMPONENT('windows', 'menuicon:fa fa-navicon', function(self, config) {
 	var prevfocused;
 	var serviceid;
 	var data = [];
+	var lastWW = WW;
+	var lastWH = WH;
 
 	self.make = function() {
 		self.aclass(cls);
@@ -8367,6 +8400,10 @@ COMPONENT('windows', 'menuicon:fa fa-navicon', function(self, config) {
 		serviceid = setInterval(events.service, 5000);
 	};
 
+	self.finditem = function(id) {
+		return cache[id];
+	};
+
 	self.send = function(type, body) {
 		for (var i = 0; i < data.length; i++)
 			data[i].meta.data(type, body, data[i].element);
@@ -8383,6 +8420,31 @@ COMPONENT('windows', 'menuicon:fa fa-navicon', function(self, config) {
 
 	self.recompile = function() {
 		setTimeout2(self.iD + 'compile', COMPILE, 50);
+	};
+
+	self.resizeforce = function() {
+
+		self.element.find(cls2 + '-maximized').each(function() {
+			cache[$(this).attrd('id')].setcommand('maximize');
+		});
+
+		if (config.reoffsetresize) {
+			var diffWW = lastWW - WW;
+			var diffWH = lastWH - WH;
+
+			var keys = Object.keys(cache);
+			for (var i = 0; i < keys.length; i++) {
+				var win = cache[keys[i]];
+				win.setoffset(win.x - diffWW, win.y - diffWH);
+			}
+
+			lastWW = WW;
+			lastWH = WH;
+		}
+	};
+
+	self.resize = function() {
+		setTimeout2(self.ID + 'resize', self.resizeforce, 300);
 	};
 
 	events.service = function() {
@@ -8416,6 +8478,8 @@ COMPONENT('windows', 'menuicon:fa fa-navicon', function(self, config) {
 		drag.resize = el.hclass(cls + '-resize');
 		drag.is = false;
 
+		e.preventDefault();
+
 		var myoffset = self.element.position();
 		var pos;
 
@@ -8424,21 +8488,18 @@ COMPONENT('windows', 'menuicon:fa fa-navicon', function(self, config) {
 			drag.el = el.closest(cls2 + '-item');
 			drag.dir = c.match(/-(tl|tr|bl|br)/)[0].substring(1);
 			pos = drag.el.position();
+			var m = self.element.offset();
 			drag.body = drag.el.find(cls2 + '-body');
+			drag.plus = m;
 			drag.x = pos.left;
 			drag.y = pos.top;
 			drag.width = drag.el.width();
 			drag.height = drag.body.height();
 		} else {
 			drag.el = el.closest(cls2 + '-item');
-			if (drag.touch) {
-				pos = drag.el.position();
-				drag.x = e.pageX - pos.left;
-				drag.y = e.pageY - pos.top;
-			} else {
-				drag.x = e.offsetX;
-				drag.y = e.offsetY;
-			}
+			pos = drag.el.position();
+			drag.x = e.pageX - pos.left;
+			drag.y = e.pageY - pos.top;
 		}
 
 		drag.el.aclass(cls + '-block');
@@ -8471,11 +8532,11 @@ COMPONENT('windows', 'menuicon:fa fa-navicon', function(self, config) {
 
 		if (drag.resize) {
 
-			var x = evt.pageX - drag.offX;
-			var y = evt.pageY - drag.offY;
+			var x = evt.pageX - drag.offX - drag.plus.left;
+			var y = evt.pageY - drag.offY - drag.plus.top;
+			var off = drag.item.meta.offset;
 			var w;
 			var h;
-			var off = drag.item.meta.offset;
 
 			switch (drag.dir) {
 
@@ -8543,6 +8604,9 @@ COMPONENT('windows', 'menuicon:fa fa-navicon', function(self, config) {
 					break;
 			}
 
+			drag.item.ert && clearTimeout(drag.item.ert);
+			drag.item.ert = setTimeout(drag.item.emitresize, 100);
+
 		} else {
 			obj.left = evt.pageX - drag.x - drag.offX;
 			obj.top = evt.pageY - drag.y - drag.offY;
@@ -8573,6 +8637,7 @@ COMPONENT('windows', 'menuicon:fa fa-navicon', function(self, config) {
 			item.width = meta.offset.width = drag.el.width();
 			item.height = meta.offset.height = drag.body.height();
 			meta.resize && meta.resize.call(item, item.width, item.height, drag.body, item.x, item.y);
+			self.element.SETTER('*', 'resize');
 		}
 
 		meta.move && meta.move.call(item, item.x, item.y, drag.body);
@@ -8587,6 +8652,9 @@ COMPONENT('windows', 'menuicon:fa fa-navicon', function(self, config) {
 		obj.y = item.y;
 		obj.width = item.width;
 		obj.height = item.height;
+		obj.ww = WW;
+		obj.wh = WH;
+		obj.hidden = item.meta.hidden;
 		PREF.set(key, obj, '1 month');
 	};
 
@@ -8597,18 +8665,40 @@ COMPONENT('windows', 'menuicon:fa fa-navicon', function(self, config) {
 
 	self.wadd = function(item) {
 
+		var hidden = '';
 
 		if (item.actions && item.actions.autosave) {
 			pos = PREF['win_' + item.id];
 			if (pos) {
-				item.offset.x = pos.x;
-				item.offset.y = pos.y;
+
+				var mx = 0;
+				var my = 0;
+
+				if (config.reoffsetresize && pos.ww != null && pos.wh != null) {
+					mx = pos.ww - WW;
+					my = pos.wh - WH;
+				}
+
+				item.offset.x = pos.x - mx;
+				item.offset.y = pos.y - my;
 				item.offset.width = pos.width;
 				item.offset.height = pos.height;
+
+				var ishidden = false;
+
+				if (pos.hidden && (item.hidden == null || item.hidden)) {
+					ishidden = true;
+					item.hidden = true;
+				}
+
+				if (!ishidden)
+					ishidden = item.hidden;
+
+				hidden = ishidden ? ' hidden' : '';
 			}
 		}
 
-		var el = $('<div class="{0}-item" data-id="{id}" style="left:{x}px;top:{y}px;width:{width}px"><span class="{0}-resize {0}-resize-tl"></span><span class="{0}-resize {0}-resize-tr"></span><span class="{0}-resize {0}-resize-bl"></span><span class="{0}-resize {0}-resize-br"></span><div class="{0}-title"><i class="fa fa-times {0}-control" data-name="close"></i><i class="far fa-window-maximize {0}-control" data-name="maximize"></i><i class="far fa-window-minimize {0}-control" data-name="minimize"></i><i class="{1} {0}-control {0}-lastbutton" data-name="menu"></i><span>{{ title }}</span></div><div class="{0}-body" style="height:{height}px"></div></div>'.format(cls, config.menuicon).arg(item.offset).arg(item));
+		var el = $('<div class="{0}-item{2}" data-id="{id}" style="left:{x}px;top:{y}px;width:{width}px"><span class="{0}-resize {0}-resize-tl"></span><span class="{0}-resize {0}-resize-tr"></span><span class="{0}-resize {0}-resize-bl"></span><span class="{0}-resize {0}-resize-br"></span><div class="{0}-title"><i class="fa fa-times {0}-control" data-name="close"></i><i class="far fa-window-maximize {0}-control" data-name="maximize"></i><i class="far fa-window-minimize {0}-control" data-name="minimize"></i><i class="{1} {0}-control {0}-lastbutton" data-name="menu"></i><span>{{ title }}</span></div><div class="{0}-body" style="height:{height}px"></div></div>'.format(cls, config.menuicon, hidden).arg(item.offset).arg(item));
 		var body = el.find(cls2 + '-body');
 		var pos;
 
@@ -8622,7 +8712,12 @@ COMPONENT('windows', 'menuicon:fa fa-navicon', function(self, config) {
 				el.aclass(cls + '-noresize');
 			if (item.actions.move == false)
 				el.aclass(cls + '-nomove');
-			if (item.actions.close == false)
+
+			var noclose = item.actions.close == false;
+			if (item.actions.hide)
+				noclose = false;
+
+			if (noclose)
 				el.aclass(cls + '-noclose');
 			if (item.actions.maximize == false)
 				el.aclass(cls + '-nomaximize');
@@ -8654,6 +8749,11 @@ COMPONENT('windows', 'menuicon:fa fa-navicon', function(self, config) {
 
 		item.make && item.make.call(cache[item.id], body);
 
+		obj.emitresize = function() {
+			obj.ert = null;
+			obj.element.SETTER('*', 'resize');
+		};
+
 		obj.setsize = function(w, h) {
 			var t = this;
 			var obj = {};
@@ -8668,6 +8768,8 @@ COMPONENT('windows', 'menuicon:fa fa-navicon', function(self, config) {
 				t.height = t.meta.offset.height = h;
 			}
 
+			t.ert && clearTimeout(t.ert);
+			t.ert = setTimeout(t.emitresize, 100);
 			self.wsave(t);
 		};
 
@@ -8677,13 +8779,35 @@ COMPONENT('windows', 'menuicon:fa fa-navicon', function(self, config) {
 			var c;
 
 			switch (type) {
+
+				case 'toggle':
+					obj.setcommand(obj.meta.hidden ? 'show' : 'hide');
+					break;
+
+				case 'show':
+					if (obj.meta.hidden) {
+						obj.meta.hidden = false;
+						obj.element.parent().rclass('hidden');
+						self.wsave(obj);
+						self.resize2();
+					}
+					break;
+
 				case 'close':
+				case 'hide':
+
+					if (type === 'hide' && obj.meta.hidden)
+						return;
+
 					if (obj.meta.close) {
 						obj.meta.close(function() {
 							self.wrem(obj.meta);
+							self.resize2();
 						});
-					} else
+					} else {
 						self.wrem(obj.meta);
+						self.resize2();
+					}
 					break;
 
 				case 'maximize':
@@ -8782,19 +8906,30 @@ COMPONENT('windows', 'menuicon:fa fa-navicon', function(self, config) {
 		var obj = cache[item.id];
 		if (obj) {
 			var main = obj.element.closest(cls2 + '-item');
-			obj.meta.destroy && obj.meta.destroy.call(obj);
-			main.off('*');
-			main.find('*').off('*');
-			main.remove();
-			delete cache[item.id];
 
-			var index = services.indexOf(obj);
-			if (index !== -1)
-				services.splice(index, 1);
+			if (obj.meta.actions.hide) {
+				obj.meta.hidden = true;
+				main.aclass('hidden');
+				self.wsave(obj);
+			} else {
+				obj.meta.destroy && obj.meta.destroy.call(obj);
+				main.off('*');
+				main.find('*').off('*');
+				main.remove();
+				delete cache[item.id];
 
-			index = data.indexOf(obj);
-			if (index !== -1)
-				data.splice(index, 1);
+				var index = services.indexOf(obj);
+				if (index !== -1)
+					services.splice(index, 1);
+
+				index = data.indexOf(obj);
+				if (index !== -1)
+					data.splice(index, 1);
+
+				var arr = self.get();
+				arr.splice(arr.findIndex('id', item.id), 1);
+				self.update();
+			}
 		}
 	};
 
@@ -8821,4 +8956,1678 @@ COMPONENT('windows', 'menuicon:fa fa-navicon', function(self, config) {
 		}
 	};
 
+	self.toggle = function(id) {
+		var item = cache[id];
+		item && item.setcommand('toggle');
+	};
+
+	self.show = function(id) {
+		var item = cache[id];
+		item && item.setcommand('show');
+	};
+
+	self.hide = function(id) {
+		var item = cache[id];
+		item && item.setcommand('hide');
+	};
+
+});
+
+COMPONENT('dockable', 'menuicon:fa fa-navicon;style:2;parent:window;margin:0;reoffsetresize:0', function(self, config) {
+
+	var cls = 'ui-' + self.name;
+	var cls2 = '.' + cls;
+	var cache = {};
+	var services = [];
+	var events = {};
+	var drag = {};
+	var prevfocused;
+	var serviceid;
+	var data = [];
+	var docked = {};
+	var layout;
+	var ruler;
+	var container;
+	var init = false;
+	var lastWW = WW;
+	var lastWH = WH;
+
+	self.make = function() {
+		self.aclass(cls + (config.style === 2 ? (' ' + cls + '-style2') : ''));
+		var el = self.element;
+		el.wrapInner('<div class="{0}-layout" />'.format(cls));
+		el.append('<div class="{0}-panels"><div class="{0}-ruler hidden"></div></div>'.format(cls));
+		layout = self.find(cls2 + '-layout');
+		ruler = self.find(cls2 + '-ruler');
+		container = self.find(cls2 + '-panels');
+		self.event('click', cls2 + '-control', function() {
+			var el = $(this);
+			var name = el.attrd('name');
+			var item = cache[el.closest(cls2 + '-item').attrd('id')];
+			switch (name) {
+				case 'close':
+					item.setcommand('close');
+					break;
+				case 'menu':
+					item.meta.menu && item.meta.menu.call(item, el);
+					break;
+				default:
+					item.setcommand(name);
+					break;
+			}
+		});
+
+		self.event('mousedown touchstart', cls2 + '-item', function() {
+			if (prevfocused) {
+				if (prevfocused[0] == this)
+					return;
+				prevfocused.rclass(cls + '-focused');
+			}
+			prevfocused = $(this).aclass(cls + '-focused');
+		});
+
+		self.event('mousedown touchstart', cls2 + '-title,' + cls2 + '-resize', events.down);
+		$(W).on('resize', self.resize2);
+		serviceid = setInterval(events.service, 5000);
+		self.resizelayout();
+	};
+
+	self.finditem = function(id) {
+		return cache[id];
+	};
+
+	self.send = function(type, body) {
+		for (var i = 0; i < data.length; i++)
+			data[i].meta.data(type, body, data[i].element);
+	};
+
+	self.destroy = function() {
+		$(W).off('resize', self.resize2);
+		clearInterval(serviceid);
+	};
+
+	self.resize = function() {
+
+		clearTimeout2(self.ID + 'compile');
+		self.resizelayout();
+
+		var keys = Object.keys(cache);
+		docked = {};
+
+		for (var i = 0; i < keys.length; i++) {
+			var item = cache[keys[i]];
+
+			if (item.meta.hidden)
+				continue;
+
+			if (item.meta.offset.docked) {
+				item.titleheight = item.container.find(cls2 + '-title').height() || 0;
+				docked[item.meta.offset.docked] = item;
+			} else if (config.reoffsetresize) {
+				var diffWW = lastWW - WW;
+				var diffWH = lastWH - WH;
+				item.setoffset(item.x - diffWW, item.y - diffWH);
+			}
+		}
+
+		lastWW = WW;
+		lastWH = WH;
+
+		var ww = self.element.width();
+		var wh = self.element.height();
+
+		var h;
+		var w;
+		var x;
+
+		if (docked.bottom) {
+			h = docked.bottom.container.offset().top;
+
+			if (config.style === 1) {
+				docked.left && docked.left.setsize(null, h - docked.left.titleheight - 1);
+				if (docked.right) {
+					docked.right.setsize(null, h - docked.right.titleheight - 1);
+					docked.right.setoffset(ww - docked.right.width);
+				}
+			} else {
+
+				w = self.element.width();
+				x = docked.left ? docked.left.width : 0;
+
+				if (docked.right) {
+					docked.right.setoffset(ww - docked.right.width);
+					docked.right.setsize(null, wh - docked.right.titleheight);
+					w = w - docked.right.width;
+				}
+
+				docked.left && docked.left.setsize(null, wh - docked.left.titleheight);
+				docked.bottom.setoffset(x, wh - docked.bottom.height - docked.bottom.titleheight);
+				docked.bottom.setsize(w - x, null);
+			}
+
+		} else {
+
+			w = self.element.width();
+			x = docked.left ? docked.left.width : 0;
+
+			if (docked.right) {
+				docked.right.setoffset(ww - docked.right.width);
+				docked.right.setsize(null, wh - docked.right.titleheight);
+				w = w - docked.right.width;
+			}
+
+			docked.left && docked.left.setsize(null, wh - docked.left.titleheight);
+		}
+
+		self.resizelayout();
+		self.element.SETTER('*', 'resize');
+	};
+
+	self.resizelayout = function() {
+
+		var parent = self.parent(config.parent);
+		var css = {};
+		css.width = parent.width();
+		css.height = parent.height() - config.margin;
+
+		self.css(css);
+
+		css['margin-left'] = 0;
+		var keys = Object.keys(cache);
+		for (var i = 0; i < keys.length; i++) {
+			var item = cache[keys[i]];
+
+			if (item.meta.hidden)
+				continue;
+
+			var meta = item.meta;
+			var offset = meta.offset;
+			switch (offset.docked) {
+				case 'left':
+					css['margin-left'] += offset.width;
+					css.width -= offset.width;
+					break;
+				case 'right':
+					css.width -= offset.width;
+					break;
+				case 'bottom':
+					css.height -= offset.height + item.titleheight;
+					break;
+			}
+		}
+		layout.css(css);
+	};
+
+	self.resize2 = function() {
+		setTimeout2(self.ID, self.resize, 300);
+	};
+
+	self.recompile = function() {
+		setTimeout2(self.ID + 'compile', COMPILE, 50);
+	};
+
+	events.service = function() {
+		for (var i = 0; i < services.length; i++) {
+			var tmp = services[i];
+			if (tmp.$service)
+				tmp.$service++;
+			else
+				tmp.$service = 1;
+			tmp.meta.service && tmp.meta.service.call(tmp, tmp.$service, tmp.element);
+		}
+	};
+
+	events.down = function(e) {
+
+		if (e.type === 'touchstart') {
+			drag.touch = true;
+			e = e.touches[0];
+		} else
+			drag.touch = false;
+
+		if (e.target.nodeName === 'I')
+			return;
+
+		var el = $(this);
+		drag.resize = el.hclass(cls + '-resize');
+		drag.is = false;
+
+		e.preventDefault();
+
+		var myoffset = self.element.position();
+		var pos;
+
+		if (drag.resize) {
+			var c = el.attr('class');
+			drag.el = el.closest(cls2 + '-item');
+			drag.dir = c.match(/-(tl|tr|bl|br)/)[0].substring(1);
+			pos = drag.el.position();
+			var m = self.element.offset();
+			drag.body = drag.el.find(cls2 + '-body');
+			drag.plus = m;
+			drag.x = pos.left;
+			drag.y = pos.top;
+			drag.width = drag.el.width();
+			drag.height = drag.body.height();
+
+			var css = {};
+
+			if (drag.el.hclass(cls + '-docked')) {
+				switch (drag.dir) {
+					case 'tr':
+						css.width = 1;
+						css.height = drag.el.height();
+						css.left = pos.left + drag.width;
+						css.top = pos.top;
+						ruler.css(css).rclass('hidden');
+						break;
+					case 'tl':
+
+						var item = cache[drag.el.attrd('id')];
+						var d = item.meta.offset.docked;
+						if (d === 'bottom') {
+							css.width = drag.width;
+							css.height = 1;
+						} else {
+							css.width = 1;
+							css.height = drag.el.height();
+						}
+
+						css.top = pos.top;
+						css.left = pos.left;
+						ruler.css(css).rclass('hidden');
+						break;
+				}
+			}
+
+		} else {
+			drag.el = el.closest(cls2 + '-item');
+			pos = drag.el.position();
+			drag.x = e.pageX - pos.left;
+			drag.y = e.pageY - pos.top;
+		}
+
+		drag.el.aclass(cls + '-block');
+		drag.offX = myoffset.left;
+		drag.offY = myoffset.top;
+		drag.item = cache[drag.el.attrd('id')];
+		drag.isdocked = drag.el.hclass(cls + '-docked');
+		drag.dockl = false;
+		drag.dockr = false;
+		drag.dockb = false;
+		drag.ww = self.element.width();
+		drag.wh = self.element.height();
+
+		if (drag.item.meta.actions) {
+			if (drag.resize) {
+				if (drag.item.meta.actions.resize == false)
+					return;
+			} else {
+
+				if (drag.item.meta.actions.move == false)
+					return;
+			}
+		}
+
+		drag.el.aclass(cls + '-dragged');
+		$(W).on('mousemove touchmove', events.move).on('mouseup touchend', events.up);
+	};
+
+	events.move = function(e) {
+
+		var evt = e;
+		if (drag.touch)
+			evt = e.touches[0];
+
+		var obj = {};
+		var off = drag.item.meta.offset;
+		var d = off.docked;
+		var minwidth = (d ? off.dockminwidth : off.minwidth) || 30;
+		var maxwidth = d ? off.dockmaxwidth : off.maxwidth;
+		var minheight = (d ? off.dockminheight : off.minheight) || 30;
+		var maxheight = d ? off.dockmaxheight : off.maxheight;
+
+		drag.is = true;
+
+		if (drag.resize) {
+
+			var x = evt.pageX - drag.plus.left;
+			var y = evt.pageY - drag.plus.top;
+			var actions = drag.item.meta.actions;
+			var resizeX = actions ? actions.resizeX != false : true;
+			var resizeY = actions ? actions.resizeY != false : true;
+			var w;
+			var h;
+			var stopw, stoph;
+
+			switch (drag.dir) {
+
+				case 'tl':
+
+					w = drag.width - (x - drag.x);
+					h = drag.height - (y - drag.y);
+
+					if (resizeY && (!d || d === 'bottom'))
+						obj.top = y;
+
+					if (resizeX && (!d || d !== 'bottom'))
+						obj.left = x;
+
+					stopw = (minwidth && w < minwidth) || (maxwidth && w > maxwidth);
+					stoph = (minheight && h < minheight) || (maxheight && h > maxheight);
+
+					if (d) {
+
+						if (resizeX && (!d || d !== 'bottom') && !stopw) {
+							obj.left = drag.ww - w;
+							ruler.css(obj).attrd('cache', w);
+						}
+
+						if (resizeY && (!d || d === 'bottom') && !stoph) {
+							obj.top = drag.wh - h - drag.item.titleheight;
+							ruler.css(obj).attrd('cache', h);
+						}
+
+					} else {
+
+						if (resizeX && (!d || d !== 'bottom') && !stopw) {
+							drag.el.css(obj);
+							obj.width = w;
+						}
+
+						if (resizeY && (!d || d === 'bottom') && !stoph) {
+							obj.top = y;
+							obj.height = h;
+						}
+
+						delete obj.width;
+						delete obj.top;
+
+						if (!stopw || !stoph)
+							drag.body.css(obj);
+					}
+					break;
+
+				case 'tr':
+
+					w = x - drag.x;
+					h = drag.height - (y - drag.y);
+
+					stopw = (minwidth && w < minwidth) || (maxwidth && w > maxwidth);
+					stoph = (minheight && h < minheight) || (maxheight && h > maxheight);
+
+					if (d) {
+
+						if (resizeX && !stopw)
+							obj.left = w;
+
+						if (resizeY && !d && !stoph)
+							obj.top = y;
+
+						if (!stopw)
+							ruler.css(obj).attrd('cache', w);
+
+					} else {
+
+						if (resizeX && !stopw)
+							obj.width = w;
+
+						if (resizeY && !d && !stoph)
+							obj.top = y;
+
+						if (!stopw || !stoph)
+							drag.el.css(obj);
+
+						if (resizeY && !d && !stoph)
+							obj.height = h;
+
+						delete obj.width;
+						delete obj.top;
+
+						if (!stopw || !stoph)
+							drag.body.css(obj);
+					}
+
+					break;
+
+				case 'bl':
+
+					w = drag.width - (x - drag.x);
+					h = y - drag.y - 30;
+
+					stopw = (minwidth && w < minwidth) || (maxwidth && w > maxwidth);
+					stoph = (minheight && h < minheight) || (maxheight && h > maxheight);
+
+					if (resizeX && !stopw) {
+						obj.left = x;
+						obj.width = w;
+						drag.el.css(obj);
+					}
+
+					if (resizeY && !stoph) {
+						delete obj.width;
+						obj.height = h;
+						drag.body.css(obj);
+					}
+
+					break;
+
+				case 'br':
+
+					w = x - drag.x;
+					h = y - drag.y - 30;
+
+					stopw = (minwidth && w < minwidth) || (maxwidth && w > maxwidth);
+					stoph = (minheight && h < minheight) || (maxheight && h > maxheight);
+
+					if (resizeX && !stopw) {
+						obj.width = w;
+						drag.el.css(obj);
+					}
+
+					if (resizeY && !stoph) {
+						delete obj.width;
+						obj.height = h;
+						drag.body.css(obj);
+					}
+
+					break;
+			}
+
+			if (!d) {
+				drag.item.ert && clearTimeout(drag.item.ert);
+				drag.item.ert = setTimeout(drag.item.emitresize, 100);
+			}
+
+		} else {
+
+			obj.left = evt.pageX - drag.x;
+			obj.top = evt.pageY - drag.y;
+			drag.el.css(obj);
+
+			if (drag.isdocked) {
+
+				var old = drag.item.meta.offset.docked;
+				drag.isdocked = false;
+				drag.item.setdock(null);
+				drag.item.setsize(old === 'bottom' ? (drag.item.width / 2) >> 0 : drag.item.width, old !== 'bottom' ? (drag.item.height / 2) >> 0 : drag.item.height);
+
+			} else {
+
+				var is = false;
+				var margin = 0;
+				var css;
+
+				if (drag.item.dockable.left && !docked.left) {
+
+					is = obj.left < 30;
+					if (is !== drag.dockl) {
+
+						if (docked.bottom && is && config.style === 1)
+							margin = drag.wh - docked.bottom.container.offset().top;
+
+						drag.dockl = is;
+						css = {};
+						css.width = 1;
+						css.height = drag.wh - margin;
+						css.left = minwidth || maxwidth || drag.item.width;
+						css.top = 0;
+						ruler.css(css).tclass('hidden', !is);
+					}
+				}
+
+				if (drag.item.dockable.right && !docked.right) {
+
+					is = obj.left > drag.ww - drag.item.width + 50;
+					if (is !== drag.dockr) {
+
+						if (docked.bottom && is && config.style === 1)
+							margin = drag.wh - docked.bottom.container.offset().top;
+
+						drag.dockr = is;
+						css = {};
+						css.width = 1;
+						css.height = drag.wh - margin;
+						css.left = drag.ww - (minwidth || maxwidth || drag.item.width);
+						css.top = 0;
+						ruler.css(css).tclass('hidden', !is);
+					}
+				}
+
+				if (drag.item.dockable.bottom && !docked.bottom) {
+
+					is = obj.top > (drag.item.y + (drag.item.height / 2) + 50);
+
+					if (is !== drag.dockb) {
+						drag.dockb = is;
+						css = {};
+
+						css.height = 1;
+						css.top = drag.wh - (minheight || maxheight || drag.item.height);
+
+						if (config.style === 1) {
+							css.left = 0;
+							css.width = drag.ww;
+						} else {
+							css.left = (docked.left ? docked.left.width : 0);
+							css.width = (docked.right ? docked.right.x : drag.ww) - css.left;
+						}
+
+						ruler.css(css).tclass('hidden', !is);
+					}
+				}
+			}
+		}
+
+		if (!drag.touch)
+			e.preventDefault();
+	};
+
+	events.up = function() {
+
+		drag.el.rclass(cls + '-dragged').rclass(cls + '-block');
+		$(W).off('mousemove touchmove', events.move).off('mouseup touchend', events.up);
+
+		if (!drag.is) {
+			ruler.aclass('hidden');
+			return;
+		}
+
+		var item = drag.item;
+		var meta = item.meta;
+		var pos;
+		var w;
+		var h;
+
+		if (meta.offset.docked) {
+			pos = ruler.offset();
+
+			if (meta.offset.docked !== 'bottom')
+				w = +ruler.attrd('cache') + 1;
+			else if (meta.offset.docked === 'bottom')
+				h = +ruler.attrd('cache') + 1;
+
+			if (meta.offset.docked === 'right')
+				pos.left = drag.ww - w;
+
+		} else {
+			pos = drag.el.position();
+			w = drag.el.width();
+			h = drag.el.height() - drag.item.titleheight;
+		}
+
+		ruler.aclass('hidden');
+		drag.is = false;
+		drag.x = meta.offset.x = item.x = pos.left;
+		drag.y = meta.offset.y = item.y = pos.top;
+
+		if (drag.resize) {
+			drag.item.setsize(w, h);
+			meta.resize && meta.resize.call(item, item.width, item.height, drag.body, item.x, item.y);
+		} else {
+			drag.dockl && item.setdock('left', true);
+			drag.dockr && item.setdock('right', true);
+			drag.dockb && item.setdock('bottom', true);
+		}
+
+		meta.move && meta.move.call(item, item.x, item.y, drag.body);
+		drag.resize && self.resize();
+		self.wsave(item);
+		self.change(true);
+	};
+
+	var wsavecallback = function(item) {
+		var key = 'dock_' + item.meta.id;
+		var obj = {};
+		obj.x = item.x;
+		obj.y = item.y;
+		obj.width = item.width;
+		obj.height = item.height;
+		obj.docked = item.meta.offset.docked;
+		obj.ww = WW;
+		obj.wh = WH;
+		obj.hidden = item.meta.hidden;
+		PREF.set(key, obj, '1 month');
+	};
+
+	self.wsave = function(obj) {
+		if (obj.meta.actions && obj.meta.actions.autosave && init)
+			setTimeout2(self.ID + '_dock_' + obj.meta.id, wsavecallback, 500, null, obj);
+	};
+
+	self.wadd = function(item) {
+
+		var hidden = '';
+		var ishidden = false;
+
+		if (item.actions && item.actions.autosave) {
+			pos = PREF['dock_' + item.id];
+			if (pos) {
+
+				var mx = 0;
+				var my = 0;
+
+				if (config.reoffsetresize && pos.ww != null && pos.wh != null) {
+					mx = pos.ww - WW;
+					my = pos.wh - WH;
+				}
+
+				item.offset.x = pos.x - mx;
+				item.offset.y = pos.y - my;
+				item.offset.width = pos.width;
+				item.offset.height = pos.height;
+				item.offset.docked = pos.docked;
+
+				if (pos.hidden) {
+					ishidden = true;
+					item.hidden = true;
+				}
+			}
+		}
+
+		if (!ishidden)
+			ishidden = item.hidden;
+
+		hidden = ishidden ? ' hidden' : '';
+
+		var el = $('<div class="{0}-item{2}" data-id="{id}" style="left:{x}px;top:{y}px;width:{width}px"><span class="{0}-resize {0}-resize-tl"></span><span class="{0}-resize {0}-resize-tr"></span><span class="{0}-resize {0}-resize-bl"></span><span class="{0}-resize {0}-resize-br"></span><div class="{0}-title"><i class="fa fa-times {0}-control" data-name="close"></i><span>{{ title }}</span></div><div class="{0}-body" style="height:{height}px"></div></div>'.format(cls, config.menuicon, hidden).arg(item.offset).arg(item));
+		var body = el.find(cls2 + '-body');
+		var pos;
+
+		body.append(item.html);
+
+		if (typeof(item.html) === 'string' && item.html.COMPILABLE())
+			self.recompile();
+
+		if (item.actions) {
+			if (item.actions.resize == false)
+				el.aclass(cls + '-noresize');
+			if (item.actions.move == false)
+				el.aclass(cls + '-nomove');
+
+			var noclose = item.actions.close == false;
+			if (item.actions.hide)
+				noclose = false;
+
+			if (noclose)
+				el.aclass(cls + '-noclose');
+			if (item.actions.maximize == false)
+				el.aclass(cls + '-nomaximize');
+			if (item.actions.minimize == false)
+				el.aclass(cls + '-nominimize');
+			if (!item.actions.menu)
+				el.aclass(cls + '-nomenu');
+		}
+
+		var obj = cache[item.id] = {};
+		obj.main = self;
+		obj.meta = item;
+		obj.element = body;
+		obj.container = el;
+		obj.x = item.offset.x;
+		obj.y = item.offset.y;
+		obj.width = item.offset.width;
+		obj.height = item.offset.height;
+		obj.dockable = {};
+
+		if (item.actions && item.actions.dockable) {
+			var dockable = item.actions.dockable;
+			if (typeof(dockable) === 'string')
+				dockable = dockable.split(/\s|,|;/).trim();
+			for (var i = 0; i < dockable.length; i++)
+				obj.dockable[dockable[i]] = 1;
+		} else {
+			obj.dockable.left = 1;
+			obj.dockable.right = 1;
+			obj.dockable.bottom = 1;
+		}
+
+		if (item.buttons) {
+			var builder = [];
+			for (var i = 0; i < item.buttons.length; i++) {
+				var btn = item.buttons[i];
+				var icon = btn.icon.indexOf(' ') === -1 ? ('fa fa-' + btn.icon) : btn.icon;
+				builder.push('<i class="fa fa-{1} {0}-control" data-name="{2}"></i>'.format(cls, icon, btn.name));
+			}
+			builder.length && el.find(cls2 + '-lastbutton').before(builder.join(''));
+		}
+
+		item.make && item.make.call(cache[item.id], body);
+
+		obj.emitresize = function() {
+			obj.ert = null;
+			obj.element.SETTER('*', 'resize');
+		};
+
+		obj.setsize = function(w, h) {
+			var t = this;
+			var obj = {};
+
+			if (w) {
+				obj.width = t.width = t.meta.offset.width = w;
+				t.element.parent().css('width', w);
+			}
+
+			if (h) {
+				t.element.css('height', h);
+				t.height = t.meta.offset.height = h;
+			}
+
+			if (!init) {
+				t.ert && clearTimeout(t.ert);
+				t.ert = setTimeout(t.emitresize, 100);
+			}
+
+			self.wsave(t);
+		};
+
+		obj.setdock = function(offset, force, init) {
+
+			var t = this;
+
+			if (!force && t.meta.docked === offset)
+				return;
+
+			var w = self.element.width();
+			var h = self.element.height();
+			var meta = t.meta;
+			switch (offset) {
+				case 'left':
+					meta.offset.y = 0;
+					meta.offset.x = 0;
+					meta.offset.height = h;
+					break;
+				case 'right':
+					meta.offset.y = 0;
+					meta.offset.x = w - meta.offset.width;
+					meta.offset.height = h;
+					break;
+				case 'bottom':
+					meta.offset.width = w;
+					meta.offset.x = 0;
+					meta.offset.y = h - meta.offset.height;
+					break;
+			}
+
+			t.meta.offset.docked = offset || null;
+
+			var el = t.element.parent();
+
+			if (offset)
+				el.aclass(cls + '-docked ' + cls + '-docked-' + offset);
+			else
+				el.rclass2(cls + '-docked');
+
+			t.setoffset(meta.offset.x, meta.offset.y);
+			t.setsize(meta.offset.width, meta.offset.height, init);
+
+			if (init)
+				return;
+
+			if (force)
+				self.resize();
+			else
+				self.resize2();
+		};
+
+		obj.setcommand = function(type) {
+
+			switch (type) {
+
+				case 'toggle':
+					obj.setcommand(obj.meta.hidden ? 'show' : 'hide');
+					break;
+
+				case 'show':
+					if (obj.meta.hidden) {
+						obj.meta.hidden = false;
+						obj.element.parent().rclass('hidden');
+						self.wsave(obj);
+						self.resize2();
+					}
+					break;
+
+				case 'close':
+				case 'hide':
+
+					if (type === 'hide' && obj.meta.hidden)
+						return;
+
+					if (obj.meta.close) {
+						obj.meta.close(function() {
+							self.wrem(obj.meta);
+							self.resize2();
+						});
+					} else {
+						self.wrem(obj.meta);
+						self.resize2();
+					}
+					break;
+
+				case 'resize':
+					obj.setsize(obj.width, obj.height);
+					break;
+
+				case 'move':
+					obj.setoffset(obj.x, obj.y);
+					break;
+
+				case 'focus':
+					obj.setcommand('resetminimize');
+					prevfocused && prevfocused.rclass(cls + '-focused');
+					prevfocused = obj.element.parent().aclass(cls + '-focused');
+					break;
+				default:
+					if (obj.meta.buttons) {
+						var btn = obj.meta.buttons.findItem('name', type);
+						if (btn && btn.exec)
+							btn.exec.call(obj, obj);
+					}
+					break;
+			}
+		};
+
+		obj.setoffset = function(x, y) {
+			var t = this;
+			var obj = {};
+
+			if (x != null)
+				obj.left = t.x = t.meta.offset.x = x;
+
+			if (y != null)
+				obj.top = t.y = t.meta.offset.y = y;
+
+			t.container.css(obj);
+			self.wsave(t);
+		};
+
+		item.offset.docked && obj.setdock(item.offset.docked, null, true);
+		obj.meta.service && services.push(obj);
+		obj.meta.data && data.push(obj);
+
+		container.append(el);
+		return obj;
+	};
+
+	self.wrem = function(item) {
+		var obj = cache[item.id];
+		if (obj) {
+
+			var main = obj.element.closest(cls2 + '-item');
+			if (obj.meta.actions.hide) {
+				obj.meta.hidden = true;
+				main.aclass('hidden');
+				self.wsave(obj);
+			} else {
+				obj.meta.destroy && obj.meta.destroy.call(obj);
+				main.off('*');
+				main.find('*').off('*');
+				main.remove();
+				delete cache[item.id];
+
+				var index = services.indexOf(obj);
+				if (index !== -1)
+					services.splice(index, 1);
+
+				index = data.indexOf(obj);
+				if (index !== -1)
+					data.splice(index, 1);
+
+			}
+		}
+	};
+
+	self.setter = function(value) {
+
+		if (!value)
+			value = EMPTYARRAY;
+
+		init = false;
+		var updated = {};
+
+		for (var i = 0; i < value.length; i++) {
+			var item = value[i];
+			if (!cache[item.id])
+				cache[item.id] = self.wadd(item);
+			updated[item.id] = 1;
+		}
+
+		// Remove older dockable
+		var keys = Object.keys(cache);
+		for (var i = 0; i < keys.length; i++) {
+			var key = keys[i];
+			if (!updated[key])
+				self.wrem(cache[key].meta);
+		}
+
+		self.resize();
+		init = true;
+	};
+
+	self.toggle = function(id) {
+		var item = cache[id];
+		item && item.setcommand('toggle');
+	};
+
+	self.show = function(id) {
+		var item = cache[id];
+		item && item.setcommand('show');
+	};
+
+	self.hide = function(id) {
+		var item = cache[id];
+		item && item.setcommand('hide');
+	};
+
+});
+
+COMPONENT('faicons', 'search:Search', function(self, config) {
+
+	var icons = 'ad,address-book,address-card,adjust,air-freshener,align-center,align-justify,align-left,align-right,allergies,ambulance,american-sign-language-interpreting,anchor,angle-double-down,angle-double-left,angle-double-right,angle-double-up,angle-down,angle-left,angle-right,angle-up,angry,ankh,apple-alt,archive,archway,arrow-alt-circle-down,arrow-alt-circle-left,arrow-alt-circle-right,arrow-alt-circle-up,arrow-circle-down,arrow-circle-left,arrow-circle-right,arrow-circle-up,arrow-down,arrow-left,arrow-right,arrow-up,arrows-alt,arrows-alt-h,arrows-alt-v,assistive-listening-systems,asterisk,at,atlas,atom,audio-description,award,baby,baby-carriage,backspace,backward,bacon,bahai,balance-scale,balance-scale-left,balance-scale-right,ban,band-aid,barcode,bars,baseball-ball,basketball-ball,bath,battery-empty,battery-full,battery-half,battery-quarter,battery-three-quarters,bed,beer,bell,bell-slash,bezier-curve,bible,bicycle,biking,binoculars,biohazard,birthday-cake,blender,blender-phone,blind,blog,bold,bolt,bomb,bone,bong,book,book-dead,book-medical,book-open,book-reader,bookmark,border-all,border-none,border-style,bowling-ball,box,box-open,boxes,braille,brain,bread-slice,briefcase,briefcase-medical,broadcast-tower,broom,brush,bug,building,bullhorn,bullseye,burn,bus,bus-alt,business-time,calculator,calendar,calendar-alt,calendar-check,calendar-day,calendar-minus,calendar-plus,calendar-times,calendar-week,camera,camera-retro,campground,candy-cane,cannabis,capsules,car,car-alt,car-battery,car-crash,car-side,caravan,caret-down,caret-left,caret-right,caret-square-down,caret-square-left,caret-square-right,caret-square-up,caret-up,carrot,cart-arrow-down,cart-plus,cash-register,cat,certificate,chair,chalkboard,chalkboard-teacher,charging-station,chart-area,chart-bar,chart-line,chart-pie,check,check-circle,check-double,check-square,cheese,chess,chess-bishop,chess-board,chess-king,chess-knight,chess-pawn,chess-queen,chess-rook,chevron-circle-down,chevron-circle-left,chevron-circle-right,chevron-circle-up,chevron-down,chevron-left,chevron-right,chevron-up,child,church,circle,circle-notch,city,clinic-medical,clipboard,clipboard-check,clipboard-list,clock,clone,closed-captioning,cloud,cloud-download-alt,cloud-meatball,cloud-moon,cloud-moon-rain,cloud-rain,cloud-showers-heavy,cloud-sun,cloud-sun-rain,cloud-upload-alt,cocktail,code,code-branch,coffee,cog,cogs,coins,columns,comment,comment-alt,comment-dollar,comment-dots,comment-medical,comment-slash,comments,comments-dollar,compact-disc,compass,compress,compress-alt,compress-arrows-alt,concierge-bell,cookie,cookie-bite,copy,copyright,couch,credit-card,crop,crop-alt,cross,crosshairs,crow,crown,crutch,cube,cubes,cut,database,deaf,democrat,desktop,dharmachakra,diagnoses,dice,dice-d20,dice-d6,dice-five,dice-four,dice-one,dice-six,dice-three,dice-two,digital-tachograph,directions,divide,dizzy,dna,dog,dollar-sign,dolly,dolly-flatbed,donate,door-closed,door-open,dot-circle,dove,download,drafting-compass,dragon,draw-polygon,drum,drum-steelpan,drumstick-bite,dumbbell,dumpster,dumpster-fire,dungeon,edit,egg,eject,ellipsis-h,ellipsis-v,envelope,envelope-open,envelope-open-text,envelope-square,equals,eraser,ethernet,euro-sign,exchange-alt,exclamation,exclamation-circle,exclamation-triangle,expand,expand-alt,expand-arrows-alt,external-link-alt,external-link-square-alt,eye,eye-dropper,eye-slash,fan,fast-backward,fast-forward,fax,feather,feather-alt,female,fighter-jet,file,file-alt,file-archive,file-audio,file-code,file-contract,file-csv,file-download,file-excel,file-export,file-image,file-import,file-invoice,file-invoice-dollar,file-medical,file-medical-alt,file-pdf,file-powerpoint,file-prescription,file-signature,file-upload,file-video,file-word,fill,fill-drip,film,filter,fingerprint,fire,fire-alt,fire-extinguisher,first-aid,fish,fist-raised,flag,flag-checkered,flag-usa,flask,flushed,folder,folder-minus,folder-open,folder-plus,font,football-ball,forward,frog,frown,frown-open,funnel-dollar,futbol,gamepad,gas-pump,gavel,gem,genderless,ghost,gift,gifts,glass-cheers,glass-martini,glass-martini-alt,glass-whiskey,glasses,globe,globe-africa,globe-americas,globe-asia,globe-europe,golf-ball,gopuram,graduation-cap,greater-than,greater-than-equal,grimace,grin,grin-alt,grin-beam,grin-beam-sweat,grin-hearts,grin-squint,grin-squint-tears,grin-stars,grin-tears,grin-tongue,grin-tongue-squint,grin-tongue-wink,grin-wink,grip-horizontal,grip-lines,grip-lines-vertical,grip-vertical,guitar,h-square,hamburger,hammer,hamsa,hand-holding,hand-holding-heart,hand-holding-usd,hand-lizard,hand-middle-finger,hand-paper,hand-peace,hand-point-down,hand-point-left,hand-point-right,hand-point-up,hand-pointer,hand-rock,hand-scissors,hand-spock,hands,hands-helping,handshake,hanukiah,hard-hat,hashtag,hat-cowboy,hat-cowboy-side,hat-wizard,hdd,heading,headphones,headphones-alt,headset,heart,heart-broken,heartbeat,helicopter,highlighter,hiking,hippo,history,hockey-puck,holly-berry,home,horse,horse-head,hospital,hospital-alt,hospital-symbol,hot-tub,hotdog,hotel,hourglass,hourglass-end,hourglass-half,hourglass-start,house-damage,hryvnia,i-cursor,ice-cream,icicles,icons,id-badge,id-card,id-card-alt,igloo,image,images,inbox,indent,industry,infinity,info,info-circle,italic,jedi,joint,journal-whills,kaaba,key,keyboard,khanda,kiss,kiss-beam,kiss-wink-heart,kiwi-bird,landmark,language,laptop,laptop-code,laptop-medical,laugh,laugh-beam,laugh-squint,laugh-wink,layer-group,leaf,lemon,less-than,less-than-equal,level-down-alt,level-up-alt,life-ring,lightbulb,link,lira-sign,list,list-alt,list-ol,list-ul,location-arrow,lock,lock-open,long-arrow-alt-down,long-arrow-alt-left,long-arrow-alt-right,long-arrow-alt-up,low-vision,luggage-cart,magic,magnet,mail-bulk,male,map,map-marked,map-marked-alt,map-marker,map-marker-alt,map-pin,map-signs,marker,mars,mars-double,mars-stroke,mars-stroke-h,mars-stroke-v,mask,medal,medkit,meh,meh-blank,meh-rolling-eyes,memory,menorah,mercury,meteor,microchip,microphone,microphone-alt,microphone-alt-slash,microphone-slash,microscope,minus,minus-circle,minus-square,mitten,mobile,mobile-alt,money-bill,money-bill-alt,money-bill-wave,money-bill-wave-alt,money-check,money-check-alt,monument,moon,mortar-pestle,mosque,motorcycle,mountain,mouse,mouse-pointer,mug-hot,music,network-wired,neuter,newspaper,not-equal,notes-medical,object-group,object-ungroup,oil-can,om,otter,outdent,pager,paint-brush,paint-roller,palette,pallet,paper-plane,paperclip,parachute-box,paragraph,parking,passport,pastafarianism,paste,pause,pause-circle,paw,peace,pen,pen-alt,pen-fancy,pen-nib,pen-square,pencil-alt,pencil-ruler,people-carry,pepper-hot,percent,percentage,person-booth,phone,phone-alt,phone-slash,phone-square,phone-square-alt,phone-volume,photo-video,piggy-bank,pills,pizza-slice,place-of-worship,plane,plane-arrival,plane-departure,play,play-circle,plug,plus,plus-circle,plus-square,podcast,poll,poll-h,poo,poo-storm,poop,portrait,pound-sign,power-off,pray,praying-hands,prescription,prescription-bottle,prescription-bottle-alt,print,procedures,project-diagram,puzzle-piece,qrcode,question,question-circle,quidditch,quote-left,quote-right,quran,radiation,radiation-alt,rainbow,random,receipt,record-vinyl,recycle,redo,redo-alt,registered,remove-format,reply,reply-all,republican,restroom,retweet,ribbon,ring,road,robot,rocket,route,rss,rss-square,ruble-sign,ruler,ruler-combined,ruler-horizontal,ruler-vertical,running,rupee-sign,sad-cry,sad-tear,satellite,satellite-dish,save,school,screwdriver,scroll,sd-card,search,search-dollar,search-location,search-minus,search-plus,seedling,server,shapes,share,share-alt,share-alt-square,share-square,shekel-sign,shield-alt,ship,shipping-fast,shoe-prints,shopping-bag,shopping-basket,shopping-cart,shower,shuttle-van,sign,sign-in-alt,sign-language,sign-out-alt,signal,signature,sim-card,sitemap,skating,skiing,skiing-nordic,skull,skull-crossbones,slash,sleigh,sliders-h,smile,smile-beam,smile-wink,smog,smoking,smoking-ban,sms,snowboarding,snowflake,snowman,snowplow,socks,solar-panel,sort,sort-alpha-down,sort-alpha-down-alt,sort-alpha-up,sort-alpha-up-alt,sort-amount-down,sort-amount-down-alt,sort-amount-up,sort-amount-up-alt,sort-down,sort-numeric-down,sort-numeric-down-alt,sort-numeric-up,sort-numeric-up-alt,sort-up,spa,space-shuttle,spell-check,spider,spinner,splotch,spray-can,square,square-full,square-root-alt,stamp,star,star-and-crescent,star-half,star-half-alt,star-of-david,star-of-life,step-backward,step-forward,stethoscope,sticky-note,stop,stop-circle,stopwatch,store,store-alt,stream,street-view,strikethrough,stroopwafel,subscript,subway,suitcase,suitcase-rolling,sun,superscript,surprise,swatchbook,swimmer,swimming-pool,synagogue,sync,sync-alt,syringe,table,table-tennis,tablet,tablet-alt,tablets,tachometer-alt,tag,tags,tape,tasks,taxi,teeth,teeth-open,temperature-high,temperature-low,tenge,terminal,text-height,text-width,th,th-large,th-list,theater-masks,thermometer,thermometer-empty,thermometer-full,thermometer-half,thermometer-quarter,thermometer-three-quarters,thumbs-down,thumbs-up,thumbtack,ticket-alt,times,times-circle,tint,tint-slash,tired,toggle-off,toggle-on,toilet,toilet-paper,toolbox,tools,tooth,torah,torii-gate,tractor,trademark,traffic-light,trailer,train,tram,transgender,transgender-alt,trash,trash-alt,trash-restore,trash-restore-alt,tree,trophy,truck,truck-loading,truck-monster,truck-moving,truck-pickup,tshirt,tty,tv,umbrella,umbrella-beach,underline,undo,undo-alt,universal-access,university,unlink,unlock,unlock-alt,upload,user,user-alt,user-alt-slash,user-astronaut,user-check,user-circle,user-clock,user-cog,user-edit,user-friends,user-graduate,user-injured,user-lock,user-md,user-minus,user-ninja,user-nurse,user-plus,user-secret,user-shield,user-slash,user-tag,user-tie,user-times,users,users-cog,utensil-spoon,utensils,vector-square,venus,venus-double,venus-mars,vial,vials,video,video-slash,vihara,voicemail,volleyball-ball,volume-down,volume-mute,volume-off,volume-up,vote-yea,vr-cardboard,walking,wallet,warehouse,water,wave-square,weight,weight-hanging,wheelchair,wifi,wind,window-close,window-maximize,window-minimize,window-restore,wine-bottle,wine-glass,wine-glass-alt,won-sign,wrench,x-ray,yen-sign,yin-yang,r address-book,r address-card,r angry,r arrow-alt-circle-down,r arrow-alt-circle-left,r arrow-alt-circle-right,r arrow-alt-circle-up,r bell,r bell-slash,r bookmark,r building,r calendar,r calendar-alt,r calendar-check,r calendar-minus,r calendar-plus,r calendar-times,r caret-square-down,r caret-square-left,r caret-square-right,r caret-square-up,r chart-bar,r check-circle,r check-square,r circle,r clipboard,r clock,r clone,r closed-captioning,r comment,r comment-alt,r comment-dots,r comments,r compass,r copy,r copyright,r credit-card,r dizzy,r dot-circle,r edit,r envelope,r envelope-open,r eye,r eye-slash,r file,r file-alt,r file-archive,r file-audio,r file-code,r file-excel,r file-image,r file-pdf,r file-powerpoint,r file-video,r file-word,r flag,r flushed,r folder,r folder-open,r frown,r frown-open,r futbol,r gem,r grimace,r grin,r grin-alt,r grin-beam,r grin-beam-sweat,r grin-hearts,r grin-squint,r grin-squint-tears,r grin-stars,r grin-tears,r grin-tongue,r grin-tongue-squint,r grin-tongue-wink,r grin-wink,r hand-lizard,r hand-paper,r hand-peace,r hand-point-down,r hand-point-left,r hand-point-right,r hand-point-up,r hand-pointer,r hand-rock,r hand-scissors,r hand-spock,r handshake,r hdd,r heart,r hospital,r hourglass,r id-badge,r id-card,r image,r images,r keyboard,r kiss,r kiss-beam,r kiss-wink-heart,r laugh,r laugh-beam,r laugh-squint,r laugh-wink,r lemon,r life-ring,r lightbulb,r list-alt,r map,r meh,r meh-blank,r meh-rolling-eyes,r minus-square,r money-bill-alt,r moon,r newspaper,r object-group,r object-ungroup,r paper-plane,r pause-circle,r play-circle,r plus-square,r question-circle,r registered,r sad-cry,r sad-tear,r save,r share-square,r smile,r smile-beam,r smile-wink,r snowflake,r square,r star,r star-half,r sticky-note,r stop-circle,r sun,r surprise,r thumbs-down,r thumbs-up,r times-circle,r tired,r trash-alt,r user,r user-circle,r window-close,r window-maximize,r window-minimize,r window-restore,b 500px,b accessible-icon,b accusoft,b acquisitions-incorporated,b adn,b adobe,b adversal,b affiliatetheme,b airbnb,b algolia,b alipay,b amazon,b amazon-pay,b amilia,b android,b angellist,b angrycreative,b angular,b app-store,b app-store-ios,b apper,b apple,b apple-pay,b artstation,b asymmetrik,b atlassian,b audible,b autoprefixer,b avianex,b aviato,b aws,b bandcamp,b battle-net,b behance,b behance-square,b bimobject,b bitbucket,b bitcoin,b bity,b black-tie,b blackberry,b blogger,b blogger-b,b bluetooth,b bluetooth-b,b bootstrap,b btc,b buffer,b buromobelexperte,b buy-n-large,b buysellads,b canadian-maple-leaf,b cc-amazon-pay,b cc-amex,b cc-apple-pay,b cc-diners-club,b cc-discover,b cc-jcb,b cc-mastercard,b cc-paypal,b cc-stripe,b cc-visa,b centercode,b centos,b chrome,b chromecast,b cloudscale,b cloudsmith,b cloudversify,b codepen,b codiepie,b confluence,b connectdevelop,b contao,b cotton-bureau,b cpanel,b creative-commons,b creative-commons-by,b creative-commons-nc,b creative-commons-nc-eu,b creative-commons-nc-jp,b creative-commons-nd,b creative-commons-pd,b creative-commons-pd-alt,b creative-commons-remix,b creative-commons-sa,b creative-commons-sampling,b creative-commons-sampling-plus,b creative-commons-share,b creative-commons-zero,b critical-role,b css3,b css3-alt,b cuttlefish,b d-and-d,b d-and-d-beyond,b dashcube,b delicious,b deploydog,b deskpro,b dev,b deviantart,b dhl,b diaspora,b digg,b digital-ocean,b discord,b discourse,b dochub,b docker,b draft2digital,b dribbble,b dribbble-square,b dropbox,b drupal,b dyalog,b earlybirds,b ebay,b edge,b elementor,b ello,b ember,b empire,b envira,b erlang,b ethereum,b etsy,b evernote,b expeditedssl,b facebook,b facebook-f,b facebook-messenger,b facebook-square,b fantasy-flight-games,b fedex,b fedora,b figma,b firefox,b firefox-browser,b first-order,b first-order-alt,b firstdraft,b flickr,b flipboard,b fly,b font-awesome,b font-awesome-alt,b font-awesome-flag,b fonticons,b fonticons-fi,b fort-awesome,b fort-awesome-alt,b forumbee,b foursquare,b free-code-camp,b freebsd,b fulcrum,b galactic-republic,b galactic-senate,b get-pocket,b gg,b gg-circle,b git,b git-alt,b git-square,b github,b github-alt,b github-square,b gitkraken,b gitlab,b gitter,b glide,b glide-g,b gofore,b goodreads,b goodreads-g,b google,b google-drive,b google-play,b google-plus,b google-plus-g,b google-plus-square,b google-wallet,b gratipay,b grav,b gripfire,b grunt,b gulp,b hacker-news,b hacker-news-square,b hackerrank,b hips,b hire-a-helper,b hooli,b hornbill,b hotjar,b houzz,b html5,b hubspot,b ideal,b imdb,b instagram,b intercom,b internet-explorer,b invision,b ioxhost,b itch-io,b itunes,b itunes-note,b java,b jedi-order,b jenkins,b jira,b joget,b joomla,b js,b js-square,b jsfiddle,b kaggle,b keybase,b keycdn,b kickstarter,b kickstarter-k,b korvue,b laravel,b lastfm,b lastfm-square,b leanpub,b less,b line,b linkedin,b linkedin-in,b linode,b linux,b lyft,b magento,b mailchimp,b mandalorian,b markdown,b mastodon,b maxcdn,b mdb,b medapps,b medium,b medium-m,b medrt,b meetup,b megaport,b mendeley,b microblog,b microsoft,b mix,b mixcloud,b mizuni,b modx,b monero,b napster,b neos,b nimblr,b node,b node-js,b npm,b ns8,b nutritionix,b odnoklassniki,b odnoklassniki-square,b old-republic,b opencart,b openid,b opera,b optin-monster,b orcid,b osi,b page4,b pagelines,b palfed,b patreon,b paypal,b penny-arcade,b periscope,b phabricator,b phoenix-framework,b phoenix-squadron,b php,b pied-piper,b pied-piper-alt,b pied-piper-hat,b pied-piper-pp,b pied-piper-square,b pinterest,b pinterest-p,b pinterest-square,b playstation,b product-hunt,b pushed,b python,b qq,b quinscape,b quora,b r-project,b raspberry-pi,b ravelry,b react,b reacteurope,b readme,b rebel,b red-river,b reddit,b reddit-alien,b reddit-square,b redhat,b renren,b replyd,b researchgate,b resolving,b rev,b rocketchat,b rockrms,b safari,b salesforce,b sass,b schlix,b scribd,b searchengin,b sellcast,b sellsy,b servicestack,b shirtsinbulk,b shopware,b simplybuilt,b sistrix,b sith,b sketch,b skyatlas,b skype,b slack,b slack-hash,b slideshare,b snapchat,b snapchat-ghost,b snapchat-square,b soundcloud,b sourcetree,b speakap,b speaker-deck,b spotify,b squarespace,b stack-exchange,b stack-overflow,b stackpath,b staylinked,b steam,b steam-square,b steam-symbol,b sticker-mule,b strava,b stripe,b stripe-s,b studiovinari,b stumbleupon,b stumbleupon-circle,b superpowers,b supple,b suse,b swift,b symfony,b teamspeak,b telegram,b telegram-plane,b tencent-weibo,b the-red-yeti,b themeco,b themeisle,b think-peaks,b trade-federation,b trello,b tripadvisor,b tumblr,b tumblr-square,b twitch,b twitter,b twitter-square,b typo3,b uber,b ubuntu,b uikit,b umbraco,b uniregistry,b unity,b untappd,b ups,b usb,b usps,b ussunnah,b vaadin,b viacoin,b viadeo,b viadeo-square,b viber,b vimeo,b vimeo-square,b vimeo-v,b vine,b vk,b vnv,b vuejs,b waze,b weebly,b weibo,b weixin,b whatsapp,b whatsapp-square,b whmcs,b wikipedia-w,b windows,b wix,b wizards-of-the-coast,b wolf-pack-battalion,b wordpress,b wordpress-simple,b wpbeginner,b wpexplorer,b wpforms,b wpressr,b xbox,b xing,b xing-square,b y-combinator,b yahoo,b yammer,b yandex,b yandex-international,b yarn,b yelp,b yoast,b youtube,b youtube-square,b zhihu'.split(',');
+	var iconspro = 'abacus,acorn,ad,address-book,address-card,adjust,air-conditioner,air-freshener,alarm-clock,alarm-exclamation,alarm-plus,alarm-snooze,album,album-collection,alicorn,alien,alien-monster,align-center,align-justify,align-left,align-right,align-slash,allergies,ambulance,american-sign-language-interpreting,amp-guitar,analytics,anchor,angel,angle-double-down,angle-double-left,angle-double-right,angle-double-up,angle-down,angle-left,angle-right,angle-up,angry,ankh,apple-alt,apple-crate,archive,archway,arrow-alt-circle-down,arrow-alt-circle-left,arrow-alt-circle-right,arrow-alt-circle-up,arrow-alt-down,arrow-alt-from-bottom,arrow-alt-from-left,arrow-alt-from-right,arrow-alt-from-top,arrow-alt-left,arrow-alt-right,arrow-alt-square-down,arrow-alt-square-left,arrow-alt-square-right,arrow-alt-square-up,arrow-alt-to-bottom,arrow-alt-to-left,arrow-alt-to-right,arrow-alt-to-top,arrow-alt-up,arrow-circle-down,arrow-circle-left,arrow-circle-right,arrow-circle-up,arrow-down,arrow-from-bottom,arrow-from-left,arrow-from-right,arrow-from-top,arrow-left,arrow-right,arrow-square-down,arrow-square-left,arrow-square-right,arrow-square-up,arrow-to-bottom,arrow-to-left,arrow-to-right,arrow-to-top,arrow-up,arrows,arrows-alt,arrows-alt-h,arrows-alt-v,arrows-h,arrows-v,assistive-listening-systems,asterisk,at,atlas,atom,atom-alt,audio-description,award,axe,axe-battle,baby,baby-carriage,backpack,backspace,backward,bacon,badge,badge-check,badge-dollar,badge-percent,badge-sheriff,badger-honey,bags-shopping,bahai,balance-scale,balance-scale-left,balance-scale-right,ball-pile,ballot,ballot-check,ban,band-aid,banjo,barcode,barcode-alt,barcode-read,barcode-scan,bars,baseball,baseball-ball,basketball-ball,basketball-hoop,bat,bath,battery-bolt,battery-empty,battery-full,battery-half,battery-quarter,battery-slash,battery-three-quarters,bed,bed-alt,bed-bunk,bed-empty,beer,bell,bell-exclamation,bell-on,bell-plus,bell-school,bell-school-slash,bell-slash,bells,betamax,bezier-curve,bible,bicycle,biking,biking-mountain,binoculars,biohazard,birthday-cake,blanket,blender,blender-phone,blind,blinds,blinds-open,blinds-raised,blog,bold,bolt,bomb,bone,bone-break,bong,book,book-alt,book-dead,book-heart,book-medical,book-open,book-reader,book-spells,book-user,bookmark,books,books-medical,boombox,boot,booth-curtain,border-all,border-bottom,border-center-h,border-center-v,border-inner,border-left,border-none,border-outer,border-right,border-style,border-style-alt,border-top,bow-arrow,bowling-ball,bowling-pins,box,box-alt,box-ballot,box-check,box-fragile,box-full,box-heart,box-open,box-up,box-usd,boxes,boxes-alt,boxing-glove,brackets,brackets-curly,braille,brain,bread-loaf,bread-slice,briefcase,briefcase-medical,bring-forward,bring-front,broadcast-tower,broom,browser,brush,bug,building,bullhorn,bullseye,bullseye-arrow,bullseye-pointer,burger-soda,burn,burrito,bus,bus-alt,bus-school,business-time,cabinet-filing,cactus,calculator,calculator-alt,calendar,calendar-alt,calendar-check,calendar-day,calendar-edit,calendar-exclamation,calendar-minus,calendar-plus,calendar-star,calendar-times,calendar-week,camcorder,camera,camera-alt,camera-home,camera-movie,camera-polaroid,camera-retro,campfire,campground,candle-holder,candy-cane,candy-corn,cannabis,capsules,car,car-alt,car-battery,car-building,car-bump,car-bus,car-crash,car-garage,car-mechanic,car-side,car-tilt,car-wash,caravan,caravan-alt,caret-circle-down,caret-circle-left,caret-circle-right,caret-circle-up,caret-down,caret-left,caret-right,caret-square-down,caret-square-left,caret-square-right,caret-square-up,caret-up,carrot,cars,cart-arrow-down,cart-plus,cash-register,cassette-tape,cat,cat-space,cauldron,cctv,certificate,chair,chair-office,chalkboard,chalkboard-teacher,charging-station,chart-area,chart-bar,chart-line,chart-line-down,chart-network,chart-pie,chart-pie-alt,chart-scatter,check,check-circle,check-double,check-square,cheese,cheese-swiss,cheeseburger,chess,chess-bishop,chess-bishop-alt,chess-board,chess-clock,chess-clock-alt,chess-king,chess-king-alt,chess-knight,chess-knight-alt,chess-pawn,chess-pawn-alt,chess-queen,chess-queen-alt,chess-rook,chess-rook-alt,chevron-circle-down,chevron-circle-left,chevron-circle-right,chevron-circle-up,chevron-double-down,chevron-double-left,chevron-double-right,chevron-double-up,chevron-down,chevron-left,chevron-right,chevron-square-down,chevron-square-left,chevron-square-right,chevron-square-up,chevron-up,child,chimney,church,circle,circle-notch,city,clarinet,claw-marks,clinic-medical,clipboard,clipboard-check,clipboard-list,clipboard-list-check,clipboard-prescription,clipboard-user,clock,clone,closed-captioning,cloud,cloud-download,cloud-download-alt,cloud-drizzle,cloud-hail,cloud-hail-mixed,cloud-meatball,cloud-moon,cloud-moon-rain,cloud-music,cloud-rain,cloud-rainbow,cloud-showers,cloud-showers-heavy,cloud-sleet,cloud-snow,cloud-sun,cloud-sun-rain,cloud-upload,cloud-upload-alt,clouds,clouds-moon,clouds-sun,club,cocktail,code,code-branch,code-commit,code-merge,coffee,coffee-pot,coffee-togo,coffin,cog,cogs,coin,coins,columns,comet,comment,comment-alt,comment-alt-check,comment-alt-dollar,comment-alt-dots,comment-alt-edit,comment-alt-exclamation,comment-alt-lines,comment-alt-medical,comment-alt-minus,comment-alt-music,comment-alt-plus,comment-alt-slash,comment-alt-smile,comment-alt-times,comment-check,comment-dollar,comment-dots,comment-edit,comment-exclamation,comment-lines,comment-medical,comment-minus,comment-music,comment-plus,comment-slash,comment-smile,comment-times,comments,comments-alt,comments-alt-dollar,comments-dollar,compact-disc,compass,compass-slash,compress,compress-alt,compress-arrows-alt,compress-wide,computer-classic,computer-speaker,concierge-bell,construction,container-storage,conveyor-belt,conveyor-belt-alt,cookie,cookie-bite,copy,copyright,corn,couch,cow,cowbell,cowbell-more,credit-card,credit-card-blank,credit-card-front,cricket,croissant,crop,crop-alt,cross,crosshairs,crow,crown,crutch,crutches,cube,cubes,curling,cut,dagger,database,deaf,debug,deer,deer-rudolph,democrat,desktop,desktop-alt,dewpoint,dharmachakra,diagnoses,diamond,dice,dice-d10,dice-d12,dice-d20,dice-d4,dice-d6,dice-d8,dice-five,dice-four,dice-one,dice-six,dice-three,dice-two,digging,digital-tachograph,diploma,directions,disc-drive,disease,divide,dizzy,dna,do-not-enter,dog,dog-leashed,dollar-sign,dolly,dolly-empty,dolly-flatbed,dolly-flatbed-alt,dolly-flatbed-empty,donate,door-closed,door-open,dot-circle,dove,download,drafting-compass,dragon,draw-circle,draw-polygon,draw-square,dreidel,drone,drone-alt,drum,drum-steelpan,drumstick,drumstick-bite,dryer,dryer-alt,duck,dumbbell,dumpster,dumpster-fire,dungeon,ear,ear-muffs,eclipse,eclipse-alt,edit,egg,egg-fried,eject,elephant,ellipsis-h,ellipsis-h-alt,ellipsis-v,ellipsis-v-alt,empty-set,engine-warning,envelope,envelope-open,envelope-open-dollar,envelope-open-text,envelope-square,equals,eraser,ethernet,euro-sign,exchange,exchange-alt,exclamation,exclamation-circle,exclamation-square,exclamation-triangle,expand,expand-alt,expand-arrows,expand-arrows-alt,expand-wide,external-link,external-link-alt,external-link-square,external-link-square-alt,eye,eye-dropper,eye-evil,eye-slash,fan,fan-table,farm,fast-backward,fast-forward,faucet,faucet-drip,fax,feather,feather-alt,female,field-hockey,fighter-jet,file,file-alt,file-archive,file-audio,file-certificate,file-chart-line,file-chart-pie,file-check,file-code,file-contract,file-csv,file-download,file-edit,file-excel,file-exclamation,file-export,file-image,file-import,file-invoice,file-invoice-dollar,file-medical,file-medical-alt,file-minus,file-music,file-pdf,file-plus,file-powerpoint,file-prescription,file-search,file-signature,file-spreadsheet,file-times,file-upload,file-user,file-video,file-word,files-medical,fill,fill-drip,film,film-alt,film-canister,filter,fingerprint,fire,fire-alt,fire-extinguisher,fire-smoke,fireplace,first-aid,fish,fish-cooked,fist-raised,flag,flag-alt,flag-checkered,flag-usa,flame,flashlight,flask,flask-poison,flask-potion,flower,flower-daffodil,flower-tulip,flushed,flute,flux-capacitor,fog,folder,folder-minus,folder-open,folder-plus,folder-times,folder-tree,folders,font,font-case,football-ball,football-helmet,forklift,forward,fragile,french-fries,frog,frosty-head,frown,frown-open,function,funnel-dollar,futbol,galaxy,game-board,game-board-alt,game-console-handheld,gamepad,gamepad-alt,garage,garage-car,garage-open,gas-pump,gas-pump-slash,gavel,gem,genderless,ghost,gift,gift-card,gifts,gingerbread-man,glass,glass-champagne,glass-cheers,glass-citrus,glass-martini,glass-martini-alt,glass-whiskey,glass-whiskey-rocks,glasses,glasses-alt,globe,globe-africa,globe-americas,globe-asia,globe-europe,globe-snow,globe-stand,golf-ball,golf-club,gopuram,graduation-cap,gramophone,greater-than,greater-than-equal,grimace,grin,grin-alt,grin-beam,grin-beam-sweat,grin-hearts,grin-squint,grin-squint-tears,grin-stars,grin-tears,grin-tongue,grin-tongue-squint,grin-tongue-wink,grin-wink,grip-horizontal,grip-lines,grip-lines-vertical,grip-vertical,guitar,guitar-electric,guitars,h-square,h1,h2,h3,h4,hamburger,hammer,hammer-war,hamsa,hand-heart,hand-holding,hand-holding-box,hand-holding-heart,hand-holding-magic,hand-holding-seedling,hand-holding-usd,hand-holding-water,hand-lizard,hand-middle-finger,hand-paper,hand-peace,hand-point-down,hand-point-left,hand-point-right,hand-point-up,hand-pointer,hand-receiving,hand-rock,hand-scissors,hand-spock,hands,hands-heart,hands-helping,hands-usd,handshake,handshake-alt,hanukiah,hard-hat,hashtag,hat-chef,hat-cowboy,hat-cowboy-side,hat-santa,hat-winter,hat-witch,hat-wizard,hdd,head-side,head-side-brain,head-side-headphones,head-side-medical,head-vr,heading,headphones,headphones-alt,headset,heart,heart-broken,heart-circle,heart-rate,heart-square,heartbeat,heat,helicopter,helmet-battle,hexagon,highlighter,hiking,hippo,history,hockey-mask,hockey-puck,hockey-sticks,holly-berry,home,home-alt,home-heart,home-lg,home-lg-alt,hood-cloak,horizontal-rule,horse,horse-head,horse-saddle,hospital,hospital-alt,hospital-symbol,hospital-user,hospitals,hot-tub,hotdog,hotel,hourglass,hourglass-end,hourglass-half,hourglass-start,house,house-damage,house-day,house-flood,house-leave,house-night,house-return,house-signal,hryvnia,humidity,hurricane,i-cursor,ice-cream,ice-skate,icicles,icons,icons-alt,id-badge,id-card,id-card-alt,igloo,image,image-polaroid,images,inbox,inbox-in,inbox-out,indent,industry,industry-alt,infinity,info,info-circle,info-square,inhaler,integral,intersection,inventory,island-tropical,italic,jack-o-lantern,jedi,joint,journal-whills,joystick,jug,kaaba,kazoo,kerning,key,key-skeleton,keyboard,keynote,khanda,kidneys,kiss,kiss-beam,kiss-wink-heart,kite,kiwi-bird,knife-kitchen,lambda,lamp,lamp-desk,lamp-floor,landmark,landmark-alt,language,laptop,laptop-code,laptop-medical,lasso,laugh,laugh-beam,laugh-squint,laugh-wink,layer-group,layer-minus,layer-plus,leaf,leaf-heart,leaf-maple,leaf-oak,lemon,less-than,less-than-equal,level-down,level-down-alt,level-up,level-up-alt,life-ring,light-ceiling,light-switch,light-switch-off,light-switch-on,lightbulb,lightbulb-dollar,lightbulb-exclamation,lightbulb-on,lightbulb-slash,lights-holiday,line-columns,line-height,link,lips,lira-sign,list,list-alt,list-music,list-ol,list-ul,location,location-arrow,location-circle,location-slash,lock,lock-alt,lock-open,lock-open-alt,long-arrow-alt-down,long-arrow-alt-left,long-arrow-alt-right,long-arrow-alt-up,long-arrow-down,long-arrow-left,long-arrow-right,long-arrow-up,loveseat,low-vision,luchador,luggage-cart,lungs,mace,magic,magnet,mail-bulk,mailbox,male,mandolin,map,map-marked,map-marked-alt,map-marker,map-marker-alt,map-marker-alt-slash,map-marker-check,map-marker-edit,map-marker-exclamation,map-marker-minus,map-marker-plus,map-marker-question,map-marker-slash,map-marker-smile,map-marker-times,map-pin,map-signs,marker,mars,mars-double,mars-stroke,mars-stroke-h,mars-stroke-v,mask,meat,medal,medkit,megaphone,meh,meh-blank,meh-rolling-eyes,memory,menorah,mercury,meteor,microchip,microphone,microphone-alt,microphone-alt-slash,microphone-slash,microphone-stand,microscope,microwave,mind-share,minus,minus-circle,minus-hexagon,minus-octagon,minus-square,mistletoe,mitten,mobile,mobile-alt,mobile-android,mobile-android-alt,money-bill,money-bill-alt,money-bill-wave,money-bill-wave-alt,money-check,money-check-alt,money-check-edit,money-check-edit-alt,monitor-heart-rate,monkey,monument,moon,moon-cloud,moon-stars,mortar-pestle,mosque,motorcycle,mountain,mountains,mouse,mouse-alt,mouse-pointer,mp3-player,mug,mug-hot,mug-marshmallows,mug-tea,music,music-alt,music-alt-slash,music-slash,narwhal,network-wired,neuter,newspaper,not-equal,notes-medical,object-group,object-ungroup,octagon,oil-can,oil-temp,om,omega,ornament,otter,outdent,outlet,oven,overline,page-break,pager,paint-brush,paint-brush-alt,paint-roller,palette,pallet,pallet-alt,paper-plane,paperclip,parachute-box,paragraph,paragraph-rtl,parking,parking-circle,parking-circle-slash,parking-slash,passport,pastafarianism,paste,pause,pause-circle,paw,paw-alt,paw-claws,peace,pegasus,pen,pen-alt,pen-fancy,pen-nib,pen-square,pencil,pencil-alt,pencil-paintbrush,pencil-ruler,pennant,people-carry,pepper-hot,percent,percentage,person-booth,person-carry,person-dolly,person-dolly-empty,person-sign,phone,phone-alt,phone-laptop,phone-office,phone-plus,phone-rotary,phone-slash,phone-square,phone-square-alt,phone-volume,photo-video,pi,piano,piano-keyboard,pie,pig,piggy-bank,pills,pizza,pizza-slice,place-of-worship,plane,plane-alt,plane-arrival,plane-departure,planet-moon,planet-ringed,play,play-circle,plug,plus,plus-circle,plus-hexagon,plus-octagon,plus-square,podcast,podium,podium-star,police-box,poll,poll-h,poll-people,poo,poo-storm,poop,popcorn,portal-enter,portal-exit,portrait,pound-sign,power-off,pray,praying-hands,prescription,prescription-bottle,prescription-bottle-alt,presentation,print,print-search,print-slash,procedures,project-diagram,projector,pumpkin,puzzle-piece,qrcode,question,question-circle,question-square,quidditch,quote-left,quote-right,quran,rabbit,rabbit-fast,racquet,radar,radiation,radiation-alt,radio,radio-alt,rainbow,raindrops,ram,ramp-loading,random,raygun,receipt,record-vinyl,rectangle-landscape,rectangle-portrait,rectangle-wide,recycle,redo,redo-alt,refrigerator,registered,remove-format,repeat,repeat-1,repeat-1-alt,repeat-alt,reply,reply-all,republican,restroom,retweet,retweet-alt,ribbon,ring,rings-wedding,road,robot,rocket,rocket-launch,route,route-highway,route-interstate,router,rss,rss-square,ruble-sign,ruler,ruler-combined,ruler-horizontal,ruler-triangle,ruler-vertical,running,rupee-sign,rv,sack,sack-dollar,sad-cry,sad-tear,salad,sandwich,satellite,satellite-dish,sausage,save,sax-hot,saxophone,scalpel,scalpel-path,scanner,scanner-image,scanner-keyboard,scanner-touchscreen,scarecrow,scarf,school,screwdriver,scroll,scroll-old,scrubber,scythe,sd-card,search,search-dollar,search-location,search-minus,search-plus,seedling,send-back,send-backward,sensor,sensor-alert,sensor-fire,sensor-on,sensor-smoke,server,shapes,share,share-all,share-alt,share-alt-square,share-square,sheep,shekel-sign,shield,shield-alt,shield-check,shield-cross,ship,shipping-fast,shipping-timed,shish-kebab,shoe-prints,shopping-bag,shopping-basket,shopping-cart,shovel,shovel-snow,shower,shredder,shuttle-van,shuttlecock,sickle,sigma,sign,sign-in,sign-in-alt,sign-language,sign-out,sign-out-alt,signal,signal-1,signal-2,signal-3,signal-4,signal-alt,signal-alt-1,signal-alt-2,signal-alt-3,signal-alt-slash,signal-slash,signal-stream,signature,sim-card,siren,siren-on,sitemap,skating,skeleton,ski-jump,ski-lift,skiing,skiing-nordic,skull,skull-cow,skull-crossbones,slash,sledding,sleigh,sliders-h,sliders-h-square,sliders-v,sliders-v-square,smile,smile-beam,smile-plus,smile-wink,smog,smoke,smoking,smoking-ban,sms,snake,snooze,snow-blowing,snowboarding,snowflake,snowflakes,snowman,snowmobile,snowplow,socks,solar-panel,solar-system,sort,sort-alpha-down,sort-alpha-down-alt,sort-alpha-up,sort-alpha-up-alt,sort-alt,sort-amount-down,sort-amount-down-alt,sort-amount-up,sort-amount-up-alt,sort-circle,sort-circle-down,sort-circle-up,sort-down,sort-numeric-down,sort-numeric-down-alt,sort-numeric-up,sort-numeric-up-alt,sort-shapes-down,sort-shapes-down-alt,sort-shapes-up,sort-shapes-up-alt,sort-size-down,sort-size-down-alt,sort-size-up,sort-size-up-alt,sort-up,soup,spa,space-shuttle,space-station-moon,space-station-moon-alt,spade,sparkles,speaker,speakers,spell-check,spider,spider-black-widow,spider-web,spinner,spinner-third,splotch,spray-can,sprinkler,square,square-full,square-root,square-root-alt,squirrel,staff,stamp,star,star-and-crescent,star-christmas,star-exclamation,star-half,star-half-alt,star-of-david,star-of-life,star-shooting,starfighter,starfighter-alt,stars,starship,starship-freighter,steak,steering-wheel,step-backward,step-forward,stethoscope,sticky-note,stocking,stomach,stop,stop-circle,stopwatch,store,store-alt,stream,street-view,stretcher,strikethrough,stroopwafel,subscript,subway,suitcase,suitcase-rolling,sun,sun-cloud,sun-dust,sun-haze,sunglasses,sunrise,sunset,superscript,surprise,swatchbook,swimmer,swimming-pool,sword,sword-laser,sword-laser-alt,swords,swords-laser,synagogue,sync,sync-alt,syringe,table,table-tennis,tablet,tablet-alt,tablet-android,tablet-android-alt,tablet-rugged,tablets,tachometer,tachometer-alt,tachometer-alt-average,tachometer-alt-fast,tachometer-alt-fastest,tachometer-alt-slow,tachometer-alt-slowest,tachometer-average,tachometer-fast,tachometer-fastest,tachometer-slow,tachometer-slowest,taco,tag,tags,tally,tanakh,tape,tasks,tasks-alt,taxi,teeth,teeth-open,telescope,temperature-down,temperature-frigid,temperature-high,temperature-hot,temperature-low,temperature-up,tenge,tennis-ball,terminal,text,text-height,text-size,text-width,th,th-large,th-list,theater-masks,thermometer,thermometer-empty,thermometer-full,thermometer-half,thermometer-quarter,thermometer-three-quarters,theta,thumbs-down,thumbs-up,thumbtack,thunderstorm,thunderstorm-moon,thunderstorm-sun,ticket,ticket-alt,tilde,times,times-circle,times-hexagon,times-octagon,times-square,tint,tint-slash,tire,tire-flat,tire-pressure-warning,tire-rugged,tired,toggle-off,toggle-on,toilet,toilet-paper,toilet-paper-alt,tombstone,tombstone-alt,toolbox,tools,tooth,toothbrush,torah,torii-gate,tornado,tractor,trademark,traffic-cone,traffic-light,traffic-light-go,traffic-light-slow,traffic-light-stop,trailer,train,tram,transgender,transgender-alt,transporter,transporter-1,transporter-2,transporter-3,transporter-empty,trash,trash-alt,trash-restore,trash-restore-alt,trash-undo,trash-undo-alt,treasure-chest,tree,tree-alt,tree-christmas,tree-decorated,tree-large,tree-palm,trees,triangle,triangle-music,trophy,trophy-alt,truck,truck-container,truck-couch,truck-loading,truck-monster,truck-moving,truck-pickup,truck-plow,truck-ramp,trumpet,tshirt,tty,turkey,turntable,turtle,tv,tv-alt,tv-music,tv-retro,typewriter,ufo,ufo-beam,umbrella,umbrella-beach,underline,undo,undo-alt,unicorn,union,universal-access,university,unlink,unlock,unlock-alt,upload,usb-drive,usd-circle,usd-square,user,user-alien,user-alt,user-alt-slash,user-astronaut,user-chart,user-check,user-circle,user-clock,user-cog,user-cowboy,user-crown,user-edit,user-friends,user-graduate,user-hard-hat,user-headset,user-injured,user-lock,user-md,user-md-chat,user-minus,user-music,user-ninja,user-nurse,user-plus,user-robot,user-secret,user-shield,user-slash,user-tag,user-tie,user-times,user-visor,users,users-class,users-cog,users-crown,users-medical,utensil-fork,utensil-knife,utensil-spoon,utensils,utensils-alt,vacuum,vacuum-robot,value-absolute,vector-square,venus,venus-double,venus-mars,vhs,vial,vials,video,video-plus,video-slash,vihara,violin,voicemail,volcano,volleyball-ball,volume,volume-down,volume-mute,volume-off,volume-slash,volume-up,vote-nay,vote-yea,vr-cardboard,wagon-covered,walker,walkie-talkie,walking,wallet,wand,wand-magic,warehouse,warehouse-alt,washer,watch,watch-calculator,watch-fitness,water,water-lower,water-rise,wave-sine,wave-square,wave-triangle,waveform,waveform-path,webcam,webcam-slash,weight,weight-hanging,whale,wheat,wheelchair,whistle,wifi,wifi-1,wifi-2,wifi-slash,wind,wind-turbine,wind-warning,window,window-alt,window-close,window-frame,window-frame-open,window-maximize,window-minimize,window-restore,windsock,wine-bottle,wine-glass,wine-glass-alt,won-sign,wreath,wrench,x-ray,yen-sign,yin-yang,b 500px,b accessible-icon,b accusoft,b acquisitions-incorporated,b adn,b adobe,b adversal,b affiliatetheme,b airbnb,b algolia,b alipay,b amazon,b amazon-pay,b amilia,b android,b angellist,b angrycreative,b angular,b app-store,b app-store-ios,b apper,b apple,b apple-pay,b artstation,b asymmetrik,b atlassian,b audible,b autoprefixer,b avianex,b aviato,b aws,b bandcamp,b battle-net,b behance,b behance-square,b bimobject,b bitbucket,b bitcoin,b bity,b black-tie,b blackberry,b blogger,b blogger-b,b bluetooth,b bluetooth-b,b bootstrap,b btc,b buffer,b buromobelexperte,b buy-n-large,b buysellads,b canadian-maple-leaf,b cc-amazon-pay,b cc-amex,b cc-apple-pay,b cc-diners-club,b cc-discover,b cc-jcb,b cc-mastercard,b cc-paypal,b cc-stripe,b cc-visa,b centercode,b centos,b chrome,b chromecast,b cloudscale,b cloudsmith,b cloudversify,b codepen,b codiepie,b confluence,b connectdevelop,b contao,b cotton-bureau,b cpanel,b creative-commons,b creative-commons-by,b creative-commons-nc,b creative-commons-nc-eu,b creative-commons-nc-jp,b creative-commons-nd,b creative-commons-pd,b creative-commons-pd-alt,b creative-commons-remix,b creative-commons-sa,b creative-commons-sampling,b creative-commons-sampling-plus,b creative-commons-share,b creative-commons-zero,b critical-role,b css3,b css3-alt,b cuttlefish,b d-and-d,b d-and-d-beyond,b dashcube,b delicious,b deploydog,b deskpro,b dev,b deviantart,b dhl,b diaspora,b digg,b digital-ocean,b discord,b discourse,b dochub,b docker,b draft2digital,b dribbble,b dribbble-square,b dropbox,b drupal,b dyalog,b earlybirds,b ebay,b edge,b elementor,b ello,b ember,b empire,b envira,b erlang,b ethereum,b etsy,b evernote,b expeditedssl,b facebook,b facebook-f,b facebook-messenger,b facebook-square,b fantasy-flight-games,b fedex,b fedora,b figma,b firefox,b firefox-browser,b first-order,b first-order-alt,b firstdraft,b flickr,b flipboard,b fly,b font-awesome,b font-awesome-alt,b font-awesome-flag,b fonticons,b fonticons-fi,b fort-awesome,b fort-awesome-alt,b forumbee,b foursquare,b free-code-camp,b freebsd,b fulcrum,b galactic-republic,b galactic-senate,b get-pocket,b gg,b gg-circle,b git,b git-alt,b git-square,b github,b github-alt,b github-square,b gitkraken,b gitlab,b gitter,b glide,b glide-g,b gofore,b goodreads,b goodreads-g,b google,b google-drive,b google-play,b google-plus,b google-plus-g,b google-plus-square,b google-wallet,b gratipay,b grav,b gripfire,b grunt,b gulp,b hacker-news,b hacker-news-square,b hackerrank,b hips,b hire-a-helper,b hooli,b hornbill,b hotjar,b houzz,b html5,b hubspot,b ideal,b imdb,b instagram,b intercom,b internet-explorer,b invision,b ioxhost,b itch-io,b itunes,b itunes-note,b java,b jedi-order,b jenkins,b jira,b joget,b joomla,b js,b js-square,b jsfiddle,b kaggle,b keybase,b keycdn,b kickstarter,b kickstarter-k,b korvue,b laravel,b lastfm,b lastfm-square,b leanpub,b less,b line,b linkedin,b linkedin-in,b linode,b linux,b lyft,b magento,b mailchimp,b mandalorian,b markdown,b mastodon,b maxcdn,b mdb,b medapps,b medium,b medium-m,b medrt,b meetup,b megaport,b mendeley,b microblog,b microsoft,b mix,b mixcloud,b mizuni,b modx,b monero,b napster,b neos,b nimblr,b node,b node-js,b npm,b ns8,b nutritionix,b odnoklassniki,b odnoklassniki-square,b old-republic,b opencart,b openid,b opera,b optin-monster,b orcid,b osi,b page4,b pagelines,b palfed,b patreon,b paypal,b penny-arcade,b periscope,b phabricator,b phoenix-framework,b phoenix-squadron,b php,b pied-piper,b pied-piper-alt,b pied-piper-hat,b pied-piper-pp,b pied-piper-square,b pinterest,b pinterest-p,b pinterest-square,b playstation,b product-hunt,b pushed,b python,b qq,b quinscape,b quora,b r-project,b raspberry-pi,b ravelry,b react,b reacteurope,b readme,b rebel,b red-river,b reddit,b reddit-alien,b reddit-square,b redhat,b renren,b replyd,b researchgate,b resolving,b rev,b rocketchat,b rockrms,b safari,b salesforce,b sass,b schlix,b scribd,b searchengin,b sellcast,b sellsy,b servicestack,b shirtsinbulk,b shopware,b simplybuilt,b sistrix,b sith,b sketch,b skyatlas,b skype,b slack,b slack-hash,b slideshare,b snapchat,b snapchat-ghost,b snapchat-square,b soundcloud,b sourcetree,b speakap,b speaker-deck,b spotify,b squarespace,b stack-exchange,b stack-overflow,b stackpath,b staylinked,b steam,b steam-square,b steam-symbol,b sticker-mule,b strava,b stripe,b stripe-s,b studiovinari,b stumbleupon,b stumbleupon-circle,b superpowers,b supple,b suse,b swift,b symfony,b teamspeak,b telegram,b telegram-plane,b tencent-weibo,b the-red-yeti,b themeco,b themeisle,b think-peaks,b trade-federation,b trello,b tripadvisor,b tumblr,b tumblr-square,b twitch,b twitter,b twitter-square,b typo3,b uber,b ubuntu,b uikit,b umbraco,b uniregistry,b unity,b untappd,b ups,b usb,b usps,b ussunnah,b vaadin,b viacoin,b viadeo,b viadeo-square,b viber,b vimeo,b vimeo-square,b vimeo-v,b vine,b vk,b vnv,b vuejs,b waze,b weebly,b weibo,b weixin,b whatsapp,b whatsapp-square,b whmcs,b wikipedia-w,b windows,b wix,b wizards-of-the-coast,b wolf-pack-battalion,b wordpress,b wordpress-simple,b wpbeginner,b wpexplorer,b wpforms,b wpressr,b xbox,b xing,b xing-square,b y-combinator,b yahoo,b yammer,b yandex,b yandex-international,b yarn,b yelp,b yoast,b youtube,b youtube-square,b zhihu'.split(',');
+
+	var cls = 'ui-faicons';
+	var cls2 = '.' + cls;
+	var template = '<span data-search="{0}"><i class="{1}"></i></span>';
+	var events = {};
+	var container;
+	var is = false;
+	var ispro = false;
+	var cachekey;
+
+	self.singleton();
+	self.readonly();
+	self.blind();
+	self.nocompile();
+
+	self.redraw = function() {
+		self.html('<div class="{0}"><div class="{0}-header"><div class="{0}-search"><span><i class="fa fa-search clearsearch"></i></span><div><input type="text" placeholder="{1}" class="{0}-search-input"></div></div></div><div class="{0}-content noscrollbar"></div></div>'.format(cls, config.search));
+		container = self.find(cls2 + '-content');
+	};
+
+	self.rendericons = function(empty) {
+
+		var key = empty ? '1' : '0';
+		if (cachekey === key)
+			return;
+
+		cachekey = key;
+		var builder = [];
+
+		empty && builder.push(template.format('', ''));
+
+		var arr = ispro ? iconspro : icons;
+		for (var i = 0; i < arr.length; i++)
+			builder.push(template.format(arr[i].replace(/^.*?-/, '').replace(/-/g, ' ').toSearch(), arr[i]));
+		self.find(cls2 + '-content').html(builder.join(''));
+	};
+
+	self.search = function(value) {
+
+		var search = self.find('.clearsearch');
+		search.rclass2('fa-');
+
+		if (!value.length) {
+			search.aclass('fa-search');
+			container.find('.hidden').rclass('hidden');
+			return;
+		}
+
+		value = value.toSearch();
+		search.aclass('fa-times');
+		container[0].scrollTop = 0;
+		var icons = container.find('span');
+		for (var i = 0; i < icons.length; i++) {
+			var el = $(icons[i]);
+			el.tclass('hidden', el.attrd('search').indexOf(value) === -1);
+		}
+	};
+
+	self.make = function() {
+
+		var links = $(document.head).find('link');
+		for (var i = 0; i < links.length; i++) {
+			var href = links[i].getAttribute('href');
+			if (href.indexOf('pro.css') !== -1) {
+				ispro = true;
+				break;
+			}
+		}
+
+		var txt = ' fa-';
+
+		if (ispro) {
+			var tmp = [];
+			for (var i = 0; i < iconspro.length; i++) {
+				var icon = iconspro[i];
+				if (icon.charAt(1) === ' ') {
+					tmp.push('fa' + icon.replace(' ', txt));
+				} else {
+					tmp.push('fas fa-' + icon.replace(' ', txt));
+					tmp.push('far fa-' + icon.replace(' ', txt));
+					tmp.push('fal fa-' + icon.replace(' ', txt));
+					tmp.push('fad fa-' + icon.replace(' ', txt));
+				}
+			}
+			iconspro = tmp;
+			icons = null;
+		} else {
+			iconspro = null;
+			for (var i = 0; i < icons.length; i++) {
+				var icon = icons[i];
+				if (icon.charAt(1) === ' ')
+					icons[i] = 'fa' + icon.replace(' ', txt);
+				else
+					icons[i] = 'fa fa-' + icons[i];
+			}
+		}
+
+		self.aclass(cls + '-container hidden');
+
+		self.event('keydown', 'input', function() {
+			var t = this;
+			setTimeout2(self.ID, function() {
+				self.search(t.value);
+			}, 300);
+		});
+
+		self.event('click', '.fa-times', function() {
+			self.find('input').val('');
+			self.search('');
+		});
+
+		self.event('click', cls2 + '-content span', function() {
+			self.opt.scope && M.scope(self.opt.scope);
+			self.opt.callback && self.opt.callback($(this).find('i').attr('class'));
+			self.hide();
+		});
+
+		events.click = function(e) {
+			var el = e.target;
+			var parent = self.dom;
+			do {
+				if (el == parent)
+					return;
+				el = el.parentNode;
+			} while (el);
+			self.hide();
+		};
+
+		self.on('reflow + scroll + resize', self.hide);
+		self.redraw();
+	};
+
+	self.bindevents = function() {
+		if (!events.is) {
+			events.is = true;
+			$(document).on('click', events.click);
+		}
+	};
+
+	self.unbindevents = function() {
+		if (events.is) {
+			events.is = false;
+			$(document).off('click', events.click);
+		}
+	};
+
+	self.show = function(opt) {
+
+		var tmp = opt.element ? opt.element instanceof jQuery ? opt.element[0] : opt.element.element ? opt.element.dom : opt.element : null;
+
+		if (is && tmp && self.target === tmp) {
+			self.hide();
+			return;
+		}
+
+		if (M.scope)
+			opt.scope = M.scope();
+
+		self.target = tmp;
+		self.opt = opt;
+		var css = {};
+
+		if (is) {
+			css.left = 0;
+			css.top = 0;
+			self.css(css);
+		} else
+			self.rclass('hidden');
+
+		var target = $(opt.element);
+		var w = self.element.width();
+		var offset = target.offset();
+		var search = self.find(cls2 + '-search-input');
+
+		search.val('');
+		self.find('.clearsearch').rclass2('fa-').aclass('fa-search');
+
+		if (opt.element) {
+			switch (opt.align) {
+				case 'center':
+					css.left = Math.ceil((offset.left - w / 2) + (target.innerWidth() / 2));
+					break;
+				case 'right':
+					css.left = (offset.left - w) + target.innerWidth();
+					break;
+				default:
+					css.left = offset.left;
+					break;
+			}
+
+			css.top = opt.position === 'bottom' ? (offset.top - self.element.height() - 10) : (offset.top + target.innerHeight() + 10);
+
+		} else {
+			css.left = opt.x;
+			css.top = opt.y;
+		}
+
+		if (opt.offsetX)
+			css.left += opt.offsetX;
+
+		if (opt.offsetY)
+			css.top += opt.offsetY;
+
+		is = true;
+		self.rendericons(opt.empty);
+		var scrollarea = self.find('.noscrollbar').noscrollbar();
+		self.css(css);
+		if (opt.scrolltop == null || opt.scrolltop)
+			scrollarea[0].scrollTop = 0;
+		search.focus();
+		setTimeout(self.bindevents, 50);
+		clearTimeout2(self.ID);
+	};
+
+	self.clear = function() {
+		container.empty();
+		cachekey = null;
+	};
+
+	self.hide = function() {
+		is = false;
+		self.target = null;
+		self.opt = null;
+		self.unbindevents();
+		self.aclass('hidden');
+		container.find('.hidden').rclass('hidden');
+		setTimeout2(self.ID, self.clear, 1000 * 10);
+	};
+});
+
+COMPONENT('form', 'zindex:62;scrollbar:1', function(self, config, cls) {
+
+	var cls2 = '.' + cls;
+	var container;
+	var csspos = {};
+
+	if (!W.$$form) {
+
+		W.$$form_level = W.$$form_level || 1;
+		W.$$form = true;
+
+		$(document).on('click', cls2 + '-button-close', function() {
+			SET($(this).attrd('path'), '');
+		});
+
+		var resize = function() {
+			setTimeout2('form', function() {
+				for (var i = 0; i < M.components.length; i++) {
+					var com = M.components[i];
+					if (com.name === 'form' && !HIDDEN(com.dom) && com.$ready && !com.$removed)
+						com.resize();
+				}
+			}, 200);
+		};
+
+		if (W.OP)
+			W.OP.on('resize', resize);
+		else
+			$(W).on('resize', resize);
+
+		$(document).on('click', cls2 + '-container', function(e) {
+			var el = $(e.target);
+			if (!(el.hclass(cls + '-container-padding') || el.hclass(cls + '-container')))
+				return;
+			var form = $(this).find(cls2);
+			var c = cls + '-animate-click';
+			form.aclass(c);
+			setTimeout(function() {
+				form.rclass(c);
+			}, 300);
+		});
+	}
+
+	self.readonly();
+	self.submit = function() {
+		if (config.submit)
+			EXEC(config.submit, self.hide, self.element);
+		else
+			self.hide();
+	};
+
+	self.cancel = function() {
+		config.cancel && EXEC(config.cancel, self.hide);
+		self.hide();
+	};
+
+	self.hide = function() {
+		self.set('');
+	};
+
+	self.icon = function(value) {
+		var el = this.rclass2('fa');
+		value.icon && el.aclass(value.icon.indexOf(' ') === -1 ? ('fa fa-' + value.icon) : value.icon);
+	};
+
+	self.resize = function() {
+
+		if (self.scrollbar) {
+			container.css('height', WH);
+			self.scrollbar.resize();
+		}
+
+		if (!config.center || self.hclass('hidden'))
+			return;
+
+		var ui = self.find(cls2);
+		var fh = ui.innerHeight();
+		var wh = WH;
+		var r = (wh / 2) - (fh / 2);
+		csspos.marginTop = (r > 30 ? (r - 15) : 20) + 'px';
+		ui.css(csspos);
+	};
+
+	self.make = function() {
+
+		$(document.body).append('<div id="{0}" class="hidden {4}-container invisible"><div class="{4}-scrollbar"><div class="{4}-container-padding"><div class="{4}" style="max-width:{1}px"><div data-bind="@config__html span:value.title__change .{4}-icon:@icon" class="{4}-title"><button name="cancel" class="{4}-button-close{3}" data-path="{2}"><i class="fa fa-times"></i></button><i class="{4}-icon"></i><span></span></div></div></div></div>'.format(self.ID, config.width || 800, self.path, config.closebutton == false ? ' hidden' : '', cls));
+
+		var scr = self.find('> script');
+		self.template = scr.length ? scr.html().trim() : '';
+		if (scr.length)
+			scr.remove();
+
+		var el = $('#' + self.ID);
+		var body = el.find(cls2)[0];
+		container = el.find(cls2 + '-scrollbar');
+
+		if (config.scrollbar) {
+			el.css('overflow', 'hidden');
+			self.scrollbar = SCROLLBAR(el.find(cls2 + '-scrollbar'), { visibleY: 1, orientation: 'y' });
+		}
+
+		while (self.dom.children.length)
+			body.appendChild(self.dom.children[0]);
+
+		self.rclass('hidden invisible');
+		self.replace(el, true);
+
+		self.event('scroll', function() {
+			EMIT('scroll', self.name);
+			EMIT('reflow', self.name);
+		});
+
+		self.event('click', 'button[name]', function() {
+			var t = this;
+			switch (t.name) {
+				case 'submit':
+					self.submit(self.hide);
+					break;
+				case 'cancel':
+					!t.disabled && self[t.name](self.hide);
+					break;
+			}
+		});
+
+		config.enter && self.event('keydown', 'input', function(e) {
+			e.which === 13 && !self.find('button[name="submit"]')[0].disabled && setTimeout(self.submit, 800);
+		});
+	};
+
+	self.configure = function(key, value, init, prev) {
+		if (init)
+			return;
+		switch (key) {
+			case 'width':
+				value !== prev && self.find(cls2).css('max-width', value + 'px');
+				break;
+			case 'closebutton':
+				self.find(cls2 + '-button-close').tclass('hidden', value !== true);
+				break;
+		}
+	};
+
+	self.setter = function(value) {
+
+		setTimeout2(cls + '-noscroll', function() {
+			$('html').tclass(cls + '-noscroll', !!$(cls2 + '-container').not('.hidden').length);
+		}, 50);
+
+		var isHidden = value !== config.if;
+
+		if (self.hclass('hidden') === isHidden) {
+			if (!isHidden) {
+				config.reload && EXEC(config.reload, self);
+				config.default && DEFAULT(config.default, true);
+			}
+			return;
+		}
+
+		setTimeout2(cls, function() {
+			EMIT('reflow', self.name);
+		}, 10);
+
+		if (isHidden) {
+			self.aclass('hidden');
+			self.release(true);
+			self.find(cls2).rclass(cls + '-animate');
+			W.$$form_level--;
+			return;
+		}
+
+		if (self.template) {
+			var is = self.template.COMPILABLE();
+			self.find(cls2).append(self.template);
+			self.template = null;
+			is && COMPILE();
+		}
+
+		if (W.$$form_level < 1)
+			W.$$form_level = 1;
+
+		W.$$form_level++;
+
+		self.css('z-index', W.$$form_level * config.zindex);
+		self.element.scrollTop(0);
+		self.rclass('hidden');
+
+		self.resize();
+		self.release(false);
+
+		config.reload && EXEC(config.reload, self);
+		config.default && DEFAULT(config.default, true);
+
+		if (!isMOBILE && config.autofocus) {
+			setTimeout(function() {
+				self.find(typeof(config.autofocus) === 'string' ? config.autofocus : 'input[type="text"],select,textarea').eq(0).focus();
+			}, 1000);
+		}
+
+		setTimeout(function() {
+			self.rclass('invisible');
+			self.element.scrollTop(0);
+			self.find(cls2).aclass(cls + '-animate');
+		}, 300);
+
+		// Fixes a problem with freezing of scrolling in Chrome
+		setTimeout2(self.ID, function() {
+			self.css('z-index', (W.$$form_level * config.zindex) + 1);
+		}, 500);
+	};
+});
+
+COMPONENT('floatinginput', 'minwidth:200', function(self, config, cls) {
+
+	var cls2 = '.' + cls;
+	var timeout, icon, plus, input, summary;
+	var is = false;
+	var plusvisible = false;
+
+	self.readonly();
+	self.singleton();
+	self.nocompile && self.nocompile();
+
+	self.configure = function(key, value, init) {
+		if (init)
+			return;
+		switch (key) {
+			case 'placeholder':
+				self.find('input').prop('placeholder', value);
+				break;
+		}
+	};
+
+	self.make = function() {
+
+		self.aclass(cls + ' hidden');
+		self.append('<div class="{1}-summary hidden"></div><div class="{1}-input"><span class="{1}-add hidden"><i class="fa fa-plus"></i></span><span class="{1}-button"><i class="fa fa-search"></i></span><div><input type="text" placeholder="{0}" class="{1}-search-input" name="dir{2}" autocomplete="dir{2}" /></div></div'.format(config.placeholder, cls, Date.now()));
+
+		input = self.find('input');
+		icon = self.find(cls2 + '-button').find('i');
+		plus = self.find(cls2 + '-add');
+		summary = self.find(cls2 + '-summary');
+
+		self.event('click', cls2 + '-button', function(e) {
+			input.val('');
+			self.search();
+			e.stopPropagation();
+			e.preventDefault();
+		});
+
+		self.event('click', cls2 + '-add', function() {
+			if (self.opt.callback) {
+				self.opt.scope && M.scope(self.opt.scope);
+				self.opt.callback(input.val(), self.opt.element, true);
+				self.hide();
+			}
+		});
+
+		self.event('keydown', 'input', function(e) {
+			switch (e.which) {
+				case 27:
+					self.hide();
+					break;
+				case 13:
+					if (self.opt.callback) {
+						self.opt.scope && M.scope(self.opt.scope);
+						self.opt.callback(this.value, self.opt.element);
+					}
+					self.hide();
+					break;
+			}
+		});
+
+		var e_click = function(e) {
+			var node = e.target;
+			var count = 0;
+
+			if (is) {
+				while (true) {
+					var c = node.getAttribute('class') || '';
+					if (c.indexOf(cls + '-input') !== -1)
+						return;
+					node = node.parentNode;
+					if (!node || !node.tagName || node.tagName === 'BODY' || count > 3)
+						break;
+					count++;
+				}
+			} else {
+				is = true;
+				while (true) {
+					var c = node.getAttribute('class') || '';
+					if (c.indexOf(cls) !== -1) {
+						is = false;
+						break;
+					}
+					node = node.parentNode;
+					if (!node || !node.tagName || node.tagName === 'BODY' || count > 4)
+						break;
+					count++;
+				}
+			}
+
+			is && self.hide(0);
+		};
+
+		var e_resize = function() {
+			is && self.hide(0);
+		};
+
+		self.bindedevents = false;
+
+		self.bindevents = function() {
+			if (!self.bindedevents) {
+				$(document).on('click', e_click);
+				$(W).on('resize', e_resize);
+				self.bindedevents = true;
+			}
+		};
+
+		self.unbindevents = function() {
+			if (self.bindedevents) {
+				self.bindedevents = false;
+				$(document).off('click', e_click);
+				$(W).off('resize', e_resize);
+			}
+		};
+
+		self.event('input', 'input', function() {
+			var is = !!this.value;
+			if (plusvisible !== is) {
+				plusvisible = is;
+				plus.tclass('hidden', !this.value);
+			}
+		});
+
+		var fn = function() {
+			is && self.hide(1);
+		};
+
+		self.on('reflow', fn);
+		self.on('scroll', fn);
+		self.on('resize', fn);
+		$(W).on('scroll', fn);
+	};
+
+	self.show = function(opt) {
+
+		// opt.element
+		// opt.callback(value, el)
+		// opt.offsetX     --> offsetX
+		// opt.offsetY     --> offsetY
+		// opt.offsetWidth --> plusWidth
+		// opt.placeholder
+		// opt.render
+		// opt.minwidth
+		// opt.maxwidth
+		// opt.icon;
+		// opt.maxlength = 30;
+
+		var el = opt.element instanceof jQuery ? opt.element[0] : opt.element;
+
+		self.tclass(cls + '-default', !opt.render);
+
+		if (!opt.minwidth)
+			opt.minwidth = 200;
+
+		if (is) {
+			clearTimeout(timeout);
+			if (self.target === el) {
+				self.hide(1);
+				return;
+			}
+		}
+
+		self.initializing = true;
+		self.target = el;
+		plusvisible = false;
+
+		var element = $(opt.element);
+
+		setTimeout(self.bindevents, 500);
+
+		self.opt = opt;
+		opt.class && self.aclass(opt.class);
+
+		input.val(opt.value || '');
+		input.prop('maxlength', opt.maxlength || 50);
+
+		self.target = element[0];
+
+		var w = element.width();
+		var offset = element.offset();
+		var width = w + (opt.offsetWidth || 0);
+
+		if (opt.minwidth && width < opt.minwidth)
+			width = opt.minwidth;
+		else if (opt.maxwidth && width > opt.maxwidth)
+			width = opt.maxwidth;
+
+		var ico = '';
+
+		if (opt.icon) {
+			if (opt.icon.indexOf(' ') === -1)
+				ico = 'fa fa-' + opt.icon;
+			else
+				ico = opt.icon;
+		} else
+			ico = 'fa fa-pencil-alt';
+
+		icon.rclass2('fa').aclass(ico).rclass('hidden');
+
+		if (opt.value) {
+			plusvisible = true;
+			plus.rclass('hidden');
+		} else
+			plus.aclass('hidden');
+
+		self.find('input').prop('placeholder', opt.placeholder || config.placeholder);
+		var options = { left: 0, top: 0, width: width };
+
+		summary.tclass('hidden', !opt.summary).html(opt.summary || '');
+
+		switch (opt.align) {
+			case 'center':
+				options.left = Math.ceil((offset.left - width / 2) + (width / 2));
+				break;
+			case 'right':
+				options.left = (offset.left - width) + w;
+				break;
+			default:
+				options.left = offset.left;
+				break;
+		}
+
+		options.top = opt.position === 'bottom' ? ((offset.top - self.height()) + element.height()) : offset.top;
+		options.scope = M.scope ? M.scope() : '';
+
+		if (opt.offsetX)
+			options.left += opt.offsetX;
+
+		if (opt.offsetY)
+			options.top += opt.offsetY;
+
+		self.css(options);
+
+		!isMOBILE && setTimeout(function() {
+			input.focus();
+		}, 200);
+
+		self.rclass('hidden');
+
+		setTimeout(function() {
+			self.initializing = false;
+			is = true;
+			if (self.opt && self.target && self.target.offsetParent)
+				self.aclass(cls + '-visible');
+			else
+				self.hide(1);
+		}, 100);
+	};
+
+	self.hide = function(sleep) {
+		if (!is || self.initializing)
+			return;
+		clearTimeout(timeout);
+		timeout = setTimeout(function() {
+			self.unbindevents();
+			self.rclass(cls + '-visible').aclass('hidden');
+			if (self.opt) {
+				self.opt.close && self.opt.close();
+				self.opt.class && self.rclass(self.opt.class);
+				self.opt = null;
+			}
+			is = false;
+		}, sleep ? sleep : 100);
+	};
 });

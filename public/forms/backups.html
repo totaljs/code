@@ -2,29 +2,29 @@
 	It depends on "code editor"
 -->
 
-<div data---="panel__common.form__if:backups;width:350;title:@(Backups);icon:history;reload:codebackups/reload;bg:false;autofocus:true;bottom:87;top:50" class="hidden">
-	<div data---="viewbox__codebackups.items__height:100;margin:51;parent:.ui-panel">
-		<div data-bind="codebackups.items__template">
-			<script type="text/html">
-				{{ foreach m in value }}
-					<div class="backupitem exec" data-path="{{ m.filename }}" data-exec="codebackups/restore">
-						<div class="photo">{{ m.user | initials }}</div>
-						<div class="meta">
-							<div class="date"><span>{{ m.date | format('[date]') }}</span><i class="fa fa-clock"></i><span class="time" data-time="{{ m.date | utc }}">{{ m.date | time }}</span></div>
-							<div class="user">{{ m.user }}</div>
-							<div class="changes">@(Changed lines:) <b>{{ m.changes }}x</b></div>
-						</div>
+<div data---="viewbox__codebackups.items__margin:51;parent:.ui-dockable-body;scrollbar:1">
+	<div data-bind="codebackups.items__template">
+		<script type="text/html">
+			{{ foreach m in value }}
+				<div class="backupitem exec" data-path="{{ m.filename }}" data-exec="codebackups/restore">
+					<div class="photo">{{ m.user | initials }}</div>
+					<div class="meta">
+						<div class="date"><span>{{ m.date | format('[date]') }}</span><i class="fa fa-clock"></i><span class="time" data-time="{{ m.date | utc }}">{{ m.date | time }}</span></div>
+						<div class="user">{{ m.user }}</div>
+						<div class="changes">@(Changed lines:) <b>{{ m.changes }}x</b></div>
 					</div>
-				{{ end }}
-			</script>
-		</div>
+				</div>
+			{{ end }}
+		</script>
 	</div>
 </div>
+
 
 <script>
 	PLUGIN('codebackups', function(exports) {
 
 		exports.reload = function() {
+			SETTER('dockable/show', 'prop');
 			exports.refresh();
 		};
 
@@ -46,26 +46,23 @@
 
 			var qs = {};
 			qs.path = el.attrd('path');
-			SETTER('loading', 'show');
+			SETTER('loading/show');
 			AJAX('GET /api/projects/{id}/restore/'.arg(code.data), qs, function(response) {
 
 				var editor = FIND('editor').editor;
 				var sel = editor.getSelection();
 				var beg = sel ? editor.getCursor(true) : null;
 
-				SETTER('loading', 'hide', 500);
+				SETTER('loading/hide', 500);
 
 				var codeplugin = PLUGIN('code');
 				code.current.modified = true;
 
 				if (sel) {
-
 					var lines = response.split('\n');
 					var tmp = lines.splice(beg.line, sel.split('\n').length).join('\n');
 					editor.replaceSelection(tmp);
-
 					FUNC.success('@(Selected part has been restored in the code editor.)');
-
 				} else {
 					FUNC.success('@(File has been restored in the code editor.)');
 					codeplugin.editor.restore(response);

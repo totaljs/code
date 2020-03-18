@@ -13,6 +13,11 @@
 	<meta name="apple-mobile-web-app-status-bar-style" content="default" />
 	<meta name="apple-mobile-web-app-title" content="@{'%name'}" />
 	<link rel="stylesheet" href="/css/cdn.min.css" />
+	@{if CONF.proicons}
+	<link rel="stylesheet" href="https://cdn.componentator.com/spa.min@18pro.css" />
+	@{else}
+	<link rel="stylesheet" href="/css/spa.min.css" />
+	@{fi}
 	<script src="/js/cdn.min.js"></script>
 	@{import('meta', 'head', 'default.css', 'default.js', 'favicon.ico')}
 </head>
@@ -26,6 +31,8 @@
 	<div data---="LAZY snackbar__null__button:@(OK)"></div>
 	<div data---="LAZY features__null__placeholder:@(What are you looking for?)"></div>
 	<div data---="LAZY tooltip"></div>
+	<div data---="LAZY floatinginput"></div>
+	<div data---="faicons"></div>
 	<div data---="clipboard"></div>
 	<div data---="directory__null__placeholder:@(Search)"></div>
 	<div data---="infopanel"></div>
@@ -42,7 +49,7 @@
 
 	<header>
 		<button class="exec" data-exec="mainmenu"><i class="fa fa-navicon"></i></button>
-		<span class="version hidden" data-bind="common.page__show:value==='code'">v@{MAIN.version}</span>
+		<!--<span class="version hidden" data-bind="common.page__show:value==='code'">v@{MAIN.version}</span>-->
 		<div class="tools" data-jc="selected__common.page__selector:a.R">
 			<a href="@{#}/" title="@(Code)" class="R" data-if="code"><i class="fa fa-laptop-code"></i></a>
 			<a href="javascript:void(0)" data-exec="code/messenger" title="@(Support)" class="external exec"><i class="far fa-comments"></i></a>
@@ -61,20 +68,13 @@
 		</div>
 	</header>
 
-	<div data---="part__common.page__if:code;url:/parts/code.html;reload:code/reload"></div>
+	<div data---="part__common.page__if:code;url:/parts/code.html;reload:code/reload" class="invisible"></div>
 	<div data---="part__common.page__if:snippets;url:/parts/snippets.html;reload:snippets/reload;cleaner:10"></div>
 	<div data---="part__common.page__if:projects;url:/parts/projects.html;reload:projects/reload;cleaner:10"></div>
 	<div data---="part__common.page__if:users;url:/parts/users.html;reload:users/reload;cleaner:10"></div>
 	<div data---="part__common.page__if:settings;url:/parts/settings.html;reload:settings/reload;cleaner:10"></div>
 	<div data---="part__common.page__if:timespent;url:/parts/timespent.html;reload:timespent/reload;cleaner:10"></div>
 	<div data---="websocket__null__url:/"></div>
-
-	<div data---="importer__common.form__if:bundles;url:/forms/bundles.html;cleaner:10"></div>
-	<div data---="importer__common.form__if:templates;url:/forms/templates.html;cleaner:10"></div>
-	<div data---="importer__common.form__if:packages;url:/forms/packages.html;cleaner:10"></div>
-	<div data---="importer__common.form__if:modules;url:/forms/modules.html;cleaner:10"></div>
-	<div data---="importer__common.form__if:schemas;url:/forms/schemas.html;cleaner:10"></div>
-	<div data---="importer__common.form__if:operations;url:/forms/operations.html;cleaner:10"></div>
 
 	@{json(user, 'userdata')}
 
@@ -95,6 +95,7 @@
 		MAKE('common', function(common) {
 
 			common.id = GUID(5);
+			common.version = '@{MAIN.version}';
 			common.idletime = 0;
 			common.plustimespent = 33;
 			common.electron = navigator.userAgent.indexOf('Electron') !== -1 && window.require != null;
@@ -103,6 +104,8 @@
 
 			if (common.electron && !common.ismac)
 				$('header').aclass('electron-header-border');
+
+			ENV('dockmargin', common.electron ? 72 : 50);
 
 			if (!common.recent)
 				common.recent = [];
@@ -133,7 +136,6 @@
 		CACHEPATH('common.showparts', '1 year');
 		CACHEPATH('common.powermode', '1 year');
 		CACHEPATH('common.powermodeshaking', '1 year');
-		CACHEPATH('common.clipboard', '1 year');
 
 		ENV('date', 'yyyy-MM-dd HH:mm');
 
@@ -445,8 +447,7 @@
 		}, true);*/
 
 		SETTER(true, 'shortcuts', 'register', 'F6', function(e) {
-			var n = 'icons';
-			code.current && (/js|css|html/).test(code.current.ext) && SET('common.form', common.form === n ? '' : n);
+			code.current && EXEC('code/addicon');
 		}, true);
 
 		SETTER(true, 'shortcuts', 'register', 'F5', function(e) {

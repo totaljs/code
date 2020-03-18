@@ -345,7 +345,7 @@ NEWSCHEMA('Projects', function(schema) {
 				users.push({ id: tmpuser.id, name: tmpuser.name, collaborator: !!(item.time ? item.time[tmpuser.id] : 0) });
 			}
 
-			$.callback({ allowbundle: item.allowbundle, review: !!PREF.token, files: files, directories: directories, url: item.url, name: item.name, icon: item.icon, repository: item.repository, id: item.id, documentation: item.documentation, support: item.support, pathsync: item.pathsync, combo: item.combo, time: item.time, todo: item.todo, users: users });
+			$.callback({ branch: item.branch, allowbundle: item.allowbundle, review: !!PREF.token, files: files, directories: directories, url: item.url, name: item.name, icon: item.icon, repository: item.repository, id: item.id, documentation: item.documentation, support: item.support, pathsync: item.pathsync, combo: item.combo, time: item.time, todo: item.todo, users: users });
 
 		}, n => !SKIP.test(n) && (!skip || !skip.test(n)));
 	});
@@ -465,6 +465,9 @@ NEWSCHEMA('Projects', function(schema) {
 						usr = MAIN.users.findItem('id', meta[1]);
 						users[meta[1]] = usr;
 					}
+
+					if (project.branch && meta[3] !== project.branch)
+						continue;
 
 					arr.push({ filename: Path.join(dir, filename), date: new Date(2000 + (+dt.substring(0, 2)), (+dt.substring(2, 4)) - 1, +dt.substring(4, 6), +dt.substring(6, 8), +dt.substring(8, 10)), id: meta[1], user: usr ? usr.name : meta[1], changes: +(meta[2] || 0) });
 				}

@@ -1,46 +1,41 @@
-<div data---="panel__common.form__if:usersform;icon:robot;width:500;reload:usersform/reload" class="hidden">
-	<div data---="viewbox__common.form__height:100;margin:51;parent:.ui-panel;scrolltop:1">
-		<div data-scope="usersform">
-			<div class="padding">
-				<div class="row">
-					<div class="col-sm-6 m">
-						<div data---="textbox__?.id__required:true;placeholder:@(petersirka);type:lower__''">@(ID)</div>
-					</div>
-					<div class="col-sm-6 m">
-						<div data---="textbox__?.name__required:true__''">@(Name)</div>
-					</div>
+<div data---="form__common.form__if:usersform;icon:robot;width:700;reload:usersform/reload;autofocus:1;submit:usersform/submit" class="hidden">
+	<div data-scope="usersform">
+		<div class="padding">
+			<div class="row">
+				<div class="col-sm-6 m">
+					<div data---="input__?.id__required:true;placeholder:@(petersirka);type:lower__''">@(ID)</div>
 				</div>
-				<div class="row">
-					<div class="col-sm-6 m">
-						<div data---="textbox__?.email__required:true__'@'">@(Email address)</div>
-					</div>
-					<div class="col-sm-6 m">
-						<div data---="textbox__?.phone__null__''">@(Phone number)</div>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-sm-6 m">
-						<div data---="textbox__?.position__null__''">@(Position)</div>
-					</div>
-					<div class="col-sm-6 m">
-						<div data---="textbox__?.password__required:true__GUID()">@(Password)</div>
-					</div>
-				</div>
-				<div data---="radiobutton__?.darkmode__items:@(Light mode)|0,@(Dark mode)|1,@(Day/Night)|2;type:number;inline:1__0"></div>
-				<hr class="nmt" />
-				<div data---="checkbox__?.sa__null__false" class="b">@(User is administrator)</div>
-				<div data---="checkbox__?.blocked__null__false">@(User is blocked)</div>
-				<div data---="checkbox__?.localsave__null__true">@(Enable local storing files)</div>
-			</div>
-			<hr class="nmt nmb" />
-			<div class="padding">
-				<div data---="error__?.response"></div>
-				<div data---="validation__?" class="m">
-					<button name="submit" disabled="disabled" class="button exec b" data-exec="usersform/submit"><i class="far fa-floppy-o"></i>@(Save)</button>
+				<div class="col-sm-6 m">
+					<div data---="input__?.name__required:true__''">@(Name)</div>
 				</div>
 			</div>
+			<div class="row">
+				<div class="col-sm-6 m">
+					<div data---="input__?.email__required:true__'@'">@(Email address)</div>
+				</div>
+				<div class="col-sm-6 m">
+					<div data---="input__?.phone__null__''">@(Phone number)</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-6 m">
+					<div data---="input__?.position__null__''">@(Position)</div>
+				</div>
+				<div class="col-sm-6 m">
+					<div data---="input__?.password__required:true__GUID()">@(Password)</div>
+				</div>
+			</div>
+			<div data---="radiobutton__?.darkmode__items:@(Light mode)|0,@(Dark mode)|1,@(Day/Night)|2;type:number;inline:1__0"></div>
+			<hr class="nmt" />
+			<div data---="checkbox__?.sa__null__false" class="b">@(User is administrator)</div>
+			<div data---="checkbox__?.blocked__null__false">@(User is blocked)</div>
+			<div data---="checkbox__?.localsave__null__true">@(Enable local storing files)</div>
 		</div>
 	</div>
+	<nav data---="validation__usersform">
+		<button name="submit" disabled="disabled"><i class="far fa-floppy-o mr5"></i>@(Save)</button>
+		<button name="cancel">@(Cancel)</button>
+	</nav>
 </div>
 
 <script>
@@ -55,7 +50,7 @@
 			AJAX('POST /api/users/', data, function(response) {
 				if (response.success) {
 					SET('common.form', '');
-					SETTER('snackbar', 'success', '@(The user has been saved successfully.)');
+					SETTER('snackbar/success', '@(The user has been saved successfully.)');
 					EXEC('users/refresh');
 				} else
 					SET('?.response', response);

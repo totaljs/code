@@ -2,41 +2,39 @@
 	It depends on "code editor"
 -->
 
-<div data---="panel__common.form__if:components;width:350;title:@(Used parts);icon:puzzle-piece;bg:false;reload:components/reload;bottom:87;top:50" class="hidden">
-	<div class="padding">
-		<div data---="textbox__components.search__type:search;placeholder:@(Search);$binding:1;$delay:50"></div>
-		<!-- <div class="help"><span class="link exec" data-path="common.form" data-value="'componentator'"><i class="fa fa-plus-circle"></i>@(Insert UI components)</span></div>-->
-	</div>
-	<div data---="viewbox__components.search__height:100;margin:122;parent:.ui-panel">
-		<div class="partdocs"><a href="#" target="_blank" data-bind="code.data.id__href:'/docs/' + value + '/'"><i class="fa fa-cloud-download"></i>@(Download documentation)</a></div>
-		<div data---="search__components.search__selector:.part">
-			<div data-bind="code.components__template">
-				<script type="text/html">
-					{{ if value.length }}
-					<div class="partscurrent">
-						{{ foreach m in value }}
-							<div class="part exec" data-exec="components/find" data-search="{{ m.name }}" data-index="{{ $index }}" title="@(Line:) {{ m.line }}"><i class="{{ m.type | particon }}"></i>{{ m.type | parttype }}{{ m | partvariables }}</div>
-						{{ end }}
-					</div>
-					<br />
-					{{ fi }}
-				</script>
-			</div>
-			<div data-bind="code.componentsall__template">
-				<script type="text/html">
-					{{ foreach n in value }}
-						{{ if n.path }}
-							<div class="partgroup">{{ n.path }}</div>
-						{{ fi }}
-						{{ foreach m in n.items }}
-							<div class="part exec" data-path="{{ n.path }}" data-exec="components/open" data-line="{{ m.line }}" data-ch="{{ m.ch }}" data-search="{{ m.name }}" data-index="{{ $index }}" title="@(Line:) {{ m.line }}"><i class="{{ m.type | particon }}"></i>{{ m.type | parttype }}{{ if m.type === 'extension' }}<span class="b mr5">@(extension:)</span>{{ fi }}{{ m | partvariables }}</div>
-						{{ end }}
+<div data---="inputsearch__components.search__placeholder:@(Search);$binding:1;$delay:50"></div>
+<div data---="viewbox__components.search__margin:78;parent:.ui-dockable-body;scrollbar:1">
+	<div class="partdocs"><a href="#" target="_blank" data-bind="code.data.id__href:'/docs/' + value + '/'"><i class="fa fa-cloud-download"></i>@(Download documentation)</a></div>
+	<div data---="search__components.search__selector:.part">
+		<div data-bind="code.components__template">
+			<script type="text/html">
+				{{ if value.length }}
+				<div class="partscurrent">
+					{{ foreach m in value }}
+						<div class="part exec" data-exec="components/find" data-search="{{ m.name }}" data-index="{{ $index }}" title="@(Line:) {{ m.line }}"><i class="{{ m.type | particon }}"></i>{{ m.type | parttype }}{{ m | partvariables }}</div>
 					{{ end }}
-				</script>
-			</div>
+				</div>
+				{{ fi }}
+			</script>
+		</div>
+
+		<div data-bind="code__track:components,componentsall__show:value.components.length&&value.componentsall.length" style="height:5px" class="hidden"></div>
+
+		<div data-bind="code.componentsall__template">
+			<script type="text/html">
+				{{ foreach n in value }}
+					{{ if n.path }}
+						<div class="partgroup hellip">{{ n.path }}</div>
+					{{ fi }}
+					{{ foreach m in n.items }}
+						<div class="part exec" data-path="{{ n.path }}" data-exec="components/open" data-line="{{ m.line }}" data-ch="{{ m.ch }}" data-search="{{ m.name }}" data-index="{{ $index }}" title="@(Line:) {{ m.line }}"><i class="{{ m.type | particon }}"></i>{{ m.type | parttype }}{{ if m.type === 'extension' }}<span class="b mr5">@(extension:)</span>{{ fi }}{{ m | partvariables }}</div>
+					{{ end }}
+				{{ end }}
+			</script>
 		</div>
 	</div>
 </div>
+
 
 <script>
 	PLUGIN('components', function(exports) {
@@ -44,6 +42,7 @@
 		var prevpath;
 
 		exports.reload = function() {
+			SETTER('dockable/show', 'prop');
 			SET('?.search', '');
 			prevpath = null;
 		};
@@ -61,7 +60,7 @@
 				return;
 			}
 
-			PLUGIN('code').element.SETTER('tree', 'selectpath', path);
+			PLUGIN('code').element.SETTER('tree/selectpath', path);
 
 			setTimeout2('codefileopen', function() {
 

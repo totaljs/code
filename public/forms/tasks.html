@@ -2,39 +2,37 @@
 	It depends on "code editor"
 -->
 
-<div data---="panel__common.form__if:tasks;width:350;title:@(To-Do list);icon:tasks;reload:codetasks/reload;bg:false;autofocus:true;bottom:87;top:50" class="hidden">
-	<div data---="viewbox__codetasks__height:100;margin:51;parent:.ui-panel">
-		<div data-bind="code.data.todocurrent__template__show:value&&value.length" class="todocurrent hidden">
-			<script type="text/html">
-				<div class="todolist">
+<div data---="viewbox__common.form__margin:51;parent:.ui-dockable-body;scrollbar:1">
+	<div data-bind="code.data.todocurrent__template__show:value&&value.length" class="todocurrent hidden">
+		<script type="text/html">
+			<div class="todolist">
+				<div>
+				{{ foreach m in value }}
+					<div class="todo">
+						<div class="exec" data-exec="codetasks/go" data-line="{{ m.line }}" data-ch="{{ m.ch }}"><span>:{{ m.line }}</span>{{ m.name }}</div>
+					</div>
+				{{ end }}
+				</div>
+			</div>
+		</script>
+	</div>
+	<div data-bind="code.data.todo__template__show:value && value.length" class="hidden">
+		<script type="text/html">
+			<div class="todolist nmt">
+				<div>
+				{{ foreach m in value }}
+					<div class="todopath{{ m.path | todoextension }}"><i class="far fa-file-alt"></i>{{ m.path }}</div>
 					<div>
-					{{ foreach m in value }}
+						{{ foreach n in m.items }}
 						<div class="todo">
-							<div class="exec" data-exec="codetasks/go" data-line="{{ m.line }}" data-ch="{{ m.ch }}"><span>:{{ m.line }}</span>{{ m.name }}</div>
+							<div class="exec" data-exec="codetasks/open" data-line="{{ n.line }}" data-ch="{{ n.ch }}" data-path="{{ m.path }}"><span>:{{ n.line }}</span>{{ n.name }}</div>
 						</div>
-					{{ end }}
+						{{ end }}
 					</div>
+				{{ end }}
 				</div>
-			</script>
-		</div>
-		<div data-bind="code.data.todo__template__show:value && value.length" class="hidden">
-			<script type="text/html">
-				<div class="todolist nmt">
-					<div>
-					{{ foreach m in value }}
-						<div class="todopath{{ m.path | todoextension }}"><i class="far fa-file-alt"></i>{{ m.path }}</div>
-						<div>
-							{{ foreach n in m.items }}
-							<div class="todo">
-								<div class="exec" data-exec="codetasks/open" data-line="{{ n.line }}" data-ch="{{ n.ch }}" data-path="{{ m.path }}"><span>:{{ n.line }}</span>{{ n.name }}</div>
-							</div>
-							{{ end }}
-						</div>
-					{{ end }}
-					</div>
-				</div>
-			</script>
-		</div>
+			</div>
+		</script>
 	</div>
 </div>
 
@@ -43,6 +41,7 @@
 
 		exports.reload = function() {
 			// nothing to do
+			SETTER('dockable/show', 'prop');
 		};
 
 		exports.go = function(el) {

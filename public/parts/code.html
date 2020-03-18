@@ -1,6 +1,8 @@
 <div id="panel">
-	<section class="project exec" data-exec="code/projects" data-bind="!code.data__html b:value.name__title:value.name"><i class="fa fa-caret-down"></i><b>@(Choose project)</b></section>
-	<div class="panel-scroller fullheight noscrollbar" data-margin="36">
+
+	<section class="project exec" data-exec="code/projects" data-bind="!code.data__html b:value.name__title:value.name__text div:'@(Branch:) '+(value.branch||'@(Master)')"><i class="fa fa-angle-down"></i><b>@(Choose project)</b><div><i class="far fa-thumbs-up mr5"></i>@(Thank you for using Total.js)</div></section>
+
+	<div>
 		<div data-bind="common.recent__template__|__code.data__hide" class="hidden">
 			<script type="text/html">
 				{{ foreach m in value }}
@@ -8,9 +10,24 @@
 				{{ end }}
 			</script>
 		</div>
-		<div data-bind="code.data__show" data---="tree__code.tree__exec:code/open;options:code/options;rename:code/rename;first:false;upload:code/upload;pk:path;extrabutton:code/templates;extralabel:@(Download template)" class="hidden"></div>
+		<div data---="viewbox__null__scrollbar:1;parent:.ui-dockable-body;margin:86" data-bind="code.data__show" class="hidden">
+			<div class="changedfiles hidden" data-bind="code.recent__template__show:value && value.length">
+				<script type="text/html">
+					<div><i class="far fa-clock-o"></i>@(Last changed files)</div>
+					<div>
+					{{ foreach m in value }}
+						<div class="changefile">
+							<div class="path exec" data-exec="code/editpath" data-path="{{ m.path }}"><i class="far fa-file-alt"></i>{{ m.path }}</div>
+						</div>
+					{{ end }}
+					</div>
+				</script>
+			</div>
+			<div data---="tree__code.tree__exec:code/open;options:code/options;rename:code/rename;first:false;upload:code/upload;pk:path;extrabutton:code/templates;extralabel:@(Download template)"></div>
+		</div>
 	</div>
-	<section class="status invisible" data-bind="code.data__invisible:!value">
+
+	<section class="status invisible" data-bind="code.data__visible">
 		<button title="@(Create file)" class="exec" data-name="file" data-exec="code/statusform"><i class="far fa-file-text-o"></i></button>
 		<button title="@(Create folder)" class="exec" data-name="directory" data-exec="code/statusform"><i class="far fa-folder"></i></button>
 		<button title="@(Refresh directories and files)" class="exec" data-exec="code/refresh"><i class="fa fa-refresh"></i></button>
@@ -20,59 +37,52 @@
 	</section>
 </div>
 
-<div id="clipboard" class="hidden" data-bind="common.clipboard__show">
-	<div class="titlebar"><i class="fa fa-times exec" data-exec="code/clipboard"></i><i class="fa fa-clipboard"></i>@(Clipboard)</div>
-	<textarea id="clipboardbody" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
-</div>
+<div data---="dockable__code.dock__margin:[dockmargin]">
+	<div id="body">
 
-<div id="realtimewindow" data-bind="common.debug__show" class="hidden">
-	<div class="titlebar"><i class="fa fa-times exec" data-exec="code/debug" title="@(Close log)"></i><i class="fa fa-trash exec" data-exec="code/debugclear" title="@(Truncate log)"></i><i class="fa fa-pulse fa-spinner"></i>@(Logs)</div>
-	<div class="body-scrollbar">
-		<div id="realtimewindowbody" class="body"></div>
-	</div>
-</div>
+		<div id="currentcolor" class="hidden"><span>B</span><span>W</span></div>
+		<div id="combo" data---="combo__editor.combo" data-bind="code.editor.path__show:code/showcombo" class="hidden" title="@(Scoreboard for the project)">
+			<div class="info">
+				<div>@(COMBO)</div>
+				<b>0</b>
+				<div class="progress"></div>
+			</div>
+			<div class="rating"></div>
+		</div>
 
-<div id="currentcolor" class="hidden"><span>B</span><span>W</span></div>
-
-<div id="combo" data---="combo__editor.combo" data-bind="code.editor.path__show:code/showcombo" class="hidden" title="@(Scoreboard for the project)">
-	<div class="info">
-		<div>@(COMBO)</div>
-		<b>0</b>
-		<div class="progress"></div>
-	</div>
-	<div class="rating"></div>
-</div>
-
-<div id="body">
-	<section class="tabs">
-		<a data-bind="code.data.url__href__show" target="_blank" class="preview" title="@(Preview)"><i class="fa fa-globe"></i></a>
-		<span class="options exec hidden" data-bind="code.editor__show" data-exec="code/options_editor"><i class="fa fa-cog"></i></span>
-		<nav data---="tabmenu__code.editor.path__datasource:code.open;selector:span;exec:code/opentab;reorder:code/savetabs">
-			<script type="text/html">
-				<span data-value="{{ path }}" class="{{ if !skip }}nolocked{{ fi }}{{ if modified }} modified{{ fi }}" title="{{ path }}"><i class="fa exec" data-exec="code/close"></i>{{ name }}</span>
-			</script>
-		</nav>
-	</section>
-	<div data-bind="code.editor.path__visible" class="invisible">
-		<div class="search">
-			<span><i class="fa fa-search"></i>@(Search)</span>
-			<nav>
-				<button name="prev" disabled="disabled" title="@(Previous result)"><i class="fa fa-angle-up"></i></button>
-				<button name="next" disabled="disabled" title="@(Next result)"><i class="fa fa-angle-down"></i></button>
+		<div class="body-title">@(Total.js Code Editor v)<span data-bind="common.version__text"></span></div>
+		<section class="tabs">
+			<a data-bind="code.data.url__href__show" target="_blank" class="preview" title="@(Preview)"><i class="fa fa-globe"></i></a>
+			<span class="options exec hidden" data-bind="code.editor__show" data-exec="code/options_editor"><i class="fa fa-cog"></i></span>
+			<span class="options2 exec hidden" data-bind="code.editor__show" data-exec="code/branches"><i class="fa fa-code-branch"></i></span>
+			<nav data---="tabmenu__code.editor.path__datasource:code.open;selector:span;exec:code/opentab;reorder:code/savetabs">
+				<script type="text/html">
+					<span data-value="{{ path }}" class="{{ if !skip }}nolocked{{ fi }}{{ if modified }} modified{{ fi }}" title="{{ path }}"><i class="fa exec" data-exec="code/close"></i>{{ name }}</span>
+				</script>
 			</nav>
-			<div><input type="text" maxlength="100" placeholder="@(Type to search and press enter)" /></div>
+		</section>
+		<div data-bind="code.editor.path__visible" class="invisible">
+			<div class="search">
+				<span><i class="fa fa-search"></i>@(Search)</span>
+				<nav>
+					<button name="prev" disabled="disabled" title="@(Previous result)"><i class="fa fa-angle-up"></i></button>
+					<button name="next" disabled="disabled" title="@(Next result)"><i class="fa fa-angle-down"></i></button>
+				</nav>
+				<div><input type="text" maxlength="100" placeholder="@(Type to search and press enter)" /></div>
+			</div>
+		</div>
+		<div id="content">
+			<div class="alert-saved hidden exec" data-bind="code.saved__show__html b" data-exec="code/syncsave"><i class="fa fa-warning"></i><b></b> @(has replaced content of this file on the server.)</div>
+			<div data-bind="code.editor.path__show" class="codeeditor">
+				<div data---="editor__code.editor.body__height:100%;pk:path;change:code/modified;shortcut:code/shortcut;contextmenu:code/contextmenu;cursor:code/cursorposition;sync:code/sync;todo:code/todo;components:code/components;combo:code/combo"></div>
+			</div>
+			<div class="messages">
+				<div class="alert hidden" data-bind="code.backup__show" data-name="backup"><i class="fa fa-times exec" data-exec="code/warning"></i><i class="fa fa-warning"></i>@(The content of this file wasn't saved before. Do you want to restore it?) <span class="link exec" data-name="restore" data-exec="code/warning">@(Restore)</span> @(or) <span class="link exec" data-exec="code/warning">@(Cancel)</span>.</div>
+				<div class="alert hidden" data-bind="code.multiple__show" data-name="multiple" style="z-index:1001"><i class="fa fa-times exec" data-exec="code/warning"></i><i class="fa fa-users"></i>@(Be careful because another user is editing content of this file.) <span class="link exec b ml5" data-exec="code/syncdata"><i class="fa fa-refresh fa-spin mr5"></i>@(Synchronize)</span> @(or) <span class="link exec" data-exec="code/warning">@(Cancel)</span>.</div>
+			</div>
 		</div>
 	</div>
-	<div id="content" data-margin="36">
-		<div class="alert-saved hidden exec" data-bind="code.saved__show__html b" data-exec="code/syncsave"><i class="fa fa-warning"></i><b></b> @(has replaced content of this file on the server.)</div>
-		<div data-bind="code.editor.path__show" class="codeeditor">
-			<div data---="editor__code.editor.body__height:100%;pk:path;change:code/modified;shortcut:code/shortcut;contextmenu:code/contextmenu;cursor:code/cursorposition;sync:code/sync;todo:code/todo;components:code/components;combo:code/combo"></div>
-		</div>
-		<div class="messages">
-			<div class="alert hidden" data-bind="code.backup__show" data-name="backup"><i class="fa fa-times exec" data-exec="code/warning"></i><i class="fa fa-warning"></i>@(The content of this file wasn't saved before. Do you want to restore it?) <span class="link exec" data-name="restore" data-exec="code/warning">@(Restore)</span> @(or) <span class="link exec" data-exec="code/warning">@(Cancel)</span>.</div>
-			<div class="alert hidden" data-bind="code.multiple__show" data-name="multiple" style="z-index:1001"><i class="fa fa-times exec" data-exec="code/warning"></i><i class="fa fa-users"></i>@(Be careful because another user is editing content of this file.) <span class="link exec b ml5" data-exec="code/syncdata"><i class="fa fa-refresh fa-spin mr5"></i>@(Synchronize)</span> @(or) <span class="link exec" data-exec="code/warning">@(Cancel)</span>.</div>
-		</div>
-	</div>
+
 	<section class="status invisible" data-bind="code.data__invisible:!value">
 		<div data-bind="code.usersproject__template" class="status-collaborators">
 			<script type="text/html">
@@ -100,18 +110,19 @@
 		<div class="status-meta" data-bind="code.editor.body__html:code/statusmeta__delay:500">---</div>
 		<div class="status-info" data-bind="code.cursor__html:code/statusinfo" title="@(Line : Char index : Selected chars)"></div>
 	</section>
-</div>
 
-<div data---="statusform__code.statusform.name__exec:code/statusform" class="statusform hidden">
-	<div class="statusform-item hidden" data-name="file">
-		<input type="text" placeholder="@(Enter relative filename.js)" />
+	<div data---="statusform__code.statusform.name__exec:code/statusform" class="statusform hidden">
+		<div class="statusform-item hidden" data-name="file">
+			<input type="text" placeholder="@(Enter relative filename.js)" />
+		</div>
+		<div class="statusform-item hidden" data-name="directory">
+			<input type="text" placeholder="@(Enter relative folder name)" />
+		</div>
+		<div class="statusform-item hidden" data-name="commit">
+			<input type="text" placeholder="@(Describe changes for this file)" />
+		</div>
 	</div>
-	<div class="statusform-item hidden" data-name="directory">
-		<input type="text" placeholder="@(Enter relative folder name)" />
-	</div>
-	<div class="statusform-item hidden" data-name="commit">
-		<input type="text" placeholder="@(Describe changes for this file)" />
-	</div>
+
 </div>
 
 <div class="collaborators" data-bind="code.editor.path__show .onlyopen__|__code.data__show">
@@ -129,20 +140,41 @@
 	</section>
 </div>
 
-<div data---="importer__common.form__if:tasks;url:/forms/tasks.html"></div>
-<div data---="importer__common.form__if:backups;url:/forms/backups.html"></div>
-<div data---="importer__common.form__if:changes;url:/forms/changes.html"></div>
-<div data---="importer__common.form__if:componentator;url:/forms/componentator.html"></div>
-<div data---="importer__common.form__if:components;url:/forms/components.html"></div>
-<div data---="importer__common.form__if:snippets;url:/forms/snippets.html"></div>
-<div data---="importer__common.form__if:snippets;url:/forms/snippets.html"></div>
-<div data---="importer__common.form__if:icons;url:/forms/icons.html"></div>
-<div data---="importer__common.form__if:output;url:/forms/output.html"></div>
-<div data---="importer__common.form__if:timespentform;url:/forms/timespent.html"></div>
+<div id="panel_prop">
+	<div class="options">
+		<ul class="tabbuttons" data---="tabmenu__common.form">
+			<li data-value="components" title="@(Used parts)"><i class="fa fa-puzzle-piece"></i></li>
+			<li data-value="componentator" title="@(UI components)"><i class="fa fa-drafting-compass"></i></li>
+			<li data-value="output" title="@(Output panel)"><i class="fa fa-rss"></i></li>
+			<li data-value="changes" title="@(Last changes)"><i class="fa fa-history"></i></li>
+			<li data-value="backups" title="@(Backups)"><i class="fa fa-database"></i></li>
+			<li data-value="timespentform" title="@(Time spent)"><i class="far fa-calendar"></i></li>
+		</ul>
+	</div>
+	<div data---="part__common.form__if:tasks;url:/forms/tasks.html;reload:codetasks/reload"></div>
+	<div data---="part__common.form__if:backups;url:/forms/backups.html;reload:codebackups/reload"></div>
+	<div data---="part__common.form__if:changes;url:/forms/changes.html;reload:codechanges/reload"></div>
+	<div data---="part__common.form__if:componentator;url:/forms/componentator.html;reload:componentator/reload"></div>
+	<div data---="part__common.form__if:components;url:/forms/components.html;reload:components/reload"></div>
+	<div data---="part__common.form__if:snippets;url:/forms/snippets.html;reload:snippets/reload"></div>
+	<div data---="part__common.form__if:output;url:/forms/output.html;reload:output/reload"></div>
+	<div data---="part__common.form__if:timespentform;url:/forms/timespent.html;reload:timespentform/reload"></div>
+	<div data---="part__common.form__if:bundles;url:/forms/bundles.html;reload:bundlespanel/reload"></div>
+	<div data---="part__common.form__if:templates;url:/forms/templates.html;reload:templatespanel/reload"></div>
+	<div data---="part__common.form__if:packages;url:/forms/packages.html;reload:packagespanel/reload"></div>
+	<div data---="part__common.form__if:modules;url:/forms/modules.html;reload:modulespanel/reload"></div>
+	<div data---="part__common.form__if:schemas;url:/forms/schemas.html;reload:schemaspanel/reload"></div>
+	<div data---="part__common.form__if:operations;url:/forms/operations.html;reload:operationspanel/reload"></div>
+</div>
+
+<div data---="importer__common.top__if:branches;url:/forms/branches.html"></div>
 
 <script>
 
-	var code = { SYNC: false, changes: {}, NOTRIM: { nosql: 1, table: 1, todo: 1, issyncing: false }};
+	var code = { SYNC: false, changes: {}, NOTRIM: { nosql: 1, table: 1, todo: 1, issyncing: false }, dock: []};
+
+	code.dock.push({ id: 'project', title: '@(Project)', html: $('#panel'), offset: { x: 200, y: 200, width: 241, minwidth: 200, minheight: 500, dockminwidth: 192, dockmaxwidth: 600, docked: 'left' }, actions: { autosave: true, close: false, dockable: 'left right' }});
+	code.dock.push({ id: 'prop', title: '@(Additional)', html: $('#panel_prop'), hidden: true, offset: { x: 200, y: 200, width: 350, minwidth: 200, minheight: 500, dockminwidth: 200, dockmaxwidth: 600, docked: 'right' }, actions: { autosave: true, close: false, hide: true, dockable: 'left right' }});
 
 	PLUGIN('code', function(exports) {
 
@@ -161,6 +193,10 @@
 		FIND('combo', function(com) {
 			combo = com;
 		});
+
+		exports.branches = function() {
+			SET('common.top', 'branches');
+		};
 
 		exports.showcombo = function(value) {
 			return !!value && !!common.powermode;
@@ -233,6 +269,7 @@
 			SET('code.components', components);
 
 			if (is && !common.form && code.current && !code.current.$components && common.showparts) {
+				SETTER('dockable/show', 'prop');
 				SET('common.form', 'components');
 				code.current.$components = 0;
 				clipboardresize();
@@ -254,9 +291,13 @@
 			SETTER('loading', 'show');
 			AJAX('GET /api/projects/{id}/localize/'.arg(code.data), function() {
 				EXEC('code/refresh', function() {
-					exports.element.SETTER('tree', 'selectpath', '/localization.resource');
+					exports.element.SETTER('tree/selectpath', '/localization.resource');
 				});
 			});
+		};
+
+		exports.editpath = function(el) {
+			SETTER('tree/selectpath', el.attrd('path') || '');
 		};
 
 		function watchlogfile() {
@@ -265,19 +306,50 @@
 				common.debug && setTimeout(watchlogfile, 1500);
 				if (response !== common.debugprev) {
 					common.debugprev = response;
-					var el = $('#realtimewindowbody').html(Thelpers.encode(response).replace(/\n/g, '<br />'));
-					el[0].scrollTop = el[0].scrollHeight || 0;
+					SET('common.debughtml', Thelpers.encode(response).replace(/\n/g, '<br />'));
 				}
 			});
 		}
 
-		WATCH('common.debug', function(path, value) {
-			value && watchlogfile();
+		WATCH('common.debug', function(path, value, type) {
+
+			if (value) {
+
+				if (windows.findItem('id', 'logs')) {
+					watchlogfile();
+					SETTER('windows/show', 'logs');
+					return;
+				}
+
+				var obj = {};
+				obj.id = 'logs';
+				obj.hidden = false;
+				obj.offset = { x: WW - 500, y: WH - 300, width: 480, height: 250, minwidth: 200, minheight: 200 };
+				obj.title = '<i class="fa fa-pulse fa-spinner green"></i>@(Logs)';
+				obj.html = '<div data-import="url:/partial/logs.html"></div>';
+				obj.actions = { minimize: false, maximize: false, move: true, resize: true, autosave: true, menu: true, hide: true };
+				obj.make = function(el) {
+					el.parent().find('.ui-windows-lastbutton').rclass2('fa-').aclass('fa-trash-o');
+				};
+				obj.close = function(next) {
+					next();
+					SET('common.debug', false);
+				};
+				obj.menu = exports.debugclear;
+				PUSH('windows', obj);
+				watchlogfile();
+			} else
+				SETTER('windows/hide', 'logs');
+
 		});
 
 		WATCH('common.form', function(path, value) {
 			if (value === '' && code.current)
 				code.current.$components = 1;
+
+			if (!value)
+				SETTER('dockable/hide', 'prop');
+
 			setTimeout(clipboardresize, 500);
 		});
 
@@ -462,12 +534,6 @@
 					if (id && id.length > 15 && !projects[id])
 						localStorage.removeItem(keys[i]);
 				}
-
-				// Clipboard
-				AJAX('GET /api/clipboard/', function(response) {
-					$('#clipboardbody').val(response);
-				});
-
 			});
 		};
 
@@ -605,6 +671,7 @@
 			items.push({ name: '@(Insert)', icon: 'plus-circle green', value: 'insert', children: sub });
 			items.push({ name: '@(Insert emoji)', icon: 'smile yellow', value: 'emoji' });
 			items.push({ name: '@(Insert color)', icon: 'fill-drip colorize', value: 'colorpicker' });
+			items.push({ name: '@(Insert icon)', icon: 'image blue', value: 'icon' });
 
 			if (code.current.path.indexOf('/config') !== -1)
 				items.push({ name: '@(Insert connection string)', icon: 'database', value: 'insertconnection' });
@@ -757,6 +824,11 @@
 
 				if (value.value === 'cleancss' || value.value === 'sortcss') {
 					editor.replaceSelection(FUNC[value.value](text));
+					return;
+				}
+
+				if (value.value === 'icon') {
+					exports.addicon();
 					return;
 				}
 
@@ -1187,6 +1259,42 @@
 			exports.open({ children: null, path: path });
 		};
 
+		exports.addicon = function() {
+			var opt = {};
+			opt.align = 'center';
+			opt.position = 'top';
+			opt.element = $('.CodeMirror-cursor');
+			opt.callback = function(icon) {
+				EXEC('code/appendcustom', function(editor, cur, selected) {
+
+					var selection = editor.getSelection();
+					var text = selection ? selection : editor.lineInfo(cur.line).text;
+					var prev = text.substring(cur.ch - 1, cur.ch);
+					var clean = false;
+					var reg = /(fal|far|fas|fab|fa)\s/;
+					var is = { fa: 1, far: 1, fas: 1, fab: 1, fal: 1 };
+					var space = is[text.substring(cur.ch - 2, cur.ch)] || is[text.substring(cur.ch - 3, cur.ch)];
+
+					for (var i = cur.ch; i > cur.ch - 30; i--) {
+						var fa2 = text.substring(i - 4, i);
+						var fa = text.substring(i - 3, i);
+
+						if (is[fa.trim()] || is[fa2.trim()]) {
+							icon = icon.replace(reg, '');
+							break;
+						}
+					}
+
+					if (space || (selection && selection.indexOf(' ') === -1))
+						icon = icon.replace(reg, '');
+
+					editor.replaceSelection(prev && prev !== ' ' && prev !== '"' && prev !== '\'' ? (' ' + icon) : icon);
+				});
+			};
+
+			SETTER('faicons/show', opt);
+		};
+
 		exports.options_editor = function(el) {
 
 			var items = [];
@@ -1243,7 +1351,7 @@
 						SET('common.form', 'backups');
 						break;
 					case 12:
-						SET('common.form', 'icons');
+						exports.addicon();
 						break;
 					case 13:
 						TOGGLE('common.showparts');
@@ -1792,14 +1900,14 @@
 
 		exports.load = function(id, skip, callback) {
 
-			SETTER('loading', 'show');
+			SETTER('loading/show');
 
 			if (callback instanceof jQuery)
 				callback = null;
 
 			AJAX('GET /api/projects/{0}/files/'.format(id), function(response) {
 
-				SETTER('loading', 'hide', 1000);
+				SETTER('loading/hide', 1000);
 
 				if (response instanceof Array) {
 					FUNC.warning(response);
@@ -1864,8 +1972,22 @@
 					setTimeout(exports.restoretabs, 500);
 				}
 
+				AJAX('GET /api/projects/{id}/changes/'.arg(code.data), { recent: 1 }, function(response) {
+					var arr = [];
+					var cache = {};
+					for (var i = 0; i < response.length; i++) {
+						var file = response[i];
+						if (!cache[file.path]) {
+							cache[file.path] = 1;
+							arr.push(file);
+						}
+						if (arr.length > 4)
+							break;
+					}
+					SET('code.recent', arr);
+				});
+
 				AJAX('GET /api/projects/{0}/parts/'.format(id), 'code.componentsdb');
-				SETTER('loading', 'hide', 1000);
 				callback && callback();
 			});
 		};
@@ -2013,6 +2135,7 @@
 
 					AJAX('GET /api/projects/{id}/modify/ REPEAT'.arg(code.data), data, function(response) {
 						FUNC.success((response.value === 'synchronized' ? '@(<b>{0}</b> saved and synchronized)' : '@(<b>{0}</b> saved)').format(data.path));
+						common.electron && code.data.repository && user.localsave && exports.savelocal();
 					});
 
 					SETTER('loading', 'hide');
@@ -2047,7 +2170,6 @@
 
 				if (code.current.diff)
 					code.current.diff = data.diff;
-
 
 				// Time is sent in seconds
 
@@ -2201,7 +2323,7 @@
 				if (dname === 'directory') {
 					opt = {};
 					opt.element = name;
-					opt.offsetY = -50;
+					opt.offsetY = -5;
 					opt.offsetX = -20;
 					opt.position = 'bottom';
 					opt.items = [];
@@ -2578,13 +2700,28 @@
 
 		WATCH('common.clipboard', function(path, value) {
 			var is = value === true;
-			var el = $('#clipboard').tclass('hidden', is == false);
 			if (is) {
-				clipboardresize();
-				setTimeout(function() {
-					el.find('textarea').focus();
-				}, 500);
-			}
+
+				if (windows.findItem('id', 'clipboard')) {
+					watchlogfile();
+					SETTER('windows/show', 'clipboard');
+					return;
+				}
+
+				var obj = {};
+				obj.id = 'clipboard';
+				obj.offset = { x: WW - 500, y: WH - 300, width: 480, height: 250, minwidth: 200, minheight: 200 };
+				obj.title = '<i class="fa fa-clipboard"></i>@(Clipboard)';
+				obj.hidden = false;
+				obj.html = '<div data-import="url:/partial/clipboard.html;reevaluate:1" style="width:100%;height:100%"></div>'.format(Date.now());
+				obj.actions = { minimize: false, maximize: false, move: true, resize: true, autosave: true, menu: false, hide: true };
+				obj.destroy = function() {
+					SET('common.clipboard', false);
+				};
+				PUSH('windows', obj);
+			} else
+				SETTER('windows/hide', 'clipboard');
+
 		}, true);
 
 		WATCH('code.current.diff', function(path, value) {
@@ -2602,13 +2739,6 @@
 				var diff = value[i];
 				editor.diffuser(diff.line - 1, diff.userid, users[diff.userid] || '', diff.updated);
 			}
-		});
-
-		$('#clipboardbody').on('input', function() {
-			var el = this;
-			setTimeout2('clipboardsave', function(el) {
-				AJAX('POST /api/clipboard/', { body: el.value });
-			}, 1000, null, el);
 		});
 
 		var iscolor = false;

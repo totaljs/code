@@ -2,25 +2,30 @@
 	It depends on "code editor"
 -->
 
-<div data---="panel__common.form__if:output;width:350;title:@(Output panel);icon:rss;bg:false;autofocus:true;reload:output/reload;bottom:87;top:50" class="hidden">
+<!--
+-->
 
-	<div class="ui-panel-toolbar">
-		<div class="help"><span class="link red exec" data-exec="output/clear"><i class="fa fa-trash-o"></i>@(Clear output)</span></div>
-	</div>
+<div class="panelsearch">
+	<span class="link red exec" data-exec="output/clear"><i class="fa fa-trash-o mr5"></i>@(Clear output)</span>
+</div>
 
-	<div data---="viewbox__null__height:100;margin:90;parent:.ui-panel">
-		<div data-bind="output__template">
-			<script type="text/html">
-			{{ foreach m in value }}
-				<div class="output">{{ m | raw }}</div>
-			{{ end }}
-			</script>
-		</div>
+<div data---="viewbox__common.form__margin:78;parent:.ui-dockable-body;scrollbar:1">
+	<div data-bind="output__template">
+		<script type="text/html">
+		{{ foreach m in value }}
+			<div class="output">{{ m | raw }}</div>
+		{{ end }}
+		</script>
 	</div>
 </div>
 
 <script>
 	PLUGIN('output', function(exports) {
+
+		exports.reload = function() {
+			SETTER('dockable/show', 'prop');
+		};
+
 		exports.clear = function() {
 			SET('output', []);
 		};

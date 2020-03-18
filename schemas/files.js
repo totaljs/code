@@ -224,7 +224,19 @@ NEWSCHEMA('Files', function(schema) {
 	});
 
 	schema.addWorkflow('changelog', function($) {
-		TABLE('changelog').one().fields('user', 'updated').where('projectid', $.id).where('path', $.query.path).callback(function(err, response) {
+
+		var project = MAIN.projects.findItem('id', $.id);
+		if (project == null) {
+			$.invalid('error-project');
+			return;
+		}
+
+		var builder = TABLE('changelog').one2();
+		builder.fields('user', 'updated');
+		builder.where('projectid', $.id);
+		builder.where('path', $.query.path);
+		project.branch && builder.where('branch', project.branch);
+		builder.callback(function(err, response) {
 			if (response) {
 				var tmp = MAIN.users.findItem('id', response.user);
 				response.user = tmp ? tmp.name : response.user;

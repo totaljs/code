@@ -2,23 +2,21 @@
 	It depends on "code editor"
 -->
 
-<div data---="panel__common.form__if:timespentform;width:350;title:@(Time spent);icon:calendar;reload:timespentform/reload;bg:false;autofocus:true;bottom:87;top:50" class="hidden">
-	<div data---="viewbox__common.form__height:100;margin:51;parent:.ui-panel;scrolltop:1">
-		<div data-bind="!timespentform__template">
-			<script type="text/html">
-				{{ foreach m in value }}
-					<div class="timespentform">
-						<div class="date">{{ m.date }}</div>
-						<div class="items">
-							{{ foreach n in m.items }}
-								<div><b>{{ n.count | timespent }}</b><span>{{ n.name }}</span></div>
-							{{ end }}
-							<div><b>{{ m.sum | timespent }}</b><span class="b">@(Summarize)</span></div>
-						</div>
+<div data---="viewbox__common.form__margin:51;parent:.ui-dockable-body;scrollbar:1">
+	<div data-bind="!timespentform__template" class="m">
+		<script type="text/html">
+			{{ foreach m in value }}
+				<div class="timespentform">
+					<div class="date">{{ m.date }}</div>
+					<div class="items">
+						{{ foreach n in m.items }}
+							<div><b>{{ n.count | timespent }}</b><span>{{ n.name }}</span></div>
+						{{ end }}
+						<div><b>{{ m.sum | timespent }}</b><span class="b">@(Summarize)</span></div>
 					</div>
-				{{ end }}
-			</script>
-		</div>
+				</div>
+			{{ end }}
+		</script>
 	</div>
 </div>
 
@@ -27,12 +25,13 @@
 
 		exports.reload = function() {
 			exports.refresh();
+			SETTER('dockable/show', 'prop');
 		};
 
 		exports.refresh = function() {
 
 			if (!code.data.time) {
-				SET('timespentform', EMPTYARRAY);
+				SET('?', EMPTYARRAY);
 				return;
 			}
 
@@ -68,7 +67,7 @@
 				arr.push({ date: y.substring(0, 4) + ' / ' + y.substring(4), month: MONTHS[(+y.substring(4)) - 1], items: years[keys[i]], sum: sum });
 			}
 
-			SET('timespentform', arr);
+			SET('?', arr);
 		};
 
 	})

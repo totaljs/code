@@ -12,7 +12,24 @@ NEWSCHEMA('Componentator', function(schema) {
 			var filename = $.query.ext === 'html' ? 'example.html' : ('component.' + $.query.ext);
 			builder.url('https://raw.githubusercontent.com/totaljs/components/master/{0}/{1}'.format($.query.name, filename));
 			builder.exec(function(err, response, output) {
-				$.callback(output.status === 404 ? '' : output.response);
+
+				var content = output.response;
+
+				if ($.query.minify) {
+					switch ($.query.ext) {
+						case 'html':
+							content = U.minifyHTML(content);
+							break;
+						case 'css':
+							content = U.minifyStyle(content);
+							break;
+						case 'js':
+							content = U.minifyScript(content);
+							break;
+					}
+				}
+
+				$.callback(output.status === 404 ? '' : content);
 			});
 		});
 	});

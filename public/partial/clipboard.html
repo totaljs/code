@@ -1,0 +1,25 @@
+<textarea id="clipboardbody" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
+
+<script>
+
+	PLUGIN('clipboard', function(exports) {
+
+		exports.load = function() {
+			// Clipboard
+			AJAX('GET /api/clipboard/', function(response) {
+				$('#clipboardbody').val(response);
+			});
+			clipboardresize();
+			exports.element.find('textarea').focus();
+		};
+
+		exports.load();
+
+		$(document).on('input', '#clipboardbody', function() {
+			var el = this;
+			setTimeout2('clipboardsave', function(el) {
+				AJAX('POST /api/clipboard/', { body: el.value });
+			}, 1000, null, el);
+		});
+	});
+</script>

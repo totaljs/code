@@ -1,0 +1,73 @@
+<div data---="form__common.top__if:branches;title:@(Branches);icon:code-branch;width:500;reload:branches/reload;autofocus:1;submit:branches/submit" class="hidden">
+	<div style="padding:15px 15px 0">
+		<span class="link fs12 exec" data-exec="branches/create"><i class="fa fa-plus-circle green mr5"></i>@(Create a new branch)</span>
+	</div>
+	<div data-bind="branches__template__show:value&&value.length" class="branches">
+		<script type="text/html">
+			{{ foreach m in value }}
+				<div class="branch{{ if m.current }} selected{{ fi }}" data-id="{{ m.name }}">
+					<i class="fa fa-trash-o red exec" data-exec="branches/remove"></i>
+					<div class="exec" data-exec="branches/select"><i class="fa fa-{{ if m.current }}check-circle green{{ else }}code-branch{{ fi }}"></i>{{ if m.name }}{{ m.name }}{{ else }}<b>@(master)</b>{{ fi }}</div>
+				</div>
+			{{ end }}
+		</script>
+	</div>
+	<br />
+	<nav>
+		<button name="cancel" style="Width:100%">@(Cancel)</button>
+	</nav>
+</div>
+
+<script>
+	PLUGIN('branches', function(exports) {
+
+		exports.reload = function(com) {
+			AJAX('GET /api/branches/' + code.data.id, '?');
+		};
+
+		exports.create = function(el) {
+			var opt = {};
+			opt.element = el;
+			opt.icon = 'code-branch';
+			opt.summary = '@(Enter a branch name without punctuation and lower-case.)';
+			opt.placeholder = '@(Type a branch name)';
+			opt.callback = function(value) {
+				value = value.trim().replace(/[<>",]/g, '');
+				if (value) {
+					SETTER('confirm/show2', '@(Are you sure you want to create a new branch called <b>"{0}"</b>?)'.format(value || '@(master)'), ['"check-circle" @(Create branch) #4FAE2F', '@(Cancel)'], function() {
+						SETTER('loading/show');
+						AJAX('POST /api/branches/' + code.data.id, { name: value }, ASETTER('snackbar/response', '@(Branch <b>"{0}"</b> has been created successfully.)'.format(value || '@(master)'), function() {
+							SETTER('loading/hide', 1000);
+							EXEC('code/refresh');
+							NULL('common.top');
+						}));
+					});
+				}
+			};
+			SETTER('floatinginput/show', opt);
+		};
+
+		exports.remove = function(el) {
+			var id = el.parent().attrd('id');
+			SETTER('confirm/show2', '@(Are you sure you want to remove branch called <b>"{0}"</b>?)'.format(id || '@(master)'), ['"trash-o" @(Remove branch)', '@(Cancel)'], function() {
+				SETTER('loading/show');
+				AJAX('DELETE /api/branches/' + code.data.id, { name: id }, ASETTER('message/response', '@(Branch <b>"{0}"</b> has been removed successfully.)'.format(id || '@(master)'), function() {
+					SETTER('loading/hide', 1000);
+					exports.reload();
+				}));
+			});
+		};
+
+		exports.select = function(el) {
+			var id = el.parent().attrd('id');
+			SETTER('confirm/show2', '@(Are you sure you want to change a branch to <b>"{0}"</b>?)'.format(id || '@(master)'), ['"check-circle" @(Change branch) #4FAE2F', '@(Cancel)'], function() {
+				AJAX('POST /api/branches/' + code.data.id, { name: id }, ASETTER('snackbar/response', '@(Branch has been changed successfully to <b>"{0}"</b>.)'.format(id || '@(master)'), function() {
+					SETTER('loading/hide', 1000);
+					EXEC('code/refresh');
+					NULL('common.top');
+				}));
+			});
+		};
+
+	});
+</script>

@@ -1,12 +1,10 @@
-<div data---="panel__common.form__if:modules;width:350;title:@(Download modules);icon:cloud-download;reload:modulespanel/reload;bg:false;autofocus:true;bottom:87;top:50" class="hidden">
-	<div data---="viewbox__common.form__height:100;margin:51;parent:.ui-panel;scrolltop:1">
-		<div data-bind="modulespanel.items__template">
-			<script type="text/html">
-				{{ foreach m in value }}
-					<div class="listitem exec" data-exec="modulespanel/download" data-url="{{ m.url }}" data-name="{{ m.filename }}"><i class="far fa-copy"></i> {{ m.name }}</div>
-				{{ end }}
-			</script>
-		</div>
+<div data---="viewbox__common.form__margin:51;parent:.ui-dockable-body;scrollbar:1">
+	<div data-bind="modulespanel.items__template">
+		<script type="text/html">
+			{{ foreach m in value }}
+				<div class="listitem exec" data-exec="modulespanel/download" data-url="{{ m.url }}" data-name="{{ m.filename }}"><i class="far fa-copy"></i> {{ m.name }}</div>
+			{{ end }}
+		</script>
 	</div>
 </div>
 
@@ -20,19 +18,18 @@
 			AJAX('GET /api/external/modules/', function(response) {
 				response.quicksort('name');
 				SET('?.items', response);
+				SETTER('dockable/show', 'prop');
 			});
 		};
 
 		exports.download = function(el) {
-			SETTER('confirm', 'show', '@(Are you sure you want to download selected module?)', ['"cloud-download" @(Download)', '@(Cancel)'], function(index) {
-				if (index)
-					return;
-				SETTER('loading', 'show');
+			SETTER('confirm/show2', '@(Are you sure you want to download selected module?)', ['"cloud-download" @(Download)', '@(Cancel)'], function(index) {
+				SETTER('loading/show');
 				AJAX('POST /api/external/modules/' + code.data.id, { url: el.attrd('url'), name: el.attrd('name') }, function() {
-					SETTER('loading', 'hide', 500);
+					SETTER('loading/hide', 500);
 					EXEC('code/refresh');
 					NULL('common.form');
-					SETTER('snackbar', 'success', '@(Module has been downloaded succesfully.)');
+					SETTER('snackbar/success', '@(Module has been downloaded succesfully.)');
 				});
 			});
 		};

@@ -1,7 +1,7 @@
 const Path = require('path');
 const Fs = require('fs');
 
-MAIN.version = '1.3.4';
+MAIN.version = '1.4.0';
 
 // Projects
 MAIN.projects = [];
@@ -86,7 +86,7 @@ MAIN.backup = function(user, path, callback, project, changescount) {
 	F.path.mkdir(dir);
 
 	var ext = U.getExtension(name);
-	var add = '-' + NOW.format('yyMMddHHmm') + '_' + user.id + '_' + (changescount || 0);
+	var add = '-' + NOW.format('yyMMddHHmm') + '_' + user.id + '_' + (changescount || 0) + (project.branch ? ('_' + project.branch) : '');
 
 	if (ext)
 		name = name.replace('.' + ext, add + '.' + ext);
@@ -137,9 +137,19 @@ MAIN.change = function(type, user, project, path, combo, time, changes) {
 };
 
 MAIN.changelog = function(user, project, path, removed) {
-	TABLE('changelog').modify({ user: user.id, updated: new Date(), removed: removed === true }, true).where('projectid', project).where('path', path).insert(function(obj) {
+
+	// We expect existing of the project
+	var pro = MAIN.projects.findItem('id', project);
+	var builder = TABLE('changelog').modify({ user: user.id, updated: new Date(), removed: removed === true }, true);
+
+	builder.where('projectid', project);
+	builder.where('path', path);
+	pro.branch && builder.where('branch', pro.branch);
+
+	builder.insert(function(obj) {
 		obj.projectid = project;
 		obj.path = path;
+		obj.branch = pro.branch;
 	});
 };
 

@@ -1,83 +1,74 @@
-<div data---="panel__common.form__if:projectsform;icon:robot;width:580;reload:projectsform/reload" class="hidden">
-	<div data---="viewbox__common.form__height:100;margin:51;parent:.ui-panel;scrolltop:1">
-		<div data-scope="projectsform">
-			<div class="padding">
-				<div class="row">
-					<div class="col-sm-6 m">
-						<div data---="textbox__?.path__required:true__'/www/www/'">@(Path)</div>
-						<div class="help">
-							<span class="link exec" data-exec="?/autocomplete"><i class="fa fa-search"></i>@(Browse)</span>
-						</div>
-					</div>
-					<div class="col-sm-6 m">
-						<div data---="textbox__?.pathsync__maxlength:100__''">@(Path for synchronization)</div>
-						<div class="help"><span class="link exec" data-exec="?/autocomplete2"><i class="fa fa-search"></i>@(Browse)</span>. @(Additional path for e.g. production)</div>
+<div data---="form__common.form__if:projectsform;icon:code-branch;width:700;reload:projectsform/reload;autofocus:1;submit:projectsform/submit" class="hidden">
+	<div data-scope="projectsform">
+		<div class="padding">
+			<div class="row">
+				<div class="col-sm-6 m">
+					<div data---="input__?.path__required:true__'/www/www/'">@(Path)</div>
+					<div class="help">
+						<span class="link exec" data-exec="?/autocomplete"><i class="fa fa-search"></i>@(Browse)</span>
 					</div>
 				</div>
-				<div class="row">
-					<div class="col-sm-6 m">
-						<div data---="textbox__?.name__required:true__''">@(Name)</div>
-					</div>
-					<div class="col-sm-6 m">
-						<div data---="textbox__?.url__required:true__''">@(URL to application)</div>
-					</div>
+				<div class="col-sm-6 m">
+					<div data---="input__?.pathsync__maxlength:100__''">@(Path for synchronization)</div>
+					<div class="help"><span class="link exec" data-exec="?/autocomplete2"><i class="fa fa-search"></i>@(Browse)</span>. @(Additional path for e.g. production)</div>
 				</div>
-				<div class="row">
-					<div class="col-sm-6 m">
-						<div data---="textbox__?.documentation__placeholder:https://wiki.totaljs.com__'https://wiki.totaljs.com'">@(Documentation URL)</div>
-					</div>
-					<div class="col-sm-6 m">
-						<div data---="textbox__?.support__placeholder:https://messenger.totaljs.com__'https://messenger.totaljs.com'">@(Support URL)</div>
-					</div>
-				</div>
-
-				<div class="row">
-					<div class="col-sm-6 m">
-						<div data---="textbox__?.repository__placeholder:cms__''">@(Folder name)</div>
-						<div class="help">@(Electron version of Code app can store files locally in this folder name.)</div>
-					</div>
-					<div class="col-sm-6 m">
-						<div data---="textbox__?.logfile__maxlength:100__''">@(A path to log file)</div>
-						<div class="help">@(A default log file is <code>current_app_dir/logs/debug.log</code>)</div>
-					</div>
-				</div>
-
-				<div data---="checkbox__?.backup__null__true">@(Backup all modified files)</div>
-				<div data---="checkbox__?.skiptmp__null__true">@(Skip <b>tmp</b> directory)</div>
-				<div data---="checkbox__?.skipsrc__null__true">@(Skip <b>.src</b> directory)</div>
-				<div data---="checkbox__?.skipnm__null__true">@(Skip <b>node_modules</b> directory)</div>
-				<div data---="checkbox__?.allowscripts__null__true">@(Allow scripts)</div>
-				<div data---="checkbox__?.allowbundle__null__true">@(Allow bundle making)</div>
 			</div>
+			<div class="row">
+				<div class="col-sm-6 m">
+					<div data---="input__?.name__required:true__''">@(Name)</div>
+				</div>
+				<div class="col-sm-6 m">
+					<div data---="input__?.url__required:true__''">@(URL to application)</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-6 m">
+					<div data---="input__?.documentation__placeholder:https://wiki.totaljs.com__'https://wiki.totaljs.com'">@(Documentation URL)</div>
+				</div>
+				<div class="col-sm-6 m">
+					<div data---="input__?.support__placeholder:https://messenger.totaljs.com__'https://messenger.totaljs.com'">@(Support URL)</div>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-sm-6 m">
+					<div data---="input__?.repository__placeholder:cms__''">@(Folder name)</div>
+					<div class="help">@(Electron version of Code app can store files locally in this folder name.)</div>
+				</div>
+				<div class="col-sm-6 m">
+					<div data---="input__?.logfile__maxlength:100__''">@(A path to log file)</div>
+					<div class="help">@(A default log file is <code>current_app_dir/logs/debug.log</code>)</div>
+				</div>
+			</div>
+
+			<div data---="checkbox__?.backup__null__true">@(Backup all modified files)</div>
+			<div data---="checkbox__?.skiptmp__null__true">@(Skip <b>tmp</b> directory)</div>
+			<div data---="checkbox__?.skipsrc__null__true">@(Skip <b>.src</b> directory)</div>
+			<div data---="checkbox__?.skipnm__null__true">@(Skip <b>node_modules</b> directory)</div>
+			<div data---="checkbox__?.allowscripts__null__true">@(Allow scripts)</div>
+			<div data---="checkbox__?.allowbundle__null__true">@(Allow bundle making)</div>
+		</div>
+		<hr class="nmt nmb" />
+		<div class="padding">
+			<h3><i class="fa fa-users"></i>@(Users and permissions)</h3>
+			<div data---="selectbox__?.users__if:!value.sa;datasource:%projectsformusers;text:id__[]"></div>
+			<div class="help m">@(Choose users which can have access to this project)</div>
+			<div data---="textarea__?.permissions__height:100;monospace:true;placeholder:@(userid \: path)__''">@(Permissions)</div>
+			<div class="help m">@(Define permissions for the users. Path starting with <code>^</code> will disable the access.)</div>
+		</div>
+		<div data-bind="?.id__show" class="hidden">
 			<hr class="nmt nmb" />
 			<div class="padding">
-				<h3><i class="fa fa-users"></i>@(Users and permissions)</h3>
-				<div data---="selectbox__?.users__if:!value.sa;datasource:%projectsformusers;text:id__[]"></div>
-				<div class="help m">@(Choose users which can have access to this project)</div>
-				<div data---="textarea__?.permissions__height:100;monospace:true;placeholder:@(userid \: path)__''">@(Permissions)</div>
-				<div class="help m">@(Define permissions for the users. Path starting with <code>^</code> will disable the access.)</div>
-			</div>
-			<div data-bind="?.id__show" class="hidden">
-				<hr class="nmt nmb" />
-				<div class="padding">
-					<h3><i class="fa fa-chart-bar"></i>@(Internal stats)</h3>
-					<div data---="checkbox__?.resetcombo__null__false">@(Reset combo scoreboard)</div>
-					<div data---="checkbox__?.resettime__null__false">@(Reset time spent)</div>
-				</div>
-			</div>
-			<hr class="nmt nmb" />
-			<div class="padding">
-				<div data---="error__?.response"></div>
-				<div data---="validation__?" class="m">
-					<div class="row">
-						<div class="col-md-6">
-							<button name="submit" disabled="disabled" class="button exec b" data-exec="?/submit"><i class="far fa-floppy-o"></i>@(Save)</button>
-						</div>
-					</div>
-				</div>
+				<h3><i class="fa fa-chart-bar"></i>@(Internal stats)</h3>
+				<div data---="checkbox__?.resetcombo__null__false">@(Reset combo scoreboard)</div>
+				<div data---="checkbox__?.resettime__null__false">@(Reset time spent)</div>
 			</div>
 		</div>
 	</div>
+	<nav data---="validation__projectsform">
+		<button name="submit" disabled="disabled"><i class="far fa-floppy-o mr5"></i>@(Save)</button>
+		<button name="cancel">@(Cancel)</button>
+	</nav>
 </div>
 
 <script>
@@ -85,7 +76,7 @@
 
 		exports.autocomplete = function(el) {
 			projectsform.path && AJAX('GET /api/common/directories/', { path: projectsform.path }, function(response) {
-				SETTER('suggestion', 'show', 'left', el, response, function(value) {
+				SETTER('suggestion/show', 'left', el, response, function(value) {
 					SET2('projectsform.path', value.path);
 				}, 0, 5);
 			});
@@ -93,7 +84,7 @@
 
 		exports.autocomplete2 = function(el) {
 			projectsform.pathsync && AJAX('GET /api/common/directories/', { path: projectsform.pathsync }, function(response) {
-				SETTER('suggestion', 'show', 'left', el, response, function(value) {
+				SETTER('suggestion/show', 'left', el, response, function(value) {
 					SET('projectsform.pathsync', value.path);
 				}, 0, 5);
 			});
@@ -109,7 +100,7 @@
 			AJAX('POST /api/projects/', data, function(response) {
 				if (response.success) {
 					SET('common.form', '');
-					SETTER('snackbar', 'success', '@(The project has been saved successfully.)');
+					SETTER('snackbar/success', '@(The project has been saved successfully.)');
 					EXEC('projects/refresh');
 				} else
 					SET('projectsform.response', response);

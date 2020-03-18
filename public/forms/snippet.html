@@ -50,7 +50,7 @@
 			AJAX('POST /api/snippets/', data, function(response) {
 				if (response.success) {
 					SET('common.form', '');
-					SETTER('snackbar', 'success', '@(The snippet has been saved successfully.)');
+					SETTER('snackbar/success', '@(The snippet has been saved successfully.)');
 					EXEC('snippets/refresh');
 				} else
 					SET('snippetsform.response', response);

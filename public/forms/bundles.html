@@ -1,18 +1,17 @@
-<div data---="panel__common.form__if:bundles;width:350;title:@(Download bundles);icon:cloud-download;reload:bundlespanel/reload;bg:false;autofocus:true;bottom:87;top:50" class="hidden">
-	<div data---="viewbox__common.form__height:100;margin:51;parent:.ui-panel;scrolltop:1">
-		<div data-bind="bundlespanel.items__template">
-			<script type="text/html">
-				{{ foreach m in value }}
-					<div class="listitem exec" data-exec="bundlespanel/download" data-url="{{ m.url }}" data-name="{{ m.filename }}"><i class="far fa-copy"></i> {{ m.name }}</div>
-				{{ end }}
-			</script>
-		</div>
+<div data---="viewbox__common.form__margin:51;parent:.ui-dockable-body;scrollbar:1">
+	<div data-bind="bundlespanel.items__template">
+		<script type="text/html">
+			{{ foreach m in value }}
+				<div class="listitem exec" data-exec="bundlespanel/download" data-url="{{ m.url }}" data-name="{{ m.filename }}"><i class="far fa-copy"></i> {{ m.name }}</div>
+			{{ end }}
+		</script>
 	</div>
 </div>
 
 <script>
 	PLUGIN('bundlespanel', function(exports) {
 		exports.reload = function() {
+			SETTER('dockable/show', 'prop');
 			exports.refresh();
 		};
 
@@ -24,15 +23,13 @@
 		};
 
 		exports.download = function(el) {
-			SETTER('confirm', 'show', '@(Are you sure you want to download selected bundle?)', ['"cloud-download" @(Download)', '@(Cancel)'], function(index) {
-				if (index)
-					return;
-				SETTER('loading', 'show');
+			SETTER('confirm/show2', '@(Are you sure you want to download selected bundle?)', ['"cloud-download" @(Download)', '@(Cancel)'], function(index) {
+				SETTER('loading/show');
 				AJAX('POST /api/external/bundles/' + code.data.id, { url: el.attrd('url'), name: el.attrd('name') }, function() {
-					SETTER('loading', 'hide', 500);
+					SETTER('loading/hide', 500);
 					EXEC('code/refresh');
 					NULL('common.form');
-					SETTER('snackbar', 'success', '@(Bundle has been downloaded succesfully.)');
+					SETTER('snackbar/success', '@(Bundle has been downloaded succesfully.)');
 				});
 			});
 		};

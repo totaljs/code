@@ -1,44 +1,41 @@
 <div class="container">
 	<br />
-	<div class="fullheight">
-		<div class="toolbar toolbar-right">
-			<button class="exec" data-exec="users/execrefresh" title="Refreshes all user browsers which are online"><i class="fa fa-refresh"></i>@(Refresh browsers)</button>
-		</div>
+	<div class="toolbar toolbar-right">
+		<button class="exec" data-exec="users/execrefresh" title="Refreshes all user browsers which are online"><i class="fa fa-refresh"></i>@(Refresh browsers)</button>
+	</div>
 
-		<div class="toolbar">
-			<button class="exec" data-exec="users/create"><i class="fa fa-plus-circle"></i>@(Add)</button>
-			<button class="exec" data-exec="users/export"><i class="fa fa-cloud"></i>@(Export / Import)</button>
-			<button data-bind="users.checked__disabled:!value || !value.length" class="exec" data-exec="users/options" disabled><i class="fa fa-check-circle"></i>@(Selected)</button>
-		</div>
+	<div class="toolbar">
+		<button class="exec" data-exec="users/create"><i class="fa fa-plus-circle green"></i>@(Add)</button>
+		<button class="exec" data-exec="users/export"><i class="fa fa-cloud"></i>@(Export / Import)</button>
+		<button data-bind="users.checked__disabled:!value || !value.length" class="exec" data-exec="users/options" disabled><i class="fa fa-check-circle"></i>@(Selected)</button>
+	</div>
 
-		<div data---="datagrid__users.grid__click:users/edit;checked:users/checked;highlight:true">
-			<script type="text/plain">
-				[
-					{ name: 'id', text: '@(User ID)', template: '{{ if online }}<i class="fa fa-circle green fs11 mr5" title="@(Online)"></i>{{ fi }}{{ if blocked }}<span class="badge badge-small badge-red">@(blocked)</span>{{ fi }}{{ id }}', width: 200 },
-					{ name: 'name', text: '@(Name)', width: 200 },
-					{ name: 'email', text: '@(Email)', width: 200 },
-					{ name: 'phone', text: '@(Phone)', width: 140 },
-					{ name: 'position', text: '@(Position)', width: 150 },
-					{ name: 'sa', text: '@(Admin)', template: '{{ if sa }}<i class="fa fa-check-square green"></i>{{ fi }}', options: [{ text: 'yes', value: true }, { text: 'no', value: false }], width: 100, align: 1 },
-					{ name: 'logged', text: '@(Logged)', align: 'center', template: '{{ logged | format(\'dd.MM.yyyy\') }}', align: 1, width: 100 },
-					{ name: 'created', text: '@(Created)', align: 'center', template: '{{ created | format(\'dd.MM.yyyy\') }}', align: 1, width: 100 }
-				]
-			</script>
-		</div>
-
+	<div data---="datagrid__users.grid__click:users/edit;checked:users/checked;highlight:true">
+		<script type="text/plain">
+			[
+				{ name: 'id', text: '@(User ID)', template: '{{ if online }}<i class="fa fa-circle green fs11 mr5" title="@(Online)"></i>{{ fi }}{{ if blocked }}<span class="badge badge-small badge-red">@(blocked)</span>{{ fi }}{{ id }}', width: 200 },
+				{ name: 'name', text: '@(Name)', width: 200 },
+				{ name: 'email', text: '@(Email)', width: 200 },
+				{ name: 'phone', text: '@(Phone)', width: 140 },
+				{ name: 'position', text: '@(Position)', width: 150 },
+				{ name: 'sa', text: '@(Admin)', template: '{{ if sa }}<i class="fa fa-check-square green"></i>{{ fi }}', options: [{ text: 'yes', value: true }, { text: 'no', value: false }], width: 100, align: 1 },
+				{ name: 'logged', text: '@(Logged)', align: 'center', template: '{{ logged | format(\'dd.MM.yyyy\') }}', align: 1, width: 100 },
+				{ name: 'created', text: '@(Created)', align: 'center', template: '{{ created | format(\'dd.MM.yyyy\') }}', align: 1, width: 100 }
+			]
+		</script>
 	</div>
 </div>
 
-<div data---="panel__common.form__if:usersformexport;bg:true;title:@(Export/Import);icon:cloud;width:400;autofocus:true" class="hidden">
+<div data---="form__common.form__if:usersformexport;bg:true;title:@(Export/Import);icon:cloud;width:600;autofocus:true;submit:users/import" class="hidden">
 	<div data-scope="usersformexport">
 		<div class="padding npb">
-			<div data---="textarea__?.data__required:true;height:500" class="m">@(Data)</div>
-		</div>
-		<hr />
-		<div data---="validation__?" class="padding npt">
-			<button name="submit" disabled="disabled" class="exec button button-small b" data-exec="users/import"><i class="fa fa-cloud-download"></i>Import</button>
+			<div data---="textarea__?.data__required:true;height:300" class="m">@(Data)</div>
 		</div>
 	</div>
+	<nav data---="validation__usersformexport">
+		<button name="submit" disabled="disabled"><i class="fa fa-cloud-download mr5"></i>@(Import)</button>
+		<button name="cancel">@(Cancel)</button>
+	</nav>
 </div>
 
 <div data---="importer__common.form__if:usersform;url:/forms/user.html"></div>

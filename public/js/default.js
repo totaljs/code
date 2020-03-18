@@ -22,19 +22,6 @@ W.ENCRYPT = function(str, key) {
 };
 
 ON('resize', function() {
-
-	var el = $('#body,#panel,#content,.fullheight');
-
-	el.each(function() {
-		var el = $(this);
-		el[0].offsetParent && el.css('height', WH - el.offset().top - (+(el.attrd('margin') || '0')));
-	});
-
-	if (WIDTH() === 'xs') {
-		var mm = $('.mainmenu,.mainmenu .scroller-xs');
-		mm.css('height', WH - 70);
-	}
-
 	SETTER('editor', 'resize');
 	clipboardresize();
 });
@@ -49,7 +36,7 @@ function clipboardresize() {
 }
 
 ON('ready', function() {
-	$(window).on('resize', function() {
+	$(W).on('resize', function() {
 		setTimeout2('resize', function() {
 			EMIT('resize');
 		}, 100);

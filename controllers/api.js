@@ -42,6 +42,10 @@ exports.install = function() {
 	ROUTE('+GET     /api/projects/{id}/localize/          *Projects          --> @localize', [10000]);
 	ROUTE('+GET     /api/projects/discover/',                                autodiscover);
 
+	// Branches
+	ROUTE('+GET     /api/branches/{id}/                   *Branches          --> @query');
+	ROUTE('+POST    /api/branches/{id}/                   *Branches          --> @save');
+
 	// Clipboard
 	ROUTE('+GET     /api/clipboard/                        *Clipboard        --> @get');
 	ROUTE('+POST    /api/clipboard/                        *Clipboard        --> @save');
@@ -266,7 +270,12 @@ function custom_ipsever() {
 
 function files_changes(id) {
 	var self = this;
-	NOSQL(id + '_changes').find2().take(50).callback(function(err, response) {
+	var builder = NOSQL(id + '_changes').find2();
+
+	if (self.query.recent)
+		builder.where('type', 'save');
+
+	builder.take(self.query.recent ? 30 : 50).callback(function(err, response) {
 		for (var i = 0; i < response.length; i++) {
 			var item = response[i];
 			var user = MAIN.users.findItem('id', item.userid);
