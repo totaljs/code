@@ -41,6 +41,10 @@
 
 		var prevpath;
 
+		WATCH('code.components + code.componentsall', function() {
+			SET('?.search', '');
+		});
+
 		exports.reload = function() {
 			SETTER('dockable/show', 'prop');
 			SET('?.search', '');

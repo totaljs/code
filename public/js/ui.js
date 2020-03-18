@@ -30,29 +30,37 @@ COMPONENT('inputsearch', 'focus:true', function(self, config, cls) {
 		});
 
 		self.find('input').on('input', function() {
-			var val = this.value;
-
-			if (val) {
-				if (isplaceholder) {
-					icon.rclass('fa-search').aclass('fa-times');
-					placeholder.aclass('hidden');
-					isplaceholder = false;
-
-				}
-			} else if (!isplaceholder) {
-				isplaceholder = true;
-				icon.rclass('fa-times').aclass('fa-search');
-				placeholder.rclass('hidden');
-			}
+			self.placeholder();
 		});
 
 		placeholder = self.find(cls2 + '-placeholder');
 		icon = self.find(cls2 + '-icon i');
 	};
 
-	self.setter = function(path, value, type) {
+	self.placeholder = function() {
+		var val = input.val();
+
+		if (val) {
+			if (isplaceholder) {
+				icon.rclass('fa-search').aclass('fa-times');
+				placeholder.aclass('hidden');
+				isplaceholder = false;
+
+			}
+		} else if (!isplaceholder) {
+			isplaceholder = true;
+			icon.rclass('fa-times').aclass('fa-search');
+			placeholder.rclass('hidden');
+		}
+	};
+
+	self.setter2 = function(path, value, type) {
 		if (!type || type === 1)
 			input.focus();
+	};
+
+	self.getter2 = function() {
+		self.placeholder();
 	};
 
 });
