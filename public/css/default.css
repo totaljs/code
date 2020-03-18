@@ -112,7 +112,6 @@ html,body { margin: 0; padding: 0; overflow: hidden; }
 .windowtitlebar { -webkit-app-region: drag; display: none; text-align: right; font-size: 9px; line-height: 22px; padding-right: 8px; }
 .electron .windowtitlebar { height: 22px; border-bottom: 1px solid #E0E0E0; user-select: none; display: block; color: gray; }
 .electron .collaborators { top: 22px; }
-.electron #combo { top: 72px; }
 .td .windowtitlebar { border-bottom-color: #303030; }
 
 header { height: 50px; background-color: linear-gradient(white,#F0F0F0); border-bottom: 1px solid #E0E0E0; -webkit-app-region: drag; user-select: none; }
