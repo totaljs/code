@@ -739,7 +739,7 @@ header .tools .external { color: #a2a286; }
 .chat .messages .message .initials { border-radius: 2px; width: 27px; height: 27px; line-height: 27px; padding: 0; }
 .chat .messages .message .body { line-height: 16px; margin: 3px 0 0; }
 
-.chat .messages .users { height: 50px; border-bottom: 1px solid #E0E0E0; padding: 9px 0 0 8px; background-color: #F0F0F0; }
+.chat .messages .users { height: 50px; border-bottom: 1px solid #E0E0E0; padding: 10px 0 0 10px; background-color: #F0F0F0; }
 .chat .messages .users > div { position: relative; display: inline-block; }
 .chat .messages .users > div > span { opacity: 0.5; }
 .chat .messages .users .initials { border-radius: 0; width: 32px; height: 32px; line-height: 28px; padding: 0; cursor: pointer; border-bottom: 2px solid white; font-size: 14px; }
@@ -752,4 +752,3 @@ header .tools .external { color: #a2a286; }
 .td .chat .messages .message { border-top-color: #404040; }
 .td .chat .messages .message .time { color: gray; }
 .td .chat .messages .message .user > div { color: gray; }
-

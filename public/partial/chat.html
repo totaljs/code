@@ -60,9 +60,17 @@
 
 		exports.insert = function(msg) {
 
-			if (msg.owner !== user.id && msg.user !== chat.current) {
-				exports.element.find('.channel[data-value="{0}"]'.format(msg.user ? msg.owner : '')).aclass('unread');
-				return;
+			if (msg.owner !== user.id) {
+
+				if (msg.user && msg.owner !== chat.current) {
+					exports.element.find('.channel[data-value="{0}"]'.format(msg.user ? msg.owner : '')).aclass('unread');
+					return;
+				}
+
+				if (!msg.user && chat.current) {
+					exports.element.find('.channel[data-value="{0}"]'.format(msg.user ? msg.owner : '')).aclass('unread');
+					return;
+				}
 			}
 
 			msg.owner = msg.owner === user.id ? user : chat.users.findItem('id', msg.owner);
@@ -90,6 +98,8 @@
 				setTimeout(function(id) {
 					exports.element.find('.channel[data-value="{0}"]'.format(id)).rclass('unread');
 				}, 2000, id);
+
+				exports.element.find('textarea').focus();
 			});
 		};
 
