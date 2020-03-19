@@ -369,12 +369,24 @@
 				arr.push({ name: '@(Clear the project)', id: 'removeall', icon: 'trash-o' });
 			}
 
+			for (var i = 0; i < code.projects.length; i++) {
+				var p = code.projects[i];
+				arr.push({ name: p.name, id: 'project', icon: 'code-branch', projectid: p.id });
+			}
+
 			SETTER('features', 'show', arr, function(value) {
 
 				if (value.filename) {
 					EXEC('code/open', { path: value.name, name: value.filename });
 				} else {
 					switch (value.id) {
+						case 'project':
+							common.recent = common.recent.remove('id', value.projectid);
+							if (common.recent.length > 20)
+								common.recent.pop();
+							PUSH('^common.recent', { id: value.projectid, name: value.name });
+							REDIRECT('/?id=' + value.projectid);
+							break;
 						case 'removeall':
 							SETTER('confirm', 'show', '@(Are you sure you want to clear the project?)', ['"trash-o" @(Remove)', '@(Cancel)'], function(index) {
 								if (index)
