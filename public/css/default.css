@@ -32,9 +32,8 @@ html,body { margin: 0; padding: 0; overflow: hidden; }
 /*.codepanel #currentcolor { right: 380px; }*/
 .electron #currentcolor { top: 170px; }
 
-
 #panel .changedfiles { padding-top: 5px; padding-bottom: 5px; }
-#panel .changefile { padding-top: 3px; padding-bottom: 3px; }
+#panel .changefile { padding-top: 3px; padding-bottom: 3px; font-size: 11px; }
 
 .panelsearch { height: 27px; }
 

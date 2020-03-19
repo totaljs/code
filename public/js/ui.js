@@ -10686,8 +10686,15 @@ COMPONENT('inputmessage', function(self, config, cls) {
 
 COMPONENT('messages', function(self) {
 
+	var com;
+
 	self.make = function() {
 		self.template = Tangular.compile(self.find('script').html());
+	};
+
+	var resize = function(com) {
+		com.resizescrollbar();
+		com.scrollbottom(0);
 	};
 
 	self.setter = function(value, path, type) {
@@ -10695,7 +10702,8 @@ COMPONENT('messages', function(self) {
 		if (!value)
 			value = EMPTYARRAY;
 
-		var com = self.element.closest('.ui-viewbox').component();
+		if (!com)
+			com = self.element.closest('.ui-viewbox').component();
 
 		if (type === 'insert') {
 			self.append(self.template(value.last()));
@@ -10707,11 +10715,8 @@ COMPONENT('messages', function(self) {
 		}
 
 		FUNC.markdownredraw && FUNC.markdownredraw(self.element);
-
-		if (com) {
-			com.resizescrollbar();
-			com.scrollbottom(0);
-		}
+		com && resize(com);
+		com && setTimeout(resize, 200, com);
 	};
 });
 

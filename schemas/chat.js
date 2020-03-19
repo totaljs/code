@@ -35,7 +35,7 @@ NEWSCHEMA('Chat', function(schema) {
 		}
 
 		model.id = UID();
-		model.created = NOW;
+		model.created = new Date();
 		model.owner = $.user.id;
 
 		if (model.user) {

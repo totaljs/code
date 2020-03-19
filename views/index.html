@@ -214,10 +214,9 @@
 				case 'chat':
 					if (W.chat)
 						EXEC('chat/insert', msg);
-					else {
-						W.chat = { current: msg.user || '' };
-						EXEC('code/chat');
-					}
+					else
+						W.chat = { current: (msg.owner !== user.id ? msg.user ? msg.owner : '' : '') || '' };
+					EXEC('code/chat', true);
 					break;
 				case 'blocked':
 					location.href = '/';

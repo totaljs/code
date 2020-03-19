@@ -60,8 +60,8 @@
 
 		exports.insert = function(msg) {
 
-			if (msg.user !== chat.current) {
-				exports.element.find('.channel[data-value="{0}"]'.format(msg.user)).aclass('unread');
+			if (msg.owner !== user.id && msg.user !== chat.current) {
+				exports.element.find('.channel[data-value="{0}"]'.format(msg.user ? msg.owner : '')).aclass('unread');
 				return;
 			}
 
