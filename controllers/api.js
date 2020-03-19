@@ -19,6 +19,7 @@ exports.install = function() {
 	// Projects
 	ROUTE('+GET     /api/projects/{id}/changelog/          *Files            --> @changelog');
 	ROUTE('+GET     /api/projects/{id}/review/             *Files            --> @review', [10000]);
+	ROUTE('+GET     /api/projects/{id}/download/           *Files            --> @download', [10000]);
 	ROUTE('+POST    /api/projects/{id}/upload/             *FilesUpload      --> @exec', ['upload'], 1024 * 50);
 	ROUTE('+GET     /api/projects/{id}/files/              *Projects         --> @files');
 	ROUTE('+GET     /api/projects/{id}/parts/              *Files            --> @parts');

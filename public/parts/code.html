@@ -1348,6 +1348,8 @@
 			items.push({ value: 16, name: '@(Clipboard)', icon: 'clipboard', shortcut: 'F11' });
 			items.push({ value: 20, name: '@(Translate application)', icon: 'language' });
 
+ 			user.sa && items.push({ value: 23, name: '@(Download source-code)', icon: 'download' });
+
 			if (code.data.allowbundle) {
 				items.push('-');
 				items.push({ value: 19, name: '@(Download bundle locally)', icon: 'box', classname: 'b' });
@@ -1424,6 +1426,9 @@
 						break;
 					case 19:
 						location.href = '/api/projects/{id}/bundle/'.arg(code.data);
+						break;
+					case 23:
+						location.href = '/api/projects/{id}/download/'.arg(code.data);
 						break;
 					case 21:
 						SETTER('loading/show');

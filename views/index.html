@@ -354,6 +354,8 @@
 
 				arr.unshift({ name: '@(Show logfile)', id: 'logfile', icon: 'bug' });
 				arr.push({ name: '@(Clipboard)', id: 'clipboard', icon: 'clipboard' });
+				arr.push({ name: '@(Internal chat)', id: 'chat', icon: 'comments', keywords: 'chat messenger' });
+				arr.push({ name: '@(Support)', id: 'messenger', icon: 'life-ring', keywords: 'chat messenger support' });
 
 				if (code.editor.path) {
 					arr.unshift({ name: '@(Insert UI components)', id: 'componentator', icon: 'puzzle-piece' });
@@ -419,6 +421,8 @@
 						case 'translate':
 						case 'clipboard':
 						case 'localize':
+						case 'chat':
+						case 'messenger':
 							EXEC('code/' + value.id);
 							break;
 						case 'componentator':
@@ -472,6 +476,10 @@
 
 		SETTER(true, 'shortcuts', 'register', 'F5', function(e) {
 			EXEC('code/shortcut', 'F5');
+		}, true);
+
+		SETTER(true, 'shortcuts', 'register', 'F9', function(e) {
+			EXEC('code/chat');
 		}, true);
 
 		SETTER(true, 'shortcuts', 'register', 'F10', function(e) {

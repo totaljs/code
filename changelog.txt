@@ -2,6 +2,7 @@
 
 - new and improved UI
 - added branches
+- added download source-code
 - added internal chat
 - improved Font-Awesome icons
 - fixed local synchronization of files

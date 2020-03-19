@@ -1,5 +1,6 @@
 const Path = require('path');
 const Fs = require('fs');
+const Exec = require('child_process').execFile;
 
 NEWSCHEMA('FilesTodo', function(schema) {
 	schema.define('line', Number);
@@ -293,6 +294,36 @@ NEWSCHEMA('Files', function(schema) {
 		builder.exec($.callback);
 
 		MAIN.log($.user, 'files_review', project, filename);
+	});
+
+	schema.addWorkflow('download', function($) {
+
+		var project = MAIN.projects.findItem('id', $.id);
+
+		if (project == null) {
+			$.invalid('error-project');
+			return;
+		}
+
+		if (!$.user.sa) {
+			$.invalid('error-permissions');
+			return;
+		}
+
+		var arg = [];
+		var filename = project.name.slug() + '.tar.gz';
+		arg.push(PATH.temp(filename));
+		arg.push(project.path);
+
+		Exec(PATH.databases('source_backup.sh'), arg, function(err) {
+			if (err) {
+				$.invalid(err);
+			} else {
+				$.controller.file('~' + arg[0], filename, null, () => Fs.unlink(arg[0], NOOP));
+				$.cancel();
+			}
+		});
+
 	});
 
 });
