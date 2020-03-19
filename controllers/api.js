@@ -46,6 +46,11 @@ exports.install = function() {
 	ROUTE('+GET     /api/branches/{id}/                   *Branches          --> @query');
 	ROUTE('+POST    /api/branches/{id}/                   *Branches          --> @save');
 
+	// Chat
+	ROUTE('+GET     /api/chat/                            *Chat              --> @query');
+	ROUTE('+POST    /api/chat/                            *Chat              --> @insert');
+	ROUTE('+GET     /api/chat/users/                      *Chat              --> @users');
+
 	// Clipboard
 	ROUTE('+GET     /api/clipboard/                        *Clipboard        --> @get');
 	ROUTE('+POST    /api/clipboard/                        *Clipboard        --> @save');

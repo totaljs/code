@@ -1,3 +1,5 @@
+var MD_INLINE_OPTIONS = { headlines: false };
+
 W.DECRYPT = function(hex, key) {
 	var index = hex.lastIndexOf('x');
 	if (index === -1)
@@ -113,8 +115,11 @@ function hexrgba(hex, alpha){
 
 setInterval(function() {
 	$('.time').each(function() {
-		var dt = new Date(this.getAttribute('data-time'));
-		this.innerHTML = Thelpers.time(dt);
+		var time = this.getAttribute('data-time');
+		if (time) {
+			var dt = new Date(time);
+			this.innerHTML = Thelpers.time(dt);
+		}
 	});
 }, 1000 * 30);
 
@@ -190,3 +195,33 @@ function filesizehelper(number, count) {
 	}
 	return number;
 }
+
+function textarea_autosize(el) {
+	el.style.height = '5px';
+	var tmp = el.scrollHeight;
+	if (tmp < 28)
+		tmp = 28;
+	el.style.height = tmp + 'px';
+	if (tmp !== el.$inputheight) {
+		el.$inputheight = tmp;
+		var container = $(el.parentNode);
+		container.parent().FIND('viewbox', function(com) {
+			com.reconfigure({ margin: container.height() + 60 });
+		});
+	}
+}
+
+Thelpers.time2 = function(value) {
+	return '<span class="ta-time" data-time="{0}" title="{2}">{1}</span>'.format(value.getTime(), Thelpers.time(value), value.format(null));
+};
+
+ON('knockknock', function() {
+	$('.ta-time').each(function() {
+		var el = $(this);
+		el.html(Thelpers.time(new Date(+el.attrd('time'))));
+	});
+});
+
+Thelpers.markdown = function(value) {
+	return value.markdown(MD_INLINE_OPTIONS);
+};

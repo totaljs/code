@@ -559,8 +559,8 @@ input:invalid { box-shadow: none; }
 .ui-directory-container { height: 150px; overflow-x: hidden; overflow-y: auto; overflow-scrolling: touch; margin: 0 30px 0 0; padding: 0; }
 .ui-directory ul { list-style-type: none; margin: 0; padding: 0; }
 .ui-directory .selected { background-color: #E8E8E8; color: black; }
-.ui-directory li { border-top: 1px solid #E9E9E9; font-size: 12px; padding: 3px 10px; background-color: white; cursor: pointer; margin: 0; line-height: 16px; }
-.ui-directory li:first-child { border-top: 0; }
+.ui-directory li { border-bottom: 1px solid #E9E9E9; font-size: 12px; padding: 3px 10px; background-color: white; cursor: pointer; margin: 0; line-height: 16px; }
+.ui-directory li:last-child { border-bottom: 0; }
 .ui-directory-search-hidden .ui-directory-search { height: 0; overflow: hidden; opacity: 0; }
 .ui-directory .current { background-color: #F2F2F2; color: black; }
 
@@ -925,3 +925,66 @@ li.ui-directory-current { background-color: rgba(0,0,0,0.02); font-weight: bold;
 .td .ui-floatinginput-input input { background-color: #303030; }
 .td .ui-floatinginput-add:hover { color: white; }
 .td .ui-floatinginput-summary { color: gray; border-bottom-color: #404040; }
+
+.ui-inputmessage { min-height: 30px; max-height: 150px; background-color: white; padding: 10px 10px 0; border-top: 1px solid #D0D0D0; line-height: 0; }
+.ui-inputmessage textarea { width: 100%; height: 20px; border: 0; background-color: transparent; resize: none; outline: 0; font-family: Menlo,monospace; overflow: hidden; max-height: 140px; line-height: 14px; }
+
+.td .ui-inputmessage { background-color: #181818; border-top-color: #404040; }
+
+.markdown-small .markdown { font-size: 14px; line-height: 18px; }
+.markdown { font-size: 16px; line-height: 22px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol'; color: #404040; overflow-x: hidden; padding: 0; }
+.markdown *:last-child { margin-bottom: 0; }
+.markdown code { font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace; }
+.markdown h1 { cursor: default; margin: 0 0 20px; font-size: 30px; padding: 0 0 13px; border-bottom: 1px solid #E0E0E0; color: black; line-height: 38px; font-family: -apple-systm, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol'; font-weight: normal; line-height: 32px; font-weight: bold; }
+.markdown h2 { cursor: default; margin: 0 0 18px; font-weight: bold; font-size: 25px; padding: 0 0 8px; border-bottom: 1px solid #E0E0E0; color: black; line-height: 28px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol'; }
+.markdown h3 { cursor: default; margin: 0 0 10px; font-size: 20px; padding: 0 0 5px; color: #404040; font-weight: bold; line-height: 22px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol'; }
+.markdown h4, .markdown h5 { cursor: default; margin: 0 0 10px; font-size: 17px; color: #404040; font-weight: bold; line-height: 22px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol'; background-color: #F0F0F0; padding: 4px 3px; border-radius: 3px; border-bottom: 1px solid #E0E0E0; }
+.markdown p { margin: 0 0 20px; padding-left: 0; padding-right: 0; }
+.markdown-small p { margin-bottom: 10px; }
+.markdown p code, .markdown li code, .markdown section code, .markdown blockquote code, .markdown h1 code, .markdown h2 code, .markdown h3 code, .markdown h4 code, .markdown td code { background-color: #E0E0E0; padding: 1px 4px 2px; border-radius: 3px; font-size: 14px; }
+.markdown-small p code, .markdown-small li code, .markdown-small section code, .markdown-small blockquote code, .markdown-small h1 code, .markdown-small h2 code, .markdown-small h3 code, .markdown-small h4 code, .markdown-small td code { padding: 0 3px; border-radius: 3px; font-size: 13px; }
+.markdown p code, .markdown section code, .markdown li code, .markdown blockquote code, .markdown td code { border: 1px solid #E0E0E0; background-color: #F5F5F5; }
+.markdown pre { padding: 0; border-radius: 4px; margin: 20px 0; width: 100%; }
+.markdown pre code { padding: 10px; font-size: 14px; line-height: 18px; overflow-scrolling: touch; border-radius: 3px; }
+.markdown table { margin: 0 0 20px; width: auto !important; }
+.markdown ul { margin: 0 0 20px 0; padding: 0 0 0 2em; }
+.markdown ul ul { margin-bottom: 0; }
+.markdown img { max-width: 100%; }
+.markdown th { background-color: #F8F8F8; }
+.markdown blockquote { color: black; margin: 0 0 20px; padding: 10px 0 0 20px; position: relative; font-style: italic; }
+.markdown blockquote:before { content: '\201C'; position: absolute; margin-left: -18px; margin-top: -13px; font: 45px 'PT Sans', sans-serif; color: #A0A0A0; }
+.markdown section { padding: 15px 20px; background-color: #FFFED1; margin: 10px 0 20px; border-radius: 3px; }
+.markdown hr { border-color: #E0E0E0; border-width: 2px; }
+.markdown h1 code { font-size: 28px; font-weight: normal; background-color: #DAE8F8; }
+.markdown h2 code { font-size: 23px; font-weight: normal; background-color: #DAE8F8; }
+.markdown h3 code { font-size: 18px; font-weight: normal; background-color: #DAE8F8; }
+.markdown h4 code { font-size: 17px; font-weight: normal; background-color: #DAE8F8; }
+.markdown a code { background-color: #DAE8F8; text-decoration: none !important; border-color: #D5DFEB; }
+.markdown .footnote { background-color: rgba(0,0,0,0.1); padding: 0 2px; border-radius: 2px; cursor: help; }
+.markdown .footnotebody { font-size: 11px; border-top: 1px solid #E0E0E0; font-family: Arial; color: #505050; }
+.markdown .showsecret { cursor: pointer; display: block; padding: 8px 15px; user-select: none; }
+.markdown .showsecret b { margin-left: 8px; }
+.markdown .showsecret .pull-right { margin: 2px 0 0; }
+.markdown .secret { padding: 0; border-radius: 2px; border: 1px solid #E0E0E0; }
+.markdown .secret > div { padding: 15px 5px 1px; border-radius: 0 0 2px 2px; background-color: #F8F8F8; }
+
+.td .markdown { color: #C0C0C0; }
+.td .markdown blockquote { color: white; }
+.td .markdown blockquote:before { color: #707070; }
+.td .markdown th { background-color: #404040; }
+.td .markdown h2 { color: white; border-bottom-color: #404040; }
+.td .markdown h1 { color: white; border-bottom-color: #404040; }
+.td .markdown h1 code { background-color: #404040; }
+.td .markdown hr { border-color: #404040; }
+.td .markdown h2 code { background-color: #404040; }
+.td .markdown h3 code { background-color: #404040; }
+.td .markdown h4 code { background-color: #404040; }
+.td .markdown section { background-color: #404040; }
+.td .markdown a code { background-color: #303030; border-color: #454545; }
+.td .markdown h4, .td .markdown h5 { color: #C0C0C0; background-color: #505050; border-bottom: 1px solid #404040; }
+.td .markdown p code, .td .markdown section code, .td .markdown li code, .td .markdown blockquote code, .td .markdown td code { border-color: #404040; background-color: #505050; }
+.td .markdown .footnote { background-color: rgba(255,255,255,0.1); }
+.td .markdown .footnotebody { border-top-color: #505050; color: #888888; }
+
+.td .markdown .secret { border: 1px solid #404040; }
+.td .markdown .secret > div { background-color: #303030; }

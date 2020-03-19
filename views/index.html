@@ -33,6 +33,7 @@
 	<div data---="LAZY tooltip"></div>
 	<div data---="LAZY floatinginput"></div>
 	<div data---="faicons"></div>
+	<div data---="markdown"></div>
 	<div data---="clipboard"></div>
 	<div data---="directory__null__placeholder:@(Search)"></div>
 	<div data---="infopanel"></div>
@@ -52,7 +53,8 @@
 		<!--<span class="version hidden" data-bind="common.page__show:value==='code'">v@{MAIN.version}</span>-->
 		<div class="tools" data-jc="selected__common.page__selector:a.R">
 			<a href="@{#}/" title="@(Code)" class="R" data-if="code"><i class="fa fa-laptop-code"></i></a>
-			<a href="javascript:void(0)" data-exec="code/messenger" title="@(Support)" class="external exec"><i class="far fa-comments"></i></a>
+			<a href="javascript:void(0)" data-exec="code/chat" title="@(Chat)" class="exec"><i class="far fa-comments"></i></a>
+			<a href="javascript:void(0)" data-exec="code/messenger" title="@(Support)" class="external exec"><i class="far fa-life-ring"></i></a>
 			<a href="#" data-bind="code.data.documentation__show__href" title="@(Documentation)" target="_blank" class="external hidden"><i class="fa fa-book-open"></i></a>
 			@{if user.sa}
 			<a href="@{#}/projects/" title="@(Projects)" class="R" data-if="projects"><i class="fa fa-code-branch"></i></a>
@@ -84,6 +86,8 @@
 		var EDITOR = null;
 		var windows = [];
 
+		user.owner = true;
+
 		FIND('editor', function(com) {
 			EDITOR = com;
 		});
@@ -101,6 +105,12 @@
 			common.electron = navigator.userAgent.indexOf('Electron') !== -1 && window.require != null;
 			common.ismac = navigator.platform.substring(0, 3) === 'Mac';
 			common.token = '@{PREF.token}';
+
+			if (user.unread && Object.keys(user.unread).length) {
+				setTimeout(function() {
+					EXEC('code/chat', true);
+				}, 4000);
+			}
 
 			if (common.electron && !common.ismac)
 				$('header').aclass('electron-header-border');
@@ -140,6 +150,7 @@
 		CACHEPATH('common.powermodeshaking', '1 year');
 
 		ENV('date', 'yyyy-MM-dd HH:mm');
+		DEF.dateformat = 'yyyy-MM-dd HH:mm';
 
 		NAV.clientside('.R');
 
@@ -200,6 +211,14 @@
 
 		ON('message', function(msg) {
 			switch (msg.TYPE) {
+				case 'chat':
+					if (W.chat)
+						EXEC('chat/insert', msg);
+					else {
+						W.chat = { current: msg.user || '' };
+						EXEC('code/chat');
+					}
+					break;
 				case 'blocked':
 					location.href = '/';
 					break;

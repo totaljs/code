@@ -26,12 +26,14 @@ function realtime() {
 	});
 
 	self.on('message', function(client, msg) {
+
 		// 012345678901234567890
 		// {"TYPE":"syncsend"
 		// {"TYPE":"syncbody"
 		// {"TYPE":"syncdone"
 		// {"TYPE":"synccur"
 		// {"TYPE":"edit"
+
 		if (msg[9] === 'e') {
 			msg = msg.parseJSON();
 			client.code.fileid && refresh_collaborators(self, client);

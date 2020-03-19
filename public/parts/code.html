@@ -65,8 +65,9 @@
 			<div class="search">
 				<span><i class="fa fa-search"></i>@(Search)</span>
 				<nav>
-					<button name="prev" disabled="disabled" title="@(Previous result)"><i class="fa fa-angle-up"></i></button>
-					<button name="next" disabled="disabled" title="@(Next result)"><i class="fa fa-angle-down"></i></button>
+					<button class="search-cancel hidden" name="clear" title="@(Clear search)"><i class="fa fa-times red"></i></button>
+					<button class="search-op" name="prev" disabled="disabled" title="@(Previous result)"><i class="fa fa-angle-up"></i></button>
+					<button class="search-op" name="next" disabled="disabled" title="@(Next result)"><i class="fa fa-angle-down"></i></button>
 				</nav>
 				<div><input type="text" maxlength="100" placeholder="@(Type to search and press enter)" /></div>
 			</div>
@@ -230,7 +231,7 @@
 			obj.title = '<i class="fa fa-life-ring"></i>@(Chat support with contributors)';
 			var meta = $.param({ token: common.token, nick: user.name, position: user.position, darkmode: $(document.body).hclass('td') ? 1 : 0, reference: user.id, source: location.hostname });
 			obj.html = '<div class="messenger"><{1} src="{0}" frameborder="0" scrolling="no" allowtransparency="true" allow="geolocation *; microphone *; camera *; midi *; encrypted-media *"></{1}></div>'.format('https://support.totaljs.com/?' + meta, common.electron ? 'webview' : 'iframe');
-			obj.actions = { minimize: true, maximize: false, move: true, resize: true, close: true, autosave: true };
+			obj.actions = { minimize: true, maximize: true, move: true, resize: true, close: true, autosave: true };
 			PUSH('windows', obj);
 		};
 
@@ -288,12 +289,33 @@
 		};
 
 		exports.localize = function() {
-			SETTER('loading', 'show');
+			SETTER('loading/show');
 			AJAX('GET /api/projects/{id}/localize/'.arg(code.data), function() {
 				EXEC('code/refresh', function() {
 					exports.element.SETTER('tree/selectpath', '/localization.resource');
 				});
 			});
+		};
+
+		exports.chat = function(show) {
+
+			if (windows.findItem('id', 'chat')) {
+				SETTER('windows/' + (show ? 'show' : 'toggle'), 'chat');
+				return;
+			}
+
+			var obj = {};
+			obj.id = 'chat';
+			obj.hidden = false;
+			obj.offset = { x: ((WW / 2) - 350) >> 0, y: ((WH / 2) - 150) >> 0, width: 700, height: 300, minwidth: 300, minheight: 150 };
+			obj.title = '<i class="fa fa-comments"></i> @(Internal chat)';
+			obj.html = '<div data-import="url:/partial/chat.html"></div>';
+			obj.actions = { minimize: true, maximize: true, move: true, resize: true, autosave: true, hide: true };
+
+			if (!W.chat)
+				W.chat = { current: '' };
+
+			PUSH('windows', obj);
 		};
 
 		exports.editpath = function(el) {
@@ -326,7 +348,7 @@
 				var obj = {};
 				obj.id = 'logs';
 				obj.hidden = false;
-				obj.offset = { x: WW - 800, y: WH - 300, width: 600, height: 250, minwidth: 200, minheight: 200 };
+				obj.offset = { x: WW - 850, y: WH - 390, width: 800, height: 300, minwidth: 200, minheight: 200 };
 				obj.title = '<i class="fa fa-pulse fa-spinner green"></i>@(Logs)';
 				obj.html = '<div data-import="url:/partial/logs.html"></div>';
 				obj.actions = { minimize: false, maximize: false, move: true, resize: true, autosave: true, menu: true, hide: true };
@@ -428,12 +450,12 @@
 
 			if (min) {
 				SET('code.multiple', false);
-				SETTER('loading', 'show');
+				SETTER('loading/show');
 				FUNC.wssend({ TYPE: 'syncsend', projectid: code.projectid, connid: common.id, fromid: min.id });
 				common.synctimeout = setTimeout(function() {
 					// 5 seconds
 					// Maybe zombie connection
-					SETTER('loading', 'hide');
+					SETTER('loading/hide');
 					common.synctimeout = null;
 					$('#body').rclass('warning');
 					FUNC.warning('@(Unable to synchronize code between users, because the main user may be offline.)');
@@ -714,7 +736,7 @@
 				items.push({ name: '@(Insert template)', icon: 'plus-circle', value: 'template', children: sub });
 			}
 
-			SETTER('menu', 'showxy', e.pageX + 5, e.pageY - 15, items, function(value) {
+			SETTER('menu/showxy', e.pageX + 5, e.pageY - 15, items, function(value) {
 
 				if (value.command) {
 					editor.focus();
@@ -779,7 +801,7 @@
 				if (value.value === 'copymarkdown') {
 					var cur = editor.getModeAt(editor.getCursor());
 					var syntax = FUNC.getext(cur.helperType || cur.name);
-					SETTER('clipboard', 'copy', '```' + syntax + '\n' + FUNC.strim(text).replace(/\t/g, '  ').trim() + '\n```');
+					SETTER('clipboard/copy', '```' + syntax + '\n' + FUNC.strim(text).replace(/\t/g, '  ').trim() + '\n```');
 					return;
 				}
 
@@ -842,7 +864,7 @@
 						editor.replaceSelection(selected);
 					};
 					setTimeout(function() {
-						SETTER('emoji', 'show', opt);
+						SETTER('emoji/show', opt);
 					}, 100);
 					return;
 				}
@@ -855,7 +877,7 @@
 						editor.replaceSelection(selected);
 					};
 					setTimeout(function() {
-						SETTER('colorpicker', 'show', opt);
+						SETTER('colorpicker/show', opt);
 					}, 100);
 					return;
 				}
@@ -1096,9 +1118,9 @@
 				return;
 			}
 
-			SETTER('loading', 'show');
+			SETTER('loading/show');
 			AJAX('POST /api/files/{id}/rename/'.arg(code.data), data, function(response) {
-				SETTER('loading', 'hide', 500);
+				SETTER('loading/hide', 500);
 				exports.closetab(data.oldpath);
 				callback(response.success);
 				exports.load(code.data.id, true);
@@ -1177,7 +1199,7 @@
 				}
 				exports.tablocked();
 				tab.skip = true;
-				exports.element.SETTER('tree', 'selectpath', tab.path, true);
+				exports.element.SETTER('tree/selectpath', tab.path, true);
 				tab.time = code.lastchange = Date.now();
 				return;
 			}
@@ -1252,7 +1274,7 @@
 				newbie && PUSH('code.open', tab);
 				exports.edit(tab, true);
 				exports.savetabs();
-				exports.element.SETTER('tree', 'select2', FUNC.treeindex(code.tree, item.path), true);
+				exports.element.SETTER('tree/select2', FUNC.treeindex(code.tree, item.path), true);
 				editor.editor.focus();
 			});
 		};
@@ -1332,7 +1354,7 @@
 				code.data.pathsync && items.push({ value: 21, name: '@(Synchronize bundle)', icon: 'truck' });
 			}
 
-			SETTER('menu', 'show', 'left', el, items, function(item) {
+			SETTER('menu/show', 'left', el, items, function(item) {
 				switch (item.value) {
 					case 1:
 						FUNC.editor_reload();
@@ -1404,9 +1426,9 @@
 						location.href = '/api/projects/{id}/bundle/'.arg(code.data);
 						break;
 					case 21:
-						SETTER('loading', 'show');
+						SETTER('loading/show');
 						AJAX('GET /api/projects/{id}/bundle/'.arg(code.data), function() {
-							SETTER('loading', 'hide', 1000);
+							SETTER('loading/hide', 1000);
 							FUNC.success('@(Done, bundle has been synchronized)');
 						});
 						break;
@@ -1434,7 +1456,7 @@
 				if (typeof(response) === 'string') {
 					if (response) {
 						setTimeout(function() {
-							SETTER('clipboard', 'copy', response);
+							SETTER('clipboard/copy', response);
 						}, 1000);
 						FUNC.success('@(Localized dictionary has been copied into the clipboard)');
 					} else
@@ -1547,7 +1569,7 @@
 
 			var path = node.path;
 
-			SETTER('menu', 'show', 'right', el, items, function(item) {
+			SETTER('menu/show', 'right', el, items, function(item) {
 
 				if (item.makefile) {
 					var name = path + item.name.substring(item.name.indexOf(':') + 1).trim();
@@ -1597,30 +1619,28 @@
 							name = name.substring(0, index) + '-2' + name.substring(index);
 
 						SET('code.statusform.name', 'file');
-						SETTER('statusform', 'val', name, node.path);
+						SETTER('statusform/val', name, node.path);
 						break;
 
 					case 3:
 						setTimeout(function() {
-							exports.element.SETTER('tree', 'rename', node.$pointer);
+							exports.element.SETTER('tree/rename', node.$pointer);
 						}, 500);
 						break;
 					case 255:
-						SETTER('confirm', 'show', '@(Are you sure you want to remove <b>{0}</b>?)'.format(node.path), ['"trash-o" @(Remove)', '@(Cancel)'], function(index) {
-							if (!index) {
-								var data = {};
-								data.path = node.path;
-								SETTER('loading', 'show');
-								AJAX('POST /api/files/{id}/remove/'.arg(code.data), data, function() {
-									SETTER('loading', 'hide', 100);
-									FUNC.success('@(Removed successfully: <b>{0}</b>)'.format(data.path));
-									var el = exports.element.find('.tabs');
-									el = el.find('span[data-value="{0}"]'.format(data.path));
-									el.length && el.find('i').trigger('click');
-									SET('code.tree', FUNC.treeremove(code.tree, node.path));
-									common.electron && code.data.repository && user.localsave && FUNC.unlinkpath(require('path').join(FUNC.getName(code.data.repository.replace(/\.git$/i, '')), node.path));
-								});
-							}
+						SETTER('confirm/show2', '@(Are you sure you want to remove <b>{0}</b>?)'.format(node.path), ['"trash-o" @(Remove)', '@(Cancel)'], function() {
+							var data = {};
+							data.path = node.path;
+							SETTER('loading/show');
+							AJAX('POST /api/files/{id}/remove/'.arg(code.data), data, function() {
+								SETTER('loading/hide', 100);
+								FUNC.success('@(Removed successfully: <b>{0}</b>)'.format(data.path));
+								var el = exports.element.find('.tabs');
+								el = el.find('span[data-value="{0}"]'.format(data.path));
+								el.length && el.find('i').trigger('click');
+								SET('code.tree', FUNC.treeremove(code.tree, node.path));
+								common.electron && code.data.repository && user.localsave && FUNC.unlinkpath(require('path').join(FUNC.getName(code.data.repository.replace(/\.git$/i, '')), node.path));
+							});
 						});
 						break;
 				}
@@ -1634,8 +1654,8 @@
 			var tab = code.open.findItem('path', path);
 			if (tab) {
 				if (tab.modified) {
-					SETTER('confirm', 'show', '@(The content has been modified. <b>Do you want to <u>discard changes</u>?</b>)', ['"trash-o" @(Discard changes)', '@(Cancel)'], function(index) {
-						!index && exports.closeforce(tab.path);
+					SETTER('confirm/show2', '@(The content has been modified. <b>Do you want to <u>discard changes</u>?</b>)', ['"trash-o" @(Discard changes)', '@(Cancel)'], function() {
+						exports.closeforce(tab.path);
 					});
 				} else
 					exports.closeforce(tab.path);
@@ -1890,8 +1910,8 @@
 					if (response.user !== user.name && (tmp.user !== response.user || tmp.updated.getTime() !== response.updated.getTime())) {
 						FUNC.info('@(<b>{0}</b> changed this file <b>{1}</b>.)'.format(response.user, Thelpers.time(response.updated)));
 						if (!code.SYNC && code.usersfile && code.usersfile.length === 1) {
-							SETTER('loading', 'show');
-							SETTER('loading', 'hide', 1000);
+							SETTER('loading/show');
+							SETTER('loading/hide', 1000);
 							FUNC.editor_reload();
 						}
 					}
@@ -2020,7 +2040,7 @@
 					REDIRECT('/?id=' + item.id);
 			};
 
-			SETTER('directory', 'show', opt);
+			SETTER('directory/show', opt);
 		};
 
 		exports.loadproject = function(el) {
@@ -2053,7 +2073,7 @@
 				var Http = require('http');
 				var Fs = require('fs');
 
-				SETTER('loading', 'show');
+				SETTER('loading/show');
 				AJAX('GET /api/projects/{id}/changelogs/'.arg(code.data), function(response) {
 
 					response.wait(function(item, next, index) {
@@ -2063,11 +2083,11 @@
 						var filename = Path.join(electronpath, FUNC.getName(code.data.repository).replace(/\.git$/i, ''), item.path);
 
 						if (item.removed) {
-							SETTER('loading', 'show', ('<b style="font-size:18px">{0}%</b><br /><b>@(Removing:)</b> ' + item.path).format(common.percentage >> 0));
+							SETTER('loading/show', ('<b style="font-size:18px">{0}%</b><br /><b>@(Removing:)</b> ' + item.path).format(common.percentage >> 0));
 							Fs.unlink(filename, next);
 						} else {
 
-							SETTER('loading', 'show', ('<b style="font-size:18px">{0}%</b><br /><b>@(Saving:)</b> ' + item.path).format(common.percentage >> 0));
+							SETTER('loading/show', ('<b style="font-size:18px">{0}%</b><br /><b>@(Saving:)</b> ' + item.path).format(common.percentage >> 0));
 
 							FUNC.mkdir(Path.dirname(filename));
 
@@ -2101,7 +2121,7 @@
 
 					}, function() {
 						SET('common.percentage', 100);
-						SETTER('loading', 'hide');
+						SETTER('loading/hide');
 					});
 				});
 
@@ -2114,7 +2134,7 @@
 			if (BLOCKED('code_saving', 1000))
 				return;
 
-			SETTER('loading', 'show');
+			SETTER('loading/show');
 
 			setTimeout(function() {
 
@@ -2140,7 +2160,7 @@
 						common.electron && code.data.repository && user.localsave && exports.savelocal();
 					});
 
-					SETTER('loading', 'hide');
+					SETTER('loading/hide');
 					return;
 				}
 
@@ -2206,7 +2226,7 @@
 
 				AJAX('POST /api/files/{id}/ REPEAT'.arg(code.data), data, function(response) {
 
-					SETTER('loading', 'hide', 500);
+					SETTER('loading/hide', 500);
 
 					if (close === true)
 						exports.closeforce();
@@ -2308,7 +2328,7 @@
 				if (is) {
 					if (common.id === msg.connid) {
 						code.issyncing = true;
-						SETTER('loading', 'show');
+						SETTER('loading/show');
 						setTimeout(exports.syncdata, 1000);
 					}
 				}
@@ -2401,7 +2421,7 @@
 					};
 
 					if (opt.items.length)
-						SETTER('menu', 'show', opt);
+						SETTER('menu/show', opt);
 
 				} else if (dname === 'file') {
 					opt = {};
@@ -2461,7 +2481,7 @@
 					};
 
 					if (opt.items.length)
-						SETTER('menu', 'show', opt);
+						SETTER('menu/show', opt);
 				}
 
 				// element
@@ -2479,10 +2499,10 @@
 			data.folder = name !== 'file';
 			data.clone = type;
 
-			SETTER('!menu', 'hide');
-			SETTER('loading', 'show');
+			SETTER('!menu/hide');
+			SETTER('loading/show');
 			AJAX('POST /api/files/{id}/create/'.arg(code.data), data, function(response) {
-				SETTER('loading', 'hide', 500);
+				SETTER('loading/hide', 500);
 				if (response.success)
 					exports.load(code.data.id, true);
 				else
@@ -2492,7 +2512,7 @@
 
 		exports.usersonline = function(el) {
 			AJAX('GET /api/users/online/', function(response) {
-				SETTER('infopanel', 'show', el, function(el) {
+				SETTER('infopanel/show', el, function(el) {
 
 					var builder = [];
 					for (var i = 0; i < 10; i++) {
@@ -2509,7 +2529,7 @@
 		};
 
 		exports.warnings = function(el, e) {
-			SETTER('infopanel', 'show', el, function(el) {
+			SETTER('infopanel/show', el, function(el) {
 				var builder = [];
 				for (var i = 0; i < 10; i++) {
 					var err = code.errors && code.errors[i];
@@ -2615,16 +2635,16 @@
 
 
 			if (common.token === '1234567890') {
-				SETTER('message', 'warning', '@(You have invalid token for code review. More info: info@totaljs.com).');
+				SETTER('message/warning', '@(You have invalid token for code review. More info: info@totaljs.com).');
 				return;
 			}
 
 			if (!code.data.review) {
-				SETTER('message', 'warning', '@(You do not have defined a <b>token</b> for code review. Click on the <b>Settings</b> button and set the token.)');
+				SETTER('message/warning', '@(You do not have defined a <b>token</b> for code review. Click on the <b>Settings</b> button and set the token.)');
 				return;
 			}
 
-			SETTER('confirm', 'show2', '@(Are you sure you want to send this file for <b>Code Review</b>?)', ['"check-circle" @(Review code) #98BF61', '@(Cancel)'], function(index) {
+			SETTER('confirm/show2', '@(Are you sure you want to send this file for <b>Code Review</b>?)', ['"check-circle" @(Review code) #98BF61', '@(Cancel)'], function(index) {
 				AJAX('GET /api/projects/{id}/review/?path='.arg(code.data) + encodeURIComponent(code.editor.path), FUNC.messageresponse('<b><i class="fa fa-check mr5 green"></i>@(DONE)</b><br />@(File has been sent for code review successfully.)'));
 			});
 		};
@@ -2696,7 +2716,7 @@
 		};
 
 		WATCH('common.powermode', function(path, value) {
-			SETTER(true, 'editor', 'reconfigure', 'powermode:' + (value ? '1' : '0'));
+			SETTER(true, 'editor/reconfigure', 'powermode:' + (value ? '1' : '0'));
 			BIND('code.editor.path');
 		}, true);
 
@@ -2712,12 +2732,12 @@
 
 				var obj = {};
 				obj.id = 'clipboard';
-				obj.offset = { x: WW - 1000, y: WH - 300, width: 600, height: 250, minwidth: 200, minheight: 200 };
+				obj.offset = { x: 270, y: WH - 350, width: WW - 300, height: 250, minwidth: 200, minheight: 200 };
 				obj.title = '<i class="fa fa-clipboard"></i>@(Clipboard)';
 				obj.hidden = false;
 				obj.resize = clipboardresize;
 				obj.html = '<div data-import="url:/partial/clipboard.html;reevaluate:1" style="width:100%;height:100%"></div>'.format(Date.now());
-				obj.actions = { minimize: false, maximize: false, move: true, resize: true, autosave: true, menu: false, hide: true };
+				obj.actions = { minimize: true, maximize: true, move: true, resize: true, autosave: true, menu: false, hide: true };
 				obj.destroy = function() {
 					SET('common.clipboard', false);
 				};
@@ -2756,11 +2776,11 @@
 				}, 500);
 			}
 		}).on('mousedown', function(e) {
-			if (iscolor)
-				return;
-			if (e.target.id === 'currentcolor')
-				SETTER('clipboard', 'copy', e.target.getAttribute('data-color'));
-			$('#currentcolor').aclass('hidden');
+			if (!iscolor) {
+				if (e.target.id === 'currentcolor')
+					SETTER('clipboard/copy', e.target.getAttribute('data-color'));
+				$('#currentcolor').aclass('hidden');
+			}
 		});
 	});
 

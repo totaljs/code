@@ -3207,8 +3207,8 @@ https://twitter.com/JoelBesada/status/670343885655293952
 				return;
 			state.query = state.queryText = null;
 			var search = $('.search');
-			//search.find('input').val('');
-			search.find('button').prop('disabled', true);
+			search.find('.search-op').prop('disabled', true);
+			search.find('.search-cancel').tclass('hidden', true);
 			cm.removeOverlay(state.overlay);
 			if (state.annotate) {
 				state.annotate.clear();
@@ -3293,7 +3293,8 @@ https://twitter.com/JoelBesada/status/670343885655293952
 		var el = $('.search');
 
 		var state = function(t) {
-			el.find('button').prop('disabled', !t.value);
+			el.find('.search-op').prop('disabled', !t.value);
+			el.find('.search-cancel').tclass('hidden', !t.value);
 		};
 
 		el.on('click', 'button', function() {
@@ -3304,6 +3305,12 @@ https://twitter.com/JoelBesada/status/670343885655293952
 					break;
 				case 'next':
 					cm.execCommand('findNext');
+					break;
+				case 'clear':
+					el.find('input').val('');
+					cm.execCommand('clearSearch');
+					cm.focus();
+					cm.doc.setCursor(cm.doc.getCursor());
 					break;
 			}
 		});

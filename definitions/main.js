@@ -166,6 +166,19 @@ Fs.readFile(F.path.databases('users.json'), function(err, data) {
 		user.projectid = '';
 		user.ts = 0;
 		user.open = [];
+
+		if (!user.unread)
+			continue;
+
+		// Clears unread message from removed users
+		var keys = Object.keys(user.unread);
+		for (var j = 0; j < keys.length; j++) {
+			var key = keys[j];
+			if (key === user.id)
+				delete user.unread[key];
+			else if (!MAIN.users.findItem('id', key))
+				delete user.unread[key];
+		}
 	}
 });
 

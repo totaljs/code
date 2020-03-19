@@ -1,0 +1,107 @@
+<div class="chat invisible" data-scope="chat">
+	<div class="messages">
+		<nav class="users" data---="tabmenu__?.current__datasource:?.users;selector:.channel">
+			<script type="text/html">
+				{{ if id }}
+					<div class="channel" data-value="{{ id }}"><i class="fa fa-circle"></i>{{ name | initials }}</div>
+				{{ else }}
+					<div class="channel" data-value=""><i class="fa fa-circle"></i><span class="initials" style="background-color:#505050"><span class="fa fa-comments"></span></span></div>
+				{{ fi }}
+			</script>
+		</nav>
+		<div data---="viewbox__null__parent:.ui-windows-body;margin:65;scrollbar:1" class="invisible">
+			<div data---="messages__?.messages" class="markdown-small">
+				<script type="text/html">
+					<div class="message{{ if owner.owner }} message-owner{{ fi }}">
+						<div class="photo">{{ owner.name | initials }}</div>
+						<div class="content">
+							<span class="dt">{{ created | time2 }}</span>
+							<div class="user">
+								<b>{{ owner.name }}</b><div>{{ owner.position | def }}</div>
+							</div>
+							<div class="body">
+								{{ body | markdown }}
+							</div>
+						</div>
+					</div>
+				</script>
+			</div>
+		</div>
+		<div data---="inputmessage__?.message__oninput:textarea_autosize;exec:?/submit;placeholder:@(Type a message and press enter)"></div>
+	</div>
+</div>
+
+<script>
+
+	PLUGIN('chat', function(exports) {
+
+		exports.reload = function() {
+			AJAX('GET /api/chat/users/', function(response) {
+				response.quicksort('name');
+				response.unshift({ id: '', name: '@(General)' });
+				SET('?.users', response);
+				setTimeout(function() {
+					$('.chat').rclass('invisible').find('textarea').focus();
+					exports.scope();
+					exports.load();
+
+					if (user.unread) {
+						var keys = Object.keys(user.unread);
+						for (var i = 0; i < keys.length; i++) {
+							if (keys[i] === '_general')
+								keys[i] = '';
+							exports.element.find('.channel[data-value="{0}"]'.format(keys[i])).aclass('unread');
+						}
+					}
+
+				}, 500);
+			});
+		};
+
+		exports.insert = function(msg) {
+
+			if (msg.user !== chat.current) {
+				exports.element.find('.channel[data-value="{0}"]'.format(msg.user)).aclass('unread');
+				return;
+			}
+
+			msg.owner = msg.owner === user.id ? user : chat.users.findItem('id', msg.owner);
+
+			if (!msg.owner)
+				msg.owner = {};
+
+			PUSH('?.messages', msg, 'insert');
+		};
+
+		exports.load = function() {
+			var id = W.chat.current || '';
+			AJAX('GET /api/chat/' + (id ? ('?user=' + encodeURIComponent(id)) : ''), function(response) {
+
+				for (var i = 0; i < response.length; i++) {
+					var msg = response[i];
+					msg.owner = msg.owner === user.id ? user : chat.users.findItem('id', msg.owner);
+					if (!msg.owner)
+						msg.owner = {};
+				}
+
+				response.reverse();
+				SET('?.messages', response);
+
+				setTimeout(function(id) {
+					exports.element.find('.channel[data-value="{0}"]'.format(id)).rclass('unread');
+				}, 2000, id);
+			});
+		};
+
+		WATCH('?.current', exports.load);
+
+		exports.submit = function(val) {
+			var model = {};
+			model.body = val;
+			model.user = W.chat.current;
+			AJAX('POST /api/chat/', model, NOOP);
+		};
+
+		exports.reload();
+	});
+</script>
