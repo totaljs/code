@@ -188,6 +188,12 @@ Fs.readFile(F.path.databases('projects.json'), function(err, data) {
 });
 
 ON('ready', function() {
+
 	if (!PREF.token)
 		PREF.set('token', '1234567890');
+
+	// Added permissions
+	Fs.chmod(PATH.databases('branch_backup.sh'), 777, NOOP);
+	Fs.chmod(PATH.databases('branch_restore.sh'), 777, NOOP);
+	Fs.chmod(PATH.databases('source_backup.sh'), 777, NOOP);
 });
