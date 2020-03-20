@@ -311,7 +311,7 @@ NEWSCHEMA('Files', function(schema) {
 		}
 
 		var arg = [];
-		var filename = project.name.slug() + '.tar.gz';
+		var filename = project.name.slug() + (project.branch ? ('_' + project.branch) : '') + '.tar.gz';
 		arg.push(PATH.temp(filename));
 		arg.push(project.path);
 
