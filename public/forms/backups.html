@@ -6,12 +6,11 @@
 	<div data-bind="codebackups.items__template">
 		<script type="text/html">
 			{{ foreach m in value }}
-				<div class="backupitem exec" data-path="{{ m.filename }}" data-exec="codebackups/restore">
+				<div class="changeitem exec" data-path="{{ m.filename }}" data-exec="codebackups/restore">
 					<div class="photo">{{ m.user | initials }}</div>
 					<div class="meta">
-						<div class="date"><span>{{ m.date | format('[date]') }}</span><i class="fa fa-clock"></i><span class="time" data-time="{{ m.date | utc }}">{{ m.date | time }}</span></div>
-						<div class="user">{{ m.user }}</div>
-						<div class="changes">@(Changed lines:) <b>{{ m.changes }}x</b></div>
+						<div class="path"><span>+{{ m.changes }}</span>{{ m.date | format }}</div>
+						<div class="user">{{ m.date | time2 }}<span class="badge badge-gray badge-small b">backup</span><span>{{ m.user }}</span></div>
 					</div>
 				</div>
 			{{ end }}

@@ -18,14 +18,11 @@
 			</div>
 			{{ fi }}
 			{{ foreach m in value.files }}
-				<div class="changeitem" data-path="{{ m.filename }}">
+				<div class="changeitem exec" data-exec="codechanges/load" data-path="{{ m.path }}">
 					<div class="photo">{{ m.user | initials }}</div>
 					<div class="meta">
-						<div class="date"><span class="raw">{{ m.date | format('[date]') }}</span><i class="far fa-clock"></i><span class="time" data-time="{{ m.date | utc }}">{{ m.date | time }}</span></div>
-						<div class="user">{{ m.user }}</div>
-						<div class="path exec" data-exec="codechanges/load" data-path="{{ m.path }}"><span class="badge badge-blue badge-small">{{ m.type }}</span>{{ m.path }}</div>
-						{{ if m.changes }}<div class="fr changes">@(Changed lines:) <b>{{ m.changes }}x</b></div>{{ fi }}
-						{{ if m.time }}<div class="spent">@(Spent time:) <b>{{ m.time | timespent }}</b></div>{{ fi }}
+						<div class="path"><span>+{{ m.changes }}</span>{{ m.path }}</div>
+						<div class="user">{{ m.date | time2 }}<span class="badge badge-gray badge-small">{{ m.type }}</span><span title="@(Spent time:) {{ m.time | timespent }}">{{ m.user }}</span></div>
 					</div>
 				</div>
 			{{ end }}

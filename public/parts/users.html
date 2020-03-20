@@ -46,7 +46,7 @@
 
 		exports.create = function() {
 			SET('usersform.id', null);
-			DEFAULT('usersform.*');
+			DEFAULT('usersform.*__{isnew:true}');
 			SET('common.form', 'usersform');
 		};
 

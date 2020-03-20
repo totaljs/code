@@ -197,7 +197,7 @@ NEWSCHEMA('Files', function(schema) {
 		is && setTimeout2('combo', MAIN.save, 2000, null, 2);
 
 		MAIN.log($.user, 'files_save', project, filename, count, model.time, model.changes);
-		MAIN.change('save', $.user, project, model.path, count, model.time, model.changes);
+		MAIN.change('save' + (model.sync ? '_sync' : ''), $.user, project, model.path, count, model.time, model.changes);
 
 		// Tries to create a folder
 		F.path.mkdir(filename.substring(0, filename.length - name.length));

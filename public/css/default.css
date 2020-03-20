@@ -582,20 +582,25 @@ header .tools .external { color: #a2a286; }
 .td .listitem { border-top-color: #404040; }
 .td .listitem:hover { background-color: #303030; }
 
-.changeitem { padding: 8px 10px; border-bottom: 1px solid #E0E0E0; user-select: none; }
+.changeitem { padding: 8px 10px; border-bottom: 1px solid #E0E0E0; user-select: none; cursor: pointer; }
+.changeitem:hover { background-color: #F8F8F8; }
 .changeitem .changes { float: right; }
 .changeitem .changes b { color: #9a9a35; }
 .changeitem .spent b { color: #9a9a35; }
 .changeitem:first-child { border-top: 0; }
-.changeitem .photo { float: left; width: 31px; }
-.changeitem .meta { margin-left: 40px; font-size: 12px; }
-.changeitem .user { font-size: 11px; }
+.changeitem .photo { float: left; width: 28px; }
+.changeitem .photo .initials { border-radius: 2px; width: 28px; height: 28px; line-height: 28px; padding: 0; font-size: 12px; }
+.changeitem .meta { margin-left: 38px; font-size: 12px; }
+.changeitem .user { font-size: 11px; color: gray; }
+.changeitem .user .ta-time { float: right; }
 .changeitem .date { color: gray; }
 .changeitem .date .raw { font-weight: normal; float: right; }
 .changeitem i { margin-right: 5px; }
-.changeitem .path { margin-top: 5px; font-weight: bold; cursor: pointer; }
-.td .changeitem { border-bototm-color: #404040; }
+.changeitem .path { font-family: Menlo; font-size: 11px; font-weight: bold; }
+.changeitem .path span { float: right; font-family: Arial; font-size: 11px; color: #D9833B; }
+.td .changeitem { border-bottom-color: #404040; }
 .td .changeitem .path { color: white; }
+.td .changeitem:hover { background-color: #363636; }
 
 .changedfiles { background-color: #FFFFD5; padding: 10px 0; }
 .changedfiles > div:first-child { padding: 5px 10px; color: black; font-weight: bold; font-size: 12px; }
