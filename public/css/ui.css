@@ -138,6 +138,7 @@ div.CodeMirror span.CodeMirror-matchingbracket { border-bottom: 2px solid blue; 
 .ui-tree .fa-broadcast-tower { color: #61AFEE; margin-left: -2px; width: 18px !important; }
 .ui-tree .fa-check { color: #85ac82; }
 .ui-tree-hiddenfile { color: #B0B0B0 !important; }
+.ui-tree-hiddenfile div:after { content: '!'; color: red; margin-left: 5px; font-weight: bold; font-size: 14px; }
 .td .ui-tree-hiddenfile { color: #555555 !important; }
 .td .ui-tree .fa-js { color: #cd8029; }
 .td .ui-tree .fa-css3 { color: #5a85b1; }
@@ -826,7 +827,7 @@ li.ui-directory-current { background-color: rgba(0,0,0,0.02); font-weight: bold;
 .ui-dockable-title { border: 1px solid #E0E0E0; border-radius: 2px 2px 0 0; height: 20px; }
 .ui-dockable-control { float: left; width: 18px; text-align: center; line-height: 19px; cursor: pointer; font-size: 11px; color: gray; border-right: 1px solid #E0E0E0; }
 .ui-dockable-control:hover { background-color: #F9F9F9; }
-.ui-dockable-title span { cursor: default; line-height: 18px; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding: 0 5px; font-size: 10px; color: gray; }
+.ui-dockable-title span { cursor: default; line-height: 19px; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding: 0 5px; font-size: 10px; color: gray; }
 .ui-dockable-nomove .ui-dockable-title span { cursor: default; }
 .ui-dockable-title span i { margin-right: 5px; }
 .ui-dockable-body { border: 1px solid #E0E0E0; border-top: 0; border-radius: 0 0 2px 2px; overflow: hidden; }
