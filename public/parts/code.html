@@ -979,7 +979,7 @@
 							var dt = new Date();
 							dt.setSeconds(0);
 							dt.setMilliseconds(0);
-							editor.replaceSelection(dt.format(null));
+							editor.replaceSelection(dt.format('iso'));
 							break;
 						case 'password':
 							var pwd = GUID(15);

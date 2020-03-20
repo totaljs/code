@@ -15,7 +15,7 @@ NEWSCHEMA('Componentator', function(schema) {
 
 				var content = output.response;
 
-				if ($.query.minify) {
+				if ($.query.minify === 'true') {
 					switch ($.query.ext) {
 						case 'html':
 							content = U.minifyHTML(content);
