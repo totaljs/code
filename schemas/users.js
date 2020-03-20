@@ -48,7 +48,7 @@ NEWSCHEMA('Users', function(schema) {
 		if (item == null) {
 
 			model.id = model.id.slug().replace(/-/g, '');
-			model.password = model.password.sha256();
+			model.password = model.password.substring(0, 7) === 'sha256:' ? model.password.substring(7) : model.password.sha256();
 			model.created = NOW;
 			MAIN.users.push(model);
 

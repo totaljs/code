@@ -3,6 +3,7 @@ NEWSCHEMA('Accounts', function(schema) {
 	schema.define('email', 'Email', true);
 	schema.define('phone', 'Phone');
 	schema.define('token', 'String(100)');
+	schema.define('appname', 'String(50)');
 	schema.define('darkmode', Number);
 	schema.define('localsave', Boolean);
 	schema.define('password', 'String(30)');
@@ -17,6 +18,10 @@ NEWSCHEMA('Accounts', function(schema) {
 		data.localsave = user.localsave;
 		data.password = '*******';
 		data.token = user.sa ? PREF.token : '';
+
+		if (user.sa)
+			data.appname = CONF.name;
+
 		$.callback(data);
 	});
 
@@ -31,10 +36,14 @@ NEWSCHEMA('Accounts', function(schema) {
 		user.localsave = model.localsave;
 		user.autodarkmode = model.autodarkmode;
 
+		if (user.sa) {
+			CONF.name = model.appname;
+			PREF.set('name', model.appname);
+			PREF.set('token', model.token);
+		}
+
 		if (model.password && model.password.substring(0, 3) !== '***')
 			user.password = model.password.sha256();
-
-		user.sa && PREF.set('token', model.token);
 
 		MAIN.save(1);
 		$.success();

@@ -5,30 +5,35 @@
 		<div class="col-md-4 col-md-offset-4">
 			<div class="panel">
 				<label><i class="fa fa-cog"></i>@(Settings)</label>
-				<div class="body" data-scope="settings">
+				<div data-scope="settings">
 
-					<div data---="textbox__?.email__required:true;type:email" class="m">@(Email address)</div>
-					<div data---="textbox__?.phone__type:phone" class="m">@(Phone number)</div>
+					<div class="body">
+						<div data---="textbox__?.email__required:true;type:email" class="m">@(Email address)</div>
+						<div data---="textbox__?.phone__type:phone" class="m">@(Phone number)</div>
 
-					<div data-bind="user.sa__show" class="hidden m">
+						<div data---="radiobutton__?.darkmode__items:@(Light mode)|0,@(Dark mode)|1,@(Day/Night)|2;type:number;inline:1__0"></div>
+						<hr class="nmt" />
+
+						<div data---="checkbox__?.localsave">@(Always local storing files in Electron version)</div>
+						<div data---="checkbox__?.ispassword" class="b">@(Change password)</div>
+
+						<div bind="?.ispassword__show" class="hidden mt10">
+							<div data---="input__?.password__camouflage:•;required:true">@(New password)</div>
+						</div>
+					</div>
+
+					<div data-bind="user.sa__show" class="hidden m bg-smoke body">
 						<div data---="input__?.token__maxlength:100;camouflage:•;icon:check-circle green;placeholder:@(Enter a token)">@(Token for chat and code review)</div>
-						<div class="help">@(Total.js Team offers a professional code review. You can obtain a token on) <a href="https://platform.totaljs.com" target="_blank">https://platform.totaljs.com</a></div>
+						<div class="help m"><i class="far fa-life-ring"></i>@(Total.js Team offers a professional code review. You can obtain a token on) <a href="https://platform.totaljs.com" target="_blank">https://platform.totaljs.com</a></div>
+						<div data---="input__?.appname__maxlength:40;required:1">@(Code name)</div>
+						<div class="help"><i class="fa fa-desktop"></i>@(Code name will be displayed in the title)</div>
 					</div>
 
-					<div data---="radiobutton__?.darkmode__items:@(Light mode)|0,@(Dark mode)|1,@(Day/Night)|2;type:number;inline:1__0"></div>
-					<hr class="nmt" />
-
-					<div data---="checkbox__?.localsave">@(Always local storing files in Electron version)</div>
-					<div data---="checkbox__?.ispassword" class="b m">@(Change password)</div>
-
-					<div bind="?.ispassword__show" class="hidden m">
-						<div data---="input__?.password__camouflage:•;required:true">@(New password)</div>
-					</div>
-
-					<div data---="error__?.response"></div>
-
-					<div data---="validation__?">
-						<button name="submit" class="button b exec" data-exec="?/submit" disabled="disabled"><i class="fa fa-floppy-o"></i>@(Save)</button>
+					<div class="body npt">
+						<div data---="error__?.response"></div>
+						<div data---="validation__?">
+							<button name="submit" class="button b exec" data-exec="?/submit" disabled="disabled"><i class="fa fa-floppy-o"></i>@(Save)</button>
+						</div>
 					</div>
 
 				</div>

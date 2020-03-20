@@ -580,12 +580,12 @@
 			var tmp;
 
 			if (code.current.path.indexOf('/scripts/') !== -1)
-				items.push({ name: '@(Run script)', icon: 'play-circle red', value: 'run' });
+				items.push({ name: '@(Run script)', icon: 'play-circle red', value: 'run', classname: 'b', shortcut: (common.ismac ? 'CMD' : 'CTRL') + '+B' });
 
 			if (can) {
 
 				if ((/api/).test(code.current.ext))
-					items.push({ name: '@(Run)', icon: 'play-circle red', value: 'run' });
+					items.push({ name: '@(Run)', icon: 'play-circle red', value: 'run', classname: 'b', shortcut: (common.ismac ? 'CMD' : 'CTRL') + '+B' });
 
 				items.push({ name: '@(Copy)', icon: '!far fa-copy', command: 'copy' });
 				items.push({ name: '@(Copy with syntax)', icon: 'print', value: 'copysyntax' });
@@ -668,6 +668,13 @@
 				tools.push({ name: '@(Upper Case)', icon: 'font', value: 'upper' });
 				tools.push({ name: '@(Lower Case)', icon: 'font', value: 'lower' });
 				tools.push({ name: '@(Clean duplicated lines)', icon: 'broom', value: 'cleanduplicatedlines' });
+
+				if (sel.length === 1 && (/^[\.\w\/\:\-]*$/i).test(text)) {
+					tools.push('-');
+					tools.push({ name: '@(Resolve IP address)', icon: 'ethernet', value: 'resolve' });
+					tools.push({ name: '@(Ping domain)', icon: 'sitemap', value: 'ping' });
+				}
+
 				items.push('-');
 			}
 
@@ -748,6 +755,24 @@
 
 				if (value.value === 'insertconnection') {
 					editor.replaceSelection('postgresql://user:password@localhost:5432/database');
+					return;
+				}
+
+				if (value.value === 'resolve' || value.value === 'ping') {
+					text = text.replace(/http(s)?:\/\//g, '');
+					tmp = text.indexOf('/');
+					if (tmp !== -1)
+						text = text.substring(0, tmp);
+					SETTER('loading/show');
+					AJAX('POST /api/common/' + value.value, { host: text }, function(response) {
+						SETTER('loading/hide');
+						if (value.value === 'ping') {
+							var template = '<div class="output-response-header">{0}:</div><div class="output-response-header-value">{1}</div>';
+							PUSH('^output', '<div class="output-response"><div class="output-response-caption">PING: {0}</div>{1}</div>'.format(Thelpers.encode(text), template.format('Response', Thelpers.encode(response.value).replace(/\n/g, '<br />'))));
+							SET('common.form', 'output');
+						} else
+							editor.replaceSelection(sel[0].replace(text, response.value));
+					});
 					return;
 				}
 

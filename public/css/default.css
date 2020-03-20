@@ -21,6 +21,8 @@ html,body { margin: 0; padding: 0; overflow: hidden; }
 .ml5 { margin-left: 5px; }
 .mb10 { margin-bottom: 10px; }
 
+hr { border-color: #E0E0E0; }
+
 .recent { display: block; line-height: 32px; border-top: 1px solid #E0E0E0; padding: 0 10px; cursor: pointer; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; }
 .recent:hover { background-color: #F8F8F8; }
 .recent:first-child { border-top: 0; font-weight: bold; }
@@ -228,8 +230,8 @@ header .tools .selected { background-color: #F0F0F0; }
 header .tools .external { color: #a2a286; }
 .electron-header-border .tools a { height: 48px; }
 
-.panel { background-color: white; border-radius: 3px; border: 1px solid #E9E9E9; }
-.panel > label { display: block; padding: 10px 20px; border-bottom: 1px solid #E0E0E0; font-size: 14px; font-weight: bold; }
+.panel { background-color: white; border-radius: 3px; border: 1px solid #E0E0E0; }
+.panel > label { display: block; padding: 15px 20px; border-bottom: 1px solid #E0E0E0; font-size: 14px; font-weight: bold; }
 .panel > label i { margin-right: 5px; }
 .panel .body { padding: 20px; position: relative; }
 

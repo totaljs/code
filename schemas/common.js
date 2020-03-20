@@ -1,5 +1,26 @@
 const Path = require('path');
 const Exec = require('child_process').exec;
+const Dns = require('dns');
+
+NEWSCHEMA('Hosts', function(schema) {
+
+	schema.define('host', 'String(50)', true);
+
+	schema.addWorkflow('ping', function($) {
+		var host = $.model.host.replace(/'|"|\n/g, '');
+		Exec('ping -c 3 {0}'.format(host), $.done(true));
+	});
+
+	schema.addWorkflow('resolve', function($) {
+		Dns.resolve4($.model.host, function(e, addresses) {
+			if (e)
+				$.invalid(e);
+			else
+				$.success(addresses[0]);
+		});
+	});
+
+});
 
 NEWSCHEMA('Minify', function(schema) {
 	schema.define('body', String, true);

@@ -99,6 +99,7 @@
 		MAKE('common', function(common) {
 
 			common.id = GUID(5);
+			common.ismac = navigator.userAgent.indexOf('Mac') != -1;
 			common.version = '@{MAIN.version}';
 			common.idletime = 0;
 			common.plustimespent = 33;
