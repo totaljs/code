@@ -93,7 +93,13 @@ exports.install = function() {
 	ROUTE('-POST    /api/login/                           *Login             --> @save');
 	ROUTE('-POST    /api/sign/                            *Users             --> @create');
 
+	// Ping
+	ROUTE('GET      /ping/', ping, ['cors']);
 };
+
+function ping() {
+	this.json({ version: MAIN.version });
+}
 
 function redirect_logout() {
 	var self = this;
