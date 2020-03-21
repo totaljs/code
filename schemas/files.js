@@ -200,24 +200,26 @@ NEWSCHEMA('Files', function(schema) {
 		MAIN.change('save' + (model.sync ? '_sync' : ''), $.user, project, model.path, count, model.time, model.changes);
 
 		// Tries to create a folder
-		F.path.mkdir(filename.substring(0, filename.length - name.length));
 
-		if (project.backup)
-			MAIN.backup(user, filename, () => Fs.writeFile(filename, model.body, ERROR('files.write')), project, model.changes || 0);
-		else
-			Fs.writeFile(filename, model.body, ERROR('files.write'));
+		FUNC.mkdir(filename.substring(0, filename.length - name.length), function() {
 
-		MAIN.diff(project, filename, clean.diff);
+			if (project.backup)
+				MAIN.backup(user, filename, () => Fs.writeFile(filename, model.body, ERROR('files.write')), project, model.changes || 0);
+			else
+				Fs.writeFile(filename, model.body, ERROR('files.write'));
 
-		if (model.sync && project.pathsync) {
-			filename = Path.join(project.pathsync, model.path);
-			F.path.mkdir(filename.substring(0, filename.length - name.length));
-			Fs.writeFile(filename, model.body, ERROR('files.write'));
-			$.success('synchronized');
-		} else
-			$.success();
+			MAIN.diff(project, filename, clean.diff);
 
-		MAIN.changelog(user, $.id, model.path);
+			if (model.sync && project.pathsync) {
+				filename = Path.join(project.pathsync, model.path);
+				F.path.mkdir(filename.substring(0, filename.length - name.length));
+				Fs.writeFile(filename, model.body, ERROR('files.write'));
+				$.success('synchronized');
+			} else
+				$.success();
+
+			MAIN.changelog(user, $.id, model.path);
+		});
 	});
 
 	schema.addWorkflow('parts', function($) {
@@ -368,26 +370,27 @@ NEWSCHEMA('FilesRename', function(schema) {
 			return;
 		}
 
-		F.path.mkdir(Path.dirname(model.newpath));
+		FUNC.mkdir(Path.dirname(model.newpath), function() {
 
-		MAIN.log($.user, 'files_rename', project, model.oldpath, model.newpath);
-		MAIN.change('rename', $.user, project, model.oldpath + ' --> ' + model.newpath);
-		NOSQL($.id + '_parts').modify({ $path: 'val.replace(\'{0}\', \'{1}\')'.format(oldpath, newpath) }).search('path', oldpath, 'beg');
+			MAIN.log($.user, 'files_rename', project, model.oldpath, model.newpath);
+			MAIN.change('rename', $.user, project, model.oldpath + ' --> ' + model.newpath);
+			NOSQL($.id + '_parts').modify({ $path: 'val.replace(\'{0}\', \'{1}\')'.format(oldpath, newpath) }).search('path', oldpath, 'beg');
 
-		var length = project.todo ? project.todo.length : 0;
-		if (length) {
-			var is = false;
-			for (var i = 0; i < project.todo.length; i++) {
-				var item = project.todo[i];
-				if (item.path.substring(0, oldpath.length) === oldpath) {
-					item.path = item.path.replace(oldpath, newpath);
-					is = true;
+			var length = project.todo ? project.todo.length : 0;
+			if (length) {
+				var is = false;
+				for (var i = 0; i < project.todo.length; i++) {
+					var item = project.todo[i];
+					if (item.path.substring(0, oldpath.length) === oldpath) {
+						item.path = item.path.replace(oldpath, newpath);
+						is = true;
+					}
 				}
+				is && MAIN.save(2);
 			}
-			is && MAIN.save(2);
-		}
 
-		Fs.rename(model.oldpath, model.newpath, $.done());
+			Fs.rename(model.oldpath, model.newpath, $.done());
+		});
 	});
 });
 
@@ -476,11 +479,14 @@ NEWSCHEMA('FilesUpload', function(schema) {
 		}
 
 		$.files.wait(function(file, next) {
-			var filename = Path.join(project.path, model.path, file.filename);
-			MAIN.log($.user, 'files_upload', project, model.path + file.filename);
-			MAIN.change('upload', $.user, project, model.path + file.filename);
-			MAIN.changelog(user, $.id, model.path + file.filename);
-			file.move(filename, next);
+			var directory = Path.join(project.path, model.path);
+			FUNC.mkdir(directory, function() {
+				var filename = Path.join(directory, file.filename);
+				MAIN.log($.user, 'files_upload', project, model.path + file.filename);
+				MAIN.change('upload', $.user, project, model.path + file.filename);
+				MAIN.changelog(user, $.id, model.path + file.filename);
+				file.move(filename, next);
+			});
 		}, $.done());
 
 	});
@@ -528,27 +534,15 @@ NEWSCHEMA('FilesCreate', function(schema) {
 				// file not found
 				// we can continue
 				if (model.folder) {
-					F.path.mkdir(filename);
-					$.success();
+					FUNC.mkdir(filename, $.done());
 				} else {
 					var name = U.getName(filename);
-					F.path.mkdir(filename.substring(0, filename.length - name.length));
-
-					if (model.clone) {
-						Fs.copyFile(Path.join(project.path, model.clone), filename, function(err) {
-							if (err)
-								$.invalid(err);
-							else
-								$.success();
-						});
-					} else {
-						Fs.writeFile(filename, '', function(err) {
-							if (err)
-								$.invalid(err);
-							else
-								$.success();
-						});
-					}
+					FUNC.mkdir(filename.substring(0, filename.length - name.length), function() {
+						if (model.clone)
+							Fs.copyFile(Path.join(project.path, model.clone), filename, $.done());
+						else
+							Fs.writeFile(filename, '', $.done());
+					});
 				}
 			} else
 				$.invalid('path', model.path + ' already exists');

@@ -503,9 +503,10 @@ function files_modify(id) {
 	if (self.query.sync) {
 		var name = U.getName(self.query.path);
 		var target = Path.join(project.pathsync, self.query.path);
-		F.path.mkdir(target.substring(0, target.length - name.length));
-		Fs.createReadStream(filename).on('error', NOOP).pipe(Fs.createWriteStream(target).on('error', NOOP));
-		self.success('synchronized');
+		FUNC.mkdir(target.substring(0, target.length - name.length), function() {
+			Fs.createReadStream(filename).on('error', NOOP).pipe(Fs.createWriteStream(target).on('error', NOOP));
+			self.success('synchronized');
+		});
 	} else
 		self.success();
 }
@@ -580,8 +581,9 @@ function makebundle(id) {
 			else {
 				// Synchronize
 				if (self.xhr) {
-					F.path.mkdir(Path.join(project.pathsync, 'bundles'));
-					Fs.rename(filename, Path.join(project.pathsync, 'bundles/app.bundle'), self.done());
+					FUNC.mkdir(Path.join(project.pathsync, 'bundles'), function() {
+						Fs.rename(filename, Path.join(project.pathsync, 'bundles/app.bundle'), self.done());
+					});
 				} else
 					self.file('~' + filename, 'app.bundle', null, () => Fs.unlink(filename, NOOP));
 			}

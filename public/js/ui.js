@@ -1307,7 +1307,7 @@ COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 			if (ddfile)
 				index = +ddfile.attrd('index');
 
-			EXEC(config.upload, cache[index], e.originalEvent.dataTransfer.files);
+			EXEC(config.upload, cache[index], e.originalEvent);
 		});
 
 		self.event('focusout', 'input', function() {
@@ -11472,5 +11472,152 @@ COMPONENT('markdown', function (self) {
 		};
 
 	})();
+
+});
+
+COMPONENT('imageviewer', 'selector:.img-viewer;container:body;loading:1', function(self, config) {
+
+	var cls = 'ui-imageviewer';
+	var cls2 = '.' + cls;
+	var isclosed = false;
+	var isrendering = false;
+	var events = {};
+
+	events.keydown = function(e) {
+		switch (e.which) {
+			case 38:
+			case 37: // prev
+				self.find('button[name="prev"]').trigger('click');
+				break;
+			case 32: // next
+			case 39:
+			case 40:
+				self.find('button[name="next"]').trigger('click');
+				break;
+			case 27: // close
+				self.close();
+				break;
+		}
+	};
+
+	events.bind = function() {
+		if (!events.is) {
+			events.is = true;
+			$(W).on('keydown', events.keydown);
+		}
+	};
+
+	events.unbind = function() {
+		if (events.is) {
+			events.is = false;
+			$(W).off('keydown', events.keydown);
+		}
+	};
+
+	self.readonly();
+	self.blind();
+	self.singleton();
+	self.nocompile && self.nocompile();
+
+	self.make = function() {
+		self.aclass(cls + ' hidden');
+		self.append('<div class="{0}-header"><button name="close"><i class="fa fa-times"></i></button><div><b>Name</b><div class="help">Dimension</div></div></div><div class="{0}-loading hidden"><div></div></div><div class="{0}-viewer"><div class="{0}-cell"><img /></div></div>'.format(cls));
+		self.resize();
+
+		$(W).on('resize', self.resize);
+
+		$(document.body).on('click', config.selector, function() {
+			var el = $(this);
+			isclosed = false;
+			self.show(el);
+		});
+
+		self.event('click', 'button[name]', function() {
+			var t = this;
+			if (!t.disabled) {
+				if (t.name === 'close')
+					self.close();
+			}
+		});
+
+		self.find('img').on('load', function() {
+			isrendering = false;
+			self.loading(false);
+		});
+	};
+
+	self.close = function() {
+		isclosed = true;
+		isrendering = false;
+		$('html,body').rclass(cls + '-noscroll');
+		self.aclass('hidden');
+		events.unbind();
+	};
+
+	self.loading = function(is) {
+
+		if (!config.loading)
+			return;
+
+		var el = self.find(cls2 + '-loading');
+		if (is) {
+			el.rclass('hidden', is);
+			return;
+		}
+
+		setTimeout(function() {
+			el.aclass('hidden');
+		}, 500);
+	};
+
+	self.show = function(name, url) {
+
+		if (isrendering || !url)
+			return;
+
+		self.loading(true);
+		isrendering = true;
+		isclosed = false;
+
+		var image = new Image();
+		//image.crossOrigin = 'anonymous';
+		image.src = url;
+		image.onload = function() {
+
+			var img = this;
+			var ratio;
+
+			var mw = WW - 10;
+			var mh = WH - 85;
+
+			if (img.width > img.height)
+				ratio = mw / (img.width / 100);
+			else
+				ratio = mh / (img.height / 100);
+
+			if (ratio > 90)
+				ratio = 90;
+
+			if (isclosed)
+				return;
+
+			events.bind();
+			self.find('img').attr('src', img.src).attr('width', img.width / 100 * ratio).attr('height', img.height / 100 * ratio);
+			self.find('.help').html(img.width + 'x' + img.height + 'px');
+			self.find('b').html(name);
+			self.rclass('hidden');
+			$('html,body').aclass(cls + '-noscroll');
+		};
+	};
+
+	self.resize = function() {
+		var viewer = self.find(cls2 + '-viewer');
+		var loading = self.find(cls2 + '-loading');
+		var css = {};
+		css.height = WH - 45;
+		css.width = WW;
+		viewer.css(css);
+		loading.css(css);
+	};
 
 });

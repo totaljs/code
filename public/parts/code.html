@@ -1175,16 +1175,113 @@
 			}
 		};
 
-		exports.upload = function(node, files) {
+		var traverseupload = function(path, entry, callback) {
+
+			var directory = entry.createReader();
+			var files = [];
+			var dirs = [];
+
+			directory.readEntries(function(entries) {
+
+				for (var i = 0; i < entries.length; i++) {
+					var item = entries[i];
+					if (item.isDirectory)
+						dirs.push(item);
+					else
+						files.push(item);
+				}
+
+				var data = new FormData();
+				var is = false;
+
+				data.append('path', path);
+
+				files.wait(function(item, next, index) {
+					item.file(function(file) {
+						is = true;
+						data.append('file' + index, file);
+						next();
+					});
+				}, function() {
+
+					if (is) {
+						UPLOAD('POST /api/projects/{id}/upload/'.arg(code.data), data, function(response) {
+							dirs.wait(function(entry, next) {
+								traverseupload(path + entry.name + '/', entry, next);
+							}, callback);
+						});
+					} else {
+						dirs.wait(function(entry, next) {
+							traverseupload(path + entry.name + '/', entry, next);
+						}, callback);
+					}
+				});
+			});
+
+		};
+
+		exports.upload = function(node, e) {
+
+			var path = node ? FUNC.getPath(node.path) : '/';
+			var items;
+
+			SETTER('loading/show');
+
+			if ('WebkitAppearance' in document.documentElement.style) {
+				var arr = [];
+				var files = [];
+				var done = function() {
+					FUNC.success('Files have been uploaded successfully');
+					exports.load(code.data.id, true);
+					SETTER('loading/hide');
+				};
+
+				items = e.dataTransfer.items;
+
+				for (var i = 0; i < items.length; i++)
+					arr.push(items[i]);
+
+				arr.wait(function(item, next) {
+					var entry = item.webkitGetAsEntry();
+					if (entry.isDirectory)
+						traverseupload(path + entry.name + '/', entry, next);
+					else {
+						files.push(item);
+						next();
+					}
+				}, function() {
+
+					var data = new FormData();
+					var is = false;
+
+					data.append('path', path);
+
+					files.wait(function(item, next, index) {
+						item.file(function(file) {
+							is = true;
+							data.append('file' + index, file);
+							next();
+						});
+					}, function() {
+						if (is)
+							UPLOAD('POST /api/projects/{id}/upload/'.arg(code.data), data, done);
+						else
+							done();
+					});
+				});
+				return;
+			}
 
 			var data = new FormData();
 			var name = [];
 
-			data.append('path', node ? FUNC.getPath(node.path) : '/');
+			items = e.dataTransfer.files;
 
-			for (var i = 0, length = files.length; i < length; i++) {
-				name.push(files[i].name);
-				data.append('file' + i, files[i]);
+			data.append('path', path);
+
+			for (var i = 0; i < items.length; i++) {
+				name.push(items[i].name);
+				data.append('file' + i, items[i]);
 			}
 
 			UPLOAD('POST /api/projects/{id}/upload/'.arg(code.data), data, function(response) {
@@ -1194,6 +1291,7 @@
 					FUNC.success('Uploaded successfully: <b>' + name.join(', ') + '</b>');
 					exports.load(code.data.id, true);
 				}
+				SETTER('loading/hide');
 			});
 		};
 
@@ -1258,6 +1356,8 @@
 				case 'png':
 				case 'gif':
 				case 'file':
+					SETTER('imageviewer/show', item.path, '/api/download/{0}/?path={1}&preview=1'.format(code.data.id, encodeURIComponent(item.path)));
+					return;
 				case 'nosql-binary':
 					W.open('/api/download/{0}/?path={1}&preview=1'.format(code.data.id, encodeURIComponent(item.path)));
 					return;

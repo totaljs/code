@@ -74,7 +74,6 @@ MAIN.backup = function(user, path, callback, project, changescount) {
 
 	var name = U.getName(path);
 	var target = path.substring(0, path.length - name.length);
-
 	var dir;
 
 	if (F.isWindows)
@@ -83,18 +82,19 @@ MAIN.backup = function(user, path, callback, project, changescount) {
 		dir = Path.join(CONF.backup, target);
 
 	// Creates directories
-	F.path.mkdir(dir);
+	FUNC.mkdir(dir, function() {
 
-	var ext = U.getExtension(name);
-	var add = '-' + NOW.format('yyMMddHHmm') + '_' + user.id + '_' + (changescount || 0) + (project.branch ? ('_' + project.branch) : '');
+		var ext = U.getExtension(name);
+		var add = '-' + NOW.format('yyMMddHHmm') + '_' + user.id + '_' + (changescount || 0) + (project.branch ? ('_' + project.branch) : '');
 
-	if (ext)
-		name = name.replace('.' + ext, add + '.' + ext);
-	else
-		name += add;
+		if (ext)
+			name = name.replace('.' + ext, add + '.' + ext);
+		else
+			name += add;
 
-	// Copy files
-	Fs.createReadStream(path).on('error', callback).pipe(Fs.createWriteStream(Path.join(dir, name))).on('error', callback).on('finish', callback);
+		// Copy files
+		Fs.createReadStream(path).on('error', callback).pipe(Fs.createWriteStream(Path.join(dir, name))).on('error', callback).on('finish', callback);
+	});
 };
 
 MAIN.diffpath = function(project, path) {
@@ -109,7 +109,7 @@ MAIN.diffpath = function(project, path) {
 		dir = Path.join(CONF.backup, target);
 
 	// Creates directories
-	F.path.mkdir(dir);
+	PATH.mkdir(dir);
 
 	var ext = U.getExtension(name);
 	var add = '.diff';

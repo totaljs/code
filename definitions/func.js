@@ -35,6 +35,20 @@ FUNC.makeignore = function(arr) {
 	return new Function('P', code.join(''));
 };
 
+FUNC.mkdir = function(path, callback) {
+	var a = '/';
+	path = path.split('/').trim();
+	path.wait(function(p, next) {
+		a = a + p + '/';
+		Fs.lstat(a, function(err) {
+			if (err)
+				Fs.mkdir(a, next);
+			else
+				next();
+		});
+	}, callback);
+};
+
 FUNC.autodiscover = function(callback) {
 	Fs.readdir(CONF.autodiscover || '/www/www/', function(err, directories) {
 
