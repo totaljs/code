@@ -91,7 +91,7 @@ NEWSCHEMA('Chat', function(schema) {
 		for (var i = 0; i < MAIN.users.length; i++) {
 			var user = MAIN.users[i];
 			if ($.user.id !== user.id)
-				users.push({ id: user.id, name: user.name });
+				users.push({ id: user.id, name: user.name, online: user.online, position: user.position });
 		}
 
 		$.callback(users);

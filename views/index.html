@@ -212,6 +212,10 @@
 
 		ON('message', function(msg) {
 			switch (msg.TYPE) {
+				case 'online':
+				case 'offline':
+					$('.channel[data-value="{0}"]'.format(msg.id)).tclass('online', msg.TYPE === 'online');
+					break;
 				case 'chat':
 					if (W.chat)
 						EXEC('chat/insert', msg);

@@ -3,7 +3,7 @@
 		<nav class="users" data---="tabmenu__?.current__datasource:?.users;selector:.channel">
 			<script type="text/html">
 				{{ if id }}
-					<div class="channel" data-value="{{ id }}"><i class="fa fa-circle"></i>{{ name | initials }}</div>
+					<div class="channel{{ if online }} online{{ fi }}" data-value="{{ id }}"><i class="fa fa-circle"></i>{{ name | initials }}</div>
 				{{ else }}
 					<div class="channel" data-value=""><i class="fa fa-circle"></i><span class="initials" style="background-color:#505050"><span class="fa fa-comments"></span></span></div>
 				{{ fi }}

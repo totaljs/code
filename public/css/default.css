@@ -744,14 +744,15 @@ header .tools .external { color: #a2a286; }
 .chat .messages .message .initials { border-radius: 2px; width: 27px; height: 27px; line-height: 27px; padding: 0; }
 .chat .messages .message .body { line-height: 16px; margin: 3px 0 0; }
 
-.chat .messages .users { height: 50px; border-bottom: 1px solid #E0E0E0; padding: 10px 0 0 10px; background-color: #F0F0F0; }
-.chat .messages .users > div { position: relative; display: inline-block; }
+.chat .messages .users { height: 50px; border-bottom: 1px solid #E0E0E0; padding: 7px 0 0 10px; background-color: #F0F0F0; }
+.chat .messages .users > div { position: relative; display: inline-block; border-top: 3px solid transparent; }
 .chat .messages .users > div > span { opacity: 0.5; }
 .chat .messages .users .initials { border-radius: 0; width: 32px; height: 32px; line-height: 28px; padding: 0; cursor: pointer; border-bottom: 2px solid white; font-size: 14px; }
 .chat .messages .users > div > i { position: absolute; margin: -4px 0 0 26px; color: red; font-size: 10px; display: none; z-index: 3; }
 .chat .messages .users .unread i { display: block; }
 .chat .messages .users .selected > span { border-color: yellow; }
 .chat .messages .users .selected > span { opacity: 1; }
+.chat .messages .users .online { border-top-color: #83c83c; }
 
 .td .chat .messages .users { border-bottom-color: #404040; background-color: #303030; }
 .td .chat .messages .message { border-top-color: #404040; }

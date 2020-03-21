@@ -1,4 +1,6 @@
 const MSG_OPEN = { TYPE: 'open' };
+const MSG_ONLINE = { TYPE: 'online' };
+const MSG_OFFLINE = { TYPE: 'offline' };
 
 exports.install = function() {
 	WEBSOCKET('/', realtime, ['authorize'], 1024);
@@ -12,6 +14,8 @@ function realtime() {
 	self.on('open', function(client) {
 		client.user.online = true;
 		client.code = { id: client.query.id };
+		MSG_ONLINE.id = client.user.id;
+		self.send(MSG_ONLINE);
 	});
 
 	self.on('close', function(client) {
@@ -21,8 +25,11 @@ function realtime() {
 
 		// var offline = self.find(conn => conn.user === client.user && conn.id !== client.id) == null;
 		var offline = self.find(conn => conn.user === client.user) == null;
-		if (offline)
+		if (offline) {
 			client.user.online = false;
+			MSG_OFFLINE.id = client.user.id;
+			self.send(MSG_OFFLINE);
+		}
 	});
 
 	self.on('message', function(client, msg) {
@@ -33,7 +40,8 @@ function realtime() {
 		// {"TYPE":"syncdone"
 		// {"TYPE":"synccur"
 		// {"TYPE":"edit"
-
+		// {"TYPE":"online"
+		// {"TYPE":"offline"
 		if (msg[9] === 'e') {
 			msg = msg.parseJSON();
 			client.code.fileid && refresh_collaborators(self, client);
