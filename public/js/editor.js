@@ -1455,6 +1455,17 @@ WAIT('CodeMirror.defineMode', function() {
 		});
 	}
 
+	function tabscount(val) {
+		var count = 0;
+		for (var i = 0; i < val.length; i++) {
+			if (val.charAt(i) === '\t')
+				count++;
+			else
+				break;
+		}
+		return count;
+	}
+
 	function handleChar(cm, ch) {
 
 		delay && clearTimeout(delay);
@@ -1515,10 +1526,66 @@ WAIT('CodeMirror.defineMode', function() {
 				delay && clearTimeout(delay);
 				delay = setTimeout(function() {
 					cm.operation(function() {
+
+						var pos = cm.getCursor();
+						var cur = cm.getModeAt(pos);
+						var t = cur.helperType || cur.name;
+
+						if (right === '}' && t === 'javascript') {
+
+							var line = cm.getLine(pos.line);
+							var isfn = line.indexOf('function') !== -1;
+							var isif = line.indexOf('if (') !== -1;
+							if (isif || isfn) {
+
+								if (isfn && line.indexOf('(function') !== -1)
+									right += ');';
+
+								var linenext = (cm.getLine(pos.line + 1) || '').trim();
+								var cancel = true;
+								var tc = tabscount(line);
+
+								for (var i = 1; i < 30; i++) {
+
+									var l = cm.getLine(pos.line + i);
+									var lc = l.trim();
+									var sum = lc ? tabscount(l) : 0;
+
+									if ((!sum && lc) || (sum && sum <= tc)) {
+										cancel = false;
+										break;
+									}
+
+									var tabs = '';
+									for (var j = 0; j < tc; j++)
+										tabs += '\t';
+
+									if (!linenext) {
+										var posem = {};
+										posem.line = pos.line + 1;
+										posem.ch = 0;
+										cm.replaceRange(tabs + '\t', posem);
+									}
+
+									var posbk = { line: pos.line, ch: pos.ch };
+									pos.line += 2;
+									pos.ch = line - 1;
+									cm.replaceRange(tabs + right + '\n\n', pos);
+									posbk.line++;
+									posbk.ch = tabs.length + 1;
+									cm.setCursor(posbk);
+									break;
+								}
+
+								if (cancel)
+									return;
+							}
+						}
+
 						cm.replaceSelection(right, 'before');
 						cm.triggerElectric(right);
 					});
-				}, 250);
+				}, 350);
 			});
 		}
 	}
