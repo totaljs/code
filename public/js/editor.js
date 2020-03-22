@@ -1564,13 +1564,13 @@ WAIT('CodeMirror.defineMode', function() {
 										var posem = {};
 										posem.line = pos.line + 1;
 										posem.ch = 0;
-										cm.replaceRange(tabs + '\t', posem);
+										cm.replaceRange(tabs + '\t', posem, { ch: 1000, line: posem.line });
 									}
 
 									var posbk = { line: pos.line, ch: pos.ch };
 									pos.line += 2;
 									pos.ch = line - 1;
-									cm.replaceRange(tabs + right + '\n\n', pos);
+									cm.replaceRange(tabs + right + '\n' + (cm.getLine(pos.line + 2).trim() ? '\n' : ''), pos);
 									posbk.line++;
 									posbk.ch = tabs.length + 1;
 									cm.setCursor(posbk);
