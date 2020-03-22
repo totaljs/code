@@ -1585,7 +1585,6 @@ COMPONENT('part', 'hide:true', function(self, config) {
 			config.default && DEFAULT(config.default, true);
 
 		} else {
-			SETTER('loading', 'show');
 			setTimeout(function() {
 				self.import(config.url, function() {
 					if (!init) {
@@ -1594,7 +1593,6 @@ COMPONENT('part', 'hide:true', function(self, config) {
 					}
 					config.reload && EXEC(config.reload);
 					config.default && DEFAULT(config.default, true);
-					SETTER('loading', 'hide', 500);
 					setTimeout(function() {
 						self.rclass('invisible');
 					}, 500);
