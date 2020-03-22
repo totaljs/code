@@ -516,7 +516,7 @@ input:invalid { box-shadow: none; }
 .ui-infopanel { position: absolute; z-index: 71; background-color: white; border-radius: 3px; box-shadow: 2px 2px 5px rgba(0,0,0,0.05); border: 1px solid #E0E0E0; }
 .td .ui-infopanel { background-color: #151515; border: 1px solid #252525; }
 
-.ui-suggestion { position: absolute; opacity: 0; transition: 0.25s transform cubic-bezier(0.23, 1, 0.32, 1); left: -100; top: -100; z-index: 100; width: 240px; box-shadow: 0 1px 20px rgba(0,0,0,0.1); transform: translate(0px,20px); background-color: white; border-radius: 4px; border: 1px solid #E0E0E0; }
+.ui-suggestion { position: absolute; opacity: 0; transition: 0.25s transform cubic-bezier(0.23, 1, 0.32, 1); left: -100; top: -100; z-index: 130; width: 240px; box-shadow: 0 1px 20px rgba(0,0,0,0.1); transform: translate(0px,20px); background-color: white; border-radius: 4px; border: 1px solid #E0E0E0; }
 .ui-suggestion-search { height: 31px; background: white; border-radius: 4px 4px 0 0; border-bottom: 1px solid #E0E0E0; }
 .ui-suggestion-search input { width: 100%; background-color: white; border: 0; font-size: 12px; outline: 0; padding: 0; margin: 0; line-height: 16px; outline: 0; }
 .ui-suggestion-search > div { margin-left: 35px; padding: 5px 10px 0 0; }
@@ -632,7 +632,7 @@ li.ui-directory-current { background-color: rgba(0,0,0,0.02); font-weight: bold;
 
 .ui-clipboard { position: absolute; left: -100px; top: -100px; height: 1px; width: 1px; }
 
-.ui-faicons-container { position: absolute; z-index: 110; }
+.ui-faicons-container { position: absolute; z-index: 130; }
 .ui-faicons { border: 1px solid #E0E0E0; font-size: 14px; color: black; width: 340px; z-index: 10; background-color: white; box-shadow: 0 5px 10px rgba(0,0,0,0.08); border-radius: 3px; z-index: 80; overflow: hidden; }
 .ui-faicons-header { height: 50px; background-color: #fcfcfc; border-bottom: 1px solid #e0e0e0; padding: 10px 0 0; }
 .ui-faicons-nav { padding: 13px 5px 6px 5px; text-align: center; }
@@ -686,7 +686,7 @@ li.ui-directory-current { background-color: rgba(0,0,0,0.02); font-weight: bold;
 .td .ui-message button:active { border-color: #505050; }
 .td .ui-message-icon { background-color: #202020; }
 
-.ui-emoji-container { position: absolute; z-index: 110; }
+.ui-emoji-container { position: absolute; z-index: 130; }
 .ui-emoji { border: 1px solid #E0E0E0; font-size: 14px; color: black; width: 340px; z-index: 10; background-color: white; box-shadow: 0 5px 10px rgba(0,0,0,0.08); border-radius: 4px; z-index: 80; overflow: hidden; }
 .ui-emoji-header { height: 100px; background-color: #fcfcfc; border-bottom: 1px solid #e0e0e0; }
 .ui-emoji-nav { padding: 13px 5px 6px 5px; text-align: center; }
@@ -716,7 +716,7 @@ li.ui-directory-current { background-color: rgba(0,0,0,0.02); font-weight: bold;
 	.ui-emoji .ui-emoji-content span { min-width: 45px; }
 }
 
-.ui-colorpicker-container { position: absolute; z-index: 109; }
+.ui-colorpicker-container { position: absolute; z-index: 130; }
 .ui-colorpicker { border: 1px solid #E0E0E0; font-size: 14px; color: black; width: 240px; background-color: white; box-shadow: 0 5px 10px rgba(0,0,0,0.08); border-radius: 3px; overflow: hidden; margin: 0; padding: 7px 0 3px; }
 .ui-colorpicker-body { text-align: center; }
 .ui-colorpicker-body div:nth-child(1) { margin-bottom: 0; }
