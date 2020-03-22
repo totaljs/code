@@ -439,23 +439,23 @@ FUNC.rtrim = function(value) {
 };
 
 FUNC.wsopen = function(project, path, openid) {
-	SETTER('websocket', 'send', { TYPE: 'edit', projectid: project, fileid: path, openid: openid });
+	SETTER('websocket/send', { TYPE: 'edit', projectid: project, fileid: path, openid: openid });
 };
 
 FUNC.wssend = function(msg) {
-	SETTER('websocket', 'send', msg);
+	SETTER('websocket/send', msg);
 };
 
 FUNC.success = function(msg) {
-	SETTER('snackbar', 'success', msg);
+	SETTER('snackbar/success', msg);
 };
 
 FUNC.warning = function(msg) {
-	SETTER('snackbar', 'warning', msg instanceof Array ? msg[0].error : msg);
+	SETTER('snackbar/warning', msg instanceof Array ? msg[0].error : msg);
 };
 
 FUNC.info = function(msg) {
-	SETTER('snackbar', 'show', msg);
+	SETTER('snackbar/show', msg);
 };
 
 FUNC.editor_reload = function() {
@@ -463,14 +463,14 @@ FUNC.editor_reload = function() {
 	if (!window.code || !window.code.current)
 		return;
 
-	SETTER('loading', 'show');
+	SETTER('loading/show');
 	var tab = code.open.findItem('path', code.current.path);
 	if (tab) {
 		tab.loaded = false;
 		tab.doc = null;
 		tab.reload = true;
 		EXEC('code/open', tab);
-		SETTER('loading', 'hide', 500);
+		SETTER('loading/hide', 500);
 	}
 };
 

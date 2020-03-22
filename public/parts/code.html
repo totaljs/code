@@ -2057,6 +2057,9 @@
 			if (callback instanceof jQuery)
 				callback = null;
 
+			if (code.data && code.data.id !== id)
+				FUNC.wsopen(id, '');
+
 			AJAX('GET /api/projects/{0}/files/'.format(id), function(response) {
 
 				SETTER('loading/hide', 1000);
@@ -2110,7 +2113,6 @@
 				}
 
 				SET('document.title', common.name + ': ' + response.name);
-
 				SET('code.data', response);
 				SET('code.tree', tree);
 
