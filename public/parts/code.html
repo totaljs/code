@@ -1246,7 +1246,7 @@
 					if (entry.isDirectory)
 						traverseupload(path + entry.name + '/', entry, next);
 					else {
-						files.push(item);
+						files.push(entry);
 						next();
 					}
 				}, function() {
