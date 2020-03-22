@@ -1535,7 +1535,7 @@ WAIT('CodeMirror.defineMode', function() {
 
 							var line = cm.getLine(pos.line);
 							var isfn = line.indexOf('function') !== -1;
-							var isif = line.indexOf('if (') !== -1;
+							var isif = line.indexOf('if (') !== -1 || line.indexOf('else') !== -1 || line.indexOf('switch' !== -1);
 							if (isif || isfn) {
 
 								if (isfn && line.indexOf('(function') !== -1)
