@@ -90,12 +90,13 @@
 		user.owner = true;
 
 		FIND('editor', function(com) {
-			EDITOR = com;
+v			EDITOR = com;
 		});
 
+		/*
 		CONFIG('panel', function() {
 			return (/projectsform|usersform|snippetsform/).test(this.config.if) ? '' : (common.electron ? ('top:' + (common.ismac ? '50' : '28')) : 'top:49');
-		});
+		});*/
 
 		MAKE('common', function(common) {
 
@@ -117,7 +118,7 @@
 			if (common.electron && !common.ismac)
 				$('header').aclass('electron-header-border');
 
-			ENV('dockmargin', common.electron ? 72 : 50);
+			ENV('dockmargin', common.electron ? (common.ismac ? 72 : 50) : 50);
 
 			if (!common.recent)
 				common.recent = [];
