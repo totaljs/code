@@ -7,11 +7,11 @@
 		<script type="text/html">
 			{{ if value.group.length }}
 			<div class="changedfiles">
-				<div><i class="far fa-clock-o"></i>@(Last changed files)</div>
+				<div><i class="far fa-clock-o"></i>@(Last changes)</div>
 				<div>
 				{{ foreach m in value.group }}
 					<div class="changefile">
-						<div class="path exec" data-exec="codechanges/load" data-path="{{ m }}"><i class="far fa-file-alt"></i>{{ m }}</div>
+						<div class="path exec" data-exec="codechanges/load" data-path="{{ m.path }}">{{ m | changesicon }}{{ m.path }}</div>
 					</div>
 				{{ end }}
 				</div>
@@ -21,8 +21,8 @@
 				<div class="changeitem exec" data-exec="codechanges/load" data-path="{{ m.path }}">
 					<div class="photo">{{ m.user | initials }}</div>
 					<div class="meta">
-						<div class="path"><span>+{{ m.changes }}</span>{{ m.path }}</div>
-						<div class="user">{{ m.date | time2 }}<span class="badge badge-gray badge-small">{{ m.type }}</span><span title="@(Spent time:) {{ m.time | timespent }}">{{ m.user }}</span></div>
+						<div class="path">{{ if m.changes }}<span>+{{ m.changes }}</span>{{ fi }}{{ m.path }}</div>
+						<div class="user">{{ m.date | time2 }}{{ m | changesicon }}<span class="badge badge-gray badge-small">{{ m.type }}</span><span title="@(Spent time:) {{ m.time | timespent }}">{{ m.user }}</span></div>
 					</div>
 				</div>
 			{{ end }}
@@ -49,13 +49,25 @@
 				response.quicksort('date', false);
 
 				var changes = {};
+				var take = response.length > 50 ? 50 : response.length;
 
-				for (var i = 0; i < response.length; i++) {
+				for (var i = 0; i < take; i++) {
 					var item = response[i];
 					changes[item.path] = (changes[item.path] || 0) + 1;
 				}
 
-				SET('codechanges', { files: response, group: Object.keys(changes) });
+				var last = [];
+				var keys = Object.keys(changes);
+
+				for (var i = 0; i < take; i++) {
+					var item = response[i];
+					if (changes[item.path]) {
+						last.push(item);
+						delete changes[item.path];
+					}
+				}
+
+				SET('codechanges', { files: response, group: last.take(10) });
 			});
 		};
 
@@ -63,5 +75,20 @@
 			if (common.form === 'changes')
 				exports.refresh();
 		});
-	})
+	});
+
+	Thelpers.changesicon = function(item) {
+		var template = '<i class="fa fa-{0}"></i>';
+		switch (item.type) {
+			case 'remove':
+				return template.format('minus-circle red');
+			case 'upload':
+			case 'create':
+				return template.format('plus-circle green');
+			case 'save':
+				return template.format('floppy-o');
+		}
+		return '';
+	};
+
 </script>

@@ -17,7 +17,7 @@
 					<div>
 					{{ foreach m in value }}
 						<div class="changefile">
-							<div class="path exec" data-exec="code/editpath" data-path="{{ m.path }}"><i class="far fa-file-alt"></i>{{ m.path }}</div>
+							<div class="path exec" data-exec="code/editpath" data-path="{{ m.path }}"><span>+{{ m.changes }}</span><i class="far fa-file-alt"></i>{{ m.path }}</div>
 						</div>
 					{{ end }}
 					</div>
@@ -1712,7 +1712,7 @@
 				}
 
 				if (item.makedir) {
-					var name = path + item.name.substring(item.name.indexOf(':') + 1).trim();
+					var name = path + item.name.substring(item.name.indexOf(':') + 1).trim() + '/';
 					SET('code.statusform.name', '');
 					if (!code.statusform)
 						code.statusform = {};
@@ -2129,6 +2129,10 @@
 					var cache = {};
 					for (var i = 0; i < response.length; i++) {
 						var file = response[i];
+
+						if (code.data.files.indexOf(file.path) === -1)
+							continue;
+
 						if (!cache[file.path]) {
 							cache[file.path] = 1;
 							arr.push(file);
@@ -2137,6 +2141,9 @@
 							break;
 					}
 					SET('code.recent', arr);
+
+					EXEC('codechanges/refresh');
+					EXEC('codebackups/refresh');
 				});
 
 				AJAX('GET /api/projects/{0}/parts/'.format(id), 'code.componentsdb');
@@ -2486,64 +2493,64 @@
 						directory[code.tree[i].name] = 1;
 
 					if (!directory.bundles)
-						opt.items.push({ name: '<strong>@(Create):</strong> /bundles', icon: '!far fa-folder', value: 'bundles' });
+						opt.items.push({ name: '<strong>@(Create):</strong> /bundles', icon: '!far fa-folder', value: '/bundles/' });
 
 					if (!directory.components)
-						opt.items.push({ name: '<strong>@(Create):</strong> /components', icon: '!far fa-folder', value: 'components' });
+						opt.items.push({ name: '<strong>@(Create):</strong> /components', icon: '!far fa-folder', value: '/components/' });
 
 					if (!directory.controllers)
-						opt.items.push({ name: '<strong>@(Create):</strong> /controllers', icon: '!far fa-folder', value: 'controllers' });
+						opt.items.push({ name: '<strong>@(Create):</strong> /controllers', icon: '!far fa-folder', value: '/controllers/' });
 
 					if (!directory.databases)
-						opt.items.push({ name: '<strong>@(Create):</strong> /databases', icon: '!far fa-folder', value: 'databases' });
+						opt.items.push({ name: '<strong>@(Create):</strong> /databases', icon: '!far fa-folder', value: '/databases/' });
 
 					if (!directory.definitions)
-						opt.items.push({ name: '<strong>@(Create):</strong> /definitions', icon: '!far fa-folder', value: 'definitions' });
+						opt.items.push({ name: '<strong>@(Create):</strong> /definitions', icon: '!far fa-folder', value: '/definitions/' });
 
 					if (!directory.models)
-						opt.items.push({ name: '<strong>@(Create):</strong> /models', icon: '!far fa-folder', value: 'models' });
+						opt.items.push({ name: '<strong>@(Create):</strong> /models', icon: '!far fa-folder', value: '/models/' });
 
 					if (!directory.modules)
-						opt.items.push({ name: '<strong>@(Create):</strong> /modules', icon: '!far fa-folder', value: 'modules' });
+						opt.items.push({ name: '<strong>@(Create):</strong> /modules', icon: '!far fa-folder', value: '/modules/' });
 
 					if (!directory.operations)
-						opt.items.push({ name: '<strong>@(Create):</strong> /operations', icon: '!far fa-folder', value: 'operations' });
+						opt.items.push({ name: '<strong>@(Create):</strong> /operations', icon: '!far fa-folder', value: '/operations/' });
 
 					if (!directory.packages)
-						opt.items.push({ name: '<strong>@(Create):</strong> /packages', icon: '!far fa-folder', value: 'packages' });
+						opt.items.push({ name: '<strong>@(Create):</strong> /packages', icon: '!far fa-folder', value: '/packages/' });
 
 					if (!directory.plugins)
-						opt.items.push({ name: '<strong>@(Create):</strong> /plugins', icon: '!far fa-folder', value: 'plugins' });
+						opt.items.push({ name: '<strong>@(Create):</strong> /plugins', icon: '!far fa-folder', value: '/plugins/' });
 
 					if (!directory.public)
-						opt.items.push({ name: '<strong>@(Create):</strong> /public', icon: '!far fa-folder', value: 'public' });
+						opt.items.push({ name: '<strong>@(Create):</strong> /public', icon: '!far fa-folder', value: '/public/' });
 
 					if (!directory.resources)
-						opt.items.push({ name: '<strong>@(Create):</strong> /resources', icon: '!far fa-folder', value: 'resources' });
+						opt.items.push({ name: '<strong>@(Create):</strong> /resources', icon: '!far fa-folder', value: '/resources/' });
 
 					if (!directory.schemas)
-						opt.items.push({ name: '<strong>@(Create):</strong> /schemas', icon: '!far fa-folder', value: 'schemas' });
+						opt.items.push({ name: '<strong>@(Create):</strong> /schemas', icon: '!far fa-folder', value: '/schemas/' });
 
 					if (!directory.scripts)
-						opt.items.push({ name: '<strong>@(Create):</strong> /scripts', icon: '!far fa-folder', value: 'scripts' });
+						opt.items.push({ name: '<strong>@(Create):</strong> /scripts', icon: '!far fa-folder', value: '/scripts/' });
 
 					if (!directory.tasks)
-						opt.items.push({ name: '<strong>@(Create):</strong> /tasks', icon: '!far fa-folder', value: 'tasks' });
+						opt.items.push({ name: '<strong>@(Create):</strong> /tasks', icon: '!far fa-folder', value: '/tasks/' });
 
 					if (!directory.themes)
-						opt.items.push({ name: '<strong>@(Create):</strong> /themes', icon: '!far fa-folder', value: 'themes' });
+						opt.items.push({ name: '<strong>@(Create):</strong> /themes', icon: '!far fa-folder', value: '/themes/' });
 
 					if (!directory.threads)
-						opt.items.push({ name: '<strong>@(Create):</strong> /threads', icon: '!far fa-folder', value: 'threads' });
+						opt.items.push({ name: '<strong>@(Create):</strong> /threads', icon: '!far fa-folder', value: '/threads/' });
 
 					if (!directory.views)
-						opt.items.push({ name: '<strong>@(Create):</strong> /views', icon: '!far fa-folder', value: 'views' });
+						opt.items.push({ name: '<strong>@(Create):</strong> /views', icon: '!far fa-folder', value: '/views/' });
 
 					if (!directory.updates)
-						opt.items.push({ name: '<strong>@(Create):</strong> /updates', icon: '!far fa-folder', value: 'updates' });
+						opt.items.push({ name: '<strong>@(Create):</strong> /updates', icon: '!far fa-folder', value: '/updates/' });
 
 					if (!directory.workers)
-						opt.items.push({ name: '<strong>@(Create):</strong> /workers', icon: '!far fa-folder', value: 'workers' });
+						opt.items.push({ name: '<strong>@(Create):</strong> /workers', icon: '!far fa-folder', value: '/workers/' });
 
 					opt.callback = function(item) {
 						exports.statusform('directory', item.value);
@@ -2567,43 +2574,43 @@
 						files[code.tree[i].name] = 1;
 
 					if (!files['.bundleignore'])
-						opt.items.push({ name: '<strong>@(Create):</strong> /.bundleignore', icon: '!far fa-file-text-o', value: '.bundleignore' });
+						opt.items.push({ name: '<strong>@(Create):</strong> /.bundleignore', icon: '!far fa-file-text-o', value: '/.bundleignore' });
 
 					if (!files['.gitignore'])
-						opt.items.push({ name: '<strong>@(Create):</strong> /.gitignore', icon: '!far fa-file-text-o', value: '.gitignore' });
+						opt.items.push({ name: '<strong>@(Create):</strong> /.gitignore', icon: '!far fa-file-text-o', value: '/.gitignore' });
 
 					if (!files.config)
-						opt.items.push({ name: '<strong>@(Create):</strong> /config', icon: '!far fa-file-text-o', value: 'config' });
+						opt.items.push({ name: '<strong>@(Create):</strong> /config', icon: '!far fa-file-text-o', value: '/config' });
 
 					if (!files['config-release'])
-						opt.items.push({ name: '<strong>@(Create):</strong> /config-release', icon: '!far fa-file-text-o', value: 'config-release' });
+						opt.items.push({ name: '<strong>@(Create):</strong> /config-release', icon: '!far fa-file-text-o', value: '/config-release' });
 
 					if (!files['config-debug'])
-						opt.items.push({ name: '<strong>@(Create):</strong> /config-debug', icon: '!far fa-file-text-o', value: 'config-debug' });
+						opt.items.push({ name: '<strong>@(Create):</strong> /config-debug', icon: '!far fa-file-text-o', value: '/config-debug' });
 
 					if (!files['license.txt'])
-						opt.items.push({ name: '<strong>@(Create):</strong> /license.txt', icon: '!far fa-file-text-o', value: 'license.txt' });
+						opt.items.push({ name: '<strong>@(Create):</strong> /license.txt', icon: '!far fa-file-text-o', value: '/license.txt' });
 
 					if (!files['package.json'])
-						opt.items.push({ name: '<strong>@(Create):</strong> /package.json', icon: '!far fa-file-text-o', value: 'package.json' });
+						opt.items.push({ name: '<strong>@(Create):</strong> /package.json', icon: '!far fa-file-text-o', value: '/package.json' });
 
 					if (!files['openplatform.json'])
-						opt.items.push({ name: '<strong>@(Create):</strong> /openplatform.json', icon: '!far fa-file-text-o', value: 'openplatform.json' });
+						opt.items.push({ name: '<strong>@(Create):</strong> /openplatform.json', icon: '!far fa-file-text-o', value: '/openplatform.json' });
 
 					if (!files['readme.api'])
-						opt.items.push({ name: '<strong>@(Create):</strong> /readme.api', icon: '!far fa-file-text-o', value: 'readme.api' });
+						opt.items.push({ name: '<strong>@(Create):</strong> /readme.api', icon: '!far fa-file-text-o', value: '/readme.api' });
 
 					if (!files['readme.md'])
-						opt.items.push({ name: '<strong>@(Create):</strong> /readme.md', icon: '!far fa-file-text-o', value: 'readme.md' });
+						opt.items.push({ name: '<strong>@(Create):</strong> /readme.md', icon: '!far fa-file-text-o', value: '/readme.md' });
 
 					if (!files['readme.todo'])
-						opt.items.push({ name: '<strong>@(Create):</strong> /readme.todo', icon: '!far fa-file-text-o', value: 'readme.todo' });
+						opt.items.push({ name: '<strong>@(Create):</strong> /readme.todo', icon: '!far fa-file-text-o', value: '/readme.todo' });
 
 					if (!files['sitemap'])
-						opt.items.push({ name: '<strong>@(Create):</strong> /sitemap', icon: '!far fa-file-text-o', value: 'sitemap' });
+						opt.items.push({ name: '<strong>@(Create):</strong> /sitemap', icon: '!far fa-file-text-o', value: '/sitemap' });
 
 					if (!files['versions'])
-						opt.items.push({ name: '<strong>@(Create):</strong> /versions', icon: '!far fa-file-text-o', value: 'versions' });
+						opt.items.push({ name: '<strong>@(Create):</strong> /versions', icon: '!far fa-file-text-o', value: '/versions' });
 
 					opt.callback = function(item) {
 						exports.statusform('file', item.value);
