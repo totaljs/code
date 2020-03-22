@@ -993,3 +993,7 @@ li.ui-directory-current { background-color: rgba(0,0,0,0.02); font-weight: bold;
 .ui-dark .ui-imageviewer-header b { color: white; }
 .ui-dark .ui-imageviewer-header { background-color: #202020; border-bottom-color: #404040; }
 .ui-dark .ui-imageviewer-header button:hover { background-color: #404040; border-left-color: #404040; }
+
+.electron.jc-mac .ui-imageviewer-header { height: 64px; }
+.electron.jc-mac .ui-imageviewer-header > div { margin: 26px 0 0 10px; }
+.electron.jc-mac .ui-imageviewer-header button { width: 55px; height: 63px; font-size: 18px; }
