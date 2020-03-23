@@ -39,7 +39,6 @@ COMPONENT('inputsearch', 'focus:true', function(self, config, cls) {
 
 	self.placeholder = function() {
 		var val = input.val();
-
 		if (val) {
 			if (isplaceholder) {
 				icon.rclass('fa-search').aclass('fa-times');
@@ -59,6 +58,10 @@ COMPONENT('inputsearch', 'focus:true', function(self, config, cls) {
 	};
 
 	self.getter2 = function() {
+		self.placeholder();
+	};
+
+	self.setter2 = function() {
 		self.placeholder();
 	};
 
