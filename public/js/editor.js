@@ -1734,6 +1734,7 @@ SNIPPETS.push({ type: 'css', search: 'vertical align top', text: 'vertical-align
 SNIPPETS.push({ type: 'css', search: 'vertical align middle', text: 'vertical-align: <b>middle</b>', code: 'vertical-align: middle;', ch: 24 });
 SNIPPETS.push({ type: 'css', search: 'vertical align bottom', text: 'vertical-align: <b>bottom</b>', code: 'vertical-align: bottom;', ch: 24 });
 SNIPPETS.push({ type: 'css', search: 'background color', text: '<b>background-color</b>', code: 'background-color: ;', ch: 19 });
+SNIPPETS.push({ type: 'css', search: 'background image picture url', text: '<b>background-image</b>', code: 'background: url() no-repeat 0 0;', ch: 17 });
 SNIPPETS.push({ type: 'css', search: 'overflow hidden', text: 'overflow: <b>hidden</b>', code: 'overflow: hidden;', ch: 64 });
 SNIPPETS.push({ type: 'css', search: 'hellip overflow', text: '<b>hellip</b>', code: 'text-overflow: ellipsis; white-space: nowrap; overflow: hidden;', ch: 64 });
 SNIPPETS.push({ type: 'css', search: 'text align center', text: 'text-align: <b>center</b>', code: 'text-align: center;', ch: 20 });
@@ -1741,7 +1742,7 @@ SNIPPETS.push({ type: 'css', search: 'text align right', text: 'text-align: <b>r
 SNIPPETS.push({ type: 'css', search: 'text align left', text: 'text-align: <b>left</b>', code: 'text-align: left;', ch: 18 });
 SNIPPETS.push({ type: 'css', search: 'text align justify', text: 'text-align: <b>justify</b>', code: 'text-align: justify;', ch: 21 });
 SNIPPETS.push({ type: 'css', search: 'text decoration none', text: '<b>text-decoration: none</b>', code: 'text-decoration: none;', ch: 22 });
-SNIPPETS.push({ type: 'css', search: 'text decoration underline', text: '<b>text-decoration: none</b>', code: 'text-decoration: underline;', ch: 27 });
+SNIPPETS.push({ type: 'css', search: 'text decoration underline', text: '<b>text-decoration: underline</b>', code: 'text-decoration: underline;', ch: 27 });
 SNIPPETS.push({ type: 'css', search: 'line height', text: '<b>line</b>-height', code: 'line-height: px;', ch: 14 });
 SNIPPETS.push({ type: 'css', search: 'linear gradient', text: '<b>linear</b>-gradient', code: 'background: linear-gradient(0deg,#F0F0F0,#D0D0D0);', ch: 34 });
 SNIPPETS.push({ type: 'css', search: 'appearance', text: '<b>appearance</b>', code: 'appearance: ;', ch: 13 });
@@ -1847,7 +1848,21 @@ FUNC.snippets = function(type, text, tabs, line, words, chplus) {
 				continue;
 			if (snip.search.indexOf(text) !== -1 && snip.search !== text) {
 				cache[snip.code] = 1;
-				arr.push({ displayText: snip.html || snip.text, text: snip.code, ch: snip.code.length + tabs.length + chplus, line: line });
+				arr.push({ displayText: snip.html || snip.text, text: snip.code, ch: snip.code.length + tabs.length + chplus, line: line, priority: -100 });
+			}
+		}
+	}
+
+	var count = 0;
+
+	for (var i = 0; i < code.data.files.length; i++) {
+		var file = code.data.files[i];
+		if (file.substring(0, 8) === '/public/') {
+			var path = file.substring(7);
+			if (path.indexOf(text) !== -1) {
+				if (count++ > 10)
+					break;
+				arr.push({ displayText: '<i class="far fa-file mr5"></i>' + path, text: path, ch: path.length + tabs.length + chplus, line: line });
 			}
 		}
 	}

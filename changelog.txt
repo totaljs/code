@@ -7,6 +7,7 @@
 - added ping a domain
 - added IP resolver from a domain
 - added drag&drop directory with sub-directories (supported only in WebKit)
+- files in `public` directory are part of auto-complete
 - improved Font-Awesome icons
 - fixed local synchronization of files
 - fixed a problem with passwords when importing of users

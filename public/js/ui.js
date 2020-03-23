@@ -780,6 +780,7 @@ COMPONENT('editor', function(self, config) {
 
 			if (a.priority && !b.priority)
 				return -1;
+
 			if (!a.priority && b.priority)
 				return 1;
 
