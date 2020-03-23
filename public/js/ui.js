@@ -1381,6 +1381,15 @@ COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 
 	};
 
+	var resize = function() {
+		var h = self.closest('.ui-viewbox-body').height();
+		self.css('min-height', h - 80);
+	};
+
+	self.resize = function() {
+		setTimeout2(self.ID + 'resize', resize, 500);
+	};
+
 	self.select = function(index, noeval) {
 		var cls = config.selected;
 		var el = self.find('[data-index="{0}"]'.format(index));
@@ -11348,9 +11357,8 @@ COMPONENT('markdown', function (self) {
 
 });
 
-COMPONENT('imageviewer', 'selector:.img-viewer;container:body;loading:1', function(self, config) {
+COMPONENT('imageviewer', 'selector:.img-viewer;container:body;loading:1', function(self, config, cls) {
 
-	var cls = 'ui-imageviewer';
 	var cls2 = '.' + cls;
 	var isclosed = false;
 	var isrendering = false;
@@ -11460,22 +11468,44 @@ COMPONENT('imageviewer', 'selector:.img-viewer;container:body;loading:1', functi
 			var img = this;
 			var ratio;
 
-			var mw = WW - 10;
-			var mh = WH - 85;
+			var w = image.width;
+			var h = image.height;
+			var tw = WW - 80;
+			var th = WH - 140;
 
-			if (img.width > img.height)
-				ratio = mw / (img.width / 100);
-			else
-				ratio = mh / (img.height / 100);
+			if (w > h) {
+				ratio = w / h;
 
-			if (ratio > 90)
-				ratio = 90;
+				if (w > tw)
+					w = tw;
+
+				h = w / ratio >> 0;
+
+				if (h > th) {
+					h = th;
+					w = h * ratio >> 0;
+				}
+
+			} else {
+
+				ratio = h / w;
+
+				if (h > th)
+					h = th;
+
+				w = h / ratio >> 0;
+
+				if (w > tw) {
+					w = tw;
+					h = w * ratio >> 0;
+				}
+			}
 
 			if (isclosed)
 				return;
 
 			events.bind();
-			self.find('img').attr('src', img.src).attr('width', img.width / 100 * ratio).attr('height', img.height / 100 * ratio);
+			self.find('img').attr('src', img.src).attr('width', w).attr('height', h);
 			self.find('.help').html(img.width + 'x' + img.height + 'px');
 			self.find('b').html(name);
 			self.rclass('hidden');

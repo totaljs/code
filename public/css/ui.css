@@ -36,7 +36,7 @@ button { outline: 0; }
 .cm-variable-B { background-color: rgba(228,228,228,.35); color: #2183e8; font-weight: bold; }
 .cm-variable-API { background-color: rgba(104,178,91,.3); color: black; font-weight: bold; }
 .cm-changed-line { background-color: rgb(253,252,244); }
-.td .cm-changed-line { background-color: rgb(49,49,49); }
+.td .cm-changed-line { background-color: rgb(47,47,47); }
 .td .cm-variable-R { background-color: rgba(231,241,151,.16); color: #dcf339; }
 .cm-trailingspace { background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAACCAYAAAB/qH1jAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH3QUXCToH00Y1UgAAACFJREFUCNdjPMDBUc/AwNDAAAFMTAwMDA0OP34wQgX/AQBYgwYEx4f9lQAAAABJRU5ErkJggg==); background-position: bottom left; background-repeat: repeat-x; }
 .CodeMirror-matchingtag { background-color: rgba(200,200,200,0.6); }
@@ -983,17 +983,18 @@ li.ui-directory-current { background-color: rgba(0,0,0,0.02); font-weight: bold;
 .ui-imageviewer-loading { position: absolute; left: 0; top: 45px; right: 0; bottom: 0; background-color: rgba(255,255,255,0.9); z-index: 2; }
 .ui-imageviewer-loading > div { background: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzgiIGhlaWdodD0iMzgiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PGxpbmVhckdyYWRpZW50IHgxPSI4LjA0MiUiIHkxPSIwJSIgeDI9IjY1LjY4MiUiIHkyPSIyMy44NjUlIiBpZD0iYSI+PHN0b3Agc3RvcC1jb2xvcj0iI0EwQTBBMCIgc3RvcC1vcGFjaXR5PSIwIiBvZmZzZXQ9IjAlIi8+PHN0b3Agc3RvcC1jb2xvcj0iI0EwQTBBMCIgc3RvcC1vcGFjaXR5PSIuNjMxIiBvZmZzZXQ9IjYzLjE0NiUiLz48c3RvcCBzdG9wLWNvbG9yPSIjQTBBMEEwIiBvZmZzZXQ9IjEwMCUiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgxIDEpIiBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxwYXRoIGQ9Ik0zNiAxOGMwLTkuOTQtOC4wNi0xOC0xOC0xOCIgc3Ryb2tlPSJ1cmwoI2EpIiBzdHJva2Utd2lkdGg9IjIiPjxhbmltYXRlVHJhbnNmb3JtIGF0dHJpYnV0ZU5hbWU9InRyYW5zZm9ybSIgdHlwZT0icm90YXRlIiBmcm9tPSIwIDE4IDE4IiB0bz0iMzYwIDE4IDE4IiBkdXI9IjAuOXMiIHJlcGVhdENvdW50PSJpbmRlZmluaXRlIi8+PC9wYXRoPjxjaXJjbGUgZmlsbD0iI0EwQTBBMCIgY3g9IjM2IiBjeT0iMTgiIHI9IjEiPjxhbmltYXRlVHJhbnNmb3JtIGF0dHJpYnV0ZU5hbWU9InRyYW5zZm9ybSIgdHlwZT0icm90YXRlIiBmcm9tPSIwIDE4IDE4IiB0bz0iMzYwIDE4IDE4IiBkdXI9IjAuOXMiIHJlcGVhdENvdW50PSJpbmRlZmluaXRlIi8+PC9jaXJjbGU+PC9nPjwvc3ZnPg==) no-repeat 50% 50%; background-size: 80px 80px; width: 80px; height: 80px; position: absolute; left: 50%; top: 50%; margin: -40px 0 0 -40px; }
 .ui-imageviewer-header { height: 45px; border-bottom: 1px solid #E0E0E0; background-color: white; }
-.ui-imageviewer-header > div { line-height: 16px; float: left; margin: 7px 0 0 15px; }
+.ui-imageviewer-header > div { line-height: 19px; float: left; margin: 5px 0 0 15px; }
 .ui-imageviewer-header .help { margin-top: 0; }
 .ui-imageviewer-header button { float: right; font-size: 16px; background-color: transparent; border: 0; margin: 0; width: 45px; height: 44px; border-left: 1px solid #E0E0E0; cursor: pointer; color: red; }
 .ui-imageviewer-header button:hover { background-color: #F8F8F8; }
 .ui-imageviewer-viewer { display: table; width: 100%; }
 .ui-imageviewer-cell { display: table-cell; width: 100%; height: 100%; vertical-align: middle; text-align: center; }
-.ui-dark .ui-imageviewer, .ui-dark .ui-imageviewer-loading { background-color: rgba(0,0,0,0.9); }
-.ui-dark .ui-imageviewer-header b { color: white; }
-.ui-dark .ui-imageviewer-header { background-color: #202020; border-bottom-color: #404040; }
-.ui-dark .ui-imageviewer-header button:hover { background-color: #404040; border-left-color: #404040; }
+.td .ui-imageviewer, .td .ui-imageviewer-loading { background-color: rgba(0,0,0,0.9); }
+.td .ui-imageviewer-header b { color: white; }
+.td .ui-imageviewer-header { background-color: #202020; border-bottom-color: #404040; }
+.td .ui-imageviewer-header button { border-left-color: #404040; }
+.td .ui-imageviewer-header button:hover { background-color: #353535; }
 
 .electron.jc-mac .ui-imageviewer-header { height: 64px; }
-.electron.jc-mac .ui-imageviewer-header > div { margin: 26px 0 0 10px; }
-.electron.jc-mac .ui-imageviewer-header button { width: 55px; height: 63px; font-size: 18px; }
+.electron.jc-mac .ui-imageviewer-header > div { margin: 23px 0 0 10px; }
+.electron.jc-mac .ui-imageviewer-header button { width: 60px; height: 63px; font-size: 18px; }
