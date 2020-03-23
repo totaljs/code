@@ -1740,7 +1740,8 @@ SNIPPETS.push({ type: 'css', search: 'text align center', text: 'text-align: <b>
 SNIPPETS.push({ type: 'css', search: 'text align right', text: 'text-align: <b>right</b>', code: 'text-align: right;', ch: 19 });
 SNIPPETS.push({ type: 'css', search: 'text align left', text: 'text-align: <b>left</b>', code: 'text-align: left;', ch: 18 });
 SNIPPETS.push({ type: 'css', search: 'text align justify', text: 'text-align: <b>justify</b>', code: 'text-align: justify;', ch: 21 });
-SNIPPETS.push({ type: 'css', search: 'decoration underline none', text: '<b>text-decoration: none</b>', code: 'text-decoration: none;', ch: 22 });
+SNIPPETS.push({ type: 'css', search: 'text decoration none', text: '<b>text-decoration: none</b>', code: 'text-decoration: none;', ch: 22 });
+SNIPPETS.push({ type: 'css', search: 'text decoration underline', text: '<b>text-decoration: none</b>', code: 'text-decoration: underline;', ch: 27 });
 SNIPPETS.push({ type: 'css', search: 'line height', text: '<b>line</b>-height', code: 'line-height: px;', ch: 14 });
 SNIPPETS.push({ type: 'css', search: 'linear gradient', text: '<b>linear</b>-gradient', code: 'background: linear-gradient(0deg,#F0F0F0,#D0D0D0);', ch: 34 });
 SNIPPETS.push({ type: 'css', search: 'appearance', text: '<b>appearance</b>', code: 'appearance: ;', ch: 13 });
