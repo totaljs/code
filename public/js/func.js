@@ -24,12 +24,12 @@ FUNC.wrapbracket = function(cm, pos) {
 
 	if (line.indexOf('= function') !== -1)
 		plus = ';';
-	else if (line.indexOf(', function') !== -1)
+	else if (line.indexOf(', function') !== -1 || line.indexOf('(function') !== -1)
 		plus = ');';
 
 	if (pos.line + 1 >= lines) {
 		// end of value
-		cm.replaceRange('\n' + ''.padLeft(tabs + 1, '\t') + '\n}' + plus, pos, null, '+input');
+		cm.replaceRange('\n' + ''.padLeft(tabs + 1, '\t') + '\n' + ''.padLeft(tabs, '\t') + '}' + plus, pos, null, '+input');
 		pos.line++;
 		pos.ch = tabs + 1;
 		cm.setCursor(pos);
@@ -42,24 +42,40 @@ FUNC.wrapbracket = function(cm, pos) {
 		var l = cm.getLine(i);
 		var tc = FUNC.tabscount(l);
 
-		if (tc === tabs || !tc) {
+		if (tc <= tabs) {
 
 			pos.line = i;
 			pos.ch = tc;
 
+
 			if (l) {
-				if (tc === tabs || !tc) {
+				if (tc <= tabs) {
 					nl = cm.getLine(i + 1);
-					cm.replaceRange((l.indexOf('else') === -1 ? (''.padLeft(tabs + 1, '\t') + '\n' + ''.padLeft(tabs, '\t') + '}' + plus + '\n' + (nl ? '\n' : '')) : ('} ')), pos, null, '+input');
+
+					var an = (!tc && tabs) || (!tc && !tabs) ? ('\n' + ''.padLeft(tabs, '\t')) : '';
+					pos.ch--;
+					cm.replaceRange((l.indexOf('else') === -1 ? (''.padLeft(tabs + (an ? 1 : 0), '\t') + an + '}' + plus + '\n' + (nl || (l && l.indexOf('}') === -1) ? '\n' : '')) : ('} ')), pos, null, '+input');
+
+					if (!an)
+						pos.line--;
+
 				} else {
 					cm.replaceRange('}\n', pos, null, '+input');
 				}
+
 			} else {
+
 				if (wassomething) {
-					cm.replaceRange(''.padLeft(tabs , '\t') + '}' + plus + '\n', pos, null, '+input');
-					pos.line--;
+					if (tc <= tabs) {
+						// pos.line--;
+						cm.replaceRange(''.padLeft(tabs , '\t') + '}' + plus + '\n', pos, null, '+input');
+					} else {
+						cm.replaceRange(''.padLeft(tabs , '\t') + '}' + plus + '\n', pos, null, '+input');
+						pos.line--;
+					}
 				} else {
-					cm.replaceRange(''.padLeft(tabs + 1, '\t') + '\n' + ''.padLeft(tabs, '\t') + '}' + plus + '\n', pos, null, '+input');
+					nl = cm.getLine(i + 1);
+					cm.replaceRange(''.padLeft(tabs + 1, '\t') + '\n' + ''.padLeft(tabs, '\t') + '}' + plus + (nl ? '\n' : ''), pos, null, '+input');
 				}
 			}
 
