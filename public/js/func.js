@@ -36,6 +36,24 @@ FUNC.wrapbracket = function(cm, pos) {
 		return true;
 	}
 
+	if (plus) {
+		var lchar = line.substring(line.length - 2);
+
+		if (lchar !== ');') {
+			lchar = line.charAt(line.length - 1);
+			if (lchar !== ';' && lchar !== ')')
+				lchar = '';
+		}
+
+		if (lchar) {
+			pos.ch = line.length - lchar.length;
+			var post = {};
+			post.line = pos.line;
+			post.ch = line.length;
+			cm.replaceRange('', pos, post, '+move');
+		}
+	}
+
 	var wassomething = false;
 	for (var i = pos.line + 1; i < lines; i++) {
 
@@ -47,17 +65,21 @@ FUNC.wrapbracket = function(cm, pos) {
 			pos.line = i;
 			pos.ch = tc;
 
-
 			if (l) {
 				if (tc <= tabs) {
 					nl = cm.getLine(i + 1);
-
 					var an = (!tc && tabs) || (!tc && !tabs) ? ('\n' + ''.padLeft(tabs, '\t')) : '';
-					pos.ch--;
-					cm.replaceRange((l.indexOf('else') === -1 ? (''.padLeft(tabs + (an ? 1 : 0), '\t') + an + '}' + plus + '\n' + (nl || (l && l.indexOf('}') === -1) ? '\n' : '')) : ('} ')), pos, null, '+input');
 
-					if (!an)
-						pos.line--;
+					pos.ch--;
+
+					if (!an && tc && tabs && tc === tabs){
+						an = '\n' + ''.padLeft(tabs, '\t');
+						cm.replaceRange((l.indexOf('else') === -1 ? (''.padLeft(tabs, '\t') + an + '}' + plus + '\n' + (nl || (l && l.indexOf('}') === -1) ? '\n' : '') + ''.padLeft(tc - 1, '\t')) : ('} ')), pos, null, '+input');
+					} else {
+						cm.replaceRange((l.indexOf('else') === -1 ? (''.padLeft(tabs + (an ? 1 : 0), '\t') + an + '}' + plus + '\n' + (nl || (l && l.indexOf('}') === -1) ? '\n' : '')) : ('} ')), pos, null, '+input');
+						if (!an)
+							pos.line--;
+					}
 
 				} else {
 					cm.replaceRange('}\n', pos, null, '+input');
