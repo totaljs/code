@@ -450,6 +450,20 @@ COMPONENT('editor', function(self, config) {
 			config.contextmenu && EXEC(config.contextmenu, e, editor);
 		});
 
+		/*
+		editor.on('beforeChange', function(cm, change) {
+
+			if (change.origin !== 'paste')
+				return;
+
+			for (var i = 0; i < change.text.length; i++) {
+				var line = change.text[i].replace(/^\s{2}/g, '\t');
+				console.log(line);
+			}
+
+			change.update(null, null, newText);
+		});*/
+
 		editor.on('keydown', function(editor, e) {
 			if (e.shiftKey && e.ctrlKey && (e.keyCode === 40 || e.keyCode === 38)) {
 				var tmp = editor.getCursor();

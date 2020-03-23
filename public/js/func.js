@@ -1,5 +1,77 @@
 var TIDYUPWHITE = new RegExp(String.fromCharCode(160), 'g');
 
+FUNC.tabscount = function(val) {
+	var count = 0;
+	for (var i = 0; i < val.length; i++) {
+		if (val.charAt(i) === '\t')
+			count++;
+		else
+			break;
+	}
+	return count;
+};
+
+FUNC.wrapbracket = function(cm, pos) {
+
+	var line = cm.getLine(pos.line);
+	if (!(/function|switch|else|with|if\s\(/).test(line))
+		return;
+
+	var tabs = FUNC.tabscount(line);
+	var lines = cm.lineCount();
+	var plus = '';
+	var nl;
+
+	if (line.indexOf('= function') !== -1)
+		plus = ';';
+	else if (line.indexOf(', function') !== -1)
+		plus = ');';
+
+	if (pos.line + 1 >= lines) {
+		// end of value
+		cm.replaceRange('\n' + ''.padLeft(tabs + 1, '\t') + '\n}' + plus, pos, null, '+input');
+		pos.line++;
+		pos.ch = tabs + 1;
+		cm.setCursor(pos);
+		return true;
+	}
+
+	var wassomething = false;
+	for (var i = pos.line + 1; i < lines; i++) {
+
+		var l = cm.getLine(i);
+		var tc = FUNC.tabscount(l);
+
+		if (tc === tabs || !tc) {
+
+			pos.line = i;
+			pos.ch = tc;
+
+			if (l) {
+				if (tc === tabs || !tc) {
+					nl = cm.getLine(i + 1);
+					cm.replaceRange((l.indexOf('else') === -1 ? (''.padLeft(tabs + 1, '\t') + '\n' + ''.padLeft(tabs, '\t') + '}' + plus + '\n' + (nl ? '\n' : '')) : ('} ')), pos, null, '+input');
+				} else {
+					cm.replaceRange('}\n', pos, null, '+input');
+				}
+			} else {
+				if (wassomething) {
+					cm.replaceRange(''.padLeft(tabs , '\t') + '}' + plus + '\n', pos, null, '+input');
+					pos.line--;
+				} else {
+					cm.replaceRange(''.padLeft(tabs + 1, '\t') + '\n' + ''.padLeft(tabs, '\t') + '}' + plus + '\n', pos, null, '+input');
+				}
+			}
+
+			pos.ch = tabs + 1;
+			cm.setCursor(pos);
+			return true;
+		} else
+			wassomething = true;
+	}
+
+};
+
 FUNC.cleanpath = function(val) {
 	return val.replace(/\/{2,}/g, '/');
 };

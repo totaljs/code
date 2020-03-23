@@ -1653,6 +1653,10 @@
 			if (node.name === 'js') {
 				if (!node.children.findItem('name', 'default.js'))
 					items.push({ makefile: true, name: '@(Create:) default.js', icon: 'file-text-o' });
+				if (!node.children.findItem('name', 'func.js'))
+					items.push({ makefile: true, name: '@(Create:) func.js', icon: 'file-text-o' });
+				if (!node.children.findItem('name', 'helpers.js'))
+					items.push({ makefile: true, name: '@(Create:) helpers.js', icon: 'file-text-o' });
 				if (!node.children.findItem('name', 'ui.js'))
 					items.push({ makefile: true, name: '@(Create:) ui.js', icon: 'file-text-o' });
 			}
