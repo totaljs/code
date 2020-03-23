@@ -17,7 +17,7 @@
 					<div>
 					{{ foreach m in value }}
 						<div class="changefile">
-							<div class="path exec" data-exec="code/editpath" data-path="{{ m.path }}"><span>+{{ m.changes }}</span><i class="far fa-file-alt"></i>{{ m.path }}</div>
+							<div class="path exec" data-exec="code/editpath" data-path="{{ m.path }}">{{ if m.changes }}<span>+{{ m.changes }}</span>{{ fi }}<i class="far fa-file-alt"></i>{{ m.path }}</div>
 						</div>
 					{{ end }}
 					</div>
