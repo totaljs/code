@@ -31,10 +31,14 @@ NEWSCHEMA('DBCommand', function(schema) {
 		}
 
 		var model = $.model;
-		var client = makeclient($);
+		var client;
 
-		if (model.query[0] === '-')
-			model.query = 'SELECT CASE WHEN table_schema=\'public\' THEN \'\' ELSE table_schema || \'.\' END || "table_name" as name, CASE WHEN table_type=\'BASE TABLE\' THEN \'TABLE\' ELSE table_type END as type FROM information_schema.tables WHERE table_schema NOT IN (\'pg_catalog\', \'information_schema\') UNION ALL SELECT "routine_name" as name, routine_type as type FROM information_schema.routines WHERE routines.specific_schema=\'public\' LIMIT 20';
+		try {
+			client = makeclient($);
+		} catch (e) {
+			$.invalid(e);
+			return;
+		}
 
 		var callback = function(err, response) {
 			client.end();
@@ -44,11 +48,21 @@ NEWSCHEMA('DBCommand', function(schema) {
 				$.success(response.rows);
 		};
 
-		client.connect();
+		if (model.query[0] === '-')
+			model.query = 'SELECT CASE WHEN table_schema=\'public\' THEN \'\' ELSE table_schema || \'.\' END || "table_name" as name, CASE WHEN table_type=\'BASE TABLE\' THEN \'TABLE\' ELSE table_type END as type FROM information_schema.tables WHERE table_schema NOT IN (\'pg_catalog\', \'information_schema\') UNION ALL SELECT "routine_name" as name, routine_type as type FROM information_schema.routines WHERE routines.specific_schema=\'public\' LIMIT 20';
 
-		var q = {};
-		q.text = model.query;
-		client.query(q, callback);
+		client.connect(function(err) {
+
+			if (err) {
+				$.invalid(err);
+				return;
+			}
+
+			var q = {};
+			q.text = model.query;
+			client.query(q, callback);
+		});
+
 	});
 
 });

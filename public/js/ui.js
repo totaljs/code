@@ -756,7 +756,8 @@ COMPONENT('editor', function(self, config) {
 				index++;
 				snippets.text = snippets.text.substring(index);
 				start += index;
-				end += index;
+				// reportsform/submit --> it doesn't work when typing "submit" and "/" was before
+				// end += index;
 			} else
 				index = 0;
 

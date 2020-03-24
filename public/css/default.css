@@ -784,6 +784,7 @@ header .tools .external { color: #a2a286; }
 .database .ui-inputsearch { border-top: 1px solid #E0E0E0; border-bottom: 0; margin-top: 3px; }
 .database .topsection { border-bottom:1px solid #E0E0E0; }
 .database .topsection .help { padding: 10px 7px 6px; border-top: 1px solid #E0E0E0; margin: 0; }
+.database .topsection .help .link { margin-right: 10px; }
 .database .leftsection { border-right: 1px solid #E0E0E0; }
 
 .dbview-row pre { background-color: white; padding: 10px; margin: 10px; border-radius: 2px; border: 1px solid #E0E0E0; cursor: text; color: black; tab-size: 2; overflow: hidden; }
@@ -809,3 +810,4 @@ header .tools .external { color: #a2a286; }
 .td .db-number { color: #4DA474; }
 .td .db-date { color: #6E20B9; }
 .td .db-boolean { color: #28BC21; }
+.database .CodeMirror { font-size: 13px; }

@@ -28,9 +28,9 @@
 
 	<div class="database">
 		<div data---="layout2__null__parent:window" class="invisible">
-			<div data-type="top2" data-size="153" class="topsection">
-				<div data---="codemirror__dbview.query__height:90;type:sql;cmdenter:dbview.submit"></div>
-				<div class="help"><span class="link exec" data-exec="dbview.history" style="margin-right:10px"><i class="fa fa-history"></i>@(History)</span><span class="link exec b red" data-exec="dbview.execute"><i class="fa fa-play-circle"></i>@(Run query)</span><span class="pull-right"><i class="fa fa-keyboard"></i><code data-bind="shortcutexecute__text">---</code> @(executes a query)</span></div>
+			<div data-type="top2" data-size="193" class="topsection">
+				<div data---="codemirror__dbview.query__height:130;type:sql;cmdenter:dbview.submit"></div>
+				<div class="help"><span class="link exec" data-exec="dbview.history"><i class="fa fa-history"></i>@(History)</span><span class="link exec b red" data-exec="dbview.execute"><i class="fa fa-play-circle"></i>@(Run query)</span><span class="link exec green hidden" data-bind="dbview.keywords__show" data-exec="dbview.columns"><i class="fa fa-plus-circle"></i>@(Add columns)</span><span class="pull-right"><i class="fa fa-keyboard"></i><code data-bind="shortcutexecute__text">---</code> @(executes a query)</span></div>
 				<div data---="inputsearch__dbview.search__placeholder:@(Search in results)"></div>
 			</div>
 			<div data-type="left" data-size="200px" data-scrollbar="visible:true" class="leftsection">
@@ -87,6 +87,7 @@
 
 		var dbview = {};
 		var reguid = /^\d{14,}[a-z]{3}[01]{1}|^\d{9,14}[a-z]{2}[01]{1}a|^\d{4,18}[a-z]{2}\d{1}[01]{1}b|^[0-9a-f]{4,18}[a-z]{2}\d{1}[01]{1}c$/;
+		var reguid2 = /"\d{14,}[a-z]{3}[01]{1}|"\d{9,14}[a-z]{2}[01]{1}a|"\d{4,18}[a-z]{2}\d{1}[01]{1}b|"[0-9a-f]{4,18}[a-z]{2}\d{1}[01]{1}c"/g;
 		var shortcutexecute;
 
 		DEF.dateformat = 'yyyy-MM-dd HH:mm:ss';
@@ -154,6 +155,12 @@
 		function formatjson(obj, count) {
 			return JSON.stringify(obj, null, '\t').replace(/\t.*?\:\s/g, function(text) {
 				return '<span class="db-object">' + text + '</span>';
+			}).replace(/\/span>false/g, function(text) {
+				return '/span><span class="db-string">false</span>';
+			}).replace(/\/span>null/g, function(text) {
+				return '/span><span class="db-null">null</span>';
+			}).replace(reguid2, function(text) {
+				return '<span class="db-uid">' + text + '</span>';
 			});
 		}
 
@@ -161,7 +168,7 @@
 
 			var conn = NAV.query.conn;
 
-			AJAX('POST /api/database/pg/', { connection: conn, query: '-' }, function(response) {
+			AJAX('POST /api/database/pg/', { connection: conn, query: '-' }, ASETTER(true, 'message/response', function(response) {
 
 				SETTER(true, 'loading/hide', 500);
 
@@ -323,8 +330,12 @@
 						}, 100);
 						editor.focus();
 					});
-
 				});
+
+				meta.columns = function() {
+					if (keywords)
+						meta.editor.replaceSelection(keywords.join(','));
+				};
 
 				meta.execute = function() {
 					meta.submit(meta.editor.getSelection() || meta.editor.getValue());
@@ -343,7 +354,7 @@
 
 					value = cmd.join('\n');
 
-					if ((/delete|update/i).test(value)) {
+					if ((/delete\sfrom|update\s/i).test(value)) {
 						setTimeout(function() {
 							SETTER('confirm/show2', '@(Are you sure you want to perform this operation?)', ['"play-circle" @(Execute)', '@(Cancel)'], function() {
 								meta.submit2(value);
@@ -369,6 +380,11 @@
 						var keys = rows.length ? Object.keys(rows[0]) : EMPTYARRAY;
 
 						keywords = keys;
+
+						if (keys.length)
+							SET('dbview.keywords', keywords);
+						else
+							NUL('dbview.keywords');
 
 						for (var i = 0; i < rows.length; i++) {
 							var obj = formatrow(rows[i]);
@@ -432,13 +448,13 @@
 					else
 						el.append('<pre>{0}</pre>'.format(formatjson(row.data, 0)));
 				});
-			});
+			}));
 		}
 
 		$(document).on('click', function() {
 			var ts = Date.now();
-			if (!common.lastclick || common.lastclick < (ts - 2000)) {
-				common.lastclick = ts;
+			if (!dbview.lastclick || dbview.lastclick < (ts - 2000)) {
+				dbview.lastclick = ts;
 				W.top && W.top.postMessage(JSON.stringify({ type: 'windows', id: NAV.query.id }), '*');
 			}
 		});

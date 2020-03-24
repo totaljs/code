@@ -309,7 +309,7 @@
 
 			obj.hidden = false;
 			obj.offset = { x: ((WW / 2) - 350) >> 0, y: ((WH / 2) - 150) >> 0, width: 800, height: 500, minwidth: 600, minheight: 400 };
-			obj.title = '<i class="fa fa-database"></i> @(Database)';
+			obj.title = '<i class="fa fa-database"></i> @(Database viewer)';
 			obj.html = '<iframe src="/dbviewer/?conn={0}&id={1}" style="width:100%;height:100%;border:0" frameborder="0"></iframe>'.format(encodeURIComponent(conn), obj.id);
 			obj.actions = { minimize: true, maximize: true, move: true, resize: true, autosave: true };
 			PUSH('windows', obj);
