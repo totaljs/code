@@ -33,7 +33,6 @@ hr { border-color: #E0E0E0; }
 #currentcolor span:first-child { color: black; margin-right: 5px; }
 /*.codepanel #currentcolor { right: 380px; }*/
 .electron #currentcolor { top: 170px; }
-
 .panelsearch { height: 27px; }
 
 .search { height: 28px; border-bottom: 1px solid #E0E0E0; font-size: 12px; }

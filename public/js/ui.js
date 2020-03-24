@@ -435,6 +435,7 @@ COMPONENT('editor', function(self, config) {
 		options.autoCloseTags = true;
 		options.scrollPastEnd = true;
 		options.lint = true;
+		options.showCursorWhenSelecting = true;
 		options.blastCode = true;
 		options.autoCloseBrackets = true;
 		options.extraKeys = { 'Alt-F': 'findPersistent', 'Ctrl-Enter': findnext, 'Ctrl--': comment, 'Cmd--': comment, 'Cmd-Enter': findnext, 'Esc': clearsearch, 'Cmd-D': findmatch, 'Ctrl-D': findmatch, 'Cmd-S': shortcut('save'), 'Ctrl-S': shortcut('save'), 'Alt-W': shortcut('close'), 'Cmd-W': shortcut('close'), Enter: 'newlineAndIndentContinue', Tab: tabulator, 'Alt-Tab': shortcut('nexttab') };
