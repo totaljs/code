@@ -24,7 +24,7 @@ var TIDYUPWHITE = new RegExp(String.fromCharCode(160), 'g');
 	FUNC.wrapbracket = function(cm, pos) {
 
 		var line = cm.getLine(pos.line);
-		if (!(/function|switch|else|with|if\s\(/).test(line))
+		if (!(/function|switch|else|with|if|for|while\s\(/).test(line))
 			return;
 
 		var tabs = TABSCOUNT(line);
