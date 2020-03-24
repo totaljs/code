@@ -327,10 +327,22 @@
 				});
 
 				meta.execute = function() {
-					meta.submit(meta.editor.getValue());
+					meta.submit(meta.editor.getSelection() || meta.editor.getValue());
 				};
 
-				meta.submit = function(value) {
+				meta.submit = function(sel, val) {
+					var value = sel || val;
+					var lines = value.split('\n');
+					var cmd = [];
+
+					for (var i = 0; i < lines.length; i++) {
+						var line = lines[i].trim();
+						if (line.substring(0, 2) !== '--')
+							cmd.push(line);
+					}
+
+					value = cmd.join('\n');
+
 					if ((/delete|update/i).test(value)) {
 						setTimeout(function() {
 							SETTER('confirm/show2', '@(Are you sure you want to perform this operation?)', ['"play-circle" @(Execute)', '@(Cancel)'], function() {

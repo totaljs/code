@@ -7236,7 +7236,7 @@ COMPONENT('codemirror', 'linenumbers:false;required:false;trim:true;tabs:true', 
 
 		if (config.cmdenter) {
 			var submit = function() {
-				EXEC(self.makepath(config.cmdenter), editor.getValue());
+				EXEC(self.makepath(config.cmdenter), editor.getSelection(), editor.getValue());
 			};
 			options.extraKeys = { 'Ctrl-Enter': submit, 'Cmd-Enter': submit };
 		}
