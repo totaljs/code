@@ -20,7 +20,6 @@ var TIDYUPWHITE = new RegExp(String.fromCharCode(160), 'g');
 		return str;
 	};
 
-
 	FUNC.wrapbracket = function(cm, pos) {
 
 		var line = cm.getLine(pos.line);

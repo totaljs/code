@@ -43,7 +43,7 @@ exports.install = function() {
 	ROUTE('+GET     /api/projects/{id}/localize/          *Projects          --> @localize', [10000]);
 	ROUTE('+GET     /api/projects/discover/',                                autodiscover);
 
-	ROUTE('+POST    /api/database/pg/                     *DBCommand         --> @exec');
+	ROUTE('+POST    /api/database/pg/                     *DBCommand         --> @exec', [10000]);
 
 	// Branches
 	ROUTE('+GET     /api/branches/{id}/                   *Branches          --> @query');

@@ -54,14 +54,14 @@
 						{{ if value.functions.length }}
 							<div class="caption">@(Functions)</div>
 							{{ foreach m in value.functions }}
-								<div class="item exec" data-exec="dbview.template" data-type="function">{{ m.name }}</div>
+								<div class="item exec" data-exec="dbview.template" data-type="function"><i class="fa fa-code"></i>{{ m.name }}</div>
 							{{ end }}
 						{{ fi }}
 
 						{{ if value.procedures.length }}
 							<div class="caption">@(Procedures)</div>
 							{{ foreach m in value.procedures }}
-								<div class="item exec" data-exec="dbview.template" data-type="procedure">{{ m.name }}</div>
+								<div class="item exec" data-exec="dbview.template" data-type="procedure"><i class="fa fa-code-branch"></i>{{ m.name }}</div>
 							{{ end }}
 						{{ fi }}
 
@@ -170,7 +170,7 @@
 				var tables = [];
 				var procedures = [];
 				var keywords;
-				var statickeywords = ['SELECT * FROM ', 'INNER JOIN ', 'LEFT JOIN ', 'CREATE TABLE ', 'DELETE FROM ', 'INSERT INTO ', 'CREATE OR REPLACE VIEW ', 'CREATE OR REPLACE FUNCTION ', 'WHERE ', 'ORDER BY ', 'GROUP BY', 'COUNT(1)', 'LIMIT ', 'OFFSET '];
+				var statickeywords = ['SELECT * FROM ', 'INNER JOIN ', 'LEFT JOIN ', 'CREATE TABLE ', 'DELETE FROM ', 'INSERT INTO ', 'CREATE OR REPLACE VIEW ', 'CREATE OR REPLACE FUNCTION ', 'WHERE ', 'ORDER BY ', 'GROUP BY', 'COUNT(1)', 'LIMIT ', 'OFFSET ', 'ILIKE '];
 
 				for (var i = 0; i < response.value.length; i++) {
 					var item = response.value[i];
