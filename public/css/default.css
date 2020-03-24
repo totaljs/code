@@ -29,10 +29,10 @@ hr { border-color: #E0E0E0; }
 .td .recent { border-top-color: #303030; color: #D0D0D0; }
 .td .recent:hover { background-color: #181818; }
 
-#currentcolor { position: absolute; right: 30px; top: 150px; width: 100px; height: 100px; line-height: 100px; text-align: center; font-size: 30px; z-index: 10; border: 1px solid rgba(0,0,0,0.2); box-shadow: 0 3px 5px rgba(0,0,0,0.1); color: white; font-family: monospace; }
+#currentcolor { position: absolute; right: 30px; top: 120px; width: 100px; height: 100px; line-height: 100px; text-align: center; font-size: 30px; z-index: 10; border: 1px solid rgba(0,0,0,0.2); box-shadow: 0 3px 5px rgba(0,0,0,0.1); color: white; font-family: monospace; }
 #currentcolor span:first-child { color: black; margin-right: 5px; }
 /*.codepanel #currentcolor { right: 380px; }*/
-.electron #currentcolor { top: 170px; }
+
 .panelsearch { height: 27px; }
 
 .search { height: 28px; border-bottom: 1px solid #E0E0E0; font-size: 12px; }
