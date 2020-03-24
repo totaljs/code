@@ -11624,6 +11624,12 @@ COMPONENT('layout2', 'scrollbar:1;parent:window;autoresize:1;margin:0', function
 			}
 
 			var opt = { visibleY: item.scrollbar.visible || item.scrollbar.visibleY, orientation: 'y', parent: el };
+
+			if (item.scrollbar.visibleX) {
+				opt.visibleX = true;
+				delete opt.orientation;
+			}
+
 			item.scrollbarcontainer = screl;
 			item.scrollbar.instance = SCROLLBAR(screl, opt);
 			item.scrollbar.resize = function(h) {

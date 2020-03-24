@@ -148,7 +148,7 @@
 				builder.push(key + ': ' + format.format(val));
 			}
 
-			return { html: builder.join(', '), search: builder.join(' ') };
+			return { html: builder.join(', '), search: search.join(' ') };
 		}
 
 		function formatjson(obj, count) {
