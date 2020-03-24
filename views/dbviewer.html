@@ -1,0 +1,439 @@
+@{layout('')}
+
+<!DOCTYPE html>
+<html>
+<head>
+	<title>DB VIEWER</title>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=10" />
+	<meta name="format-detection" content="telephone=no" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, viewport-fit=cover" />
+	<meta name="robots" content="all,follow" />
+	<link rel="stylesheet" href="/css/cdn.min.css" />
+	@{if CONF.proicons}
+	<link rel="stylesheet" href="https://cdn.componentator.com/spa.min@18pro.css" />
+	@{else}
+	<link rel="stylesheet" href="/css/spa.min.css" />
+	@{fi}
+	<script src="/js/cdn.min.js"></script>
+	@{import('meta', 'head', 'default.css', 'default.js', 'favicon.ico')}
+</head>
+<body data---="exec" class="@{if (user.darkmode === 2 && (NOW.getHours()<=6 || NOW.getHours()>=18)) || (user.darkmode !== 0 && user.darkmode !== 2)}td @{fi}invisible" data-jc-class="invisible">
+
+	<div data---="LAZY confirm"></div>
+	<div data---="LAZY directory__null__placeholder:@(Search)"></div>
+
+	<div data---="message"></div>
+	<div data---="loading"></div>
+
+	<div class="database">
+		<div data---="layout2__null__parent:window" class="invisible">
+			<div data-type="top2" data-size="153" class="topsection">
+				<div data---="codemirror__dbview.query__height:90;type:sql;cmdenter:dbview.submit"></div>
+				<div class="help"><span class="link exec" data-exec="dbview.history" style="margin-right:10px"><i class="fa fa-history"></i>@(History)</span><span class="link exec b red" data-exec="dbview.execute"><i class="fa fa-play-circle"></i>@(Run query)</span><span class="pull-right"><i class="fa fa-keyboard"></i><code data-bind="shortcutexecute__text">---</code> @(executes a query)</span></div>
+				<div data---="inputsearch__dbview.search__placeholder:@(Search in results)"></div>
+			</div>
+			<div data-type="left" data-size="200px" data-scrollbar="visible:true" class="leftsection">
+				<div data-bind="!dbview.tree__template" class="menu">
+					<script type="text/html">
+
+						{{ if value.tables.length }}
+							<div class="caption">@(Tables)</div>
+							{{ foreach m in value.tables }}
+								<div class="item exec" data-exec="dbview.template"><i class="fa fa-columns"></i>{{ m.name }}</div>
+							{{ end }}
+						{{ fi }}
+
+						{{ if value.views.length }}
+							<div class="caption">@(Views)</div>
+							{{ foreach m in value.views }}
+								<div class="item exec" data-exec="dbview.template"><i class="fa fa-eye"></i>{{ m.name }}</div>
+							{{ end }}
+						{{ fi }}
+
+						{{ if value.functions.length }}
+							<div class="caption">@(Functions)</div>
+							{{ foreach m in value.functions }}
+								<div class="item exec" data-exec="dbview.template" data-type="function">{{ m.name }}</div>
+							{{ end }}
+						{{ fi }}
+
+						{{ if value.procedures.length }}
+							<div class="caption">@(Procedures)</div>
+							{{ foreach m in value.procedures }}
+								<div class="item exec" data-exec="dbview.template" data-type="procedure">{{ m.name }}</div>
+							{{ end }}
+						{{ fi }}
+
+					</script>
+				</div>
+				<br />
+			</div>
+			<div data-type="main" data-scrollbar="visible:true">
+				<div data-bind="dbview.rows__template" data---="search__dbview.search__selector:.dbview-row">
+					<script type="text/html">
+					{{ foreach m in value }}
+						<div class="dbview-row" data-index="{{ $index }}" data-search="{{ m.search }}">
+							<div>{{ m.json | raw }}</div>
+						</div>
+					{{ end }}
+					</script>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script>
+
+		var dbview = {};
+		var reguid = /^\d{14,}[a-z]{3}[01]{1}|^\d{9,14}[a-z]{2}[01]{1}a|^\d{4,18}[a-z]{2}\d{1}[01]{1}b|^[0-9a-f]{4,18}[a-z]{2}\d{1}[01]{1}c$/;
+		var shortcutexecute;
+
+		DEF.dateformat = 'yyyy-MM-dd HH:mm:ss';
+
+		ON('ready', function() {
+			SET('shortcutexecute', M.ua.os.toLowerCase() === 'mac' ? 'CMD+ENTER' : 'CTRL+enter');
+		});
+
+		function formatrow(row) {
+			var keys = Object.keys(row);
+			var builder = [];
+			var search = [];
+
+			for (var i = 0; i < keys.length; i++) {
+
+				var key = keys[i];
+				var val = row[key];
+				var format = '{0}';
+				var fv;
+
+				switch (typeof(val)) {
+					case 'string':
+
+						if (reguid.test(val))
+							format = '<span class="db-uid">{0}</span>';
+						else
+							format = '<span class="db-string">{0}</span>';
+
+						search.push(val);
+						break;
+					case 'number':
+						format = '<span class="db-number">{0}</span>';
+						if ((val + '').indexOf('.') != -1)
+							val = val.format(4);
+						else
+							val = val.format(0);
+						break;
+					case 'boolean':
+						format = '<span class="db-boolean">{0}</span>';
+						break;
+					case 'object':
+
+						if (val == null) {
+							format = '<span class="db-null">{0}</span>';
+							val = 'null';
+						} else if (val instanceof Date) {
+							format = '<span class="db-date">{0}</span>';
+							isdate = true;
+							val = val.format(fv);
+							search.push(val);
+						} else {
+							format = '<span class="db-object">{0}</span>';
+							val = JSON.stringify(val);
+							search.push(val);
+						}
+						break;
+				}
+
+				builder.push(key + ': ' + format.format(val));
+			}
+
+			return { html: builder.join(', '), search: builder.join(' ') };
+		}
+
+		function formatjson(obj, count) {
+			return JSON.stringify(obj, null, '\t').replace(/\t.*?\:\s/g, function(text) {
+				return '<span class="db-object">' + text + '</span>';
+			});
+		}
+
+		function connectdb() {
+
+			var conn = NAV.query.conn;
+
+			AJAX('POST /api/database/pg/', { connection: conn, query: '-' }, function(response) {
+
+				SETTER(true, 'loading/hide', 500);
+
+				var views = [];
+				var functions = [];
+				var tables = [];
+				var procedures = [];
+				var keywords;
+				var statickeywords = ['SELECT * FROM ', 'INNER JOIN ', 'LEFT JOIN ', 'CREATE TABLE ', 'DELETE FROM ', 'INSERT INTO ', 'CREATE OR REPLACE VIEW ', 'CREATE OR REPLACE FUNCTION ', 'WHERE ', 'ORDER BY ', 'GROUP BY', 'COUNT(1)', 'LIMIT ', 'OFFSET '];
+
+				for (var i = 0; i < response.value.length; i++) {
+					var item = response.value[i];
+					switch (item.type) {
+						case 'TABLE':
+							tables.push(item);
+							break;
+						case 'FUNCTION':
+							functions.push(item);
+							break;
+						case 'PROCEDURE':
+							procedures.push(item);
+							break;
+						case 'VIEW':
+							views.push(item);
+							break;
+					}
+				}
+
+				tables.quicksort('name');
+				views.quicksort('name');
+				functions.quicksort('name');
+				procedures.quicksort('name');
+
+				response.value.sort(autocomplete_sort);
+
+				var meta = {};
+				meta.tree = { tables: tables, views: views, functions: functions, procedures: procedures, all: response.value };
+				meta.query = '';
+				meta.id = 'db' + HASH(conn, true);
+				meta.query = 'SELECT * FROM ';
+
+				var cache_snip = {};
+				var snippets = {};
+				var snippetsoptions = { completeSingle: false, hint: function(cm) {
+
+					if (snippets.text.length < 2 && snippets.text !== '#') {
+						cache_snip.list = EMPTYARRAY;
+						cache_snip.from = 0;
+						cache_snip.to = 0;
+						return cache_snip;
+					}
+
+					var cur = cm.getCursor();
+					var mode = cm.getModeAt(cur);
+					var start = snippets.index;
+					var end = cur.ch;
+					var tabs = ''.padLeft(snippets.index, '\t');
+					var index = -1;
+
+					for (var i = snippets.text.length - 1; i > 0; i--) {
+						var c = snippets.text.charCodeAt(i);
+						if ((c > 64 && c < 91) || (c > 96 && c < 123) || (c > 47 && c < 58) || c === 45 || c === 95)
+							continue;
+						index = i;
+						break;
+					}
+
+					if (index > -1) {
+						index++;
+						snippets.text = snippets.text.substring(index);
+					} else
+						index = 0;
+
+					snippets.text = snippets.text.toLowerCase();
+					cache_snip.from = CodeMirror.Pos(cur.line, start);
+					cache_snip.to = CodeMirror.Pos(cur.line, end);
+
+					if (snippets.text.length < 2 && snippets.text !== '#')
+						cache_snip.list = EMPTYARRAY;
+					else {
+
+						var arr = [];
+
+						for (var i = 0; i < statickeywords.length; i++) {
+							var name = statickeywords[i];
+							var search = name.toLowerCase();
+							if (search.length > snippets.text.length && search.indexOf(snippets.text) !== -1) {
+								arr.push({ displayText: name, text: name, code: name });
+								if (arr.length > 5)
+									break;
+							}
+						}
+
+						if (keywords) {
+							for (var i = 0; i < keywords.length; i++) {
+								var name = keywords[i];
+								var search = name.toLowerCase();
+								if (search.length > snippets.text.length && search.indexOf(snippets.text) !== -1) {
+									arr.push({ displayText: name, text: name, code: name });
+									if (arr.length > 5)
+										break;
+								}
+							}
+						}
+
+						for (var i = 0; i < dbview.tree.all.length; i++) {
+							var name = dbview.tree.all[i].name;
+							var search = name.toLowerCase();
+							if (search.length > snippets.text.length && search.indexOf(snippets.text) !== -1) {
+								arr.push({ displayText: name, text: name, code: name });
+								if (arr.length > 10)
+									break;
+							}
+						}
+
+						arr.sort(autocomplete_sort);
+						cache_snip.list = arr.take(10);
+					}
+
+					return cache_snip;
+				}};
+
+				function autocomplete_sort(a, b) {
+					var an = a.name || a.displayText;
+					var bn = b.name || b.displayText;
+					if (an.length < bn.length)
+						return -1;
+					else if (an.length > bn.length)
+						return 1;
+					return 0;
+				}
+
+			 	function lastIndexOf(str, chfrom) {
+					for (var i = chfrom; i > 0; i--) {
+						var c = str.substring(i - 1, i);
+						for (var j = 1; j < arguments.length; j++)
+							if (c === arguments[j])
+								return i;
+					}
+					return 0;
+				}
+
+				FIND('codemirror', function(com) {
+					var editor = com.editor;
+					meta.editor = editor;
+					editor.on('change', function(a, b) {
+						setTimeout2('autocomplete', function() {
+							var cur = editor.getCursor();
+							var line = editor.getLine(cur.line);
+							var text = line.substring(index, cur.ch);
+							var index = lastIndexOf(line, cur.ch, ' ', '>', '\t', ';', '.', '"', '\'', ')', '(', '<', ',');
+							if (index !== -1) {
+								if (text) {
+									snippets.index = index;
+									snippets.text = text;
+									editor.showHint(snippetsoptions);
+								}
+							}
+						}, 100);
+						editor.focus();
+					});
+
+				});
+
+				meta.execute = function() {
+					meta.submit(meta.editor.getValue());
+				};
+
+				meta.submit = function(value) {
+					if ((/delete|update/i).test(value)) {
+						setTimeout(function() {
+							SETTER('confirm/show2', '@(Are you sure you want to perform this operation?)', ['"play-circle" @(Execute)', '@(Cancel)'], function() {
+								meta.submit2(value);
+							});
+						}, 700);
+					} else
+						meta.submit2(value);
+				};
+
+				meta.submit2 = function(value) {
+					var query = value.trim();
+					if (!query)
+						return;
+
+					SETTER('loading/show');
+					AJAX('POST /api/database/pg/', { connection: conn, query: query }, ASETTER('message/response', function(response) {
+
+						SETTER('loading/hide', 500);
+						SET('dbview.search', '');
+
+						var rows = response.value;
+						var arr = [];
+						var keys = rows.length ? Object.keys(rows[0]) : EMPTYARRAY;
+
+						keywords = keys;
+
+						for (var i = 0; i < rows.length; i++) {
+							var obj = formatrow(rows[i]);
+							arr.push({ data: rows[i], json: obj.html, search: obj.search });
+						}
+
+						SET('dbview.rows', arr);
+						FIND('codemirror', function(com) {
+							com.editor.focus();
+						});
+
+						var history = CACHE(meta.id);
+						if (history) {
+							var index = history.indexOf(query);
+							if (index !== -1)
+								history.splice(index, 1);
+							history.unshift(query);
+						} else
+							history = [query];
+
+						if (history.length > 50)
+							history.pop();
+
+						SETTER('layout2/resizescrollbar', 'main');
+						SETTER('layout2/scrolltop', 'main');
+						CACHE(meta.id, history, '1 year');
+					}));
+				};
+
+				meta.template = function(el) {
+					var type = el.attrd('type');
+					var q = type ? el.text() : ('SELECT * FROM ' + el.text() + ' LIMIT 50');
+					SET('dbview.query', q);
+					if (!type)
+						meta.submit(q);
+				};
+
+				meta.history = function(el) {
+					var opt = {};
+					opt.element = el;
+					opt.items = CACHE(meta.id) || EMPTYARRAY;
+					opt.minwidth = WW - 220;
+					opt.callback = function(val) {
+						SET('dbview.query', val);
+					};
+					SETTER('directory/show', opt);
+				};
+
+				SET('dbview', meta);
+
+				$(document).on('click', '.dbview-row', function(e) {
+
+					if (e.target.tagName === 'PRE')
+						return;
+
+					var el = $(this);
+					var row = dbview.rows[+el.attrd('index')];
+					var pre = el.find('pre');
+					if (pre.length)
+						pre.tclass('hidden');
+					else
+						el.append('<pre>{0}</pre>'.format(formatjson(row.data, 0)));
+				});
+			});
+		}
+
+		$(document).on('click', function() {
+			var ts = Date.now();
+			if (!common.lastclick || common.lastclick < (ts - 2000)) {
+				common.lastclick = ts;
+				W.top && W.top.postMessage(JSON.stringify({ type: 'windows', id: NAV.query.id }), '*');
+			}
+		});
+
+		setTimeout(connectdb, 100);
+
+	</script>
+
+</body>
+</html>

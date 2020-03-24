@@ -297,6 +297,24 @@
 			});
 		};
 
+		exports.database = function(conn) {
+			var obj = {};
+			obj.id = 'db' + HASH(conn, true);
+
+			var win = windows.findItem('id', obj.id);
+			if (win) {
+				SETTER('windows/toggle', obj.id);
+				return;
+			}
+
+			obj.hidden = false;
+			obj.offset = { x: ((WW / 2) - 350) >> 0, y: ((WH / 2) - 150) >> 0, width: 800, height: 500, minwidth: 600, minheight: 400 };
+			obj.title = '<i class="fa fa-database"></i> @(Database)';
+			obj.html = '<iframe src="/dbviewer/?conn={0}&id={1}" style="width:100%;height:100%;border:0" frameborder="0"></iframe>'.format(encodeURIComponent(conn), obj.id);
+			obj.actions = { minimize: true, maximize: true, move: true, resize: true, autosave: true };
+			PUSH('windows', obj);
+		};
+
 		exports.chat = function(show) {
 
 			if (windows.findItem('id', 'chat')) {
@@ -584,6 +602,9 @@
 
 			if (can) {
 
+				if ((user.sa || user.dbviewer) && (/hex\s\w+|base64\s\w+|postgresql\:|postgre\:/i).test(text))
+					items.push({ name: '@(Open DB viewer)', icon: 'database', value: 'dbviewer', classname: 'b' });
+
 				if ((/api/).test(code.current.ext))
 					items.push({ name: '@(Run)', icon: 'play-circle red', value: 'run', classname: 'b', shortcut: (common.ismac ? 'CMD' : 'CTRL') + '+B' });
 
@@ -750,6 +771,11 @@
 					setTimeout(function() {
 						document.execCommand(value.command, true);
 					}, 100);
+					return;
+				}
+
+				if (value.value === 'dbviewer') {
+					EXEC('code/database', text.trim());
 					return;
 				}
 

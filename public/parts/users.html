@@ -10,7 +10,7 @@
 		<button data-bind="users.checked__disabled:!value || !value.length" class="exec" data-exec="users/options" disabled><i class="fa fa-check-circle"></i>@(Selected)</button>
 	</div>
 
-	<div data---="datagrid__users.grid__click:users/edit;checked:users/checked;highlight:true">
+	<div data---="datagrid__users.grid__click:users/edit;checked:users/checked;highlight:true;margin:20;cluster:false">
 		<script type="text/plain">
 			[
 				{ name: 'id', text: '@(User ID)', template: '{{ if online }}<i class="fa fa-circle green fs11 mr5" title="@(Online)"></i>{{ fi }}{{ if blocked }}<span class="badge badge-small badge-red">@(blocked)</span>{{ fi }}{{ id }}', width: 200 },
@@ -27,15 +27,17 @@
 </div>
 
 <div data---="form__common.form__if:usersformexport;bg:true;title:@(Export/Import);icon:cloud;width:600;autofocus:true;submit:users/import" class="hidden">
-	<div data-scope="usersformexport">
-		<div class="padding npb">
-			<div data---="textarea__?.data__required:true;height:300" class="m">@(Data)</div>
+	<script type="text/html">
+		<div data-scope="usersformexport">
+			<div class="padding npb">
+				<div data---="textarea__?.data__required:true;height:300" class="m">@(Data)</div>
+			</div>
 		</div>
-	</div>
-	<nav data---="validation__usersformexport">
-		<button name="submit" disabled="disabled"><i class="fa fa-cloud-download mr5"></i>@(Import)</button>
-		<button name="cancel">@(Cancel)</button>
-	</nav>
+		<nav data---="validation__usersformexport">
+			<button name="submit" disabled="disabled"><i class="fa fa-cloud-download mr5"></i>@(Import)</button>
+			<button name="cancel">@(Cancel)</button>
+		</nav>
+	</script>
 </div>
 
 <div data---="importer__common.form__if:usersform;url:/forms/user.html"></div>
@@ -61,7 +63,7 @@
 		};
 
 		exports.reload = function() {
-			setTimeout(EXEC2('#resize'), 100);
+			// setTimeout(EXEC2('#resize'), 100);
 			exports.refresh();
 		};
 

@@ -2,11 +2,11 @@ const Fs = require('fs');
 
 exports.install = function() {
 
-	ROUTE('+GET /*', 'index', ['authorize']);
-	ROUTE('-GET /*', 'login', ['unauthorize']);
+	ROUTE('+GET /*', 'index');
+	ROUTE('-GET /*', 'login');
 	ROUTE('GET  /offline/');
 	ROUTE('GET  /pause/');
-
+	ROUTE('+GET  /dbviewer/', 'dbviewer');
 	ROUTE('+GET /docs/{id}/', docs);
 
 	// File routes

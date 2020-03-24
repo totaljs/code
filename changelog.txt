@@ -2,6 +2,7 @@
 
 - new and improved UI
 - added branches
+- added DB viewer
 - added download source-code
 - added internal chat
 - added ping a domain

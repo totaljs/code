@@ -1534,7 +1534,7 @@ WAIT('CodeMirror.defineMode', function() {
 						cm.replaceSelection(right, 'before');
 						cm.triggerElectric(right);
 					});
-				}, right === '}' ? 700 : 350);
+				}, 350);
 			});
 		}
 	}

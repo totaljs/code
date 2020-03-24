@@ -11,6 +11,7 @@ NEWSCHEMA('Users', function(schema) {
 	schema.define('password', 'String(100)', true);
 	schema.define('blocked', Boolean);
 	schema.define('sa', Boolean);
+	schema.define('dbviewer', Boolean);
 	schema.define('darkmode', Number);
 	schema.define('localsave', Boolean);
 
@@ -62,6 +63,7 @@ NEWSCHEMA('Users', function(schema) {
 			item.darkmode = model.darkmode;
 			item.localsave = model.localsave;
 			item.initials = model.initials;
+			item.dbviewer = model.dbviewer;
 
 			if (model.password.substring(0, 3) !== '***') {
 				if (model.password.substring(0, 7) === 'sha256:')
@@ -96,6 +98,7 @@ NEWSCHEMA('Users', function(schema) {
 		model.position = 'Administrator';
 		model.darkmode = 2;
 		model.localsave = true;
+		model.dbviewer = true;
 
 		MAIN.users.push(model);
 		MAIN.save(1);

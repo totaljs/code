@@ -998,3 +998,7 @@ li.ui-directory-current { background-color: rgba(0,0,0,0.02); font-weight: bold;
 .electron.jc-mac .ui-imageviewer-header { height: 64px; }
 .electron.jc-mac .ui-imageviewer-header > div { margin: 23px 0 0 10px; }
 .electron.jc-mac .ui-imageviewer-header button { width: 60px; height: 63px; font-size: 18px; }
+
+.ui-layout2, .ui-layout2-section { position: absolute; }
+.ui-layout2-left { z-index: 2; }
+.ui-layout2-right { z-index: 2; }

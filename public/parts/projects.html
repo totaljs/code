@@ -1,26 +1,24 @@
 <div class="container">
 	<br />
-	<div class="fullheight">
 
-		<div class="toolbar">
-			<button class="exec" data-exec="projects/autodiscover"><i class="fa fa-search-plus"></i>@(Auto-Discover)</button>
-			<button class="exec" data-exec="projects/create"><i class="fa fa-plus-circle green"></i>@(Add)</button>
-			<button data-bind="projects.checked__disabled:!value || !value.length" class="exec" data-exec="projects/options" disabled><i class="fa fa-check-circle"></i>@(Selected)</button>
-		</div>
-
-		<div data---="datagrid__projects.grid__click:projects/edit;checked:projects/checked;highlight:true">
-			<script type="text/plain">
-				[
-					{ name: 'name', text: '@(Name)', class: 'b', width: 300 },
-					{ name: 'url', text: '@(URL)', width: 200 },
-					{ name: 'path', text: '@(Path)', width: 200 },
-					{ name: 'users', text: '@(Users)', template: '{{ foreach m in users }}<span class="badge badge-small badge-blue">{{ m }}</span>{{ end }}', width: 200 },
-					{ name: 'created', text: '@(Created)', align: 'center', template: '{{ created | format(\'dd.MM.yyyy\') }}', align: 1, width: 100 }
-				]
-			</script>
-		</div>
-
+	<div class="toolbar">
+		<button class="exec" data-exec="projects/autodiscover"><i class="fa fa-search-plus"></i>@(Auto-Discover)</button>
+		<button class="exec" data-exec="projects/create"><i class="fa fa-plus-circle green"></i>@(Add)</button>
+		<button data-bind="projects.checked__disabled:!value || !value.length" class="exec" data-exec="projects/options" disabled><i class="fa fa-check-circle"></i>@(Selected)</button>
 	</div>
+
+	<div data---="datagrid__projects.grid__click:projects/edit;checked:projects/checked;highlight:true;margin:20;cluster:false">
+		<script type="text/plain">
+			[
+				{ name: 'name', text: '@(Name)', class: 'b', width: 300 },
+				{ name: 'url', text: '@(URL)', width: 200 },
+				{ name: 'path', text: '@(Path)', width: 200 },
+				{ name: 'users', text: '@(Users)', template: '{{ foreach m in users }}<span class="badge badge-small badge-blue">{{ m }}</span>{{ end }}', width: 200 },
+				{ name: 'created', text: '@(Created)', align: 'center', template: '{{ created | format(\'dd.MM.yyyy\') }}', align: 1, width: 100 }
+			]
+		</script>
+	</div>
+
 </div>
 
 <div data---="importer__common.form__if:projectsform;url:/forms/project.html"></div>

@@ -23,6 +23,20 @@ W.ENCRYPT = function(str, key) {
 	return o + 'x' + HASH(o + (key || ''), true);
 };
 
+$(W).on('message', function(e) {
+	var data = e.originalEvent.data;
+	if (data) {
+		data = PARSE(data);
+		if (data) {
+			switch (data.type) {
+				case 'windows':
+					SETTER('windows/focus', data.id);
+					break;
+			}
+		}
+	}
+});
+
 ON('resize', function() {
 	SETTER('editor', 'resize');
 	clipboardresize();
