@@ -1837,6 +1837,22 @@
 			code.open.splice(index, 1);
 			exports.cache_rem(tab.path);
 
+			// In some cases can be name of tab null
+			var tmpindex = 0;
+			while (true) {
+				var open = code.open[tmpindex];
+				if (!open)
+					break;
+				if (open.name)
+					tmpindex++;
+				else
+					code.open.splice(tmpindex, 1);
+			}
+
+			var tmpindex = code.open.findIndex('name', null);
+			if (tmpindex !== -1)
+				code.open.splice(tmpindex, 1);
+
 			UPDATE('code.open');
 
 			if (tab.path === code.editor.path) {

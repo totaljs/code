@@ -1823,6 +1823,9 @@ SNIPPETS.push({ search: 'language', text: 'language', code: 'language', ch: 9 })
 
 FUNC.snippets = function(type, text, tabs, line, words, chplus) {
 
+	if (!code.current)
+		return [];
+
 	var arr = [];
 	var name = code.current.name.replace('.' + code.current.ext, '').replace(/\/-\./g, '');
 	var cache = {};
