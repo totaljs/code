@@ -761,7 +761,7 @@ header .tools .external { color: #a2a286; }
 
 .menu { padding: 0; }
 .menu .item { color: #303030; display: block; padding: 1px 5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; cursor: pointer; margin: 0 10px 2px; border-radius: 2px; font-size: 11px; }
-.menu .item .options { float: right; cursor: pointer; font-size: 12px; margin: 2px 0 0; }
+.menu .item .options { float: right; cursor: pointer; font-size: 10px; }
 .menu .item > i { width: 12px; text-align: center; margin: 1px 5px 0 0; float: left; }
 .menu .item > .fa-trash-o { float: right; text-align: center; margin: 4px 0 0; font-size: 12px; }
 .menu .selected { color: white; }

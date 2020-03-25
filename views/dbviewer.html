@@ -22,15 +22,16 @@
 
 	<div data---="LAZY confirm"></div>
 	<div data---="LAZY directory__null__placeholder:@(Search)"></div>
+	<div data---="LAZY menu"></div>
 
 	<div data---="message"></div>
 	<div data---="loading"></div>
 
 	<div class="database">
 		<div data---="layout2__null__parent:window" class="invisible">
-			<div data-type="top2" data-size="193" class="topsection">
-				<div data---="codemirror__dbview.query__height:130;type:sql;cmdenter:dbview.submit"></div>
-				<div class="help"><span class="link exec" data-exec="dbview.history"><i class="fa fa-history"></i>@(History)</span><span class="link exec b red" data-exec="dbview.execute"><i class="fa fa-play-circle"></i>@(Run query)</span><span class="link exec green hidden" data-bind="dbview.keywords__show" data-exec="dbview.columns"><i class="fa fa-plus-circle"></i>@(Add columns)</span><span class="pull-right"><i class="fa fa-keyboard"></i><code data-bind="shortcutexecute__text">---</code> @(executes a query)</span></div>
+			<div data-type="top2" data-size="213" class="topsection">
+				<div data---="codemirror__dbview.query__height:150;type:sql;cmdenter:dbview.submit"></div>
+				<div class="help"><span class="link exec" data-exec="dbview.history"><i class="fa fa-history"></i>@(History)</span><span class="link exec b red" data-exec="dbview.execute"><i class="fa fa-play-circle"></i>@(Run query)</span><span class="link exec" data-exec="dbview.options"><i class="fa fa-cog"></i>@(Options)</span><span class="pull-right"><i class="fa fa-keyboard"></i><code data-bind="shortcutexecute__text">---</code> @(executes a query)</span></div>
 				<div data---="inputsearch__dbview.search__placeholder:@(Search in results)"></div>
 			</div>
 			<div data-type="left" data-size="200px" data-scrollbar="visible:true" class="leftsection">
@@ -40,28 +41,28 @@
 						{{ if value.tables.length }}
 							<div class="caption">@(Tables)</div>
 							{{ foreach m in value.tables }}
-								<div class="item exec" data-exec="dbview.template"><i class="fa fa-columns"></i>{{ m.name }}</div>
+								<div class="item exec" data-exec="dbview.template" data-type="table"><span class="options exec" data-prevent="true" data-exec="dbview.modify"><i class="fa fa-cog"></i></span><i class="fa fa-columns"></i>{{ m.name }}</div>
 							{{ end }}
 						{{ fi }}
 
 						{{ if value.views.length }}
 							<div class="caption">@(Views)</div>
 							{{ foreach m in value.views }}
-								<div class="item exec" data-exec="dbview.template"><i class="fa fa-eye"></i>{{ m.name }}</div>
+								<div class="item exec" data-exec="dbview.template" data-type="view"><span class="options exec" data-prevent="true" data-exec="dbview.modify"><i class="fa fa-cog"></i></span><i class="fa fa-eye"></i>{{ m.name }}</div>
 							{{ end }}
 						{{ fi }}
 
 						{{ if value.functions.length }}
 							<div class="caption">@(Functions)</div>
 							{{ foreach m in value.functions }}
-								<div class="item exec" data-exec="dbview.template" data-type="function"><i class="fa fa-code"></i>{{ m.name }}</div>
+								<div class="item exec" data-exec="dbview.template" data-type="function"><span class="options exec" data-prevent="true" data-exec="dbview.modify"><i class="fa fa-cog"></i></span><i class="fa fa-code"></i>{{ m.name }}</div>
 							{{ end }}
 						{{ fi }}
 
 						{{ if value.procedures.length }}
 							<div class="caption">@(Procedures)</div>
 							{{ foreach m in value.procedures }}
-								<div class="item exec" data-exec="dbview.template" data-type="procedure"><i class="fa fa-code-branch"></i>{{ m.name }}</div>
+								<div class="item exec" data-exec="dbview.template" data-type="procedure"><span class="options exec" data-prevent="true" data-exec="dbview.modify"><i class="fa fa-cog"></i></span><i class="fa fa-code-branch"></i>{{ m.name }}</div>
 							{{ end }}
 						{{ fi }}
 
@@ -177,7 +178,7 @@
 				var tables = [];
 				var procedures = [];
 				var keywords;
-				var statickeywords = ['SELECT * FROM ', 'INNER JOIN ', 'LEFT JOIN ', 'CREATE TABLE ', 'DELETE FROM ', 'INSERT INTO ', 'CREATE OR REPLACE VIEW ', 'CREATE OR REPLACE FUNCTION ', 'WHERE ', 'ORDER BY ', 'GROUP BY', 'COUNT(1)', 'LIMIT ', 'OFFSET ', 'ILIKE ', 'DROP TABLE '];
+				var statickeywords = ['SELECT * FROM ', 'INNER JOIN ', 'LEFT JOIN ', 'CREATE TABLE ', 'DELETE FROM ', 'INSERT INTO ', 'CREATE OR REPLACE VIEW ', 'CREATE OR REPLACE FUNCTION ', 'WHERE ', 'ORDER BY ', 'GROUP BY', 'COUNT(1)', 'LIMIT ', 'OFFSET ', 'ILIKE ', 'DROP TABLE ', 'ALTER TABLE ', 'CREATE INDEX ON ', 'COMMENT ON COLUMN ', 'CONSTRAINT '];
 
 				for (var i = 0; i < response.value.length; i++) {
 					var item = response.value[i];
@@ -332,9 +333,118 @@
 					});
 				});
 
-				meta.columns = function() {
-					if (keywords)
-						meta.editor.replaceSelection(keywords.join(','));
+				meta.modify = function(el) {
+					var opt = {};
+					opt.items = [];
+					opt.align = 'right';
+					opt.offsetY = -10;
+					opt.items.push({ name: '@(Create SQL)', value: 'modify', icon: 'wrench' });
+					opt.items.push({ name: '@(Drop SQL)', value: 'drop', icon: 'trash-o red' });
+					opt.element = el;
+					opt.callback = function(item) {
+						el = el.parent();
+						var name = el.text();
+						var type = el.attrd('type');
+						switch (type) {
+							case 'table':
+								if (item.value === 'drop') {
+									SET('dbview.query', 'DROP TABLE ' + name + ';');
+								} else {
+									meta.submitspecial(atob('U0VMRUNUICdDUkVBVEUgVEFCTEUgJyB8fCByZWxuYW1lIHx8IEUnKFxuJyB8fCBhcnJheV90b19zdHJpbmcoYXJyYXlfYWdnKEUnXHQnIHx8IGNvbHVtbl9uYW1lIHx8ICcgJyB8fCAgdHlwZSB8fCAnICd8fCBub3RfbnVsbCksIEUnLCBcbicpIHx8IEUnXG4pO1xuJyBhcyBjb2RlIEZST00gKFNFTEVDVCBjLnJlbG5hbWUsIGEuYXR0bmFtZSBBUyBjb2x1bW5fbmFtZSwgcGdfY2F0YWxvZy5mb3JtYXRfdHlwZShhLmF0dHR5cGlkLCBhLmF0dHR5cG1vZCkgYXMgdHlwZSwgQ0FTRSBXSEVOIGEuYXR0bm90bnVsbCBUSEVOICdOT1QgTlVMTCcgRUxTRSAoU0VMRUNUIENBU0UgV0hFTiB4LmNvbHVtbl9kZWZhdWx0IElTIE5VTEwgVEhFTiAnTlVMTCcgRUxTRSAoJ0RFRkFVTFQgJyB8fCB4LmNvbHVtbl9kZWZhdWx0KSBFTkQgRlJPTSBpbmZvcm1hdGlvbl9zY2hlbWEuY29sdW1ucyB4IFdIRVJFIHgudGFibGVfbmFtZT1jLnJlbG5hbWUgQU5EIHguImNvbHVtbl9uYW1lIj1hdHRuYW1lIExJTUlUIDEpIEVORCBBUyBub3RfbnVsbCBGUk9NIHBnX2NsYXNzIGMsIHBnX2F0dHJpYnV0ZSBhLCBwZ190eXBlIHQgV0hFUkUgYy5yZWxuYW1lPSd7MH0nIEFORCBhLmF0dG51bSA+IDAgQU5EIGEuYXR0cmVsaWQgPSBjLm9pZCBBTkQgYS5hdHR0eXBpZCA9IHQub2lkIE9SREVSIEJZIGEuYXR0bnVtKSBBUyBzY2hlbWEgR1JPVVAgQlkgcmVsbmFtZTs=').format(name), function(response) {
+										var sql = (response.value && response.value[0] ? response.value[0].code : '') || '';
+										meta.submitspecial('SELECT indexdef as code FROM pg_indexes WHERE tablename=\'{0}\';'.format(name), function(response) {
+											var tmp = [];
+											for (var i = 0; i < response.value.length; i++)
+												tmp.push(response.value[i].code.replace('CREATE INDEX', 'CREATE INDEX IF NOT EXISTS').replace('CREATE UNIQUE INDEX', 'CREATE UNIQUE INDEX IF NOT EXISTS') + ';');
+											if (tmp.length)
+												sql += '\n' + tmp.join('\n');
+											meta.submitspecial(atob('U0VMRUNUICdBTFRFUiBUQUJMRSB7MH0gQUREIENPTlNUUkFJTlQgJyB8fCBjb25uYW1lIHx8ICcgJyB8fCBwZ19nZXRfY29uc3RyYWludGRlZihjLm9pZCkgQVMgY29kZSBGUk9NIHBnX2NvbnN0cmFpbnQgYyBKT0lOIHBnX25hbWVzcGFjZSBuIE9OIG4ub2lkPWMuY29ubmFtZXNwYWNlIFdIRVJFIGNvbnR5cGUgSU4gKCdmJywncCcpIEFORCBjb25yZWxpZDo6cmVnY2xhc3M6OnRleHQ9J3swfScgT1JERVIgQlkgY29udHlwZQ==').format(name), function(response) {
+												var tmp = [];
+												for (var i = 0; i < response.value.length; i++)
+													tmp.push(response.value[i].code + ';');
+												if (tmp.length)
+													sql += '\n' + tmp.join('\n');
+												SET('dbview.query', 'DROP TABLE ' + name + ';\n' + sql.trim());
+											});
+										});
+									});
+								}
+								break;
+							case 'view':
+								if (item.value === 'drop') {
+									SET('dbview.query', 'DROP VIEW ' + name + ';');
+								} else {
+									meta.submitspecial('SELECT pg_get_viewdef(\'{0}\', true) AS code'.format(name), function(response) {
+										var sql = (response.value && response.value[0] ? response.value[0].code : '') || '';
+										sql && SET('dbview.query', 'CREATE OR REPLACE VIEW AS\n  ' + sql.trim() + ';');
+									});
+								}
+								break;
+							case 'function':
+							case 'procedure':
+								if (item.value === 'drop') {
+									SET('dbview.query', 'DROP ' + type.toUpperCase() + ' ' + name + ';');
+								} else {
+									meta.submitspecial('SELECT pg_get_functiondef(oid) AS code FROM pg_proc WHERE proname=\'{0}\'; code'.format(name), function(response) {
+										var sql = (response.value && response.value[0] ? response.value[0].code : '') || '';
+										sql && SET('dbview.query', sql.trim());
+									});
+								}
+								break;
+						}
+					};
+					SETTER('menu/show', opt);
+				};
+
+				meta.options = function(el) {
+
+					var opt = {};
+					opt.items = [];
+					opt.offsetY = -10;
+
+					if (keywords && keywords.length) {
+						opt.items.push({ name: '@(Add columns) (+' + keywords.length + ')', value: 'keywords', icon: 'columns' });
+						opt.items.push('-');
+					}
+
+					var maintenance = [];
+					maintenance.push({ name: 'Vacuum', sql: 'VACUUM FULL VERBOSE;', icon: 'code' });
+					maintenance.push({ name: 'Analyse', sql: 'ANALYZE VERBOSE;', icon: 'code' });
+					maintenance.push({ name: 'Reindex', sql: 'REINDEX DATABASE {0};', value: 'reindex', icon: 'code' });
+					opt.items.push({ name: '@(Maintenance)', value: 'maintenance', icon: 'wrench', children: maintenance });
+
+					var templates = [];
+					templates.push({ name: '@(Create table)', sql: atob('Q1JFQVRFIFRBQkxFICJwdWJsaWMiLiJ0YWJsZV9uYW1lIiAoCgkiaWQiIHZhcmNoYXIoMjUpIE5PVCBOVUxMLAoJIm5hbWUiIHZhcmNoYXIoNTApLAoJImlzcmVtb3ZlZCIgYm9vbCBERUZBVUxUIGZhbHNlLAoJImR0dXBkYXRlZCIgdGltZXN0YW1wLAoJImR0Y3JlYXRlZCIgdGltZXN0YW1wIERFRkFVTFQgbm93KCksCglQUklNQVJZIEtFWSAoImlkIikKKTs='), icon: 'code' });
+					templates.push({ name: '@(Create index)', sql: 'CREATE INDEX tbl_user_email_idx ON tbl_user(email text_ops);', icon: 'code' });
+					templates.push({ name: '@(Create view)', sql: 'CREATE OR REPLACE VIEW view_name AS\n\tSELECT * FROM tbl_user;', icon: 'code' });
+					templates.push({ name: '@(Create comment)', sql: 'COMMENT ON COLUMN "public"."tbl_user"."id" IS \'This is primary key\';', icon: 'code' });
+					templates.push({ name: '@(Add column)', sql: 'ALTER TABLE tbl_user ADD isremoved BOOLEAN DEFAULT FALSE;', icon: 'code' });
+					templates.push({ name: '@(Add constraint)', sql: 'ALTER TABLE tbl_user ADD CONSTRAINT "tbl_user_openplatformid_fkey" FOREIGN KEY ("openplatformid") REFERENCES "public"."tbl_openplatform"("id") ON DELETE CASCADE ON UPDATE CASCADE;', icon: 'code' });
+					templates.push({ name: '@(Alter column)', sql: 'ALTER TABLE tbl_user ALTER COLUMN email TYPE VARCHAR(120);', icon: 'code' });
+					opt.items.push({ name: '@(Templates)', icon: 'folder', children: templates });
+
+					opt.element = el;
+					opt.callback = function(item) {
+
+						if (item.value === 'keywords') {
+							if (keywords)
+								meta.editor.replaceSelection(keywords.join(','));
+							return;
+						}
+
+						if (item.value === 'reindex') {
+							meta.submitspecial('SELECT current_database() as name', function(response) {
+								if (response.value && response.value[0])
+									SET('dbview.query', item.sql.format(response.value[0].name));
+							});
+							return;
+						}
+
+						if (item.sql)
+							SET('dbview.query', item.sql);
+
+					};
+					SETTER('menu/show', opt);
 				};
 
 				meta.execute = function() {
@@ -362,6 +472,10 @@
 						}, 700);
 					} else
 						meta.submit2(value);
+				};
+
+				meta.submitspecial = function(query, callback) {
+					AJAX('POST /api/database/pg/', { connection: conn, query: query }, ASETTER('message/response', callback));
 				};
 
 				meta.submit2 = function(value) {
@@ -416,9 +530,10 @@
 
 				meta.template = function(el) {
 					var type = el.attrd('type');
-					var q = type ? el.text() : ('SELECT * FROM ' + el.text() + ' LIMIT 50');
+					var fn = type !== 'view' && type !== 'table';
+					var q = fn ? el.text() : ('SELECT * FROM ' + el.text() + ' LIMIT 50');
 					SET('dbview.query', q);
-					if (!type)
+					if (!fn)
 						meta.submit(q);
 				};
 
