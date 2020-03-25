@@ -54,11 +54,11 @@
 		};
 
 		exports.autodiscover = function() {
-			SETTER('confirm', 'show2', '@(Are you sure you want to perform auto-discover of projects?)', ['"search-plus" @(Discover) #4285F4', '@(Cancel)'], function() {
-				SETTER('loading', 'show');
+			SETTER('confirm/show2', '@(Are you sure you want to perform auto-discover of projects?)', ['"search-plus" @(Discover) #4285F4', '@(Cancel)'], function() {
+				SETTER('loading/show');
 				AJAX('GET /api/projects/discover/', function() {
 					setTimeout(function() {
-						SETTER('loading', 'hide', 500);
+						SETTER('loading/hide', 500);
 						exports.refresh();
 					}, 4000);
 				});
@@ -75,32 +75,28 @@
 			SETTER('menu', 'show', 'left', el, items, function(item) {
 				switch (item.value) {
 					case 1:
-						SETTER('confirm', 'show', '@(Are you sure you want to remove all backups for selected projects?)', ['"trash-o"@(Remove)', '@(Cancel)'], function(index) {
-							if (!index) {
-								SETTER('loading', 'show');
-								projects.checked.wait(function(item, next) {
-									AJAX('DELETE /api/projects/{id}/backups/'.arg(item), next);
-								}, function() {
-									SETTER('loading', 'hide', 100);
-									SETTER('snackbar', 'success', '@(All backups of selected projects have been removed.)');
-									exports.refresh();
-								});
-							}
+						SETTER('confirm/show2', '@(Are you sure you want to remove all backups for selected projects?)', ['"trash-o"@(Remove)', '@(Cancel)'], function() {
+							SETTER('loading/show');
+							projects.checked.wait(function(item, next) {
+								AJAX('DELETE /api/projects/{id}/backups/'.arg(item), next);
+							}, function() {
+								SETTER('loading/hide', 100);
+								SETTER('notifybar/success', '@(All backups of selected projects have been removed.)');
+								exports.refresh();
+							});
 						});
 						break;
 
 					case 255:
-						SETTER('confirm', 'show', '@(Are you sure you want to remove selected projects?)', ['"trash-o"@(Remove)', '@(Cancel)'], function(index) {
-							if (!index) {
-								SETTER('loading', 'show');
-								projects.checked.wait(function(item, next) {
-									AJAX('DELETE /api/projects/{id}/'.arg(item), next);
-								}, function() {
-									SETTER('loading', 'hide', 100);
-									SETTER('snackbar', 'success', '@(Selected projects have been removed.)');
-									exports.refresh();
-								});
-							}
+						SETTER('confirm/show2', '@(Are you sure you want to remove selected projects?)', ['"trash-o"@(Remove)', '@(Cancel)'], function() {
+							SETTER('loading/show');
+							projects.checked.wait(function(item, next) {
+								AJAX('DELETE /api/projects/{id}/'.arg(item), next);
+							}, function() {
+								SETTER('loading/hide', 100);
+								SETTER('notifybar/success', '@(Selected projects have been removed.)');
+								exports.refresh();
+							});
 						});
 						break;
 				}

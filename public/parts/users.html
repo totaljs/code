@@ -53,8 +53,8 @@
 		};
 
 		exports.execrefresh = function() {
-			SETTER('confirm', 'show', '@(Are you sure you want to send refresh command?)', ['"refresh" Yes, refresh', 'Cancel'], function(index) {
-				!index && AJAX('GET /api/users/refresh/', NOOP);
+			SETTER('confirm/show2', '@(Are you sure you want to send refresh command?)', ['"refresh" Yes, refresh', 'Cancel'], function() {
+				AJAX('GET /api/users/refresh/', NOOP);
 			});
 		};
 
@@ -84,20 +84,18 @@
 
 			items.push({ value: 255, name: '@(Remove)', icon: 'times-circle red' });
 
-			SETTER('menu', 'show', 'left', el, items, function(item) {
+			SETTER('menu/show', 'left', el, items, function(item) {
 				switch (item.value) {
 					case 255:
-						SETTER('confirm', 'show', '@(Are you sure you want to remove selected users?)', ['"trash-o"@(Remove)', '@(Cancel)'], function(index) {
-							if (!index) {
-								SETTER('loading', 'show');
-								users.checked.wait(function(item, next) {
-									AJAX('DELETE /api/users/{id}/'.arg(item), next);
-								}, function() {
-									SETTER('loading', 'hide', 100);
-									SETTER('snackbar', 'success', '@(Selected users have been removed.)');
-									exports.refresh();
-								});
-							}
+						SETTER('confirm/show2', '@(Are you sure you want to remove selected users?)', ['"trash-o"@(Remove)', '@(Cancel)'], function(index) {
+							SETTER('loading/show');
+							users.checked.wait(function(item, next) {
+								AJAX('DELETE /api/users/{id}/'.arg(item), next);
+							}, function() {
+								SETTER('loading/hide', 100);
+								SETTER('notifybar/success', '@(Selected users have been removed.)');
+								exports.refresh();
+							});
 						});
 						break;
 				}
@@ -131,7 +129,7 @@
 					next();
 			}, function() {
 				count && exports.refresh();
-				SETTER('snackbar', 'success', '@(<b>{0} users</b> have been imported successfully.)'.format(count));
+				SETTER('notifybar/success', '@(<b>{0} users</b> have been imported successfully.)'.format(count));
 			});
 
 			NULL('common.form');

@@ -529,15 +529,15 @@ FUNC.wssend = function(msg) {
 };
 
 FUNC.success = function(msg) {
-	SETTER('snackbar/success', msg);
+	SETTER('notifybar/success', msg);
 };
 
 FUNC.warning = function(msg) {
-	SETTER('snackbar/warning', msg instanceof Array ? msg[0].error : msg);
+	SETTER('notifybar/warning', msg instanceof Array ? msg[0].error : msg);
 };
 
 FUNC.info = function(msg) {
-	SETTER('snackbar/show', msg);
+	SETTER('notifybar/info', msg);
 };
 
 FUNC.editor_reload = function() {

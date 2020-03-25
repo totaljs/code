@@ -811,3 +811,9 @@ header .tools .external { color: #a2a286; }
 .td .db-date { color: #6E20B9; }
 .td .db-boolean { color: #28BC21; }
 .database .CodeMirror { font-size: 13px; }
+
+.metainfo { font-size: 10px; padding: 5px 10px; width: 200px; font-family: Menlo; }
+.metainfo b { display: block; border-bottom: 1px solid #E0E0E0; padding-bottom: 4px; margin-bottom: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.td .metainfo { color: gray; }
+.td .metainfo b { border-bottom-color: #404040; color: white; }

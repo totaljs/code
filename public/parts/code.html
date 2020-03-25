@@ -303,7 +303,7 @@
 
 			var win = windows.findItem('id', obj.id);
 			if (win) {
-				SETTER('windows/toggle', obj.id);
+				SETTER('windows/show', obj.id);
 				return;
 			}
 
@@ -1720,6 +1720,7 @@
 				items.push({ value: 'directory', name: '@(Create directory)', icon: '!far fa-folder-o' });
 			} else {
 				items.push({ value: 'download', name: '@(Download file)', icon: 'cloud-download', classname: 'b' });
+				items.push({ value: 'metainfo', name: '@(Read info)', icon: 'info-circle' });
 				items.push('-');
 			}
 
@@ -1754,6 +1755,14 @@
 				switch (item.value) {
 					case 'download':
 						location.href = '/api/download/' + code.data.id + '/?path=' + encodeURIComponent(path);
+						break;
+					case 'metainfo':
+						AJAX('GET /api/metainfo/' + code.data.id + '/?path=' + encodeURIComponent(path), function(response) {
+							response.mode = '0' + (response.mode & parseInt('777', 8)).toString(8);
+							SETTER('infopanel/show', el, function(el) {
+								el.html('<div class="metainfo"><b><i class="far fa-file-text-o"></i> {4}</b>Size: {0}<br />Mode: {1}<br />Modified: {2}<br />Created: {3}</div>'.format(response.size.filesize(), response.mode, response.mtime.format(), response.ctime.format(), path));
+							}, -10, -105, false);
+						});
 						break;
 					case 'bundles':
 					case 'packages':

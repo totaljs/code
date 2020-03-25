@@ -21,7 +21,7 @@
 	<script src="/js/cdn.min.js"></script>
 	@{import('meta', 'head', 'default.css', 'default.js', 'favicon.ico')}
 </head>
-<body data---="exec" class="@{if (user.darkmode === 2 && (NOW.getHours()<=6 || NOW.getHours()>=18)) || (user.darkmode !== 0 && user.darkmode !== 2)}td @{fi}invisible" data-jc-class="invisible">
+<body data---="exec" class="@{if (user.darkmode === 2 && (NOW.getHours()<=6 || NOW.getHours()>=18)) || (user.darkmode !== 0 && user.darkmode !== 2)}td @{fi}invisible codebody" data-jc-class="invisible">
 
 	<div class="bbfooter"></div>
 
@@ -29,7 +29,7 @@
 	<div data---="LAZY imageviewer"></div>
 	<div data---="LAZY suggestion__null__placeholder:@(Search)"></div>
 	<div data---="LAZY autocomplete__null__height:200"></div>
-	<div data---="LAZY snackbar__null__button:@(OK)"></div>
+	<div data---="LAZY notifybar"></div>
 	<div data---="LAZY tooltip"></div>
 	<div data---="LAZY floatinginput"></div>
 	<div data---="features__null__placeholder:@(What are you looking for?)"></div>

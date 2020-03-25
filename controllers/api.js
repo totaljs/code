@@ -61,6 +61,7 @@ exports.install = function() {
 	// Other
 	ROUTE('+GET     /api/templates/{id}/',                                   template);
 	ROUTE('+GET     /api/download/{id}/',                                    files_download);
+	ROUTE('+GET     /api/metainfo/{id}/',                                    files_metainfo);
 	ROUTE('+POST    /api/files/minify/                     *Minify',         files_minify);
 	ROUTE('+GET     /logout/',                                               redirect_logout);
 
@@ -178,6 +179,27 @@ function files_restore(id) {
 		else
 			self.plain(data);
 	});
+}
+
+function files_metainfo(id) {
+	var self = this;
+	var item = MAIN.projects.findItem('id', id);
+
+	if (!item) {
+		self.status = 400;
+		self.invalid('error-project');
+		return;
+	}
+
+	var path = self.query.path || '';
+	var filename = Path.join(item.path, path);
+
+	if (MAIN.authorize(item, self.user, path))
+		Fs.lstat(filename, self.callback());
+	else {
+		self.status = 401;
+		self.invalid('error-permissions');
+	}
 }
 
 function files_download(id) {

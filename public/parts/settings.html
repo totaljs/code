@@ -71,7 +71,7 @@
 					if (user.sa)
 						common.token = data.token;
 
-					SETTER('snackbar', 'show', '@(Account has been updated successfully.)');
+					SETTER('notifybar/show', '@(Account has been updated successfully.)');
 					user.darkmode = data.darkmode;
 					user.email = data.email;
 					user.localsave = data.localsave;

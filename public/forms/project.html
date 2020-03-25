@@ -100,7 +100,7 @@
 			AJAX('POST /api/projects/', data, function(response) {
 				if (response.success) {
 					SET('common.form', '');
-					SETTER('snackbar/success', '@(The project has been saved successfully.)');
+					SETTER('notifybar/success', '@(The project has been saved successfully.)');
 					EXEC('projects/refresh');
 				} else
 					SET('projectsform.response', response);
