@@ -1384,8 +1384,8 @@ COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 	};
 
 	var resize = function() {
-		var h = self.closest('.ui-viewbox-body').height();
-		self.css('min-height', h - 80);
+		var h = self.closest('.ui-viewbox-body').height() - self.element.parent().find('.changedfiles').height() - 20;
+		self.css('min-height', h);
 	};
 
 	self.resize = function() {

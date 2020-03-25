@@ -1031,7 +1031,7 @@ li.ui-directory-current { background-color: rgba(0,0,0,0.02); font-weight: bold;
 
 .td .ui-notifybar { background-color: #282828; border-color: #404040; }
 .td .ui-notifybar-controls button { color: white; }
-.td .ui-notifybar-controls button:disabled { color: #505050; }
+.td .ui-notifybar-controls button:disabled { color: #505050;background-color: transparent; }
 .td .ui-notifybar-controls { border-right-color: #404040; }
 
 .codebody .ui-notifybar { bottom: 50px; }
