@@ -41,33 +41,35 @@
 						{{ if value.tables.length }}
 							<div class="caption">@(Tables)</div>
 							{{ foreach m in value.tables }}
-								<div class="item exec" data-exec="dbview.template" data-type="table"><span class="options exec" data-prevent="true" data-exec="dbview.modify"><i class="fa fa-cog"></i></span><i class="fa fa-columns"></i>{{ m.name }}</div>
+								<div class="item exec" data-exec="dbview.template" data-type="table"><span class="options exec" data-prevent="true" data-exec="dbview.modify"><i class="fa fa-ellipsis-h"></i></span><i class="fa fa-columns"></i>{{ m.name }}</div>
 							{{ end }}
 						{{ fi }}
 
 						{{ if value.views.length }}
 							<div class="caption">@(Views)</div>
 							{{ foreach m in value.views }}
-								<div class="item exec" data-exec="dbview.template" data-type="view"><span class="options exec" data-prevent="true" data-exec="dbview.modify"><i class="fa fa-cog"></i></span><i class="fa fa-eye"></i>{{ m.name }}</div>
+								<div class="item exec" data-exec="dbview.template" data-type="view"><span class="options exec" data-prevent="true" data-exec="dbview.modify"><i class="fa fa-ellipsis-h"></i></span><i class="fa fa-eye"></i>{{ m.name }}</div>
 							{{ end }}
 						{{ fi }}
 
 						{{ if value.functions.length }}
 							<div class="caption">@(Functions)</div>
 							{{ foreach m in value.functions }}
-								<div class="item exec" data-exec="dbview.template" data-type="function"><span class="options exec" data-prevent="true" data-exec="dbview.modify"><i class="fa fa-cog"></i></span><i class="fa fa-code"></i>{{ m.name }}</div>
+								<div class="item exec" data-exec="dbview.template" data-type="function"><span class="options exec" data-prevent="true" data-exec="dbview.modify"><i class="fa fa-ellipsis-h"></i></span><i class="fa fa-code"></i>{{ m.name }}</div>
 							{{ end }}
 						{{ fi }}
 
 						{{ if value.procedures.length }}
 							<div class="caption">@(Procedures)</div>
 							{{ foreach m in value.procedures }}
-								<div class="item exec" data-exec="dbview.template" data-type="procedure"><span class="options exec" data-prevent="true" data-exec="dbview.modify"><i class="fa fa-cog"></i></span><i class="fa fa-code-branch"></i>{{ m.name }}</div>
+								<div class="item exec" data-exec="dbview.template" data-type="procedure"><span class="options exec" data-prevent="true" data-exec="dbview.modify"><i class="fa fa-ellipsis-h"></i></span><i class="fa fa-code-branch"></i>{{ m.name }}</div>
 							{{ end }}
 						{{ fi }}
 
 					</script>
 				</div>
+				<br />
+				<br />
 				<br />
 			</div>
 			<div data-type="main" data-scrollbar="visible:true">

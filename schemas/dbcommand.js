@@ -49,7 +49,7 @@ NEWSCHEMA('DBCommand', function(schema) {
 		};
 
 		if (model.query[0] === '-')
-			model.query = 'SELECT CASE WHEN table_schema=\'public\' THEN \'\' ELSE table_schema || \'.\' END || "table_name" as name, CASE WHEN table_type=\'BASE TABLE\' THEN \'TABLE\' ELSE table_type END as type FROM information_schema.tables WHERE table_schema NOT IN (\'pg_catalog\', \'information_schema\') UNION ALL SELECT "routine_name" as name, routine_type as type FROM information_schema.routines WHERE routines.specific_schema=\'public\' LIMIT 20';
+			model.query = 'SELECT CASE WHEN table_schema=\'public\' THEN \'\' ELSE table_schema || \'.\' END || "table_name" as name, CASE WHEN table_type=\'BASE TABLE\' THEN \'TABLE\' ELSE table_type END as type FROM information_schema.tables WHERE table_schema NOT IN (\'pg_catalog\', \'information_schema\') UNION ALL SELECT "routine_name" as name, routine_type as type FROM information_schema.routines WHERE routines.specific_schema=\'public\' LIMIT 150';
 
 		client.connect(function(err) {
 
