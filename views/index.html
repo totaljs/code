@@ -475,12 +475,17 @@
 
 		SETTER(true, 'shortcuts', 'register', 'F2', function(e) {
 			var n = 'components';
-			code.current && (/js|css|html/).test(code.current.ext) && SET('common.form', common.form === n ? '' : n);
+			code.data && SET('common.form', common.form === n ? '' : n);
 		}, true);
 
 		SETTER(true, 'shortcuts', 'register', 'F3', function(e) {
 			var n = 'componentator';
 			code.current && (/js|css|html/).test(code.current.ext) && SET('common.form', common.form === n ? '' : n);
+		}, true);
+
+		SETTER(true, 'shortcuts', 'register', 'cmd+shift+f,ctrl+shift+f', function(e) {
+			var n = 'search';
+			code.data && SET('common.form', common.form === n ? '' : n);
 		}, true);
 
 		/*
@@ -542,13 +547,13 @@
 
 		SETTER(true, 'shortcuts', 'register', 'esc', function(e) {
 
-			if (window.code && window.code.statusform)
+			if (W.code && W.code.statusform)
 				SET('code.statusform', '');
 
 			SETTER('!menu', 'hide');
 		});
 
-		common.electron && window.require('electron').ipcRenderer.on('tabs.close', function() {
+		common.electron && W.require('electron').ipcRenderer.on('tabs.close', function() {
 			EXEC('code/close');
 		});
 

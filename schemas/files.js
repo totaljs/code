@@ -1,6 +1,7 @@
 const Path = require('path');
 const Fs = require('fs');
 const Exec = require('child_process').execFile;
+const CONCAT = [null, null];
 
 NEWSCHEMA('FilesTodo', function(schema) {
 	schema.define('line', Number);
@@ -328,6 +329,50 @@ NEWSCHEMA('Files', function(schema) {
 
 	});
 
+	schema.addWorkflow('search', function($) {
+
+		var project = MAIN.projects.findItem('id', $.id);
+
+		if (project == null) {
+			$.invalid('error-project');
+			return;
+		}
+
+		var user = $.user;
+
+		if (!user.sa) {
+
+			if (project.users.indexOf(user.id) === -1) {
+				$.invalid('error-permissions');
+				return;
+			}
+
+			if (!MAIN.authorize(project, $.user, $.query.path)) {
+				$.invalid('error-permissions');
+				return;
+			}
+		}
+
+		var filename = Path.join(project.path, $.query.path);
+		var stream = Fs.createReadStream(filename);
+		var output = [];
+		var q = $.query.search.toLowerCase();
+
+		CLEANUP(stream.on('data', customstreamer(function(line, lineindex) {
+
+			var index = line.search(q);
+
+			console.log(index);
+
+			if (output.length > 20)
+				return;
+
+			if (index !== -1)
+				output.push({ line: lineindex + 1, ch: index, name: line.substring(index - 20).max(50, '...').trim() });
+
+		}, stream, () => $.callback(output))));
+	});
+
 });
 
 NEWSCHEMA('FilesRename', function(schema) {
@@ -550,3 +595,57 @@ NEWSCHEMA('FilesCreate', function(schema) {
 
 	});
 });
+
+function customstreamer(callback, stream, done) {
+
+	var indexer = 0;
+	var buffer = Buffer.alloc(0);
+	var canceled = false;
+	var fn;
+	var beg = Buffer.from('\n', 'utf8');
+
+	var length = beg.length;
+	fn = function(chunk) {
+
+		if (!chunk || canceled)
+			return;
+
+		CONCAT[0] = buffer;
+		CONCAT[1] = chunk;
+
+		var f = 0;
+
+		if (buffer.length) {
+			f = buffer.length - beg.length;
+			if (f < 0)
+				f = 0;
+		}
+
+		buffer = Buffer.concat(CONCAT);
+
+		var index = buffer.indexOf(beg, f);
+		if (index === -1)
+			return;
+
+		while (index !== -1) {
+
+			if (callback(buffer.toString('utf8', 0, index + length), indexer++) === false)
+				canceled = true;
+
+			if (canceled)
+				return;
+
+			buffer = buffer.slice(index + length);
+			index = buffer.indexOf(beg);
+			if (index === -1)
+				return;
+		}
+	};
+
+	stream && stream.on('end', function() {
+		callback(buffer.toString('utf8'), indexer);
+		done();
+	});
+
+	return fn;
+}

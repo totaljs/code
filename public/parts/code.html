@@ -149,9 +149,11 @@
 			<li data-value="output" title="@(Output panel)"><i class="fa fa-rss"></i></li>
 			<li data-value="changes" title="@(Last changes)"><i class="fa fa-history"></i></li>
 			<li data-value="backups" title="@(Backups)"><i class="fa fa-database"></i></li>
+			<li data-value="search" title="@(Search)"><i class="fa fa-search"></i></li>
 			<li data-value="timespentform" title="@(Time spent)"><i class="far fa-calendar"></i></li>
 		</ul>
 	</div>
+	<div data---="part__common.form__if:search;url:/forms/search.html;reload:codesearch/reload"></div>
 	<div data---="part__common.form__if:tasks;url:/forms/tasks.html;reload:codetasks/reload"></div>
 	<div data---="part__common.form__if:backups;url:/forms/backups.html;reload:codebackups/reload"></div>
 	<div data---="part__common.form__if:changes;url:/forms/changes.html;reload:codechanges/reload"></div>
@@ -2510,7 +2512,7 @@
 				colors.length && CSS(colors.join(''));
 			}
 
-			if (msg.fileid === code.editor.path) {
+			if (code.editor && msg.fileid === code.editor.path) {
 
 				editor && editor.clearmarkers();
 				$('#body').tclass('warning', code.usersfile && code.usersfile.length > 1);

@@ -648,7 +648,7 @@ header .tools .external { color: #a2a286; }
 .part:hover { background-color: rgba(0,0,0,0.1); }
 .part span { color: #A0A0A0; }
 .td .part span { color: #666666; }
-.td .part { color: #A0A0A0; border-color: #404040; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: Menlo,Consolas,monospace; }
+.td .part { color: #A0A0A0; border-color: #404040; }
 .td .partgroup { color: white; }
 .part .fa-crosshairs { color: #9DCEDF; }
 .part .fa-align-left { color: #C8059B; }
@@ -817,3 +817,9 @@ header .tools .external { color: #a2a286; }
 
 .td .metainfo { color: gray; }
 .td .metainfo b { border-bottom-color: #404040; color: white; }
+
+.searchresults { padding: 10px 0 0; }
+.searchresults .part { font-family: Menlo; }
+.searchcurrentfile { height: 36px; border-top: 1px solid #E0E0E0; line-height: 35px; color: gray; font-size: 12px; padding: 0 10px; }
+.searchcurrentfile i { color: $color; margin-right: 5px; }
+.td .searchcurrentfile { border-top-color: #404040; }

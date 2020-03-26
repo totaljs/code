@@ -1,0 +1,136 @@
+<!--
+	It depends on "code editor"
+-->
+
+<div data---="inputsearch__codesearch.search__placeholder:@(Search in files);$binding:1;$delay:1000"></div>
+<div data---="viewbox__codesearch.search__margin:114;parent:.ui-dockable-body;scrollbar:1">
+	<div class="searchresults">
+	</div>
+</div>
+<div class="searchcurrentfile">
+	<div data-bind="codesearch.current__text span__show">
+		<i class="fa fa-spinner fa-pulse"></i>
+		<span></span>
+	</div>
+</div>
+
+<script>
+	PLUGIN('codesearch', function(exports) {
+
+		var currentsearch = '';
+		var el = $('.searchresults');
+
+		exports.reload = function() {
+			SETTER('dockable/show', 'prop');
+			SET('?.search', '');
+			setTimeout(function() {
+				exports.element.SETTER('inputsearch/focus');
+			}, 500);
+		};
+
+		exports.stop = function() {
+			searching = '';
+		};
+
+		exports.find = function(path, el) {
+			if (code.editor.path !== path)
+				return;
+			var editor = FIND('editor').editor;
+			editor.setCursor({ line: (+el.attrd('line')) - 1, ch: +el.attrd('ch') || 0 });
+			editor.focus();
+		};
+
+		exports.open = function(el) {
+			var path = el.attrd('path');
+
+			if (code.editor && code.editor.path === path) {
+				exports.find(path, el);
+				return;
+			}
+
+			PLUGIN('code').element.SETTER('tree/selectpath', path);
+			setTimeout2('codesearchopen', function() {
+				exports.find(path, el);
+			}, 1000);
+		};
+
+		exports.render = function(filename, response) {
+			var builder = [];
+			builder.push('<div class="partgroup hellip">' + filename + '</div>');
+
+			for (var i = 0; i < response.length; i++) {
+				var res = response[i];
+				builder.push('<div class="part exec" data-path="{0}" data-exec="codesearch/open" data-line="{2}" data-ch="{3}" title="@(Line:) {2}"><span>{2}</span>: {1}</div>'.format(filename, Thelpers.encode(res.name), res.line, res.ch));
+			}
+
+			el.append(builder.join(''));
+		};
+
+		exports.search = function() {
+
+			var q = GET('?.search');
+
+			currentsearch = q;
+
+			if (common.form !== 'search') {
+				SET('common.percentage', 0);
+				return;
+			}
+
+			if (!q) {
+				SET('common.percentage', 0);
+				el.empty();
+				return;
+			}
+
+			var list = [];
+			var files = code.data.files;
+			var reg = /\.(js|html|css|md|txt|json)$|\/config/;
+
+			for (var i = 0; i < files.length; i++) {
+				var file = files[i];
+				if (reg.test(file))
+					list.push(file);
+			}
+
+			el.empty();
+
+			var count = list.length;
+
+			list.wait(function(file, next, index) {
+
+				if (q !== currentsearch || common.form !== 'search') {
+					NUL('?.current');
+					SET('common.percentage', 0);
+					next = null;
+					return;
+				}
+
+				SET('common.percentage', (index / count) * 100);
+				SET('?.current', file);
+
+				AJAX('GET /api/projects/{id}/search/'.arg(code.data), { path: file, search: q }, function(response) {
+
+					if (q !== currentsearch || common.form !== 'search') {
+						NULL('?.current');
+						next = null;
+						return;
+					}
+
+					if (response.length && !response[0].error)
+						exports.render(file, response);
+
+					setTimeout(next, 50);
+				});
+			}, function() {
+				exports.scope();
+				NUL('?.current');
+				SET('common.percentage', 0);
+			});
+
+		};
+
+		WATCH('?.search', exports.search)
+
+	});
+</script>
