@@ -191,12 +191,12 @@ COMPONENT('editor', function(self, config) {
 
 	self.diffgutterclear = function() {
 
-		var keys = Object.keys(cache_diffs_highlight);
+		var lines = self.find('.cm-changed-line');
 
-		for (var i = 0; i < keys.length; i++) {
-			var line = +keys[i];
-			editor.removeLineClass(line);
-			editor.removeLineClass(line + 1);
+		for (var i = 0; i < lines.length; i++) {
+			var el = $(lines[i]);
+			var index = +el.find('.CodeMirror-linenumber').html();
+			editor.removeLineClass(index - 1, null, 'cm-changed-line');
 		}
 
 		editor.doc.clearGutter('GutterDiff');
