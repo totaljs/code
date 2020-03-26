@@ -83,6 +83,7 @@ COMPONENT('editor', function(self, config) {
 	var cache_diffs_checksum = 0;
 	var cache_users = {};
 	var checksum = -1;
+	var autocomplete_unique;
 
 	fn.lastIndexOf = function(str, chfrom) {
 		for (var i = chfrom; i > 0; i--) {
@@ -424,7 +425,6 @@ COMPONENT('editor', function(self, config) {
 		options.lineWrapping = false;
 		options.matchBrackets = true;
 		options.scrollbarStyle = 'simple';
-
 		options.rulers = [{ column: 130, lineStyle: 'dashed' }];
 		options.gutters = ['GutterUser', 'CodeMirror-lint-markers', 'CodeMirror-linenumbers', 'GutterDiff'];
 		options.viewportMargin = 20;
@@ -433,6 +433,7 @@ COMPONENT('editor', function(self, config) {
 		options.phrases = {};
 		options.matchTags = { bothTags: true };
 		options.autoCloseTags = true;
+		options.doubleIndentSwitch = false;
 		options.scrollPastEnd = true;
 		options.lint = true;
 		options.showCursorWhenSelecting = true;
@@ -454,20 +455,6 @@ COMPONENT('editor', function(self, config) {
 			config.contextmenu && EXEC(config.contextmenu, e, editor);
 		});
 
-		/*
-		editor.on('beforeChange', function(cm, change) {
-
-			if (change.origin !== 'paste')
-				return;
-
-			for (var i = 0; i < change.text.length; i++) {
-				var line = change.text[i].replace(/^\s{2}/g, '\t');
-				console.log(line);
-			}
-
-			change.update(null, null, newText);
-		});*/
-
 		editor.on('keydown', function(editor, e) {
 			if (e.shiftKey && e.ctrlKey && (e.keyCode === 40 || e.keyCode === 38)) {
 				var tmp = editor.getCursor();
@@ -481,7 +468,6 @@ COMPONENT('editor', function(self, config) {
 				var line = editor.lineInfo(tmp.line);
 				if ((/^\t+$/).test(line.text))
 					editor.replaceRange('', { line: tmp.line, ch: 0 }, { line: tmp.line, ch: line.text.length });
-				return;
 			}
 
 		});
@@ -546,9 +532,10 @@ COMPONENT('editor', function(self, config) {
 			var mode = editor.getMode().name;
 			var is = null;
 			var name, type, oldschema, oldplugin, pluginvariable, oldtask, taskvariable, tmp;
+			var val = editor.getValue();
 
 			if (mode === 'totaljsresources' || mode === 'javascript' || mode === 'totaljs' || mode === 'css' || mode === 'sass' || mode === 'html' || mode === 'todo') {
-				var lines = editor.getValue().split('\n');
+				var lines = val.split('\n');
 				for (var i = 0; i < lines.length; i++) {
 
 					var m = mode === 'todo' ? lines[i].match(REGTODO2) : lines[i].match(REGTODO);
@@ -723,7 +710,6 @@ COMPONENT('editor', function(self, config) {
 
 			EXEC(config.components, components);
 			EXEC(config.todo, todos);
-			setTimeout2(self.ID, self.rebuild_autocomplete, 5000);
 		};
 
 		var snippets = {};
@@ -786,6 +772,15 @@ COMPONENT('editor', function(self, config) {
 			if (!a.priority && b.priority)
 				return 1;
 
+			if (a.priority && b.priority) {
+				if (a.priority < b.priority)
+					return -1;
+				else if (a.priority > b.priority)
+					return 1;
+				else
+					return 0;
+			}
+
 			if (an.length < bn.length)
 				return -1;
 			else if (an.length > bn.length)
@@ -824,6 +819,28 @@ COMPONENT('editor', function(self, config) {
 		var cache_sync = { from: {}, to: {} };
 		var combo = GET(config.combo);
 
+		var rebindvalue = function() {
+			var cur = editor.getCursor();
+			var line = editor.getLine(cur.line);
+			var index = fn.lastIndexOf(line, cur.ch, ' ', '>', '\t', ';', '.', '"', '\'', ')', '(', '<', ',');
+
+			if (index !== -1) {
+				var text = line.substring(index, cur.ch);
+				if (text) {
+					snippets.index = index;
+					snippets.text = text;
+					editor.showHint(snippetsoptions);
+				}
+			}
+
+			var val = editor.getValue();
+			self.getter2 && self.getter2(val);
+			self.change(true);
+			skip = true;
+			self.set(val);
+			skip = true;
+		};
+
 		editor.on('change', function(a, b) {
 
 			if (b.origin === 'setValue') {
@@ -841,7 +858,6 @@ COMPONENT('editor', function(self, config) {
 				}
 
 				var count = 0;
-
 				var lf = b.from.line;
 				var lt = b.from.line + b.text.length;
 				var isremoved = -1;
@@ -863,6 +879,7 @@ COMPONENT('editor', function(self, config) {
 							break;
 
 						is = cache_lines[i] === line;
+
 						if (line)
 							line = line.trim();
 
@@ -886,33 +903,13 @@ COMPONENT('editor', function(self, config) {
 
 			setTimeout2('EditorGutterColor', self.prerender_colors, 999, 20, count);
 
+			if (count)
+				setTimeout2('EditorLineChange' + lf, self.rebuild_autocomplete2, 1000, null, lf);
+
 			if (config.disabled || !can[b.origin])
 				return;
 
-			setTimeout2(self.id, function() {
-				var cur = editor.getCursor();
-				var line = editor.getLine(cur.line);
-				var index = fn.lastIndexOf(line, cur.ch, ' ', '>', '\t', ';', '.', '"', '\'', ')', '(', '<', ',');
-
-				if (index !== -1) {
-					var text = line.substring(index, cur.ch);
-					if (text) {
-						snippets.index = index;
-						snippets.text = text;
-						editor.showHint(snippetsoptions);
-					}
-				}
-
-				var val = editor.getValue();
-				self.getter2 && self.getter2(val);
-				self.change(true);
-				skip = true;
-				self.set(val);
-
-				skip = true;
-
-			}, 100);
-
+			setTimeout2(self.id, rebindvalue, 100);
 		});
 
 		self.resize();
@@ -1009,7 +1006,9 @@ COMPONENT('editor', function(self, config) {
 				editor.addLineClass(+keys[i], null, 'cm-changed-line');
 		}
 
+		autocomplete_unique = null;
 		setTimeout2('EditorGutterColor', self.prerender_colors, 500, 20, changes);
+		setTimeout2('EditorRebuild', self.rebuild_autocomplete, 500);
 	};
 
 	self.clear = function(content) {
@@ -1065,40 +1064,84 @@ COMPONENT('editor', function(self, config) {
 	};
 
 	var BL = { 'data--': 1, 'data---': 1 };
+	var REGAUTOCOMPLETE = /(#)?[a-zA-Z0-9_-]{3,30}/g;
 
-	self.rebuild_autocomplete = function() {
-		var words = editor.getValue();
+	self.rebuild_autocomplete2 = function(index) {
+
+		if (index == null || autocomplete_unique == null)
+			return;
+
+		var line = editor.getLine(index);
+		if (!line)
+			return;
+
+		var words = line.match(REGAUTOCOMPLETE);
+
+		if (words) {
+
+			var unique = {};
+
+			for (var i = 0; i < words.length; i++) {
+				var w = words[i];
+
+				if (BL[w])
+					continue;
+
+				var index = w.indexOf('__');
+				if (index !== -1)
+					w = w.substring(0, index);
+
+				if (!autocomplete_unique[w])
+					autocomplete_unique[w] = unique[w] = 1;
+			}
+
+			unique = Object.keys(unique);
+			unique.sort();
+
+			// adds new keywords
+			for (var i = 0; i < unique.length; i++) {
+				var s = unique[i];
+				autocomplete.push({ search: s, text: (s.charAt(0) === '#' && s.length === 7 ? '<i class="fa fa-square mr5" style="color:{0}"></i>'.format(s) : '') + s, code: s });
+			}
+		}
+	};
+
+	self.rebuild_autocomplete = function(val) {
+		var words = val || editor.getValue();
+		// console.log(words);
 		var max = 100000;
 		if (words.length > max)
 			words = words.substring(0, max);
-		words = words.match(/(#)?[a-zA-Z0-9_-]{3,30}/g);
+		words = words.match(REGAUTOCOMPLETE);
 		if (words) {
-			var unique = {};
+			autocomplete_unique = {};
 			for (var i = 0; i < words.length; i++) {
-
-				if (BL[words[i]])
+				var w = words[i];
+				if (BL[w])
 					continue;
-
-				var index = words[i].indexOf('__');
+				var index = w.indexOf('__');
 				if (index !== -1)
-					words[i] = words[i].substring(0, index);
-				unique[words[i]] = words[i];
+					w = w.substring(0, index);
+				autocomplete_unique[w] = 1;
 			}
 
-			autocomplete = Object.keys(unique);
+			autocomplete = Object.keys(autocomplete_unique);
 			autocomplete.sort();
 
 			for (var i = 0; i < autocomplete.length; i++) {
 				var s = autocomplete[i];
-				autocomplete[i] = { search: s, text: (s.charAt(0) === '#' && s.length === 7 ? '<i class="fa fa-square mr5" style="color:{0}"></i>'.format(s) : '') + s, code: unique[s] };
+				autocomplete[i] = { search: s, text: (s.charAt(0) === '#' && s.length === 7 ? '<i class="fa fa-square mr5" style="color:{0}"></i>'.format(s) : '') + s, code: s };
 			}
 
 			if (code.componentsdb) {
 				for (var i = 0; i < code.componentsdb.length; i++) {
 					var item = code.componentsdb[i];
 					for (var j = 0; j < item.items.length; j++) {
-						var n = item.items[j].name;
-						autocomplete.push({ html: '<i class="' + Thelpers.particon(item.items[j].type) + '"></i> <b>' + n + '</b>', search: n, code: n });
+						var t = item.items[j].type;
+						if (t !== 'schema' && t !== 'route') {
+							var n = item.items[j].name;
+							autocomplete.push({ html: '<i class="' + Thelpers.particon(item.items[j].type) + '"></i> <b>' + n + '</b>', search: n, code: n });
+						}
 					}
 				}
 			}

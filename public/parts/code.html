@@ -1381,9 +1381,9 @@
 				case 'jpeg':
 				case 'png':
 				case 'gif':
-				case 'file':
 					SETTER('imageviewer/show', item.path, '/api/download/{0}/?path={1}&preview=1'.format(code.data.id, encodeURIComponent(item.path)));
 					return;
+				case 'file':
 				case 'nosql-binary':
 					W.open('/api/download/{0}/?path={1}&preview=1'.format(code.data.id, encodeURIComponent(item.path)));
 					return;

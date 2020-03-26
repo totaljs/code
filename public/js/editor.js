@@ -1821,6 +1821,13 @@ SNIPPETS.push({ search: 'invalid', text: 'invalid', code: 'invalid', ch: 8 });
 SNIPPETS.push({ search: 'schema', text: 'schema', code: 'schema', ch: 7 });
 SNIPPETS.push({ search: 'language', text: 'language', code: 'language', ch: 9 });
 
+(function() {
+	for (var i = 0; i < SNIPPETS.length; i++) {
+		if (!SNIPPETS[i].priority)
+			SNIPPETS[i].priority = 10;
+	}
+})();
+
 FUNC.snippets = function(type, text, tabs, line, words, chplus) {
 
 	if (!code.current)

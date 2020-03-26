@@ -42,7 +42,6 @@ NEWSCHEMA('DBCommand', function(schema) {
 		}
 
 		var callback = function(err, response) {
-			console.log(arguments);
 			client.end();
 			if (err)
 				$.invalid(err);
