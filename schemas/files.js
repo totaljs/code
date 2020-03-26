@@ -362,8 +362,6 @@ NEWSCHEMA('Files', function(schema) {
 
 			var index = line.search(q);
 
-			console.log(index);
-
 			if (output.length > 20)
 				return;
 
