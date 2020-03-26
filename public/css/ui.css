@@ -153,13 +153,16 @@ div.CodeMirror span.CodeMirror-matchingbracket { border-bottom: 2px solid blue; 
 .td .ui-tree .fa-code-branch, .td .ui-tree .fa-superscript { color: #ff918c; }
 
 .dg { color: black; position: relative; visibility: hidden; }
-.dg-h-container { overflow: hidden; border: 1px solid #E0E0E0; }
-.dg-h-body { overflow: hidden; overflow-x: auto; overflow-scrolling: touch; -webkit-overflow-scrolling: touch; }
-.dg-header { position: relative; }
-.dg-hrow { height: 58px; border-bottom: 1px solid #E0E0E0; }
+.dg .ui-scrollbar-y { margin-top: 58px; }
+.dg .dg-header-scrollbar > .ui-scrollbar-area { overflow-y: hidden; }
+.dg .dg-body-scrollbar > .ui-scrollbar-area { overflow-x: hidden; }
+.dg-container { overflow: hidden; border-top: 1px solid #E0E0E0; border-left: 1px solid #E0E0E0; position: relative; }
+.dg-mobile .dg-container { border-right: 1px solid #E0E0E0; border-bottom: 1px solid #E0E0E0; }
+.dg-header { position: relative; border-bottom: 1px solid #E0E0E0; }
+.dg-hrow { height: 57px; }
 .dg-hcol { float: left; border-left: 1px solid #E0E0E0; height: 58px; font-weight: bold; position: relative; }
 .dg-sort { float: right; font-size: 11px; width: 20px; text-align: center; padding: 11px 0 0 0; color: #4285F4; }
-.dg-btn-columns { cursor: pointer; color: #D0D0D0; font-size: 20px; position: absolute; right: 0; height: 58px; background-color: #D0D0D0; width: 10px; text-align: left; z-index: 3; }
+.dg-btn-columns { cursor: pointer; color: #D0D0D0; font-size: 20px; position: absolute; right: 0; height: 59px; background-color: #D0D0D0; width: 13px; text-align: left; z-index: 3; }
 .dg-btn-columns span { display: block; padding-top: 4px; font-size: 6px; color: gray; text-align: center; }
 .dg-btn-columns i { position: absolute; margin-left: -5px; top: 26px; }
 .dg-btn-columns:hover { background-color: #D9D9D9; color: #D9D9D9; }
@@ -171,27 +174,24 @@ div.CodeMirror span.CodeMirror-matchingbracket { border-bottom: 2px solid blue; 
 .dg-sorting .dg-label.center { padding-left: 25px; padding-right: 0; }
 .dg-sorting .dg-label { margin-right: 24px; }
 .dg-filter { padding: 0 5px; border-top: 1px solid #E0E0E0; height: 23px; }
-.dg-filter select { width: 100%; outline: 0; font-size: 10px; background-color: transparent; border: 0; margin: 0; padding: 0; line-height: 12px; height: 22px; appearance: none; -webkit-appearance: none; -moz-appearance: none; color: #A0A0A0; cursor: pointer; }
-.dg-filter select:focus { color: black; }
-.dg-filter input { width: 100%; outline: 0; font-size: 10px; background-color: transparent; border: 0; margin: 0; padding: 0; line-height: 12px; height: 23px; }
+.dg-filter input, .dg-filter label { width: 100%; outline: 0; font-size: 10px; background-color: transparent; border: 0; margin: 0; padding: 0; line-height: 23px; height: 23px; }
+.dg-filter label { color: #A0A0A0; cursor: pointer; display: block; }
 .dg-filter.center input { text-align: center; }
 .dg-filter.right input { text-align: right; }
 .dg-filter-empty { border-top: 1px solid #E0E0E0; height: 23px; cursor: not-allowed !important; background: repeating-linear-gradient(45deg,#FFFFFF,#FFFFFF 10px,#F9F9F9 10px,#F9F9F9 20px); }
 .dg-hcol .dg-label { padding-top: 9px; }
 .dg-filter-selected { background-color: #FBF0CA !important; }
-.dg-filter-selected select { color: black; }
+.dg-filter-selected label { color: black; }
 .dg-filter i { position: absolute; right: 5px; margin-top: 6px; font-size: 10px; color: red; display: none; cursor: pointer; }
 .dg-filter-selected i { display: block; }
-.dg-filter-selected input, .dg-filter-selected select { padding-right: 12px; }
+.dg-filter-selected input { padding-right: 12px; }
 .dg-clickable .dg-row { cursor: pointer; }
-.dg-v-area { overflow: hidden; }
-.dg-v-container { overflow: hidden; }
-.dg-v-body { overflow-y: auto; overflow-scrolling: touch; -webkit-overflow-scrolling: touch; overflow-x: hidden; outline: 0 !important; }
-.dg-row { height: 28px; font-size: 12px; border-bottom: 1px solid #E0E0E0; }
-.dg-row:nth-child(even) { background-color: rgba(0,0,0,0.02); }
-.dg-row-changed, .dg-row-changed.dg-row:nth-child(even) { background-color: rgba(208,31,33,0.07); }
-.dg-row:hover { background-color: rgba(0,0,0,0.05); }
-.dg-selected { background-color: rgba(249,232,196,0.5) !important; }
+.dg-body { outline: 0 !important; }
+.dg-row { height: 28px; font-size: 12px; border-bottom: 1px solid #E0E0E0; -webkit-transform: translateZ(0); }
+/*.dg-body > div > div:nth-child(even) > .dg-row { background-color: rgba(0,0,0,0.02); }*/
+.dg-row-changed { background-color: rgba(208,31,33,0.07); }
+.dg-row.dg-selected { background-color: rgba(249,232,196,0.5) !important; }
+.dg-row:hover { background-color: rgba(130,130,130,0.07); }
 .dg-col { float: left; border-left: 1px solid #E0E0E0; height: 27px; overflow: hidden; min-width: 30px; }
 .dg-col:first-child { border-left: 0; }
 .dg-col-changed { background-image: url(data:image/gif;base64,R0lGODdhBgAGAIAAAP8mAAAAACH5BAEAAAEALAAAAAAGAAYAAAIKhI8QGGvt4JKhAAA7); background-repeat: no-repeat; background-position: 0 0; }
@@ -206,30 +206,25 @@ div.CodeMirror span.CodeMirror-matchingbracket { border-bottom: 2px solid blue; 
 .dg-pagination button:hover { background-color: #F0F0F0; }
 .dg-pagination button:disabled { background-color: #F9F9F9; color: #A0A0A0; }
 .dg-pagination button:first-child { border-left: 0; }
-.dg-pagination button[name="page-prev"] { border-right: 1px solid #E0E0E0; }
+.dg-pagination button[name="page-prev"] { border-right: 1px solid #E0E0E0; width: 41px; }
 .dg-pagination button[name="page-last"] { border-right: 1px solid #E0E0E0; }
-.dg-pagination input { width: 40px; text-align: center; border: 0; outline: 0; font-size: 12px; padding: 0; margin: 0; }
+.dg-pagination input { width: 40px; text-align: center; border: 0; outline: 0; font-size: 12px; padding: 0; margin: 0; background: transparent; }
 .dg-pagination > div { position: relative; display: inline-block; }
 .dg-pagination-items { float: right; font-size: 12px; margin: 7px 10px 0 0; font-weight: bold; }
 .dg-pagination-pages { float: left; font-size: 12px; margin: 7px 0 0 10px; }
-.dg-scrollbar-container-v { position: absolute; right: 0; top: 58px; width: 10px; background-color: #D0D0D0; z-index: 3; overflow: hidden; }
-.dg-scrollbar-v { width: 100%; height: 30px; background-color: gray; position: absolute; left: 0; top: 0; }
-.dg-scrollbar-container-h { position: relative; height: 10px;; background-color: #D0D0D0; overflow: hidden; }
-.dg-scrollbar-h { height: 100%; width: 30px; background-color: gray; position: absolute; left: 0; bottom: 0; }
-.dg-scroll-h .dg-h-container { border-bottom: 0; }
-.dg-noscroll .dg-v-body { overflow: hidden; }
-.dg-noscroll .dg-scrollbar-container-v { display: none; }
 .dg-visible { visibility: visible; }
 .dg-columns:before { content: ' '; position: absolute; width: 0; height: 0; margin-top: -8px; margin-left: 158px; border-left: 8px solid transparent; border-right: 8px solid transparent; border-bottom: 8px solid #404040; }
-.dg-columns { position: absolute; right: 0; top: 43px; width: 180px; background-color: #404040; z-index: 1; box-shadow: 0 5px 10px rgba(0,0,0,0.1); border-radius: 2px; font-size: 12px; line-height: 16px; z-index: 4; color: white; }
+.dg-columns { position: absolute; right: 0; top: 43px; width: 182px; background-color: #404040; z-index: 1; box-shadow: 0 5px 10px rgba(0,0,0,0.1); border-radius: 2px; font-size: 12px; line-height: 16px; z-index: 6; color: white; }
 .dg-columns > div { border-bottom: 1px solid #303030; overflow: hidden; }
 .dg-columns-body { max-height: 180px; overflow-scrolling: touch; overflow-y: auto; padding: 8px 50px 10px 10px; width: 210px; overflow-x: hidden; }
 .dg-columns label { display: block; cursor: pointer; overflow-x: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .dg-columns label input { vertical-align: middle; }
 .dg-columns label span { vertical-align: middle; margin-left: 5px; }
-.dg-columns-button { margin: 10px; display: block; width: 160px; background-color: #888888; border-radius: 2px; color: white; border: 0; font-size: 11px; height: 20px; }
+.dg-columns-button { margin: 10px 10px 0; display: block; width: 160px; background-color: #888888; border-radius: 2px; color: white; border: 0; font-size: 11px; height: 20px; }
 .dg-columns-button:hover { background-color: #999999; }
 .dg-columns-button i { margin-right: 6px; }
+.dt-columns-reset { display: block; font-size: 11px; padding: 5px 0 8px 10px; cursor: pointer; }
+.dt-columns-reset:hover { text-decoration: underline; }
 .dg-hcol .dg-checkbox { margin-top: 0; }
 .dg-checkbox { width: 15px; height: 15px; border: 1px solid #D0D0D0; vertical-align: middle; cursor: pointer; font-size: 11px; text-align: center; padding: 1px 0 0 1px; background-color: white; border-radius: 2px; margin: 5px auto 0; }
 .dg-checkbox i { display: none; }
@@ -239,7 +234,6 @@ div.CodeMirror span.CodeMirror-matchingbracket { border-bottom: 2px solid blue; 
 .dg input:-ms-input-placeholder { color: #A0A0A0 !important; }
 .dg input::placeholder { color: #A0A0A0; opacity: 1; }
 .dg input::-ms-input-placeholder { color: #A0A0A0 !important; }
-.dg select::-ms-expand { display: none; }
 .dg-col button { margin: 4px 0 0; border: 0; background-color: white; font-size: 10px; color: #404040; height: 19px; border: 1px solid #E0E0E0; border-left: 0; padding: 0 3px; outline: 0; line-height: 10px; min-width: 20px; }
 .dg-col button:hover { background-color: #4285F4; color: white; }
 .dg-col button[name="remove"] { background-color: #ffe5dd; color: red; }
@@ -247,11 +241,28 @@ div.CodeMirror span.CodeMirror-matchingbracket { border-bottom: 2px solid blue; 
 .dg-col button:first-child { border-top-left-radius: 3px; border-bottom-left-radius: 3px; border-left: 1px solid #E0E0E0; }
 .dg-col button:last-child { border-top-right-radius: 3px; border-bottom-right-radius: 3px; }
 .dg-col button:disabled { background-color: #F0F0F0 !important; color: silver !important; cursor: not-allowed; }
+.dg-editable .dg-checkbox { position: relative; display: inline-block; margin-left: 5px; margin-right: 5px; }
+.dg-editable > div > .dg-checkbox { border-color: #4285F4; }
+.dg-bool { height: 28px; }
+.dg-bool .dg-checked { background-color: #D0D0D0; border-color: #D0D0D0; color: gray; }
+.dg-editable { background-color: rgba(255,241,164,0.1); }
+.dg-editable input { width: 100%; height: 28px; background-color: transparent; border: 0; outline: 0; padding: 0 4px; }
+.dg-noscroll .ui-scrollbar-area { overflow-y: hidden; }
+.dg-noscroll .ui-scrollbar-y span { visibility: hidden; }
+.dg-noborder .dg-container { border: 0; }
+.dg-noborder .dg-footer { border: 0; border-top: 1px solid #E0E0E0; }
+.dg-header-scrollbar { overflow-y: hidden; }
+.dg-header-scrollbar-container { height: 58px; overflow: hidden; }
+.dg-resize-line { position: absolute; width: 1px; background-color: #E0E0E0; z-index: 6; }
+
+.td .dg, .td .dg-body { background-color: #202020; }
+.td .dg-container { border-top-color: #353535; border-left-color: #353535; }
+.td .dg-mobile .dg-container { border-right-color: #404040; border-bottom-color: #404040; }
+.td .dg-header { border-bottom-color: #353535; }
+.td .dg-noborder .dg-footer { border-color: #404040; }
 .td .dg-filter-selected { background-color: #3c3a32 !important; color: white; }
-.td .dg-filter-selected select { color: white; }
-.td .dg-filter select:focus { color: white; }
+.td .dg-filter-selected label { color: white; }
 .td .dg { color: #E0E0E0; }
-.td .dg-h-container { border-color: #353535; }
 .td .dg-sorting .fa-sort { color: #A0A0A0; }
 .td .dg-filter { border-top-color: #353535; }
 .td .dg-resize { border-right-color: #353535; }
@@ -259,17 +270,15 @@ div.CodeMirror span.CodeMirror-matchingbracket { border-bottom: 2px solid blue; 
 .td .dg-number { background-color: #282828; }
 .td .dg-col { border-left-color: #353535; }
 .td .dg-hcol { border-left-color: #353535; }
-.td .dg-hrow { border-bottom-color: #353535; color: #F0F0F0; }
+.td .dg-hrow { color: #F0F0F0; }
 .td .dg-row-empty { background-color: #202020 !important; border-bottom-color: #353535; }
 .td .dg-row { border-bottom-color: #353535; }
-.td .dg-selected { background-color: rgba(200,200,200,0.07) !important; }
-.td .dg-row:nth-child(even) { background-color: rgba(0,0,0,0.1); }
+.td .dg-selected { background-color: rgba(200,200,200,0.06) !important; }
+/*.td .dg-body > div > div:nth-child(even) > .dg-row  { background-color: rgba(0,0,0,0.1); }*/
 .td .dg-row:hover { background-color: rgba(0,0,0,0.2); }
-.td .dg-row-changed, .td .dg-row-changed.dg-row:nth-child(even) { background-color: rgba(208,31,33,0.12); }
-.td .dg-scrollbar-container-h { background-color: #282828; }
-.td .dg-scrollbar-container-v { background-color: #282828; }
-.td .dg-scrollbar-h { background-color: #454545; }
-.td .dg-scrollbar-v { background-color: #454545; }
+.td .dg-row-changed:hover { background-color: rgba(208,31,33,0.2) !important; }
+.td .dg-row-changed { background-color: rgba(208,31,33,0.12) !important; }
+.td .dg-row-changed.dg-row:nth-child(even) { background-color: rgba(208,31,33,0.12); }
 .td .dg-btn-columns:hover { color: white; }
 .td .dg-col button { background-color: #303030; color: #A0A0A0; border-color: #404040; }
 .td .dg-col button:hover { background-color: #404040; color: white; }
@@ -281,6 +290,14 @@ div.CodeMirror span.CodeMirror-matchingbracket { border-bottom: 2px solid blue; 
 .td .dg-btn-columns { color: #323232; background-color: #323232; }
 .td .dg-btn-columns span { color: #606060; }
 .td .dg-btn-columns:hover { background-color: #353535; color: #353535; }
+.td .dg-pagination button { background-color: #303030; border-left-color: #404040; color: white; }
+.td .dg-pagination button:hover { background-color: #353535; }
+.td .dg-pagination button:disabled { background-color: #202020; color: gray; }
+.td .dg-pagination button[name="page-prev"] { border-right-color: #404040; }
+.td .dg-pagination button[name="page-last"] { border-right-color: #404040; }
+.td .dg-bool .dg-checked { background-color: #505050; border-color: #505050; color: gray; }
+.td .dg-editable { background-color: rgba(255,241,164,0.05); }
+.td .dg-resize-line { background-color: #404040; }
 
 .ui-checkbox { margin-bottom: 5px; line-height: 10px; font-size: 12px; }
 .ui-checkbox span { cursor: pointer; vertical-align: middle; }
