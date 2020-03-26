@@ -773,9 +773,9 @@ COMPONENT('editor', function(self, config) {
 				return 1;
 
 			if (a.priority && b.priority) {
-				if (a.priority < b.priority)
+				if (a.priority > b.priority)
 					return -1;
-				else if (a.priority > b.priority)
+				else if (a.priority < b.priority)
 					return 1;
 				else
 					return 0;
