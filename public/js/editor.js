@@ -1779,6 +1779,10 @@ SNIPPETS.push({ type: 'js', search: 'CONFIG', text: '<b>CONFIG</b>', code: 'CONF
 SNIPPETS.push({ type: 'js', search: 'NEWSCHEMA', text: '<b>NEWSCHEMA</b>', code: 'NEWSCHEMA(\'{1}\', function(schema) {\n\t{0}schema.define(\'key\', String, true);\n{0}});', ch: 12 });
 SNIPPETS.push({ type: 'js', search: 'NEWOPERATION', text: '<b>NEWOPERATION</b>', code: 'NEWOPERATION(\'\', function($) {\n\t{0}\n{0}});', ch: 15 });
 SNIPPETS.push({ type: 'js', search: 'NEWTASK', text: '<b>NEWTASK</b>', code: 'NEWTASK(\'{1}\', function(push) {\n\n\t{0}push(\'TASK_NAME_1\', function($) {\n\t\t{0}$.next(\'TASK_NAME_2\');\n\t{0}});\n\n\t{0}push(\'TASK_NAME_2\', function($) {\n\t\t{0}$.done();\n\t{0}});\n\n{0}});', ch: 10 });
+SNIPPETS.push({ type: 'js', search: 'for var', text: '<b>for in</b>', code: 'for (var i = 0; i < ; i++)', ch: 21, priority: 10 });
+SNIPPETS.push({ type: 'js', search: 'foreach forEach', text: '<b>forEach</b>', code: 'forEach(function(item) {\n{0}});', ch: 30, priority: 1 });
+SNIPPETS.push({ type: 'js', search: 'callback function', text: '<b>callback</b>', code: 'function(err, response) {\n\t{0}\n{0}}', ch: 30, priority: 1, special: 1 });
+SNIPPETS.push({ type: 'js', search: 'Object.keys', text: '<b>Object.keys</b>', code: 'Object.keys()', ch: 13, priority: 1 });
 SNIPPETS.push({ type: 'js', search: 'schema.define', text: '<b>schema.define</b>', code: 'schema.define(\'\', String, true);', ch: 16, priority: 1 });
 SNIPPETS.push({ type: 'js', search: 'schema.required', text: '<b>schema.required</b>', code: 'schema.required(\'\', model => model.age > 33);', ch: 18, priority: 1 });
 SNIPPETS.push({ type: 'js', search: 'schema.addWorkflow', text: '<b>schema.addWorkflow</b>', code: 'schema.addWorkflow(\'\', function($) {\n\t{0}\n{0}});', ch: 21, priority: 1 });
@@ -1834,7 +1838,8 @@ SNIPPETS.push({ search: 'language', text: 'language', code: 'language', ch: 9 })
 	}
 })();
 
-FUNC.snippets = function(type, text, tabs, line, words, chplus) {
+FUNC.snippets = function(type, text, tabs, line, words, chplus, linestr) {
+// FUNC.snippets = function(type, text, tabs, line, words, chplus, autocomplete, index, linestr) {
 
 	if (!code.current)
 		return [];
@@ -1842,14 +1847,20 @@ FUNC.snippets = function(type, text, tabs, line, words, chplus) {
 	var arr = [];
 	var name = code.current.name.replace('.' + code.current.ext, '').replace(/\/-\./g, '');
 	var cache = {};
-	var tmp;
 
+	var tmp;
 	for (var i = 0; i < SNIPPETS.length; i++) {
 		var snip = SNIPPETS[i];
 		if ((!snip.type || snip.type === type) && (snip.search.indexOf(text) !== -1 && (snip.search !== text || text.charAt(0) === '-'))) {
+
+			if (snip.special === 1) {
+				if (linestr && linestr.indexOf('(') !== -1 && linestr.indexOf(')') === -1)
+					tmp = ');';
+			}
+
 			tmp = snip.code.format(tabs || '', snip.search === 'NEWSCHEMA' ? (name.substring(0, 1).toUpperCase() + name.substring(1).replace(/-(\w)/, function(text) {
 				return '/' + text.substring(1).toUpperCase();
-			})) : name);
+			})) : name) + (tmp ? tmp : '');
 			if (!cache[tmp]) {
 				cache[tmp] = 1;
 				arr.push({ displayText: snip.text, text: tmp, ch: (snip.line ? snip.ch + tabs.length : tabs.length === 0 ? snip.ch - 1 : snip.ch + tabs.length - 1) + chplus, line: line + (snip.line || 0), priority: snip.priority });

@@ -727,7 +727,14 @@ COMPONENT('editor', function(self, config) {
 			var mode = cm.getModeAt(cur);
 			var start = snippets.index;
 			var end = cur.ch;
-			var tabs = ''.padLeft(snippets.index, '\t');
+			var tabs = '';
+
+			for (var i = 0; i < snippets.index; i++) {
+				if (snippets.line.charAt(i) !== '\t')
+					break;
+				tabs += '\t';
+			}
+
 			var index = -1;
 
 			for (var i = snippets.text.length - 1; i > 0; i--) {
@@ -753,7 +760,7 @@ COMPONENT('editor', function(self, config) {
 			if (snippets.text.length < 2 && snippets.text !== '#')
 				cache_snip.list = EMPTYARRAY;
 			else {
-				var arr = FUNC.snippets(FUNC.getext(mode.helperType || mode.name), snippets.text, tabs, cur.line, autocomplete, index);
+				var arr = FUNC.snippets(FUNC.getext(mode.helperType || mode.name), snippets.text, tabs, cur.line, autocomplete, index, snippets.line);
 				arr.sort(autocomplete_sort);
 				cache_snip.list = arr.take(10);
 			}
@@ -829,6 +836,7 @@ COMPONENT('editor', function(self, config) {
 				if (text) {
 					snippets.index = index;
 					snippets.text = text;
+					snippets.line = line;
 					editor.showHint(snippetsoptions);
 				}
 			}
