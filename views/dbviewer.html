@@ -119,7 +119,7 @@
 			SET('shortcutexecute', M.ua.os.toLowerCase() === 'mac' ? 'CMD+ENTER' : 'CTRL+enter');
 		});
 
-		function formatrow(row) {
+		function formatrow(row, index) {
 			var keys = Object.keys(row);
 			var builder = [];
 			var search = [];
@@ -172,7 +172,7 @@
 				builder.push(key + ': ' + format.format(val));
 			}
 
-			return { html: builder.join(', '), search: search.join(' ') };
+			return { html: '<span class="db-line">{0}</span>'.format(index) + builder.join(', '), search: search.join(' ') };
 		}
 
 		function formatjson(obj, count) {
@@ -540,7 +540,7 @@
 							NUL('dbview.keywords');
 
 						for (var i = 0; i < rows.length; i++) {
-							var obj = formatrow(rows[i]);
+							var obj = formatrow(rows[i], i + 1);
 							arr.push({ data: rows[i], json: obj.html, search: obj.search });
 						}
 

@@ -780,6 +780,7 @@ header .tools .external { color: #a2a286; }
 
 .dbview-row { font-family: Menlo; font-size: 11px; border-bottom: 1px solid #E0E0E0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding: 3px 5px; cursor: pointer; color: gray; }
 .dbview-row:hover { background-color: #F0F0F0; }
+.dbview-row:hover .db-line { background-color: white; }
 
 .database .ui-inputsearch { border-top: 1px solid #E0E0E0; border-bottom: 0; margin-top: 3px; }
 .database .topsection { border-bottom:1px solid #E0E0E0; }
@@ -795,9 +796,11 @@ header .tools .external { color: #a2a286; }
 .db-date { color: #4C167F; }
 .db-boolean { color: #1B7F16; }
 .db-null { color: gray; font-style: italic; }
+.db-line { color: black; width: 30px; text-align: right; padding-right: 5px; float: left; font-size: 9px; background-color: #F0F0F0; margin-right: 3px; overflow: hidden; }
 
+.td .db-line { color: white; background-color: #383838; }
 .td .dbview-row { border-bottom-color: #404040; color: #C0C0C0; }
-.td .dbview-row:hover { background-color: #282828; }
+.td .dbview-row:hover { background-color: #323232; }
 .td .database .ui-inputsearch { border-top-color: #404040; }
 .td .database .topsection { border-bottom-color: #404040; }
 .td .database .topsection .help { border-top-color: #404040; }
@@ -810,6 +813,7 @@ header .tools .external { color: #a2a286; }
 .td .db-number { color: #4DA474; }
 .td .db-date { color: #6E20B9; }
 .td .db-boolean { color: #28BC21; }
+.td .dbview-row:hover .db-line { background-color: #404040; }
 .database .CodeMirror { font-size: 13px; }
 
 .metainfo { font-size: 10px; padding: 5px 10px; width: 200px; font-family: Menlo; }
