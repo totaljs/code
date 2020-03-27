@@ -1260,7 +1260,7 @@
 				var arr = [];
 				var files = [];
 				var done = function() {
-					FUNC.success('@(Uploaded successfully)');
+					FUNC.success('@(Uploaded successfully.)');
 					exports.load(code.data.id, true);
 					SETTER('loading/hide');
 				};
@@ -1588,7 +1588,7 @@
 						SETTER('loading/show');
 						AJAX('GET /api/projects/{id}/bundle/'.arg(code.data), function() {
 							SETTER('loading/hide', 1000);
-							FUNC.success('@(Done, bundle has been synchronized)');
+							FUNC.success('@(Done, bundle has been synchronized.)');
 						});
 						break;
 				}
@@ -1617,9 +1617,9 @@
 						setTimeout(function() {
 							SETTER('clipboard/copy', response);
 						}, 1000);
-						FUNC.success('@(Localized dictionary has been copied into the clipboard)');
+						FUNC.success('@(Localized dictionary has been copied into the clipboard.)');
 					} else
-						FUNC.warning('@(This file doesn\'t contain any localization markup)');
+						FUNC.warning('@(This file doesn\'t contain any localization markup.)');
 				}
 			});
 		};
@@ -1810,7 +1810,7 @@
 							SETTER('loading/show');
 							AJAX('POST /api/files/{id}/remove/'.arg(code.data), data, function() {
 								SETTER('loading/hide', 100);
-								FUNC.success('@(Removed successfully: <b>{0}</b>)'.format(data.path));
+								FUNC.success('@(Removed successfully: <b>{0}</b>.)'.format(data.path));
 								var el = exports.element.find('.tabs');
 								el = el.find('span[data-value="{0}"]'.format(data.path));
 								el.length && el.find('i').trigger('click');
@@ -2259,7 +2259,7 @@
 					if (err)
 						FUNC.warning(err.toString());
 					else
-						FUNC.success('<b>{0}</b> saved.'.format(filename));
+						FUNC.success('<b>{0}</b> saved successfully.'.format(filename));
 				});
 			} else if (!nowarning)
 				FUNC.warning('@(You don\'t have defined repository path.)');
@@ -2357,7 +2357,7 @@
 						data.sync = sync;
 
 					AJAX('GET /api/projects/{id}/modify/ REPEAT'.arg(code.data), data, function(response) {
-						FUNC.success((response.value === 'synchronized' ? '@(<b>{0}</b> saved and synchronized)' : '@(<b>{0}</b> saved)').format(data.path));
+						FUNC.success((response.value === 'synchronized' ? '@(<b>{0}</b> saved and synchronized.)' : '@(<b>{0}</b> saved successfully.)').format(data.path));
 						common.electron && code.data.repository && user.localsave && exports.savelocal();
 					});
 
@@ -2434,7 +2434,7 @@
 
 					editor.diffgutterclear();
 					FUNC.wssend({ TYPE: 'save', connid: common.id, projectid: code.projectid, id: user.id, user: user.name });
-					FUNC.success((response.value === 'synchronized' ? '@(<b>{0}</b> saved and synchronized)' : '@(<b>{0}</b> saved)').format(data.path));
+					FUNC.success((response.value === 'synchronized' ? '@(<b>{0}</b> saved and synchronized.)' : '@(<b>{0}</b> saved successfully.)').format(data.path));
 					common.electron && code.data.repository && user.localsave && exports.savelocal();
 					SET('code.current.lastmodified', { user: user.name, updated: new Date() });
 					data.diff.length && UPD('code.current.diff');
