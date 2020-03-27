@@ -2,18 +2,20 @@
 	It depends on "code editor"
 -->
 
-<div data---="inputsearch__componentator.search__placeholder:@(Search);$binding:1;$delay:50"></div>
-<div data---="viewbox__componentator.search__margin:114;parent:.ui-dockable-body;scrollbar:1">
-	<div data-bind="componentator.items__template" data---="search__componentator.search__selector:div">
-		<script type="text/html">
-			{{ foreach m in value }}
-				<div class="part exec" data-exec="componentator/append" data-search="{{ m }}"><i class="fa fa-drafting-compass"></i><b>component</b>{{ m }}</div>
-			{{ end }}
-		</script>
+<div data---="invisible" class="invisible">
+	<div data---="inputsearch__componentator.search__placeholder:@(Search);$binding:1;$delay:50"></div>
+	<div data---="viewbox__componentator.search__margin:114;parent:.ui-dockable-body;scrollbar:1">
+		<div data-bind="componentator.items__template" data---="search__componentator.search__selector:div">
+			<script type="text/html">
+				{{ foreach m in value }}
+					<div class="part exec" data-exec="componentator/append" data-search="{{ m }}"><i class="fa fa-drafting-compass"></i><b>component</b>{{ m }}</div>
+				{{ end }}
+			</script>
+		</div>
 	</div>
-</div>
-<div class="panelcheckbox">
-	<div data---="checkbox__componentator.minify">@(Import minified)</div>
+	<div class="panelcheckbox">
+		<div data---="checkbox__componentator.minify">@(Import minified)</div>
+	</div>
 </div>
 
 <script>

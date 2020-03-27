@@ -150,7 +150,7 @@
 			<li data-value="changes" title="@(Last changes)"><i class="fa fa-history"></i></li>
 			<li data-value="backups" title="@(Backups)"><i class="fa fa-database"></i></li>
 			<li data-value="search" title="@(Search)"><i class="fa fa-search"></i></li>
-			<li data-value="timespentform" title="@(Time spent)"><i class="far fa-calendar"></i></li>
+			<li data-value="timespentform" title="@(Time spent)"><i class="far fa-clock-o"></i></li>
 		</ul>
 	</div>
 	<div data---="part__common.form__if:search;url:/forms/search.html;reload:codesearch/reload"></div>
@@ -168,6 +168,7 @@
 	<div data---="part__common.form__if:modules;url:/forms/modules.html;reload:modulespanel/reload"></div>
 	<div data---="part__common.form__if:schemas;url:/forms/schemas.html;reload:schemaspanel/reload"></div>
 	<div data---="part__common.form__if:operations;url:/forms/operations.html;reload:operationspanel/reload"></div>
+	<div data---="part__common.form__if:definitions;url:/forms/definitions.html;reload:definitionspanel/reload"></div>
 </div>
 
 <div data---="importer__common.top__if:branches;url:/forms/branches.html"></div>
@@ -1631,6 +1632,9 @@
 				items.push({ value: 'bundles', name: '@(Download bundles)', icon: 'cloud-download', classname: 'b' });
 
 			if (node.name === 'definitions') {
+
+				items.push({ value: 'definitions', name: '@(Download definitions)', icon: 'cloud-download', classname: 'b' });
+
 				if (!node.children.findItem('name', 'auth.js'))
 					items.push({ makefile: true, name: '@(Create:) auth.js', icon: 'file-text-o' });
 				if (!node.children.findItem('name', 'db.js'))
@@ -1771,6 +1775,7 @@
 					case 'modules':
 					case 'schemas':
 					case 'operations':
+					case 'definitions':
 						SET('common.form', item.value);
 						break;
 					case 'file':

@@ -12593,3 +12593,15 @@ COMPONENT('notifybar', 'timeout:5000', function(self, config, cls) {
 	};
 
 });
+
+COMPONENT('invisible', function(self) {
+
+	self.readonly();
+	self.blind();
+
+	self.make = function() {
+		setTimeout(function() {
+			self.rclass('invisible');
+		}, 300);
+	};
+});

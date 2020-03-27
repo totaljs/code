@@ -2,7 +2,7 @@
 	It depends on "code editor"
 -->
 
-<div data---="viewbox__common.form__margin:51;parent:.ui-dockable-body;scrollbar:1">
+<div data---="viewbox__common.form__margin:51;parent:.ui-dockable-body;scrollbar:1" class="invisible">
 	<div data-bind="code.data.todocurrent__template__show:value&&value.length" class="todocurrent hidden">
 		<script type="text/html">
 			<div class="todolist">
@@ -25,7 +25,7 @@
 					<div>
 						{{ foreach n in m.items }}
 						<div class="todo">
-							<div class="exec" data-exec="codetasks/open" data-line="{{ n.line }}" data-ch="{{ n.ch }}" data-path="{{ m.path }}"><span>:{{ n.line }}</span>{{ n.name }}</div>
+							<div class="exec" data-exec="codetasks/open" data-line="{{ n.line }}" data-ch="{{ n.ch }}" data-path="{{ m.path }}"><span>{{ n.line }}:</span>{{ n.name }}</div>
 						</div>
 						{{ end }}
 					</div>

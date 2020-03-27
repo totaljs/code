@@ -1,16 +1,22 @@
-<div data---="viewbox__common.form__margin:51;parent:.ui-dockable-body;scrollbar:1">
-	<div data-bind="schemaspanel.items__template">
-		<script type="text/html">
-			{{ foreach m in value }}
-				<div class="listitem exec" data-exec="schemaspanel/download" data-url="{{ m.url }}" data-name="{{ m.filename }}"><i class="far fa-copy"></i> {{ m.name }}</div>
-			{{ end }}
-		</script>
+<div data---="invisible" class="invisible" data-scope="schemaspanel">
+	<div data---="inputsearch__?.search__placeholder:@(Search);$binding:1;$delay:50"></div>
+	<div data---="viewbox__?.search__margin:78;parent:.ui-dockable-body;scrollbar:1">
+		<div data-bind="?.items__template" data---="search__?.search__selector:div">
+			<script type="text/html">
+				{{ foreach m in value }}
+					<div class="listitem exec" data-exec="?/download" data-url="{{ m.url }}" data-search="{{ m.name }}" data-name="{{ m.filename }}"><i class="far fa-copy"></i> {{ m.name }}</div>
+				{{ end }}
+			</script>
+		</div>
 	</div>
 </div>
 
 <script>
 	PLUGIN('schemaspanel', function(exports) {
+
 		exports.reload = function() {
+			SET('?.search', '');
+			exports.element.SETTER(true, 'inputsearch/focus');
 			exports.refresh();
 		};
 

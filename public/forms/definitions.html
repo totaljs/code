@@ -1,4 +1,4 @@
-<div data---="invisible" class="invisible" data-scope="modulespanel">
+<div data---="invisible" class="invisible" data-scope="definitionspanel">
 	<div data---="inputsearch__?.search__placeholder:@(Search);$binding:1;$delay:50"></div>
 	<div data---="viewbox__?.search__margin:78;parent:.ui-dockable-body;scrollbar:1">
 		<div data-bind="?.items__template" data---="search__?.search__selector:div">
@@ -12,7 +12,7 @@
 </div>
 
 <script>
-	PLUGIN('modulespanel', function(exports) {
+	PLUGIN('definitionspanel', function(exports) {
 
 		exports.reload = function() {
 			SET('?.search', '');
@@ -21,7 +21,7 @@
 		};
 
 		exports.refresh = function() {
-			AJAX('GET /api/external/modules/', function(response) {
+			AJAX('GET /api/external/definitions/', function(response) {
 				response.quicksort('name');
 				SET('?.items', response);
 				SETTER('dockable/show', 'prop');
@@ -29,13 +29,13 @@
 		};
 
 		exports.download = function(el) {
-			SETTER('confirm/show2', '@(Are you sure you want to download selected module?)', ['"cloud-download" @(Download)', '@(Cancel)'], function(index) {
+			SETTER('confirm/show2', '@(Are you sure you want to download selected definition?)', ['"cloud-download" @(Download)', '@(Cancel)'], function(index) {
 				SETTER('loading/show');
-				AJAX('POST /api/external/modules/' + code.data.id, { url: el.attrd('url'), name: el.attrd('name') }, function() {
+				AJAX('POST /api/external/definitions/' + code.data.id, { url: el.attrd('url'), name: el.attrd('name') }, function() {
 					SETTER('loading/hide', 500);
 					EXEC('code/refresh');
 					NULL('common.form');
-					SETTER('notifybar/success', '@(Module has been downloaded succesfully.)');
+					SETTER('notifybar/success', '@(Definition has been downloaded succesfully.)');
 				});
 			});
 		};

@@ -204,6 +204,34 @@ NEWSCHEMA('ExternalSchema', function(schema) {
 	});
 });
 
+NEWSCHEMA('ExternalDefinition', function(schema) {
+
+	schema.define('url', 'String', true);
+	schema.define('name', 'String', true);
+
+	schema.setQuery(function($) {
+		RESTBuilder.GET(CONF.cdn_schemas || 'https://cdn.totaljs.com/code/definitions.json').exec($.callback);
+	});
+
+	schema.setSave(function($) {
+
+		var project = MAIN.projects.findItem('id', $.id);
+		if (project == null) {
+			$.invalid('error-project');
+			return;
+		}
+
+		var model = $.model;
+		MAIN.log($.user, 'download_definition', project, model.url);
+
+		var p = Path.join('/definitions', model.name);
+		MAIN.changelog($.user, $.id, p);
+		MAIN.change('upload', $.user, project, p);
+
+		F.download(model.url, Path.join(project.path, 'definitions', model.name), $.done());
+	});
+});
+
 NEWSCHEMA('ExternalOperation', function(schema) {
 
 	schema.define('url', 'String', true);

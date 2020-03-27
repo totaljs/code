@@ -573,12 +573,12 @@ header .tools .external { color: #a2a286; }
 .td .backupitem { border-top: 1px solid #303030; }
 .td .backupitem:hover { background-color: #202020; }
 
-.listitem { padding: 5px 20px; border-top: 1px solid #E0E0E0; user-select: none; cursor: pointer; }
+.listitem { padding: 5px 10px; border-top: 1px solid #E0E0E0; user-select: none; cursor: pointer; }
 .listitem > i { width: 20px; color: gray; }
 .listitem:hover { background-color: #F8F8F8; }
 .listitem:first-child { border-top: 0; }
 
-.td .listitem { border-top-color: #404040; }
+.td .listitem { border-top-color: #404040; color: #E0E0E0; }
 .td .listitem:hover { background-color: #303030; }
 
 .changeitem { padding: 8px 10px; border-bottom: 1px solid #E0E0E0; user-select: none; cursor: pointer; }
@@ -629,16 +629,17 @@ header .tools .external { color: #a2a286; }
 .monospace { font-family: Menlo,Consolas,monospace; }
 .todolist { padding: 5px 0; }
 .todolist i { margin-right: 5px; }
-.todo { padding: 5px 10px; color: gray; border-top: 1px solid #E0E0E0; font-size: 12px; cursor: pointer; }
+.todo { padding: 0 10px; color: gray; border-top: 1px solid #E0E0E0; font-size: 12px; cursor: pointer; height: 24px; line-height: 24px; }
 .todo > div { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .todo:first-child { border-top: 0; }
-.todo span { width: 30px; float: left; font-size: 10px; color: gray; font-family: monospace;  }
-.todo:hover { background-color: rgba(0,0,0,0.1); }
+.todo span { width: 33px; float: left; font-size: 9px; color: gray; font-family: Menlo; border-right: 1px solid #E0E0E0; padding-right: 5px; margin-right: 5px; text-align: right; }
+.todo:hover { background-color: rgba(100,100,100,0.09); }
 .todopath { padding: 5px 10px; font-weight: bold; color: black; margin: 15px 0 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
-.td .todo { color: #A0A0A0; border-color: #202020; }
+.td .todo { color: #A0A0A0; border-color: #404040; }
 .td .todolist > div:first-child { color: silver; }
 .td .todopath { color: white; }
+.td .todo span { border-right-color: #404040; }
 
 .partgroup { font-size: 14px; color: black; margin: 10px 0 2px; padding: 5px 10px; font-weight: bold; }
 .partgroup:first-child { margin-top: 0; }
@@ -704,15 +705,18 @@ header .tools .external { color: #a2a286; }
 .output:first-child { border-top: 0; }
 .td .output { border-top-color: #303030; }
 
-.timespentform { padding: 0 20px; }
-.timespentform .date { font-size: 20px; color: #9e9e32; font-weight: bold; margin: 15px 0 10px; }
-.timespentform .date i { margin-right: 10px; }
-.timespentform .items > div { height: 26px; border-bottom: 1px solid #505050; margin: 2px 0 0; color: gray; }
-.timespentform .items > div:last-child { color: black; }
+.timespentform { padding: 0 15px; }
+.timespentform .date { font-size: 16px; color: black; font-weight: bold; margin: 15px 0 5px; }
+.timespentform .date > span { float: right; color: #A0A0A0; font-size: 14px; font-weight: normal; }
+.timespentform .date i { margin-right: 5px; }
+.timespentform .items > div { line-height: 20px; border-bottom: 1px solid #E0E0E0; color: gray; font-size: 12px; }
+.timespentform .items > div:last-child { color: #505050; border-bottom: 0; margin-top: 3px; }
 .timespentform .items > div b { float: right; width: 40px; text-align: right; }
 
-.td .timespentform .date { color: yellow; }
-.td .timespentform .items > div:last-child { color: white !important; }
+.td .timespentform .date { color: white; }
+.td .timespentform .date span { color: gray; }
+.td .timespentform .items > div { border-bottom-color: #404040; }
+.td .timespentform .items > div:last-child { color: #A0A0A0 !important; }
 
 .messenger { width: 100%; height: 100%; }
 .messenger iframe, .messenger webview { width: 100%; height: 100%; border: 0; }
