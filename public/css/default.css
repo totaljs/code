@@ -800,7 +800,7 @@ header .tools .external { color: #a2a286; }
 .db-date { color: #4C167F; }
 .db-boolean { color: #1B7F16; }
 .db-null { color: gray; font-style: italic; }
-.db-line { color: black; width: 30px; text-align: right; padding-right: 5px; float: left; font-size: 9px; background-color: #F0F0F0; margin-right: 3px; overflow: hidden; }
+.db-line { color: black; width: 30px; text-align: right; padding-right: 5px; float: left; font-size: 9px; background-color: #F0F0F0; margin-right: 3px; overflow: hidden; margin-top: 1px; }
 
 .td .db-line { color: white; background-color: #383838; }
 .td .dbview-row { border-bottom-color: #404040; color: #C0C0C0; }

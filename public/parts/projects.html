@@ -7,7 +7,7 @@
 		<button data-bind="projects.checked__disabled:!value || !value.length" class="exec" data-exec="projects/options" disabled><i class="fa fa-check-circle"></i>@(Selected)</button>
 	</div>
 
-	<div data---="datagrid__projects.grid__click:projects/edit;checked:projects/checked;highlight:true;margin:20;cluster:false">
+	<div data---="datagrid__projects.grid__dblclick:projects/edit;checked:projects/checked;highlight:true;margin:20;cluster:false">
 		<script type="text/plain">
 			[
 				{ name: 'name', text: '@(Name)', class: 'b', width: 300 },

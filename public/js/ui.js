@@ -534,7 +534,7 @@ COMPONENT('editor', function(self, config) {
 			var name, type, oldschema, oldplugin, pluginvariable, oldtask, taskvariable, tmp;
 			var val = editor.getValue();
 
-			if (mode === 'totaljsresources' || mode === 'javascript' || mode === 'totaljs' || mode === 'css' || mode === 'sass' || mode === 'html' || mode === 'todo') {
+			if (mode === 'totaljsresources' || mode === 'javascript' || mode === 'totaljs' || mode === 'css' || mode === 'sass' || mode === 'html' || mode === 'todo' || mode === 'bash' || mode === 'python' || mode === 'php' || mode === 'shell' || mode === 'htmlmixed' || mode === 'null' || mode === 'clike') {
 				var lines = val.split('\n');
 				for (var i = 0; i < lines.length; i++) {
 
@@ -543,7 +543,7 @@ COMPONENT('editor', function(self, config) {
 					if (m && !REGTODODONE.test(lines[i]))
 						todos.push({ line: i + 1, ch: m.index || 0, name: lines[i].substring(m.index, 200).replace(REGTODOREPLACE, '').replace(REGTODOCLEAN, '').trim() });
 
-					if (mode === 'javascript' || mode === 'totaljs' || mode === 'html') {
+					if (mode === 'javascript' || mode === 'totaljs' || mode === 'html' || mode === 'htmlmixed') {
 
 						if (is != null && lines[i].substring(is, 3) === '});') {
 							components[components.length - 1].lineto = i;
@@ -1306,6 +1306,8 @@ COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 			case 'resource':
 			case 'workflows':
 				return 'fa fa-cog';
+			case 'c':
+				return 'fa fa-code';
 		}
 		return 'fa-file-o far';
 	};

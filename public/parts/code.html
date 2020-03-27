@@ -605,7 +605,7 @@
 
 			if (can) {
 
-				if ((user.sa || user.dbviewer) && (/hex\s\w+|base64\s\w+|postgresql\:|postgre\:/i).test(text))
+				if ((user.sa || user.dbviewer) && (/hex\s\w+|base64\s\w+|postgresql\:|postgre\:|postgres\:|psql\:|pg\:/i).test(text))
 					items.push({ name: '@(Open DB viewer)', icon: 'database', value: 'dbviewer', classname: 'b' });
 
 				if ((/api/).test(code.current.ext))
