@@ -360,13 +360,17 @@ NEWSCHEMA('Files', function(schema) {
 
 		CLEANUP(stream.on('data', customstreamer(function(line, lineindex) {
 
-			var index = line.search(q);
+			var index = line.toLowerCase().indexOf(q);
 
 			if (output.length > 20)
 				return;
 
-			if (index !== -1)
-				output.push({ line: lineindex + 1, ch: index, name: line.substring(index - 20).max(50, '...').trim() });
+			if (index !== -1) {
+				var beg = index - 20;
+				if (beg < 0)
+					beg = 0;
+				output.push({ line: lineindex + 1, ch: index, name: line.substring(beg).max(50, '...').trim() });
+			}
 
 		}, stream, () => $.callback(output))));
 	});

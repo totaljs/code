@@ -1729,7 +1729,11 @@ SNIPPETS.push({ type: 'css', search: 'position relative inline block', text: 'di
 SNIPPETS.push({ type: 'css', search: 'position absolute', text: '<b>absolute</b>', code: 'position: absolute;', ch: 20 });
 SNIPPETS.push({ type: 'css', search: 'position fixed', text: '<b>fixed</b>', code: 'position: fixed;', ch: 17 });
 SNIPPETS.push({ type: 'css', search: 'position relative', text: '<b>relative</b>', code: 'position: relative;', ch: 20 });
+SNIPPETS.push({ type: 'css', search: 'border-radius', text: '<b>border-radius</b>', code: 'border-radius: ;', ch: 16 });
+SNIPPETS.push({ type: 'css', search: 'font-size', text: '<b>font-size</b>', code: 'font-size: ;', ch: 12 });
 SNIPPETS.push({ type: 'css', search: 'display block', text: 'display: <b>block</b>', code: 'display: block;', ch: 16 });
+SNIPPETS.push({ type: 'css', search: 'background-color', text: '<b>background-color</b>', code: 'background-color: ;', ch: 19 });
+SNIPPETS.push({ type: 'css', search: 'border', text: '<b>border</b>', code: 'border: ;', ch: 9 });
 SNIPPETS.push({ type: 'css', search: 'vertical align top', text: 'vertical-align: <b>top</b>', code: 'vertical-align: top;', ch: 21 });
 SNIPPETS.push({ type: 'css', search: 'vertical align middle', text: 'vertical-align: <b>middle</b>', code: 'vertical-align: middle;', ch: 24 });
 SNIPPETS.push({ type: 'css', search: 'vertical align bottom', text: 'vertical-align: <b>bottom</b>', code: 'vertical-align: bottom;', ch: 24 });
