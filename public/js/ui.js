@@ -534,7 +534,7 @@ COMPONENT('editor', function(self, config) {
 			var name, type, oldschema, oldplugin, pluginvariable, oldtask, taskvariable, tmp;
 			var val = editor.getValue();
 
-			if (mode === 'totaljsresources' || mode === 'javascript' || mode === 'totaljs' || mode === 'css' || mode === 'sass' || mode === 'html' || mode === 'todo' || mode === 'bash' || mode === 'python' || mode === 'php' || mode === 'shell' || mode === 'htmlmixed' || mode === 'null' || mode === 'clike') {
+			if (mode === 'totaljsresources' || mode === 'javascript' || mode === 'totaljs' || mode === 'css' || mode === 'sass' || mode === 'html' || mode === 'todo' || mode === 'bash' || mode === 'python' || mode === 'php' || mode === 'shell' || mode === 'htmlmixed' || mode === 'null' || mode === 'clike' || mode === 'yaml') {
 				var lines = val.split('\n');
 				for (var i = 0; i < lines.length; i++) {
 
