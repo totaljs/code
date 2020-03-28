@@ -1009,10 +1009,12 @@ FUNC.colorize = function(css, cls) {
 };
 
 FUNC.parsekeys = function(value) {
+
 	var lines = value.split('\n');
 	var fields = {};
 	var regnumber = /^\d+$/;
 	var regchar = /["';,.()\[\]{}]/;
+	var regcomma = /[.,]$/;
 	var regsplit = /\t|\||\s|;/;
 
 	for (var i = 0; i < lines.length; i++) {
@@ -1030,14 +1032,24 @@ FUNC.parsekeys = function(value) {
 		var words = line.split(regsplit);
 		var w;
 
+		if (words[1] && words[2] && words[1].toLowerCase() === 'as')
+			words[0] = words[2];
+
 		if (regnumber.test(words[0])) {
 			if (words[1])
 				w = words[1];
 		} else if (words[0])
 			w = words[0];
 
-		if (w && w.indexOf(' ') === -1 && !regchar.test(w))
-			fields[w] = 1;
+		var index = w.indexOf('.');
+		if (index !== -1)
+			w = w.substring(index + 1);
+
+		if (w) {
+			w = w.replace(regcomma, '');
+			if (w.indexOf(' ') === -1 && !regchar.test(w))
+				fields[w] = 1;
+		}
 	}
 
 	return Object.keys(fields);
