@@ -760,7 +760,7 @@ COMPONENT('editor', function(self, config) {
 			if (snippets.text.length < 2 && snippets.text !== '#')
 				cache_snip.list = EMPTYARRAY;
 			else {
-				var arr = FUNC.snippets(FUNC.getext(mode.helperType || mode.name), snippets.text, tabs, cur.line, autocomplete, end - snippets.text.length, snippets.line);
+				var arr = FUNC.snippets(FUNC.getext(mode.helperType || mode.name), snippets.text, tabs, cur.line, autocomplete, (end - snippets.text.length - tabs.length), snippets.line);
 				arr.sort(autocomplete_sort);
 				cache_snip.list = arr.take(10);
 			}
