@@ -1313,6 +1313,7 @@ COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 			case 'config-test':
 			case 'resource':
 			case 'workflows':
+			case 'yaml':
 				return 'fa fa-cog';
 			case 'c':
 				return 'fa fa-code';
