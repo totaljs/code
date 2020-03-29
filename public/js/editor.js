@@ -856,6 +856,7 @@ WAIT('CodeMirror.defineMode', function() {
 	Completion.prototype = {
 		close: function(item) {
 			if (this.active()) {
+				console.log(item);
 				this.cm.state.completionActive = null;
 				this.tick = null;
 				this.cm.off('cursorActivity', this.activityFunc);
@@ -1739,7 +1740,6 @@ SNIPPETS.push({ type: 'css', search: 'border', text: '<b>border</b>', code: 'bor
 SNIPPETS.push({ type: 'css', search: 'vertical align top', text: 'vertical-align: <b>top</b>', code: 'vertical-align: top;', ch: 21 });
 SNIPPETS.push({ type: 'css', search: 'vertical align middle', text: 'vertical-align: <b>middle</b>', code: 'vertical-align: middle;', ch: 24 });
 SNIPPETS.push({ type: 'css', search: 'vertical align bottom', text: 'vertical-align: <b>bottom</b>', code: 'vertical-align: bottom;', ch: 24 });
-SNIPPETS.push({ type: 'css', search: 'background color', text: '<b>background-color</b>', code: 'background-color: ;', ch: 19 });
 SNIPPETS.push({ type: 'css', search: 'background image picture url', text: '<b>background-image</b>', code: 'background: url() no-repeat 0 0;', ch: 17 });
 SNIPPETS.push({ type: 'css', search: 'overflow hidden', text: 'overflow: <b>hidden</b>', code: 'overflow: hidden;', ch: 64 });
 SNIPPETS.push({ type: 'css', search: 'hellip overflow', text: '<b>hellip</b>', code: 'text-overflow: ellipsis; white-space: nowrap; overflow: hidden;', ch: 64 });
@@ -1768,6 +1768,7 @@ SNIPPETS.push({ type: 'html', search: 'script', text: '<b>Script: Text</b>', cod
 SNIPPETS.push({ type: 'html', search: 'fa', text: '<b>Font-Awesome Icon</b>', code: '<i class="fa fa-"></i>', ch: 17 });
 SNIPPETS.push({ type: 'html', search: 'jc', text: '<b>Component</b>', code: '<div data-jc="__"></div>', ch: 15 });
 SNIPPETS.push({ type: 'html', search: '--', text: '<b>Component</b>', code: '<div data---="__"></div>', ch: 15 });
+SNIPPETS.push({ type: 'html', search: 'br', text: '<b>&lt;br /&gt;</b>', code: '<br />', ch: 7 });
 SNIPPETS.push({ type: 'html', search: 'scope', text: '<b>data-scope</b>', code: '<div data-scope=""></div>', ch: 18 });
 SNIPPETS.push({ type: 'html', search: 'data-bind', text: '<b>data-bind</b>', code: '<div data-bind="__"></div>', ch: 17 });
 SNIPPETS.push({ type: 'html', search: 'data-import', text: '<b>data-import</b>', code: '<div data-import="__"></div>', ch: 19 });
@@ -1851,7 +1852,10 @@ FUNC.snippets = function(type, text, tabs, line, words, chplus, linestr) {
 	var tmp;
 	for (var i = 0; i < SNIPPETS.length; i++) {
 		var snip = SNIPPETS[i];
+
 		if ((!snip.type || snip.type === type) && (snip.search.indexOf(text) !== -1 && (snip.search !== text || text.charAt(0) === '-'))) {
+
+			tmp = '';
 
 			if (snip.special === 1) {
 				if (linestr && linestr.indexOf('(') !== -1 && linestr.indexOf(')') === -1)
