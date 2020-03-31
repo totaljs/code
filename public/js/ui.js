@@ -1116,7 +1116,6 @@ COMPONENT('editor', function(self, config) {
 
 	self.rebuild_autocomplete = function(val) {
 		var words = val || editor.getValue();
-		// console.log(words);
 		var max = 100000;
 		if (words.length > max)
 			words = words.substring(0, max);

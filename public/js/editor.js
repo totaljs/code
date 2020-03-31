@@ -856,7 +856,6 @@ WAIT('CodeMirror.defineMode', function() {
 	Completion.prototype = {
 		close: function(item) {
 			if (this.active()) {
-				console.log(item);
 				this.cm.state.completionActive = null;
 				this.tick = null;
 				this.cm.off('cursorActivity', this.activityFunc);
