@@ -52,6 +52,11 @@ FUNC.mkdir = function(path, callback) {
 FUNC.autodiscover = function(callback) {
 	Fs.readdir(CONF.autodiscover || '/www/www/', function(err, directories) {
 
+		if (err) {
+			callback && callback();
+			return;
+		}
+
 		var projects = MAIN.projects;
 		var ischange = false;
 		var cache = {};

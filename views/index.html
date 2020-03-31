@@ -529,11 +529,13 @@
 		}, true);
 
 		SETTER(true, 'shortcuts', 'register', 'ctrl+b,cmd+b', function(e) {
+
 			if (!W.code || !W.code.current)
 				return;
+
 			// BUILD
-			if ((/\/scripts\//g).test(code.current.path)) {
-				if (code.current.ext === 'js')
+			if ((/\/scripts\/|\.sh$/g).test(code.current.path)) {
+				if (code.current.ext === 'js' || code.current.ext === 'sh')
 					FUNC.requestscript(code.data.id, code.current.path);
 			} else if (code.current.ext === 'api') {
 				var editor = FIND('editor').editor;

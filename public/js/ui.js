@@ -1228,8 +1228,10 @@ COMPONENT('exec', function(self, config) {
 
 COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 
+	var REGBK = /(-|_)bk\.$/i;
+
 	Thelpers.treefilecolor = function(filename) {
-		if (filename.charAt(0) === '.' || filename.indexOf('-bk.') !== -1)
+		if (filename.charAt(0) === '.' || REGBK.test(filename))
 			return ' ui-tree-hiddenfile';
 		return '';
 	};

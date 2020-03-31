@@ -466,7 +466,15 @@ function makerequestscript(id) {
 		child.kill(9);
 	}, 19000);
 
-	var child = Exec('node ' + Path.join(project.path, self.query.path), function(err, stdout, stderr) {
+	var ext = U.getExtension(self.query.path);
+	var can = { js: 1, sh: 1 };
+
+	if (!can[ext]) {
+		self.invalid('error-permissions');
+		return;
+	}
+
+	var child = Exec((ext === 'sh' ? 'bash ' : 'node ') + Path.join(project.path, self.query.path), function(err, stdout, stderr) {
 		clearTimeout(self.childtimeout);
 		var data = {};
 		data.response = stderr || stdout;

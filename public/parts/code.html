@@ -600,7 +600,7 @@
 			var tools = [];
 			var tmp;
 
-			if (code.current.path.indexOf('/scripts/') !== -1)
+			if ((/\/scripts\/|\.sh$/g).test(code.current.path))
 				items.push({ name: '@(Run script)', icon: 'play-circle red', value: 'run', classname: 'b', shortcut: (common.ismac ? 'CMD' : 'CTRL') + '+B' });
 
 			if (can) {
@@ -872,7 +872,7 @@
 				}
 
 				if (value.value === 'run') {
-					if ((/\/scripts\//g).test(code.current.path))
+					if ((/\/scripts\/|\.sh$/g).test(code.current.path))
 						FUNC.requestscript(code.data.id, code.current.path);
 					else
 						FUNC.request(text, editor.getValue());

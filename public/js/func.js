@@ -750,23 +750,23 @@ FUNC.aligntext = function(sel) {
 };
 
 FUNC.requestscript = function(id, path) {
-	SETTER('loading', 'show');
+	SETTER('loading/show');
 	AJAX('GET /api/request/{0}/?path={1}'.format(id, encodeURIComponent(path)), function(response, err) {
 
-		SETTER('loading', 'hide', 100);
+		SETTER('loading/hide', 100);
 
 		if (err) {
-			SETTER('message', 'warning', err.toString());
+			SETTER('message/warning', err.toString());
 			return;
 		}
 
 		if (response instanceof Array) {
-			SETTER('message', 'warning', response[0].error);
+			SETTER('message/warning', response[0].error);
 			return;
 		}
 
 		var template = '<div class="output-response-header">{0}:</div><div class="output-response-header-value">{1}</div>';
-		PUSH('^output', '<div class="output-response"><div class="output-response-caption" title="{0}">{0}</div>{1}</div>'.format(Thelpers.encode(response.url), template.format('Response (' + (response.duration / 1000) + ' s)', Thelpers.encode(response.response).replace(/\n/g, '<br />'))));
+		PUSH('^output', '<div class="output-response">{0}</div>'.format(template.format('Response (' + (response.duration / 1000) + ' s)', Thelpers.encode(response.response).replace(/\n/g, '<br />'))));
 		SET('common.form', 'output');
 	});
 };
