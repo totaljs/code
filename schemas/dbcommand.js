@@ -1,5 +1,5 @@
-const Database = require('pg');
 const Fs = require('fs');
+var Database = null;
 
 NEWSCHEMA('DBCommand', function(schema) {
 
@@ -7,6 +7,9 @@ NEWSCHEMA('DBCommand', function(schema) {
 	schema.define('query', 'String', true);
 
 	var makeclient = function($) {
+
+		if (!Database)
+			Database = require('pg');
 
 		var model = $.model;
 		var index = model.connection.indexOf('hex ');
