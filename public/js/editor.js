@@ -1757,7 +1757,7 @@ SNIPPETS.push({ type: 'css', search: 'forwards', text: 'forwards', code: 'forwar
 SNIPPETS.push({ type: 'css', search: '!important', text: '<b>!important</b>', code: '!important;', ch: 12 });
 SNIPPETS.push({ type: 'css', search: 'radial gradient', text: '<b>radial</b>-gradient', code: 'background: radial-gradient(#F0F0F0,#D0D0D0);', ch: 29 });
 SNIPPETS.push({ type: 'css', search: 'media', text: 'Media', code: '@media(max-width: 768px) {\n\n}', ch: 30 });
-SNIPPETS.push({ type: 'html', search: 'link', text: '<b>Link</b>', code: '<link rel="stylesheet" href="/css/.css" />', ch: 35 });
+SNIPPETS.push({ type: 'html', search: 'link css', text: '<b>Link CSS</b>', code: '<link rel="stylesheet" href="/css/.css" />', ch: 35 });
 SNIPPETS.push({ type: 'html', search: 'favicon', text: '<b>Favicon</b>', code: '<link rel="icon" href="" type="image/x-icon" />', ch: 24 });
 SNIPPETS.push({ type: 'html', search: 'style', text: '<b>Inline style</b>', code: 'style=""', ch: 8 });
 SNIPPETS.push({ type: 'html', search: 'style', text: '<b>Style</b>', code: '{0}<style></style>', ch: 8 });
@@ -1771,6 +1771,8 @@ SNIPPETS.push({ type: 'html', search: 'br', text: '<b>&lt;br /&gt;</b>', code: '
 SNIPPETS.push({ type: 'html', search: 'scope', text: '<b>data-scope</b>', code: '<div data-scope=""></div>', ch: 18 });
 SNIPPETS.push({ type: 'html', search: 'data-bind', text: '<b>data-bind</b>', code: '<div data-bind="__"></div>', ch: 17 });
 SNIPPETS.push({ type: 'html', search: 'data-import', text: '<b>data-import</b>', code: '<div data-import="__"></div>', ch: 19 });
+SNIPPETS.push({ type: 'html', search: 'link spa min css', text: 'Link: <b>spa.min@18.css</b>', code: '<link href="\/\/cdn.componentator.com/spa.min@18.css" rel="stylesheet" />', ch: 100 });
+SNIPPETS.push({ type: 'html', search: 'scri' + 'pt spa min js', text: ('Scr' + 'ipt: <b>spa.min@18.js</b>'), code: ('<scr' + 'ipt src="\/\/cdn.componentator.com/spa.min@18.js"></scr' + 'ipt>'), ch: 100 });
 SNIPPETS.push({ type: 'js', search: 'AUTH', text: '<b>AUTH</b>', code: 'AUTH(function($) {\n\t{0}$.success(USER_PROFILE);\n{0}});', ch: 30 });
 SNIPPETS.push({ type: 'js', search: 'PLUGIN', text: '<b>PLUGIN</b>', code: 'PLUGIN(\'{1}\', function(exports) {\n\n\t{0}exports.refresh = function() {\n\t{0}};\n\n{0}});', ch: 9 });
 SNIPPETS.push({ type: 'js', search: 'COMPONENT', text: '<b>COMPONENT</b>', code: 'COMPONENT(\'\', \'\', function(self, config, cls) {\n\t{0}\n{0}});', ch: 12 });
