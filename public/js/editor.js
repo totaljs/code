@@ -1781,7 +1781,7 @@ SNIPPETS.push({ type: 'js', search: 'NEWOPERATION', text: '<b>NEWOPERATION</b>',
 SNIPPETS.push({ type: 'js', search: 'NEWTASK', text: '<b>NEWTASK</b>', code: 'NEWTASK(\'{1}\', function(push) {\n\n\t{0}push(\'TASK_NAME_1\', function($) {\n\t\t{0}$.next(\'TASK_NAME_2\');\n\t{0}});\n\n\t{0}push(\'TASK_NAME_2\', function($) {\n\t\t{0}$.done();\n\t{0}});\n\n{0}});', ch: 10 });
 SNIPPETS.push({ type: 'js', search: 'for var', text: '<b>for in</b>', code: 'for (var i = 0; i < .length; i++)', ch: 21, priority: 10 });
 SNIPPETS.push({ type: 'js', search: 'foreach forEach', text: '<b>forEach</b>', code: 'forEach(function(item) {\n{0}});', ch: 30, priority: 1 });
-SNIPPETS.push({ type: 'js', search: 'invalid', text: '<b>invalid</b>', code: 'if (err) {\n\t{0}$.invalid(err);\n\t{0}return;\n{0}}', ch: 30 });
+SNIPPETS.push({ type: 'js', search: '$.invalid', text: '<b>$.invalid()</b>', code: 'if (err) {\n\t{0}$.invalid(err);\n\t{0}return;\n{0}}', ch: 30 });
 SNIPPETS.push({ type: 'js', search: 'callback', text: '<b>callback</b>', code: 'callback', ch: 9, priority: 1 });
 SNIPPETS.push({ type: 'js', search: 'callback function', text: '<b>callback function</b>', code: 'function(err, response) {\n\t{0}\n{0}}', ch: 30, priority: 1, special: 1 });
 SNIPPETS.push({ type: 'js', search: 'Object.keys', text: '<b>Object.keys</b>', code: 'Object.keys()', ch: 13, priority: 1 });

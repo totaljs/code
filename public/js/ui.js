@@ -11349,7 +11349,52 @@ COMPONENT('markdown', function (self) {
 				if (t.$mdloaded)
 					return;
 				t.$mdloaded = 1;
-				hljs.highlightBlock(block);
+
+				var lng = block.getAttribute('class').replace('lang-', '');
+				var type;
+
+				switch(lng) {
+					case 'html':
+					case 'htm':
+						type = 'totaljs';
+						break;
+					case 'php':
+						type = 'application/x-httpd-php';
+						break;
+					case 'js':
+					case 'javascript':
+						type = 'javascript';
+						break;
+					case 'css':
+						type = 'text/css';
+						break;
+					case 'cpp':
+						type = 'text/x-csrc';
+						break;
+					case 'sql':
+						type = 'text/x-sql';
+						break;
+					case 'json':
+						type = 'application/ld+json';
+						break;
+					case 'py':
+						type = 'text/x-cython';
+						break;
+					case 'sh':
+						type = 'text/x-sh';
+						break;
+					case 'sass':
+						type = 'text/x-sass';
+						break;
+					case 'yaml':
+						type = 'text/x-yaml';
+						break;
+					case 'xml':
+						type = 'text/xml';
+						break;
+				}
+
+				CodeMirror.runMode(block.innerHTML.trim().replace(/\t/g, '  '), type, $(block).aclass('cm-s-default')[0]);
 			});
 
 			el.find('a').each(function() {
@@ -11537,7 +11582,7 @@ COMPONENT('markdown', function (self) {
 
 					if (iscode) {
 						if (opt.code !== false)
-							builder.push('</code></pre></div>');
+							builder[builder.length - 1] += '</code></pre></div>';
 						iscode = false;
 						continue;
 					}

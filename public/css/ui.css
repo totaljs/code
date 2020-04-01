@@ -952,8 +952,9 @@ li.ui-directory-current { background-color: rgba(0,0,0,0.02); font-weight: bold;
 .markdown p code, .markdown li code, .markdown section code, .markdown blockquote code, .markdown h1 code, .markdown h2 code, .markdown h3 code, .markdown h4 code, .markdown td code { background-color: #E0E0E0; padding: 1px 4px 2px; border-radius: 3px; font-size: 14px; }
 .markdown-small p code, .markdown-small li code, .markdown-small section code, .markdown-small blockquote code, .markdown-small h1 code, .markdown-small h2 code, .markdown-small h3 code, .markdown-small h4 code, .markdown-small td code { padding: 0 3px; border-radius: 3px; font-size: 13px; }
 .markdown p code, .markdown section code, .markdown li code, .markdown blockquote code, .markdown td code { border: 1px solid #E0E0E0; background-color: #F5F5F5; }
-.markdown pre { padding: 0; border-radius: 4px; margin: 20px 0; width: 100%; }
-.markdown pre code { padding: 10px; font-size: 14px; line-height: 18px; overflow-scrolling: touch; border-radius: 3px; }
+.markdown pre { padding: 10px; border-radius: 2px; margin: 0 0 20px 0; width: 100%; background-color: #F8F8F8; }
+.td .markdown pre { background-color: #303030; }
+.markdown pre code { font-size: 14px; line-height: 18px; overflow-scrolling: touch; }
 .markdown table { margin: 0 0 20px; width: auto !important; }
 .markdown ul { margin: 0 0 20px 0; padding: 0 0 0 2em; }
 .markdown ul ul { margin-bottom: 0; }
