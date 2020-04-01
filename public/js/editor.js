@@ -1740,7 +1740,7 @@ SNIPPETS.push({ type: 'css', search: 'vertical align top', text: 'vertical-align
 SNIPPETS.push({ type: 'css', search: 'vertical align middle', text: 'vertical-align: <b>middle</b>', code: 'vertical-align: middle;', ch: 24 });
 SNIPPETS.push({ type: 'css', search: 'vertical align bottom', text: 'vertical-align: <b>bottom</b>', code: 'vertical-align: bottom;', ch: 24 });
 SNIPPETS.push({ type: 'css', search: 'background image picture url', text: '<b>background-image</b>', code: 'background: url() no-repeat 0 0;', ch: 17 });
-SNIPPETS.push({ type: 'css', search: 'overflow hidden', text: 'overflow: <b>hidden</b>', code: 'overflow: hidden;', ch: 64 });
+SNIPPETS.push({ type: 'css', search: 'overflow hidden', text: 'overflow: <b>hidden</b>', code: 'overflow: hidden;', ch: 18 });
 SNIPPETS.push({ type: 'css', search: 'hellip overflow', text: '<b>hellip</b>', code: 'text-overflow: ellipsis; white-space: nowrap; overflow: hidden;', ch: 64 });
 SNIPPETS.push({ type: 'css', search: 'text align center', text: 'text-align: <b>center</b>', code: 'text-align: center;', ch: 20 });
 SNIPPETS.push({ type: 'css', search: 'text align right', text: 'text-align: <b>right</b>', code: 'text-align: right;', ch: 19 });
