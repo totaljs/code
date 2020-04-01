@@ -8,6 +8,8 @@ $color    : #4285F4;
 	src: url('../webfonts/menlo.woff2') format('woff2'), url('../webfonts/menlo.woff') format('woff'), url('../webfonts/menlo.ttf') format('truetype');
 }
 
+.fa,.fab,.fad,.fal,.far,.fas { -webkit-transform:none !important; }
+
 html,body { margin: 0; padding: 0; overflow: hidden; }
 
 ::selection { background: #60307F; color: white; }
