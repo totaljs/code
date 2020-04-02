@@ -318,7 +318,7 @@ NEWSCHEMA('Files', function(schema) {
 		arg.push(PATH.temp(filename));
 		arg.push(project.path);
 
-		Exec(PATH.databases('source_backup.sh'), arg, function(err) {
+		Exec(PATH.databases('source_backup.sh') + ' ' + arg.join(' '), { shell: '/bin/sh' }, function(err) {
 			if (err) {
 				$.invalid(err);
 			} else {

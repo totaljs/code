@@ -16,7 +16,7 @@ NEWSCHEMA('Branches', function(schema) {
 		arg.push(project.path);
 		arg.push(PATH.databases(project.id + '_changes.nosql'));
 		arg.push(PATH.databases(project.id + '_parts.nosql'));
-		Exec(PATH.databases('branch_backup.sh'), arg, callback || NOOP);
+		Exec(PATH.databases('branch_backup.sh') + ' ' + arg.join(' '), { shell: '/bin/sh' }, callback || NOOP);
 	};
 
 	var restore = function(project, branch, callback) {
@@ -44,7 +44,7 @@ NEWSCHEMA('Branches', function(schema) {
 				var arg = [];
 				arg.push(filename);
 				arg.push(project.path);
-				Exec(PATH.databases('branch_restore.sh'), arg, callback || NOOP);
+				Exec(PATH.databases('branch_restore.sh') + ' ' + arg.join(' '), { shell: '/bin/sh' }, callback || NOOP);
 			});
 
 		});
