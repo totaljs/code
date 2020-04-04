@@ -3194,10 +3194,11 @@ https://twitter.com/JoelBesada/status/670343885655293952
 		var state = getSearchState(cm);
 		if (state.query)
 			return findNext(cm, rev);
+
+		/*
 		var q = cm.getSelection() || state.lastQuery;
 		if (q instanceof RegExp && q.source == 'x^')
 			q = null;
-
 		if (persistent && cm.openDialog) {
 			var hiding = null;
 			var searchNext = function(query, event) {
@@ -3245,7 +3246,7 @@ https://twitter.com/JoelBesada/status/670343885655293952
 						findNext(cm, rev);
 					});
 			});
-		}
+		}*/
 	}
 
 	function findNext(cm, rev, callback) {
