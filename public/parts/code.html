@@ -1249,29 +1249,41 @@
 
 		};
 
-		exports.upload = function(node, e) {
+		exports.upload = function(node, e, dragfiles) {
 
 			var path = node ? FUNC.getPath(node.path) : '/';
 			var items;
 
 			SETTER('loading/show');
 
-			if ('WebkitAppearance' in document.documentElement.style) {
+			if (!dragfiles && 'WebkitAppearance' in document.documentElement.style) {
+
 				var arr = [];
+				var files2upload = false;
+
+				items = e.dataTransfer.items;
+				dragfiles = e.dataTransfer.files;
+
+				for (var i = 0; i < items.length; i++)
+					arr.push(items[i]);
+
 				var files = [];
 				var done = function() {
 					FUNC.success('@(Uploaded successfully.)');
 					exports.load(code.data.id, true);
 					SETTER('loading/hide');
+					files2upload && exports.upload(node, e, dragfiles);
 				};
-
-				items = e.dataTransfer.items;
-
-				for (var i = 0; i < items.length; i++)
-					arr.push(items[i]);
 
 				arr.wait(function(item, next) {
 					var entry = item.webkitGetAsEntry();
+
+					if (entry == null) {
+						files2upload = true;
+						next();
+						return;
+					}
+
 					if (entry.isDirectory)
 						traverseupload(path + entry.name + '/', entry, next);
 					else {
@@ -1304,13 +1316,20 @@
 			var data = new FormData();
 			var name = [];
 
-			items = e.dataTransfer.files;
+			items = dragfiles || e.dataTransfer.files;
 
 			data.append('path', path);
 
 			for (var i = 0; i < items.length; i++) {
-				name.push(items[i].name);
-				data.append('file' + i, items[i]);
+				if (items[i].size) {
+					name.push(items[i].name);
+					data.append('file' + i, items[i]);
+				}
+			}
+
+			if (!name.length) {
+				SETTER('loading/hide');
+				return;
 			}
 
 			UPLOAD('POST /api/projects/{id}/upload/'.arg(code.data), data, function(response) {
