@@ -354,7 +354,7 @@ NEWSCHEMA('Projects', function(schema) {
 
 		var id = $.id || $.options.id;
 
-		if ($.user && $.user.sa) {
+		if ($.user && !$.user.sa) {
 			$.invalid('error-permissions');
 			return;
 		}
@@ -379,7 +379,7 @@ NEWSCHEMA('Projects', function(schema) {
 
 		var id = $.id || $.options.id;
 
-		if ($.user && $.user.sa) {
+		if ($.user && !$.user.sa) {
 			$.invalid('error-permissions');
 			return;
 		}
