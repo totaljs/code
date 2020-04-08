@@ -11012,8 +11012,12 @@ COMPONENT('messages', function(self) {
 		}
 
 		FUNC.markdownredraw && FUNC.markdownredraw(self.element);
-		com && resize(com);
-		com && setTimeout(resize, 200, com);
+
+		if (com) {
+			resize(com);
+			setTimeout(resize, 200, com);
+			setTimeout(resize, 800, com);
+		}
 	};
 });
 
@@ -11344,6 +11348,18 @@ COMPONENT('markdown', function (self) {
 				el.parent().replaceWith('<div class="iframe">' + el.html().replace(/&lt;/g, '<').replace(/&gt;/g, '>') + '</div>');
 			});
 
+			var fixtags = function(text) {
+				switch (text) {
+					case '&lt;':
+						return '<';
+					case '&gt;':
+						return '>';
+					case '&amp;':
+						return '&';
+				}
+				return text;
+			};
+
 			el.find('pre code').each(function(i, block) {
 				var t = this;
 				if (t.$mdloaded)
@@ -11394,7 +11410,7 @@ COMPONENT('markdown', function (self) {
 						break;
 				}
 
-				CodeMirror.runMode(block.innerHTML.trim().replace(/\t/g, '  '), type, $(block).aclass('cm-s-default')[0]);
+				CodeMirror.runMode(block.innerHTML.trim().replace(/&lt;|&gt;|&amp;/g, fixtags).replace(/\t/g, '  '), type, $(block).aclass('cm-s-default')[0]);
 			});
 
 			el.find('a').each(function() {
