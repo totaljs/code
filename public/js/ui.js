@@ -508,7 +508,7 @@ COMPONENT('editor', function(self, config) {
 
 		editor.on('renderLine', function(cm, line, el) {
 			if (config.mode === 'totaljs' || config.mode === 'text/css') {
-				var arr = el.querySelectorAll('.cm-atom');
+				var arr = el.querySelectorAll('.cm-atom,.cm-builtin');
 				for (var i = 0; i < arr.length; i++) {
 					el = arr[i];
 					var html = el.innerHTML;
