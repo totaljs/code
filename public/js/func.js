@@ -27,8 +27,6 @@ var TIDYUPWHITE = new RegExp(String.fromCharCode(160), 'g');
 		if (!(/(function|switch|else|with|if|for|while)\s\(/).test(line) || (/\w/).test(line.substring(pos.ch)))
 			return;
 
-		console.log(line);
-
 		var tabs = TABSCOUNT(line);
 		var lines = cm.lineCount();
 		var plus = '';
