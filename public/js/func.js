@@ -322,7 +322,9 @@ FUNC.cleancss = function(text) {
 		return text.substring(0, 1) + ' ' + text.substring(1);
 	}).replace(/(\n)?.*?\{/g, function(text) {
 		return text.replace(/:\s(\w)/g, ':$1');
-	}).replace(/\0/g, '\n').trim();
+	}).replace(/\0/g, '\n').replace(/:[a-z0-9#]/gi, function(text) {
+		return ': ' + text.substring(1);
+	}).trim();
 };
 
 FUNC.usercolor = function(value) {
@@ -351,7 +353,9 @@ FUNC.sortcss = function(value) {
 		lines[i] = line.substring(0, beg + 1) + ' ' + tmp.join('; ') + '; ' + line.substring(end);
 	}
 
-	return lines.join('\n');
+	return lines.join('\n').replace(/:[a-z0-9#]/gi, function(text) {
+		return ': ' + text.substring(1);
+	});
 };
 
 FUNC.getName = function(path) {
