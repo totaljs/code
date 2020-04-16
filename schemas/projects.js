@@ -143,7 +143,7 @@ NEWSCHEMA('Projects', function(schema) {
 						for (var j = 0; j < tmp.length; j++) {
 							var m = (tmp[j] + '');
 							m = m.substring(11, m.length - 2);
-							key = 'T' + m.hash();
+							key = m;
 							file = filename.substring(item.path.length);
 							texts[key] = m;
 							if (resource[key]) {
@@ -161,7 +161,7 @@ NEWSCHEMA('Projects', function(schema) {
 						for (var j = 0; j < tmp.length; j++) {
 							var m = (tmp[j] + '');
 							m = m.substring(m.indexOf('(') + 2, m.length - 1);
-							key = 'T' + m.hash();
+							key = m;
 							file = filename.substring(item.path.length);
 							texts[key] = m;
 							if (resource[key]) {
