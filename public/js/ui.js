@@ -802,9 +802,9 @@ COMPONENT('editor', function(self, config) {
 
 		var cursorfn = GET(config.cursor);
 
-		self.toggleruler = function() {
+		self.toggleruler = function(islive) {
 
-			if (editor.state.linerruler) {
+			if (!islive && editor.state.linerruler) {
 				editor.state.linerruler = false;
 				options.rulers[1].column = -1;
 			} else {
@@ -816,13 +816,17 @@ COMPONENT('editor', function(self, config) {
 						count++;
 				}
 				options.rulers[1].column = cur.ch + (count * 3);
-				editor.state.linerruler = false;
+				editor.state.linerruler = true;
 			}
 
 			editor.state.redrawrulers(editor);
 		};
 
-		editor.on('cursorActivity', cursorfn);
+		editor.on('cursorActivity', function() {
+			if (editor.state.linerruler)
+				self.toggleruler(true);
+			cursorfn(editor);
+		});
 
 		editor.on('drop', function(data, e) {
 			var files = e.dataTransfer.files;
