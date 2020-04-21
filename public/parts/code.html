@@ -671,6 +671,7 @@
 				sub.push({ name: '@(SHA-512)', icon: 'chevron-right', value: 'sha512', server: true });
 				sub.push({ name: '@(CRC-32)', icon: 'chevron-right', value: 'crc32', server: true });
 				sub.push({ name: '@(CRC-32 unsigned)', icon: 'chevron-right', value: 'crc32unsigned', server: true });
+				sub.push({ name: '@(JSON escape)', icon: 'chevron-right', value: 'jsonescape' });
 				sub.push({ name: '@(Optimize for search)', icon: 'search', value: 'search' });
 				items.push({ name: '@(Encode)', icon: 'lock', value: 'encode', children: sub });
 
@@ -679,6 +680,7 @@
 				sub.push({ name: '@(Base64)', icon: 'chevron-right', value: 'atob' });
 				sub.push({ name: '@(Decode URI)', icon: 'chevron-right', value: 'decodeURIComponent' });
 				sub.push({ name: '@(Unescape)', icon: 'chevron-right', value: 'unescape' });
+				sub.push({ name: '@(JSON unescape)', icon: 'chevron-right', value: 'jsonunescape' });
 				items.push({ name: '@(Decode)', icon: 'unlock', value: 'decode', children: sub });
 
 				sub = [];
@@ -1063,11 +1065,27 @@
 						case 'escape':
 						case 'unescape':
 						case 'HASH':
-								for (var i = 0; i < sel.length; i++) {
-									try {
-										sel[i] = window[value.value](sel[i]).toString();
-									} catch(e) {}
-								}
+							for (var i = 0; i < sel.length; i++) {
+								try {
+									sel[i] = window[value.value](sel[i]).toString();
+								} catch(e) {}
+							}
+							editor.replaceSelections(sel);
+							break;
+						case 'jsonescape':
+							for (var i = 0; i < sel.length; i++) {
+								try {
+									sel[i] = JSON.stringify(sel[i]);
+								} catch(e) {}
+							}
+							editor.replaceSelections(sel);
+							break;
+						case 'jsonunescape':
+							for (var i = 0; i < sel.length; i++) {
+								try {
+									sel[i] = JSON.parse(sel[i].trim());
+								} catch(e) {}
+							}
 							editor.replaceSelections(sel);
 							break;
 						case 'translate':
