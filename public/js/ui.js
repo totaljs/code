@@ -156,6 +156,7 @@ COMPONENT('editor', function(self, config) {
 				editor.setOption('mode', value);
 				editor.setOption('lint', value === 'javascript' || value === 'xml' || value === 'totaljs' || value === 'html' ? { esversion: 6, expr: true, evil: true, unused: true, shadow: true } : false);
 				editor.setOption('matchBrackets', value !== 'todo');
+				editor.setOption('lineWrapping', value === 'markdown');
 				editor.setOption('highlightSelectionMatches', value !== 'todo' ? HSM : false);
 				break;
 			case 'disabled':
