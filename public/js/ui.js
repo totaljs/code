@@ -425,7 +425,7 @@ COMPONENT('editor', function(self, config) {
 		options.lineWrapping = false;
 		options.matchBrackets = true;
 		options.scrollbarStyle = 'simple';
-		options.rulers = [{ column: 130, lineStyle: 'dashed' }];
+		options.rulers = [{ column: 130, lineStyle: 'dashed' }, { column: -1, lineStyle: 'dashed' }];
 		options.gutters = ['GutterUser', 'CodeMirror-lint-markers', 'CodeMirror-linenumbers', 'GutterDiff'];
 		options.viewportMargin = 20;
 		options.foldGutter = true;
@@ -802,9 +802,27 @@ COMPONENT('editor', function(self, config) {
 
 		var cursorfn = GET(config.cursor);
 
-		editor.on('cursorActivity', function() {
-			cursorfn(editor);
-		});
+		self.toggleruler = function() {
+
+			if (editor.state.linerruler) {
+				editor.state.linerruler = false;
+				options.rulers[1].column = -1;
+			} else {
+				var cur = editor.getCursor();
+				var line = editor.getLine(cur.line);
+				var count = 0;
+				for (var i = 0; i < cur.ch; i++) {
+					if (line.charAt(i) === '\t')
+						count++;
+				}
+				options.rulers[1].column = cur.ch + (count * 3);
+				editor.state.linerruler = false;
+			}
+
+			editor.state.redrawrulers(editor);
+		};
+
+		editor.on('cursorActivity', cursorfn);
 
 		editor.on('drop', function(data, e) {
 			var files = e.dataTransfer.files;

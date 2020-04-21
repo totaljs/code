@@ -42,6 +42,9 @@
 })(function(CodeMirror) {
 
 	CodeMirror.defineOption('rulers', false, function(cm, val) {
+
+		cm.state.redrawrulers = drawRulers;
+
 		if (cm.state.rulerDiv) {
 			cm.state.rulerDiv.parentElement.removeChild(cm.state.rulerDiv);
 			cm.state.rulerDiv = null;

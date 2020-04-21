@@ -10,6 +10,7 @@
 - added IP resolver from a domain
 - added drag&drop directory with sub-directories (supported only in WebKit)
 - added search in all text files
+- added rulers
 - `.sh` files can be builded via `bash` (project must have allowed scripts)
 - files in `public` directory are part of auto-complete
 - improved Font-Awesome icons

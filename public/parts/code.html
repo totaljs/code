@@ -731,6 +731,8 @@
 			if (code.current.path.indexOf('/config') !== -1)
 				items.push({ name: '@(Insert connection string)', icon: 'database', value: 'insertconnection' });
 
+			items.push({ name: '@(Toggle ruler)', icon: 'ruler-vertical', value: 'toggleruler' });
+
 			if ((/js|json|html|todo|api|txt|versions|sitemap/).test(code.current.ext)) {
 
 				sub = [];
@@ -784,6 +786,11 @@
 
 				if (value.value === 'insertconnection') {
 					editor.replaceSelection('postgresql://user:password@localhost:5432/database');
+					return;
+				}
+
+				if (value.value === 'toggleruler') {
+					EDITOR.toggleruler();
 					return;
 				}
 
