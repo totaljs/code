@@ -1859,6 +1859,7 @@
 								el = el.find('span[data-value="{0}"]'.format(data.path));
 								el.length && el.find('i').trigger('click');
 								SET('code.tree', FUNC.treeremove(code.tree, node.path));
+								code.data.files = code.data.files.remove(node.path);
 								common.electron && code.data.repository && user.localsave && FUNC.unlinkpath(require('path').join(FUNC.getName(code.data.repository.replace(/\.git$/i, '')), node.path));
 							});
 						});
