@@ -358,7 +358,11 @@ NEWSCHEMA('Files', function(schema) {
 		var output = [];
 		var q = $.query.search.toLowerCase();
 
-		CLEANUP(stream.on('data', customstreamer(function(line, lineindex) {
+		stream.on('error', function() {
+			$.callback(output);
+		});
+
+		stream.on('data', customstreamer(function(line, lineindex) {
 
 			var index = line.toLowerCase().indexOf(q);
 
@@ -372,7 +376,9 @@ NEWSCHEMA('Files', function(schema) {
 				output.push({ line: lineindex + 1, ch: index, name: line.substring(beg).max(50, '...').trim() });
 			}
 
-		}, stream, () => $.callback(output))));
+		}));
+
+		stream.on('end', () => $.callback(output));
 	});
 
 });
