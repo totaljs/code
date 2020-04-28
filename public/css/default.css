@@ -296,9 +296,9 @@ header .tools .external { color: #a2a286; }
 .tabs { height: 50px; background-color: #F0F0F0; border-bottom: 1px solid #E0E0E0; position: relative; }
 .tabs, .tabs * { user-select: none; }
 .tabs nav { position: absolute; margin: 11px 0 0 63px; }
-.tabs nav span { position: relative; display: inline-block; max-width: 150px; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; height: 38px; background-color: #E0E0E0; padding: 9px 15px 0 25px; border-radius: 3px 3px 0 0; margin-left: 10px; font-size: 12px; border: 1px solid #E0E0E0; border-bottom: 0; cursor: pointer; color: gray; vertical-align: top; }
+.tabs nav span { position: relative; display: inline-block; max-width: 150px; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; height: 38px; background-color: #E0E0E0; padding: 9px 15px 0 25px; border-radius: 3px 3px 0 0; margin-left: 10px; font-size: 12px; border: 1px solid #E0E0E0; border-bottom: 0; cursor: default; color: gray; vertical-align: top; }
 .tabs nav .selected { background-color: white; height: 39px; color: black; }
-.tabs nav i { color: gray; font-size: 11px; position: absolute; left: 10px; top: 11px; width: 14px; }
+.tabs nav i { color: gray; font-size: 11px; position: absolute; left: 10px; top: 11px; width: 14px; cursor: pointer; }
 .tabs nav .modified i { color: red; left: 9px; top: 10px; }
 .tabs nav i:before { content: '\f00d'; }
 .tabs nav .modified i:before { content: '\f111'; font-size: 10px; }
