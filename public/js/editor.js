@@ -3382,6 +3382,7 @@ https://twitter.com/JoelBesada/status/670343885655293952
 					cm.execCommand('clearSearch');
 					cm.focus();
 					cm.doc.setCursor(cm.doc.getCursor());
+					state(el[0]);
 					break;
 			}
 		});

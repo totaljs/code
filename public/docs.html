@@ -17,7 +17,7 @@
 		.parts figure .filename { font-weight: bold; font-family: Arial; }
 		.parts figure img { border-radius: 3px; }
 		.parts figure ul { background-color: white; padding: 0; border-radius: 3px; list-style-type: none; margin: 8px 0 0; border: 1px solid #E0E0E0; }
-		.parts figure li { border-top: 1px solid #E0E0E0; padding: 2px 5px; font-size: 11px; font-family: Menlo, monospace; }
+		.parts figure li { border-top: 1px solid #E0E0E0; padding: 2px 5px; font-size: 11px; font-family: Menlo, monospace; display: block; white-space: nowrap; text-overflow: ellipsis; overflow: hidden; }
 		.parts figure li i { width: 14px; margin-right: 5px; text-align: center; }
 		.parts figure li:first-child { border-top: 0; }
 		.parts figure p { margin-top: 0; margin-bottom: 15px; }
@@ -95,6 +95,10 @@
 		setTimeout(function() {
 			$('#download').attr('href', location.href).attr('download', encodeURIComponent($('h1').html() + '.html'));
 			$('.invisible').rclass('invisible');
+			$('li').each(function() {
+				var el = $(this);
+				el.attr('title', el.text().replace(/\s{2,}/g, ' '));
+			});
 		}, 500);
 
 	</script>

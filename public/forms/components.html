@@ -121,7 +121,7 @@
 					var sub = code.componentsdb[i];
 					for (var j = 0; j < sub.items.length; j++) {
 						var tmp = sub.items[j];
-						if (tmp.type === 'htmlcomponent' && tmp.name === item.name) {
+						if (tmp.type === 'htmlcomponent' && tmp.name.replace(/LAZY\s/g, '') === item.name) {
 							plus = '';
 							stop = true;
 							break;
