@@ -3885,7 +3885,7 @@ COMPONENT('datagrid', 'checkbox:true;colwidth:150;rowheight:28;clusterize:true;l
 				next(meta);
 				self.datagrid_cancel(meta);
 			};
-			SETTER('datepicker', 'show', opt);
+			SETTER('datepicker/show', opt);
 		}
 
 		current.fn = function(e) {
