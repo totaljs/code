@@ -1446,8 +1446,10 @@
 
 			code.SYNC = false;
 			SET('code.multiple', false);
-
+			SETTER('loading/show');
 			AJAX('GET /api/projects/{id}/edit/'.arg(code.data), { path: item.path }, function(response) {
+
+				SETTER('loading/hide', 500);
 
 				if (response instanceof Array) {
 					FUNC.warning(response);
@@ -2249,8 +2251,8 @@
 						if (arr.length > 4)
 							break;
 					}
-					SET('code.recent', arr);
 
+					SET('code.recent', arr);
 					EXEC('codechanges/refresh');
 					EXEC('codebackups/refresh');
 				});
