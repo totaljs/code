@@ -169,7 +169,7 @@
 						break;
 				}
 
-				builder.push(key + ': ' + format.format(val));
+				builder.push(key + ': ' + format.format(Thelpers.encode(val)));
 			}
 
 			return { html: '<span class="db-line">{0}</span>'.format(index) + builder.join(', '), search: search.join(' ') };

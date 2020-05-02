@@ -20,8 +20,10 @@ NEWSCHEMA('DBCommand', function(schema) {
 			index = model.connection.indexOf('base64 ');
 			if (index !== -1)
 				model.connection = Buffer.from(model.connection.substring(index + 7).trim(), 'base64').toString('utf8');
-			else
-				model.connection = model.connection.trim();
+			else {
+				index = model.connection.indexOf(':');
+				model.connection = model.connection.substring(index + 1).trim();
+			}
 		}
 
 		return new Database.Client(model.connection);
