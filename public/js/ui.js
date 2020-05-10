@@ -284,7 +284,7 @@ COMPONENT('editor', function(self, config) {
 		var marker = document.createElement('div');
 		var css = marker.style;
 		var usercolor = FUNC.usercolor(username);
-		css['background-color'] = usercolor.color;
+		css.color = css['border-color'] = usercolor.color;
 		marker.className = 'cm-diff-user';
 		marker.setAttribute('data-title', usercolor.name + ': ' + Thelpers.time(updated));
 		marker.setAttribute('data-userid', userid);

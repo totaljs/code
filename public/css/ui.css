@@ -50,7 +50,8 @@ div.CodeMirror span.CodeMirror-matchingbracket { border-bottom: 2px solid blue; 
 .td .cm-variable-J { background-color: rgba(73,111,51,.35); color: #90ff2f; }
 .td .cm-variable-E { background-color: rgba(108,150,20,.15); color: #6C9614; }
 .td .cm-variable-B { background-color: rgba(27,27,27,.35); color: #84d087; }
-.cm-diff-user { font-size: 10px; width: 14px; height: 14px; line-height: 15px; text-align: center; position: absolute; border-radius: 2px; font-weight: bold; letter-spacing: -0.4px; color: white; margin: 5px 0 0 3px; }
+.cm-diff-user { font-size: 8px; width: 14px; height: 14px; line-height: 14px; text-align: center; position: absolute; border-radius: 2px; font-weight: bold; letter-spacing: -0.4px; color: white; margin: 5px 0 0 3px; border: 1px solid transparent; opacity: 0.4; }
+.cm-diff-user:hover { opacity: 1; }
 .cm-diff { font-size: 14px; font-weight: bold; position: absolute; left: 6px; }
 .cm-gutter-color { margin-left: 8px; }
 .CodeMirror-linenumbers { width: 30px !important; overflow: hidden; }
