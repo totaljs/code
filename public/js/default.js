@@ -25,7 +25,7 @@ W.ENCRYPT = function(str, key) {
 
 $(W).on('message', function(e) {
 	var data = e.originalEvent.data;
-	if (data) {
+	if (data && data instanceof String) {
 		data = PARSE(data);
 		if (data) {
 			switch (data.type) {
