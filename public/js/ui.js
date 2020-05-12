@@ -5211,14 +5211,35 @@ COMPONENT('shortcuts', function(self) {
 
 	var items = [];
 	var length = 0;
+	var keys = {};
 
 	self.singleton();
 	self.readonly();
 	self.blind();
 	self.nocompile && self.nocompile();
 
+	var cb = function(o, e) {
+		o.callback(e, o.owner);
+	};
+
 	self.make = function() {
-		$(window).on('keydown', function(e) {
+
+		$(W).on('keydown', function(e) {
+
+			var f = e.key;
+			var c = e.keyCode;
+
+			if (f.length > 1 && f.charAt(0) === 'F')
+				c = 0;
+			else
+				f = '-';
+
+			// ctrl,alt,shift,meta,fkey,code
+			var key = (e.ctrlKey ? 1 : 0) + '' + (e.altKey ? 1 : 0) + '' + (e.shiftKey ? 1 : 0) + '' + (e.metaKey ? 1 : 0) + f + c;
+
+			if (!keys[key])
+				return;
+
 			if (length && !e.isPropagationStopped()) {
 				for (var i = 0; i < length; i++) {
 					var o = items[i];
@@ -5227,27 +5248,78 @@ COMPONENT('shortcuts', function(self) {
 							e.preventDefault();
 							e.stopPropagation();
 						}
-						setTimeout(function(o, e) {
-							o.callback(e);
-						}, 100, o, e);
+						setTimeout(cb, 100, o, e);
+						return;
 					}
 				}
 			}
 		});
+
+		ON('component + knockknock', self.refresh);
+	};
+
+	self.refreshforce = function() {
+
+		var arr = document.querySelectorAll('.shortcut');
+		var index = 0;
+
+		while (true) {
+			var item = items[index++];
+			if (item == null)
+				break;
+			if (item.owner) {
+				index--;
+				items.splice(index, 1);
+			}
+		}
+
+		for (var i = 0; i < arr.length; i++) {
+			var shortcut = arr[i].getAttribute('data-shortcut');
+			shortcut && self.register(shortcut, self.execshortcut, true, arr[i]);
+		}
+	};
+
+	self.execshortcut = function(e, owner) {
+		$(owner).trigger('click');
+	};
+
+	self.refresh = function() {
+		setTimeout2(self.ID, self.refreshforce, 500);
 	};
 
 	self.exec = function(shortcut) {
 		var item = items.findItem('shortcut', shortcut.toLowerCase().replace(/\s/g, ''));
-		item && item.callback(EMPTYOBJECT);
+		item && item.callback(EMPTYOBJECT, item.owner);
 	};
 
-	self.register = function(shortcut, callback, prevent) {
+	self.register = function(shortcut, callback, prevent, owner) {
 		shortcut.split(',').trim().forEach(function(shortcut) {
+
 			var builder = [];
 			var alias = [];
+			var cachekey = [0, 0, 0, 0, '-', 0]; // ctrl,alt,shift,meta,fkey,code
+
 			shortcut.split('+').trim().forEach(function(item) {
 				var lower = item.toLowerCase();
 				alias.push(lower);
+
+				switch (lower) {
+					case 'ctrl':
+						cachekey[0] = 1;
+						break;
+					case 'alt':
+						cachekey[1] = 1;
+						break;
+					case 'shift':
+						cachekey[2] = 1;
+						break;
+					case 'win':
+					case 'meta':
+					case 'cmd':
+						cachekey[3] = 1;
+						break;
+				}
+
 				switch (lower) {
 					case 'ctrl':
 					case 'alt':
@@ -5261,35 +5333,52 @@ COMPONENT('shortcuts', function(self) {
 						return;
 					case 'ins':
 						builder.push('e.keyCode===45');
+						cachekey[5] = 45;
 						return;
 					case 'space':
 						builder.push('e.keyCode===32');
+						cachekey[5] = 32;
 						return;
 					case 'tab':
 						builder.push('e.keyCode===9');
+						cachekey[5] = 9;
 						return;
 					case 'esc':
 						builder.push('e.keyCode===27');
+						cachekey[5] = 27;
 						return;
 					case 'enter':
 						builder.push('e.keyCode===13');
+						cachekey[5] = 13;
 						return;
 					case 'backspace':
+						builder.push('e.keyCode===8');
+						cachekey[5] = 8;
+						break;
 					case 'del':
 					case 'delete':
-						builder.push('(e.keyCode===8||e.keyCode===127)');
+						builder.push('e.keyCode===46');
+						cachekey[5] = 46;
+						return;
+					case 'remove':
+						builder.push('(e.keyCode===8||e.keyCode===46)');
+						cachekey[5] = -1;
 						return;
 					case 'up':
 						builder.push('e.keyCode===38');
+						cachekey[5] = 38;
 						return;
 					case 'down':
 						builder.push('e.keyCode===40');
+						cachekey[5] = 40;
 						return;
 					case 'right':
 						builder.push('e.keyCode===39');
+						cachekey[5] = 39;
 						return;
 					case 'left':
 						builder.push('e.keyCode===37');
+						cachekey[5] = 37;
 						return;
 					case 'f1':
 					case 'f2':
@@ -5305,22 +5394,45 @@ COMPONENT('shortcuts', function(self) {
 					case 'f12':
 						var a = item.toUpperCase();
 						builder.push('e.key===\'{0}\''.format(a));
+						cachekey[4] = a;
 						return;
 					case 'capslock':
 						builder.push('e.which===20');
+						cachekey[5] = 20;
 						return;
 				}
 
 				var num = item.parseInt();
-				if (num)
+				if (num) {
 					builder.push('e.which===' + num);
-				else
-					builder.push('e.keyCode==={0}'.format(item.toUpperCase().charCodeAt(0)));
+					cachekey[5] = num;
+				} else {
+					num = item.toUpperCase().charCodeAt(0);
+					cachekey[5] = num;
+					builder.push('e.keyCode==={0}'.format(num));
+				}
 			});
 
-			items.push({ shortcut: alias.join('+'), fn: new Function('e', 'return ' + builder.join('&&')), callback: callback, prevent: prevent });
+			items.push({ shortcut: alias.join('+'), fn: new Function('e', 'return ' + builder.join('&&')), callback: callback, prevent: prevent, owner: owner });
 			length = items.length;
+
+			var k;
+
+			// Remove
+			if (cachekey[5] === -1) {
+				cachekey[5] = 8;
+				k = cachekey.join('');
+				keys[k] = 1;
+				cachekey[5] = 46;
+			}
+
+			k = cachekey.join('');
+			keys[k] = 1;
 		});
+
+		if (!owner)
+			self.refresh();
+
 		return self;
 	};
 });
