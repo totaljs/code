@@ -1784,6 +1784,7 @@ SNIPPETS.push({ type: 'js', search: 'for var', text: '<b>for in</b>', code: 'for
 SNIPPETS.push({ type: 'js', search: 'foreach forEach', text: '<b>forEach</b>', code: 'forEach(function(item) {\n{0}});', ch: 30, priority: 1 });
 SNIPPETS.push({ type: 'js', search: '$.invalid', text: '<b>$.invalid()</b>', code: 'if (err) {\n\t{0}$.invalid(err);\n\t{0}return;\n{0}}', ch: 30 });
 SNIPPETS.push({ type: 'js', search: 'callback', text: '<b>callback</b>', code: 'callback', ch: 9, priority: 1 });
+SNIPPETS.push({ type: 'js', search: 'callback function', text: '<b>function()</b>', code: 'function() {\n\t{0}\n{0}}', ch: 30, priority: 1, special: 1 });
 SNIPPETS.push({ type: 'js', search: 'callback function', text: '<b>function(err, response)</b>', code: 'function(err, response) {\n\t{0}\n{0}}', ch: 30, priority: 1, special: 1 });
 SNIPPETS.push({ type: 'js', search: 'callback function', text: '<b>function(response)</b>', code: 'function(response) {\n\t{0}\n{0}}', ch: 30, priority: 1, special: 1 });
 SNIPPETS.push({ type: 'js', search: 'callback function', text: '<b>function(item, next)</b>', code: 'function(item, next) {\n\t{0}\n{0}}', ch: 30, priority: 1, special: 1 });
