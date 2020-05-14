@@ -7,6 +7,19 @@
 	<div data---="viewbox__components.search__margin:78;parent:.ui-dockable-body;scrollbar:1">
 		<div class="partdocs"><a href="#" target="_blank" data-bind="code.data.id__href:'/docs/' + value + '/'"><i class="fa fa-cloud-download"></i>@(Download documentation)</a></div>
 		<div data---="search__components.search__selector:.part">
+
+			<div data-bind="code.data.todocurrent__template">
+				<script type="text/html">
+					{{ if value.length }}
+					<div class="partscurrent">
+						{{ foreach m in value }}
+							<div class="part exec" data-exec="components/find" data-search="{{ m.name }}" data-todo="1" data-index="{{ $index }}" title="@(Line:) {{ m.line }}"><i class="far fa-square"></i>{{ m.name }}</div>
+						{{ end }}
+					</div>
+					{{ fi }}
+				</script>
+			</div>
+
 			<div data-bind="code.components__template">
 				<script type="text/html">
 					{{ if value.length }}
@@ -54,8 +67,16 @@
 		};
 
 		exports.find = function(el) {
-			var com = code.components[+el.attrd('index')];
-			EXEC('code/move', com.line, com.ch, com.lineto);
+
+			var index = +el.attrd('index');
+			var tmp;
+
+			if (el.attrd('todo'))
+				tmp = code.data.todocurrent[index];
+			else
+				tmp = code.components[index];
+
+			EXEC('code/move', tmp.line - 1, tmp.ch);
 		};
 
 		exports.open = function(el) {
