@@ -67,16 +67,15 @@
 		};
 
 		exports.find = function(el) {
-
 			var index = +el.attrd('index');
 			var tmp;
-
-			if (el.attrd('todo'))
+			if (el.attrd('todo')) {
 				tmp = code.data.todocurrent[index];
-			else
+				EXEC('code/move', tmp.line - 1, tmp.ch);
+			} else {
 				tmp = code.components[index];
-
-			EXEC('code/move', tmp.line - 1, tmp.ch);
+				EXEC('code/move', com.line, com.ch, com.lineto);
+			}
 		};
 
 		exports.open = function(el) {
