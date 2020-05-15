@@ -74,7 +74,7 @@
 				EXEC('code/move', tmp.line - 1, tmp.ch);
 			} else {
 				tmp = code.components[index];
-				EXEC('code/move', com.line, com.ch, com.lineto);
+				EXEC('code/move', tmp.line, tmp.ch, tmp.lineto);
 			}
 		};
 
