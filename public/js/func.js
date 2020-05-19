@@ -1012,6 +1012,48 @@ FUNC.colorize = function(css, cls) {
 	return builder.join('\n');
 };
 
+FUNC.makejsonfromschema = function(val) {
+
+	var model = [];
+	var lines = val.split('\n');
+	for (var i = 0; i < lines.length; i++) {
+		var line = lines[i].trim();
+		var beg = line.indexOf('\'');
+		if (beg === -1)
+			continue;
+
+		var end = line.indexOf('\'', beg + 1);
+		if (end === -1)
+			continue;
+
+		var key = line.substring(beg + 1, end).trim();
+
+		beg = end + 3;
+		end = line.lastIndexOf(',');
+
+		if (end === -1 || end <= beg) {
+			end = line.indexOf(')');
+			if (end !== -1)
+				end++;
+		}
+
+		if (end === -1)
+			continue;
+
+		var val = line.substring(beg, end).trim().replace(/^('|")|('|")$/g, '');
+
+		if (val.charAt(val.length - 1) === ')' && val.lastIndexOf('(', val.length - 1) === -1)
+			val = val.substring(0, val.length - 1);
+
+		if (val.charAt(val.length - 1) === '\'')
+			val = val.substring(0, val.length - 1);
+
+		model.push('\t"' + key + '": ' + val.replace(/'/g, '"'));
+	}
+
+	return '{\n' + model.join('\n') + '\n}';
+};
+
 FUNC.parsekeys = function(value) {
 
 	var lines = value.split('\n');

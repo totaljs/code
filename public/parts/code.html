@@ -616,6 +616,9 @@
 				items.push({ name: '@(Copy with syntax)', icon: 'print', value: 'copysyntax' });
 				items.push({ name: '@(Copy as Markdown)', icon: '!fab fa-markdown', value: 'copymarkdown' });
 
+				if (text.indexOf('.define(\'') !== -1)
+					items.push({ name: '@(Copy as JSON)', icon: '!fa fa-code', value: 'copyasjson' });
+
 				items.push('-');
 
 				if (can && code.current.ext === 'js') {
@@ -838,6 +841,11 @@
 
 				if (value.value === 'cleanduplicatedlines') {
 					editor.replaceSelection(FUNC.cleanduplicatedlines(text));
+					return;
+				}
+
+				if (value.value === 'copyasjson') {
+					SETTER('clipboard/copy', FUNC.makejsonfromschema(text));
 					return;
 				}
 
