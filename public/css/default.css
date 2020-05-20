@@ -296,7 +296,7 @@ header .tools .external { color: #a2a286; }
 .tabs { height: 50px; background-color: #F0F0F0; border-bottom: 1px solid #E0E0E0; position: relative; }
 .tabs, .tabs * { user-select: none; }
 .tabs nav { position: absolute; margin: 11px 0 0 63px; }
-.tabs nav > span { position: relative; display: inline-block; max-width: 180px; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; height: 38px; background-color: #E0E0E0; padding: 7px 15px 0 30px; border-radius: 3px 3px 0 0; margin-left: 10px; font-size: 12px; border: 1px solid #E0E0E0; border-bottom: 0; cursor: default; color: gray; vertical-align: top; line-height: 12px; }
+.tabs nav > span { position: relative; display: inline-block; max-width: 180px; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; height: 38px; background-color: #E0E0E0; padding: 7px 15px 0 30px; border-radius: 2px 2px 0 0; margin-left: 10px; font-size: 12px; border: 1px solid #E0E0E0; border-bottom: 0; cursor: default; color: gray; vertical-align: top; line-height: 12px; }
 .tabs nav > span em { display: block; font-size: 9px; color: gray; font-style: normal; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; }
 .tabs nav .selected { background-color: white; height: 39px; color: black; }
 .tabs nav i { color: gray; font-size: 15px; position: absolute; left: 7px; top: 9px; width: 15px; cursor: pointer; text-align: center; }
