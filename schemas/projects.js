@@ -49,10 +49,8 @@ NEWSCHEMA('Projects', function(schema) {
 			var index = -1;
 			while (true) {
 				index += 1;
-				if (data.readInt8(index) !== 0) {
-					index--;
+				if (data.readInt8(index) !== 0)
 					break;
-				}
 			}
 
 			if (index !== -1)
