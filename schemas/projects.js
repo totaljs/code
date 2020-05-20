@@ -47,9 +47,10 @@ NEWSCHEMA('Projects', function(schema) {
 		Fs.readFile(filename, function(err, data) {
 
 			var index = -1;
+
 			while (true) {
 				index += 1;
-				if (data.readInt8(index) !== 0)
+				if (data.length <= index || data[index] !== 0)
 					break;
 			}
 
