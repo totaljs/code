@@ -1100,3 +1100,8 @@ FUNC.parsekeys = function(value) {
 
 	return Object.keys(fields);
 };
+
+FUNC.maketabname = function(path) {
+	var index = path.lastIndexOf('/');
+	return path.substring(index + 1);
+};

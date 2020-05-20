@@ -57,7 +57,7 @@
 			<span class="options2 exec hidden" data-bind="code.editor__show" data-exec="code/branches"><i class="fa fa-code-branch"></i></span>
 			<nav data---="tabmenu__code.editor.path__datasource:code.open;selector:span;exec:code/opentab;reorder:code/savetabs">
 				<script type="text/html">
-					<span data-value="{{ path }}" class="{{ if !skip }}nolocked{{ fi }}{{ if modified }} modified{{ fi }}" title="{{ path }}"><i class="fa exec" data-exec="code/close"></i>{{ name }}</span>
+					<span data-value="{{ path }}" class="{{ if !skip }}nolocked{{ fi }}{{ if modified }} modified{{ fi }}" title="{{ path }}"><i class="{{ name | fileicon }} exec" data-exec="code/close"></i>{{ name }}<em>{{ path | shortpath }}</em></span>
 				</script>
 			</nav>
 		</section>
@@ -1470,7 +1470,7 @@
 					newbie = true;
 					tab = {};
 					tab.path = item.path;
-					tab.name = item.name;
+					tab.name = FUNC.maketabname(item.path);
 				}
 
 				tab.loaded = true;
@@ -2536,8 +2536,7 @@
 				if (fileindex !== -1) {
 					tab.name = code.data.files[fileindex];
 					if (tab.name) {
-						tab.name = tab.name.split('/');
-						tab.name = tab.name[tab.name.length - 1];
+						tab.name = FUNC.maketabname(tab.path);
 						tab.body = '';
 						tab.skip = true;
 						tabs.push(tab);

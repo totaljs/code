@@ -62,6 +62,12 @@ ON('ready', function() {
 
 var TTIC = ['#1abc9c','#2ecc71','#3498db','#9b59b6','#34495e','#16a085','#2980b9','#8e44ad','#2c3e50','#f1c40f','#e67e22','#e74c3c','#d35400','#c0392b'];
 
+Thelpers.shortpath = function(path) {
+	var arr = path.split('/');
+	var p = arr.splice(0, arr.length - 1).join('/');
+	return p ? (p + '/') : 'root';
+};
+
 Thelpers.particon = function(type) {
 	switch (type) {
 		case 'helper':
@@ -80,7 +86,6 @@ Thelpers.particon = function(type) {
 			return 'fa fa-eye';
 		case 'event':
 			return 'fa fa-bolt';
-
 		case 'middleware':
 			return 'fa fa-filter';
 		case 'htmlcomponent':

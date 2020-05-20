@@ -45,6 +45,19 @@ NEWSCHEMA('Projects', function(schema) {
 
 		MAIN.log($.user, 'files_read', item, filename);
 		Fs.readFile(filename, function(err, data) {
+
+			var index = -1;
+			while (true) {
+				index += 1;
+				if (data.readInt8(index) !== 0) {
+					index--;
+					break;
+				}
+			}
+
+			if (index !== -1)
+				data = data.slice(index);
+
 			if (err)
 				$.invalid(err);
 			else
