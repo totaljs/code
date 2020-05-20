@@ -297,12 +297,14 @@ header .tools .external { color: #a2a286; }
 .tabs, .tabs * { user-select: none; }
 .tabs nav { position: absolute; margin: 11px 0 0 63px; }
 .tabs nav > span { position: relative; display: inline-block; max-width: 180px; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; height: 38px; background-color: #E0E0E0; padding: 7px 15px 0 30px; border-radius: 2px 2px 0 0; margin-left: 10px; font-size: 12px; border: 1px solid #E0E0E0; border-bottom: 0; cursor: default; color: gray; vertical-align: top; line-height: 12px; }
-.tabs nav > span em { display: block; font-size: 9px; color: gray; font-style: normal; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; }
+.tabs nav > span em { display: block; font-size: 9px; color: gray; font-style: normal; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; font-weight: normal; }
 .tabs nav .selected { background-color: white; height: 39px; color: black; }
 .tabs nav i { color: gray; font-size: 15px; position: absolute; left: 7px; top: 9px; width: 15px; cursor: pointer; text-align: center; }
-.tabs nav .modified i { color: red; left: 9px; top: 10px; }
+.tabs nav .modified { color: red; }
+.tabs nav .modified i { color: red !important; }
+.tabs-bk nav .modified i { color: red; left: 9px; top: 10px; }
 .tabs-bk nav i:before { content: '\f00d'; }
-.tabs nav .modified i:before { content: '\f111'; font-size: 10px; }
+.tabs-bk nav .modified i:before { content: '\f111'; font-size: 10px; }
 .tabs nav i:hover { color: red !important; font-family: 'Font Awesome 5 Free', 'Font Awesome 5 Pro' !important; font-weight: 900; }
 .tabs nav i:hover:before { content: '\f00d'; }
 .tabs .options { position: absolute; left: 11px; font-size: 16px; top: 13px; cursor: pointer; color: #505050; }
