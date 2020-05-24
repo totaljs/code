@@ -391,7 +391,7 @@ NEWSCHEMA('FilesRename', function(schema) {
 	schema.addWorkflow('exec', function($) {
 
 		var user = $.user;
-		var model = $.model;
+		var model = $.clean();
 		var project = MAIN.projects.findItem('id', $.id);
 
 		if (project == null) {
@@ -441,6 +441,9 @@ NEWSCHEMA('FilesRename', function(schema) {
 				}
 				is && MAIN.save(2);
 			}
+
+			MAIN.changelog(user, $.id, $.model.oldpath, true);
+			MAIN.changelog(user, $.id, $.model.newpath);
 
 			Fs.rename(model.oldpath, model.newpath, $.done());
 		});
