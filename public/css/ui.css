@@ -120,7 +120,7 @@ div.CodeMirror span.CodeMirror-matchingbracket { border-bottom: 2px solid blue; 
 .ui-tree input { padding: 0 2px; margin: 0; outline: 0; border: 0; line-height: 0; color: black; height: 12px; background-color: transparent; }
 .td .ui-tree .extrabutton { border-bottom: 1px solid #303030; background-color: #181818; color: #888888; }
 .td .ui-tree .extrabutton:hover { background-color: #303030; }
-.td .ui-tree input { background-color: #202020; color: white; border-color: #404040; }
+.td .ui-tree input { color: white; border-color: #404040; }
 .ui-tree .special { color: #A2A25B; }
 
 .ui-tree .fa-js, .tabs nav .fa-js { color: #cd8029; }
