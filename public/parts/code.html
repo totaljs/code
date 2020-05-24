@@ -1211,8 +1211,9 @@
 			AJAX('POST /api/files/{id}/rename/'.arg(code.data), data, function(response) {
 				SETTER('loading/hide', 500);
 				exports.closetab(data.oldpath);
-				callback(response.success);
-				exports.load(code.data.id, true);
+				setTimeout(function() {
+					callback(response.success);
+				}, 300);
 			});
 		};
 
