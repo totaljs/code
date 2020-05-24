@@ -1350,6 +1350,19 @@ COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 	var expanded = {};
 	var selindex = -1;
 
+	var renameid = null;
+	var renameel = null;
+	var renameblur = function() {
+		renameid = null;
+		if (renameel) {
+			var input = $(renameblur).find('input');
+			var el = input.parent();
+			el.html(renameel.$def);
+			renameel.$def = null;
+			renameel = null;
+		}
+	};
+
 	self.template = Tangular.compile('<div class="item{{ if children }} expand{{ fi }}{{ name | treefilecolor }}" data-index="{{ $pointer }}" title="{{ name }}"><i class="icon {{ if children }}fa fa-folder{{ if isopen }}-open {{ fi }}{{ if name === \'threads\' }} special{{ fi }}{{ else }}{{ name | fileicon }}{{ fi }}"></i><span class="options"><i class="fa fa-ellipsis-h"></i></span><div>{{ name }}</div></div>');
 	self.readonly();
 
@@ -1408,10 +1421,8 @@ COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 		});
 
 		self.event('focusout', 'input', function() {
-			var input = $(this);
-			var el = input.parent();
-			el.html(el[0].$def);
-			el[0].$def = null;
+			renameid && clearTimeout(renameid);
+			renameid = setTimeout(renameblur, 500);
 		});
 
 		self.event('keydown', 'input', function(e) {
@@ -1443,6 +1454,14 @@ COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 			var el = $(this);
 			var target = $(e.target);
 			var index;
+
+			if (renameid && renameel && renameel == el.find('> div')[0]) {
+				clearTimeout(renameid);
+				renameid = null;
+				el.find('input').focus();
+				return;
+			}
+
 			if (target.hclass('options') || target.parent().hclass('options')) {
 				index = +el.closest('.item').attrd('index');
 				config.options && EXEC(config.options, cache[index], el);
@@ -1516,6 +1535,7 @@ COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 		div[0].$def = div.html();
 		div.html('<input type="text" value="{0}" />'.format(div[0].$def));
 		div.find('input').focus();
+		renameel = div[0];
 	};
 
 	self.unselect = function() {
