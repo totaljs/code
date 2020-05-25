@@ -1956,6 +1956,7 @@ CodeMirror.defineExtension('centerLine', function(line) {
 					// to: CodeMirror.Pos(error.line - 1, end) -- because this replaces UTF8 chars to unreadable chars
 				};
 
+				//console.log(hint);
 				output.push(hint);
 			}
 		}
