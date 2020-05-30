@@ -1355,7 +1355,7 @@ COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 	var renameblur = function() {
 		renameid = null;
 		if (renameel) {
-			var input = $(renameblur).find('input');
+			var input = $(renameel).find('input');
 			var el = input.parent();
 			el.html(renameel.$def);
 			renameel.$def = null;
