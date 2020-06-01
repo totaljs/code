@@ -1208,9 +1208,11 @@
 			AJAX('POST /api/files/{id}/rename/'.arg(code.data), data, function(response) {
 				SETTER('loading/hide', 500);
 				exports.closetab(data.oldpath);
-				setTimeout(function() {
-					callback(response.success);
-				}, 300);
+				common.electron && code.data.repository && exports.local(function(dir) {
+					var Path = require('path');
+					dir && require('fs').rename(Path.join(dir, code.data.repository, data.oldpath), Path.join(dir, code.data.repository, data.newpath), NOOP);
+				});
+				setTimeout(callback, 300, response.success);
 			});
 		};
 
@@ -2318,6 +2320,11 @@
 				});
 			} else if (!nowarning)
 				FUNC.warning('@(You don\'t have defined repository path.)');
+		};
+
+		exports.local = function(callback) {
+			var electronpath = require('electron').ipcRenderer.sendSync('getPath', { url: location.protocol + '//' + location.hostname + (location.port ? ':' + location.port : '') });
+			electronpath && callback(electronpath);
 		};
 
 		exports.savelocalchanges = function(nowarning) {
