@@ -239,10 +239,10 @@ function files_download(id) {
 				meta.end = 2000;
 				Fs.createReadStream(filename, meta).on('data', function(buffer) {
 					var data = buffer.toString('utf8');
-					data = data.substring(0, data.lastIndexOf('}') + 1).parseJSON();
+					data = data.substring(0, data.lastIndexOf('}') + 1).parseJSON() || EMPTYOBJECT;
 					meta.start = 2000;
 					delete meta.end;
-					self.stream(data.type || U.getExtension('unknown'), Fs.createReadStream(filename, meta), self.query.preview ? null : U.getName(data.name));
+					self.stream(data.type || U.getExtension('unknown'), Fs.createReadStream(filename, meta), self.query.preview ? null : U.getName(data.name || 'unknown.bin'));
 				}).on('end', function() {
 					// Fallback
 					!meta.start && self.throw404();
