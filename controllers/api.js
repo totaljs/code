@@ -314,7 +314,7 @@ function files_changes(id) {
 	var builder = NOSQL(id + '_changes').find2();
 
 	if (self.query.recent)
-		builder.rule(doc => doc.type === 'save' | doc.type === 'save_sync');
+		builder.rule('doc.type===\'save\'||doc.type===\'save_sync\'');
 
 	builder.take(self.query.recent ? 30 : 50).callback(function(err, response) {
 		for (var i = 0; i < response.length; i++) {

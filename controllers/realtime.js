@@ -51,9 +51,9 @@ function realtime() {
 			client.code.ts = Date.now();
 			refresh_collaborators(self, client, true);
 		} else if (msg[9] === 's' && msg[12] === 'e')
-			self.send2(msg);
+			self.send(msg);
 		else
-			self.send2(msg, openidcomparer);
+			self.send(msg, openidcomparer);
 	});
 }
 

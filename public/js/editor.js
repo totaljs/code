@@ -1793,10 +1793,8 @@ SNIPPETS.push({ type: 'js', search: 'Object.keys', text: '<b>Object.keys</b>', c
 SNIPPETS.push({ type: 'js', search: 'schema.define', text: '<b>schema.define</b>', code: 'schema.define(\'\', String, true);', ch: 16, priority: 1 });
 SNIPPETS.push({ type: 'js', search: 'schema.required', text: '<b>schema.required</b>', code: 'schema.required(\'\', model => model.age > 33);', ch: 18, priority: 1 });
 SNIPPETS.push({ type: 'js', search: 'schema.addWorkflow', text: '<b>schema.addWorkflow</b>', code: 'schema.addWorkflow(\'\', function($) {\n\t{0}\n{0}});', ch: 21, priority: 1 });
-SNIPPETS.push({ type: 'js', search: 'schema.addOperation', text: '<b>schema.addOperation</b>', code: 'schema.addOperation(\'\', function($) {\n\t{0}\n{0}});', ch: 21, priority: 1 });
 SNIPPETS.push({ type: 'js', search: 'schema.addTransform', text: '<b>schema.addTransform</b>', code: 'schema.addTransform(\'\', function($) {\n\t{0}\n{0}});', ch: 21, priority: 1 });
 SNIPPETS.push({ type: 'js', search: 'schema.addWorkflowExtension', text: '<b>schema.addWorkflowExtension</b>', code: 'schema.addWorkflowExtension(\'\', function($) {\n\t{0}\n{0}});', ch: 21, priority: 1 });
-SNIPPETS.push({ type: 'js', search: 'schema.addOperationExtension', text: '<b>schema.addOperationExtension</b>', code: 'schema.addOperationExtension(\'\', function($) {\n\t{0}\n{0}});', ch: 21, priority: 1 });
 SNIPPETS.push({ type: 'js', search: 'schema.addTransformExtension', text: '<b>schema.addTransformExtension</b>', code: 'schema.addTransformExtension(\'\', function($) {\n\t{0}\n{0}});', ch: 21, priority: 1 });
 SNIPPETS.push({ type: 'js', search: 'schema.middleware', text: '<b>schema.middleware</b>', code: 'schema.middleware(function($, next) {\n\t{0}\n{0}});', ch: 2, line: 1, priority: 1 });
 SNIPPETS.push({ type: 'js', search: 'schema.setSave setsave', text: '<b>schema.setSave</b>', code: 'schema.setSave(function($) {\n\t{0}\n{0}});', ch: 21, line: 1, priority: 1 });

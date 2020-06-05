@@ -1,7 +1,7 @@
 const Path = require('path');
 const Fs = require('fs');
 
-MAIN.version = '1.4.0';
+MAIN.version = '1.5.0';
 
 // Projects
 MAIN.projects = [];
@@ -23,10 +23,10 @@ MAIN.save = function(type) {
 	MAIN.projects.quicksort('created', false);
 
 	if (!type || type === 1)
-		Fs.writeFile(F.path.databases('users.json'), JSON.stringify(MAIN.users), ERROR('users.json'));
+		Fs.writeFile(PATH.databases('users.json'), JSON.stringify(MAIN.users), ERROR('users.json'));
 
 	if (!type || type === 2)
-		Fs.writeFile(F.path.databases('projects.json'), JSON.stringify(MAIN.projects), ERROR('projects.json'));
+		Fs.writeFile(PATH.databases('projects.json'), JSON.stringify(MAIN.projects), ERROR('projects.json'));
 };
 
 MAIN.can = function(allowed, path) {
@@ -157,7 +157,7 @@ MAIN.send = function(msg) {
 	MAIN.ws && MAIN.ws.send(msg);
 };
 
-Fs.readFile(F.path.databases('users.json'), function(err, data) {
+Fs.readFile(PATH.databases('users.json'), function(err, data) {
 	data && (MAIN.users = data.toString('utf8').parseJSON(true));
 	for (var i = 0; i < MAIN.users.length; i++) {
 		var user = MAIN.users[i];
@@ -182,7 +182,7 @@ Fs.readFile(F.path.databases('users.json'), function(err, data) {
 	}
 });
 
-Fs.readFile(F.path.databases('projects.json'), function(err, data) {
+Fs.readFile(PATH.databases('projects.json'), function(err, data) {
 	data && (MAIN.projects = data.toString('utf8').parseJSON(true));
 	MAIN.projects.quicksort('created', false);
 });

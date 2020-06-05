@@ -2,7 +2,7 @@ const IS_WINDOWS = require('os').platform().substring(0, 3).toLowerCase() === 'w
 const SKIP = (IS_WINDOWS ? /\\\.git\// : /\/\.git\// );
 const Path = require('path');
 const Fs = require('fs');
-const Internal = require('total.js/internal');
+const Internal = require('total4/internal');
 
 NEWSCHEMA('Projects', function(schema) {
 
