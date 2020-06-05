@@ -278,7 +278,17 @@ NEWSCHEMA('Projects', function(schema) {
 				items.push(data);
 		}
 
-		$.callback(items);
+		if ($.query.check) {
+			items.wait(function(item, next) {
+
+				Fs.lstat(item.path, function(err) {
+					item.notfound = err ? true : false;
+					next();
+				});
+
+			}, () => $.callback(items));
+		} else
+			$.callback(items);
 	});
 
 	schema.addWorkflow('files', function($) {
