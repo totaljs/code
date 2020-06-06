@@ -70,8 +70,8 @@ function refresh_collaborators(ws, client, add) {
 	MSG_OPEN.project = [];
 	MSG_OPEN.file = [];
 
-	for (var i = 0; i < ws._keys.length; i++) {
-		var key = ws._keys[i];
+	for (var i = 0; i < ws.keys.length; i++) {
+		var key = ws.keys[i];
 		var con = ws.connections[key];
 
 		if (!con.code.fileid || (con.code.id !== client.code.id && !add))
@@ -89,5 +89,5 @@ function refresh_collaborators(ws, client, add) {
 	else
 		MSG_OPEN.TYPE = 'close';
 
-	ws.send2(MSG_OPEN);
+	ws.send(MSG_OPEN);
 }
