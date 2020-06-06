@@ -46,6 +46,11 @@ NEWSCHEMA('Projects', function(schema) {
 		MAIN.log($.user, 'files_read', item, filename);
 		Fs.readFile(filename, function(err, data) {
 
+			if (err) {
+				$.invalid(err);
+				return;
+			}
+
 			var index = -1;
 
 			while (true) {
@@ -57,10 +62,7 @@ NEWSCHEMA('Projects', function(schema) {
 			if (index !== -1)
 				data = data.slice(index);
 
-			if (err)
-				$.invalid(err);
-			else
-				$.callback(data.toString('utf8'));
+			$.callback(data.toString('utf8'));
 		});
 	});
 
