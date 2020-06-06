@@ -1097,7 +1097,7 @@
 							break;
 						case 'translate':
 							for (var i = 0; i < sel.length; i++)
-								sel[i] = 'T' + HASH(sel[i]).toString();
+								sel[i] = 'T' + HASH(sel[i]).toString(16);
 							editor.replaceSelections(sel);
 							break;
 						case 'slug':
