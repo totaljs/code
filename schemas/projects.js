@@ -91,7 +91,7 @@ NEWSCHEMA('Projects', function(schema) {
 					continue;
 				}
 
-				var key = 'T' + command.command.hash();
+				var key = 'T' + command.command.makeid();
 				text[key] = command.command;
 				max = Math.max(max, key.length);
 				command = Internal.findLocalization(content, command.end);
@@ -135,7 +135,7 @@ NEWSCHEMA('Projects', function(schema) {
 						continue;
 					}
 
-					key = 'T' + command.command.hash();
+					key = 'T' + command.command.makeid();
 					file = filename.substring(item.path.length);
 
 					texts[key] = command.command;
