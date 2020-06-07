@@ -29,6 +29,7 @@
 	<div data---="loading"></div>
 
 	<div class="database">
+
 		<div data---="layout__null__parent:window;resizepanel:resizepanels" class="invisible">
 
 			<script type="text/plain">
@@ -88,13 +89,17 @@
 
 			<section data-type="main" data-scrollbar="visible:true">
 				<div data---="viewbox__null__parent:.ui-layout-section;scrollbar:1;$id:mainviewbox">
-					<div data-bind="dbview.rows__template" data---="search__dbview.search__selector:.dbview-row">
+					<div data-bind="dbview.rows__template__show:value&&value.length" data---="search__dbview.search__selector:tr">
 						<script type="text/html">
-						{{ foreach m in value }}
-							<div class="dbview-row" data-index="{{ $index }}" data-search="{{ m.search }}">
-								<div>{{ m.json | raw }}</div>
-							</div>
-						{{ end }}
+							<table class="table table-small">
+								<tbody>
+								{{ foreach m in value }}
+									<tr class="dbview-row exec" data-exec="viewerdocument" data-index="{{ $index }}" data-search="{{ m.search }}">
+										{{ m.json | raw }}
+									</tr>
+								{{ end }}
+								</tbody>
+							</table>
 						</script>
 					</div>
 				</div>
@@ -169,14 +174,15 @@
 						break;
 				}
 
-				builder.push(key + ': ' + format.format(Thelpers.encode(val)));
+				// builder.push(key + ': ' + format.format(Thelpers.encode(val)));
+				builder.push('<td>' + key + ': ' + format.format(Thelpers.encode(val)) + '</td>');
 			}
 
-			return { html: '<span class="db-line">{0}</span>'.format(index) + builder.join(', '), search: search.join(' ') };
+			return { html: builder.join(''), search: search.join(' ') };
 		}
 
 		function formatjson(obj, count) {
-			return JSON.stringify(obj, null, '\t').replace(/\t.*?\:\s/g, function(text) {
+			return JSON.stringify(obj, null, '\t').replace(/\t.*?:\s/g, function(text) {
 				return '<span class="db-object">' + text + '</span>';
 			}).replace(/\/span>false/g, function(text) {
 				return '/span><span class="db-string">false</span>';
@@ -592,22 +598,6 @@
 				};
 
 				SET('dbview', meta);
-
-				$(document).on('click', '.dbview-row', function(e) {
-
-					if (e.target.tagName === 'PRE')
-						return;
-
-					var el = $(this);
-					var row = dbview.rows[+el.attrd('index')];
-					var pre = el.find('pre');
-					if (pre.length)
-						pre.tclass('hidden');
-					else
-						el.append('<pre>{0}</pre>'.format(formatjson(row.data, 0)));
-
-					SETTER('#mainviewbox/resizescrollbar');
-				});
 			});
 		}
 
@@ -639,6 +629,21 @@
 				}
 			}
 		});
+
+		function viewerdocument(el) {
+			var index = +el.attrd('index');
+			var colgroups = el.find('td').length;
+			var next = el.next();
+
+			if (next.hclass('doc-detail')) {
+				next.tclass('hidden');
+				return;
+			}
+
+			var row = dbview.rows[index];
+			el.after('<tr class="doc-detail" data-search="---"><td colspan="{0}"><pre>{1}</pre></td></tr>'.format(colgroups, FUNC.formatjson(row.data, 0)));
+			SETTER('#mainviewbox/resizescrollbar');
+		}
 
 		setTimeout(connectdb, 100);
 

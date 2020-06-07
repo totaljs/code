@@ -838,7 +838,12 @@ FUNC.request = function(text, body) {
 				builder.push(template.format(key, Thelpers.encode(val)));
 		}
 
-		builder.push(template.format('Response (' + (response.duration / 1000) + ' s)', Thelpers.encode(response.response).replace(/\n/g, '<br />')));
+
+		var jso = null;
+		try {
+			json = JSON.parse(response.response);
+		} catch (e) {}
+		builder.push(template.format('Response (' + (response.duration / 1000) + ' s)', json ? ('<pre>' + FUNC.formatjson(json) + '</pre>') : Thelpers.encode(response.response).replace(/\n/g, '<br />')));
 
 		PUSH('^output', '<div class="output-response"><div class="output-response-caption" title="{0}">{0}</div>{1}</div>'.format(Thelpers.encode(response.url), builder.join('')));
 		SET('common.form', 'output');
@@ -1104,4 +1109,18 @@ FUNC.parsekeys = function(value) {
 FUNC.maketabname = function(path) {
 	var index = path.lastIndexOf('/');
 	return path.substring(index + 1);
+};
+
+FUNC.formatjson = function(obj) {
+	var reguid2 = /"\d{14,}[a-z]{3}[01]{1}|"\d{9,14}[a-z]{2}[01]{1}a|"\d{4,18}[a-z]{2}\d{1}[01]{1}b|"[0-9a-f]{4,18}[a-z]{2}\d{1}[01]{1}c"/g;
+	obj.HTML = undefined;
+	return JSON.stringify(obj, null, '\t').replace(/\t.*?:\s/g, function(text) {
+		return '<span class="db-object">' + text + '</span>';
+	}).replace(/\/span>false/g, function() {
+		return '/span><span class="db-string">false</span>';
+	}).replace(/\/span>null/g, function() {
+		return '/span><span class="db-null">null</span>';
+	}).replace(reguid2, function(text) {
+		return '<span class="db-uid">' + text + '</span>';
+	});
 };

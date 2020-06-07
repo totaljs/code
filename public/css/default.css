@@ -699,6 +699,8 @@ header .tools .external { color: #a2a286; }
 	100% { color: #8c42f6; }
 }
 
+.output-response pre { padding: 0 10px; border-radius: 2px; cursor: text; color: black; tab-size: 2; overflow: hidden; }
+.td .output-response pre { color: white; }
 .output-response { font-size: 12px; font-family: Menlo,Consolas,monospace; }
 .output-response-caption { font-weight: bold; margin-bottom: 10px; font-size: 11px; color: white; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; color: #c678dd; border: 1px solid #c678dd; background-color: rgba(198,120,221,0.1); padding: 3px 5px; border-radius: 2px; }
 .output-response-header { font-weight: bold; color: black; font-size: 11px; }
@@ -788,7 +790,7 @@ header .tools .external { color: #a2a286; }
 .td .menu .item { color: #C0C0C0; }
 .td .menu .item:hover { background-color: rgba(200,200,200,0.05); }
 
-.dbview-row { font-family: Menlo; font-size: 11px; border-bottom: 1px solid #E0E0E0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding: 3px 5px; cursor: pointer; color: gray; }
+.dbview-row { font-family: Menlo; font-size: 11px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding: 3px 5px; cursor: pointer; color: gray; }
 .dbview-row:hover { background-color: #F0F0F0; }
 .dbview-row:hover .db-line { background-color: white; }
 
@@ -808,8 +810,17 @@ header .tools .external { color: #a2a286; }
 .db-null { color: gray; font-style: italic; }
 .db-line { color: black; width: 30px; text-align: right; padding-right: 5px; float: left; font-size: 9px; background-color: #F0F0F0; margin-right: 3px; overflow: hidden; margin-top: 1px; }
 
+.database table { border: 1px solid #E0E0E0; margin: 10px; display: inline-block; width: auto !important; }
+.database table tr:first-child td { border-top: 0; }
+.database table td { max-width: 200px; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; }
+.database table tr:last-child td { border-bottom: 0; }
+.database table pre { background-color: #F8F8F8; padding: 10px; border-radius: 2px; cursor: text; color: black; tab-size: 2; overflow: hidden; margin: 5px; }
+.td .database table pre { background-color: #202020; color: white; }
+.td .database table { border-color: #404040; }
+.td .database .table > tbody > tr > td { border-color: #404040; }
+
 .td .db-line { color: white; background-color: #383838; }
-.td .dbview-row { border-bottom-color: #404040; color: #C0C0C0; }
+.td .dbview-row { color: #C0C0C0; }
 .td .dbview-row:hover { background-color: #323232; }
 .td .database .ui-inputsearch { border-top-color: #404040; }
 .td .database .topsection { border-bottom-color: #404040; }
