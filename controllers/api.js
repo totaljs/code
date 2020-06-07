@@ -419,7 +419,7 @@ function makerequest() {
 
 	builder.exec(function(err, response, output) {
 		if (err)
-			self.invalid(err.toString());
+			self.invalid(err);
 		else {
 			output.url = method + ' ' + url;
 			output.value = undefined;
