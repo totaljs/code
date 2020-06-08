@@ -1016,7 +1016,6 @@ FUNC.makejsonfromschema = function(val) {
 
 	var model = [];
 	var lines = val.split('\n');
-	var lastindex = lines.length - 1;
 
 	for (var i = 0; i < lines.length; i++) {
 		var line = lines[i].trim();
