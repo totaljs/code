@@ -513,11 +513,26 @@ COMPONENT('editor', function(self, config) {
 				for (var i = 0; i < arr.length; i++) {
 					el = arr[i];
 					var html = el.innerHTML;
-					if (html.charAt(0) === '#' && (html.length === 4 || html.length === 7))
+					if (html.charAt(0) === '#' && (html.length === 4 || html.length === 7)) {
 						el.style = 'border-bottom:4px solid {0}'.format(html);
+						el.$color = html;
+					}
 				}
 			}
 		});
+
+		self.refreshcolorpaletter = function() {
+			var arr = document.querySelectorAll('.cm-atom');
+			var colorpalette = {};
+			for (var i = 0; i < arr.length; i++) {
+				if (arr[i].$color)
+					colorpalette[arr[i].$color] = 1;
+			}
+
+			var keys = Object.keys(colorpalette);
+			keys.sort();
+			SET('code.colorpalette', keys);
+		};
 
 		self.prerender_colors = function(changescount) {
 
@@ -711,6 +726,7 @@ COMPONENT('editor', function(self, config) {
 
 			EXEC(config.components, components);
 			EXEC(config.todo, todos);
+			setTimeout2(self.ID + 'colorpalette', self.refreshcolorpaletter, 1000);
 		};
 
 		var snippets = {};
@@ -1043,6 +1059,7 @@ COMPONENT('editor', function(self, config) {
 	};
 
 	self.clear = function(content) {
+		SET('code.colorpalette', EMPTYARRAY);
 		content && editor.setValue('');
 		editor.clearHistory();
 	};
@@ -1058,6 +1075,7 @@ COMPONENT('editor', function(self, config) {
 			return;
 
 		markers = {};
+		SET('code.colorpalette', EMPTYARRAY);
 		editor.setValue(value || '');
 		editor.refresh();
 

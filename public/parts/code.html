@@ -82,6 +82,15 @@
 				<div class="alert hidden" data-bind="code.multiple__show" data-name="multiple" style="z-index:1001"><i class="fa fa-times exec" data-exec="code/warning"></i><i class="fa fa-users"></i>@(Be careful because another user is editing content of this file.) <span class="link exec b ml5" data-exec="code/syncdata"><i class="fa fa-refresh fa-spin mr5"></i>@(Synchronize)</span> @(or) <span class="link exec" data-exec="code/warning">@(Cancel)</span>.</div>
 			</div>
 		</div>
+
+		<div data-bind="code.colorpalette__template" class="colorpalette">
+			<script type="text/html">
+				{{ foreach m in value }}
+					<span class="exec" data-exec="code/appendcolor" data-color="{{ m }}" title="{{ m }}" style="background-color:{{ m }}"></span>
+				{{ end }}
+			</script>
+		</div>
+
 	</div>
 
 	<section class="status invisible" data-bind="code.data__invisible:!value">
@@ -2770,6 +2779,11 @@
 				else
 					FUNC.warning(response);
 			});
+		};
+
+		exports.appendcolor = function(el) {
+			var color = el.attrd('color');
+			color && editor.editor.replaceSelection(color);
 		};
 
 		exports.usersonline = function(el) {
