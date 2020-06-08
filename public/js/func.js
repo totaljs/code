@@ -1016,6 +1016,8 @@ FUNC.makejsonfromschema = function(val) {
 
 	var model = [];
 	var lines = val.split('\n');
+	var lastindex = lines.length - 1;
+
 	for (var i = 0; i < lines.length; i++) {
 		var line = lines[i].trim();
 		var beg = line.indexOf('\'');
@@ -1047,6 +1049,9 @@ FUNC.makejsonfromschema = function(val) {
 
 		if (val.charAt(val.length - 1) === '\'')
 			val = val.substring(0, val.length - 1);
+
+		if (model[model.length - 1])
+			model[model.length - 1] += ',';
 
 		model.push('\t"' + key + '": ' + val.replace(/'/g, '"'));
 	}
