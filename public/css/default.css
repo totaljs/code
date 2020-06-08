@@ -16,7 +16,7 @@ html,body { margin: 0; padding: 0; overflow: hidden; }
 ::-moz-selection { background: #60307F; color: white; }
 
 .colorpalette { position: absolute; z-index: 10; bottom: 25px; right: 25px; }
-.colorpalette > span { float: right; width: 15px; height: 15px; border: 1px solid #000000; border-left: 0; cursor: pointer; }
+.colorpalette > span { float: right; width: 17px; height: 17px; border: 1px solid #000000; border-left: 0; cursor: pointer; }
 .colorpalette > span:last-child { border-left: 1px solid #000000; }
 
 .version { position: absolute; font-size: 9px; z-index: 1; left: 210px; top: 55px; }
