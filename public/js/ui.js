@@ -525,7 +525,7 @@ COMPONENT('editor', function(self, config) {
 			var arr = document.querySelectorAll('.cm-atom');
 			var colorpalette = {};
 			for (var i = 0; i < arr.length; i++) {
-				if (arr[i].$color)
+				if (arr[i].offsetParent && arr[i].$color)
 					colorpalette[arr[i].$color] = 1;
 			}
 
