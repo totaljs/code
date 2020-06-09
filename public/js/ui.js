@@ -522,7 +522,7 @@ COMPONENT('editor', function(self, config) {
 		});
 
 		self.refreshcolorpaletter = function() {
-			var arr = document.querySelectorAll('.cm-atom');
+			var arr = document.querySelectorAll('.cm-atom,.cm-builtin');
 			var colorpalette = {};
 			for (var i = 0; i < arr.length; i++) {
 				if (arr[i].offsetParent && arr[i].$color)
