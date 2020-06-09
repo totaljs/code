@@ -25,7 +25,7 @@
 					{{ if value && value.length }}
 					<div class="partscurrent">
 						{{ foreach m in value }}
-							<div class="part exec" data-exec="components/find" data-search="{{ m.name }}" data-index="{{ $index }}" title="@(Line:) {{ m.line }}"><i class="{{ m.type | particon }}"></i>{{ m.type | parttype }}{{ m | partvariables }}</div>
+							<div class="part exec{{ if m.type === 'version' }} part-version{{ fi }}" data-exec="components/find" data-search="{{ m.name }}" data-index="{{ $index }}" title="@(Line:) {{ m.line }}"><i class="{{ m.type | particon }}"></i>{{ m.type | parttype }}{{ m | partvariables }}</div>
 						{{ end }}
 					</div>
 					{{ fi }}
@@ -74,6 +74,8 @@
 				EXEC('code/move', tmp.line - 1, tmp.ch);
 			} else {
 				tmp = code.components[index];
+				if (tmp.type === 'version')
+					tmp.lineto = tmp.line;
 				EXEC('code/move', tmp.line, tmp.ch, tmp.lineto);
 			}
 		};

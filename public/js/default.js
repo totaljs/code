@@ -99,6 +99,8 @@ Thelpers.particon = function(type) {
 			return 'fa fa-font';
 		case 'operation':
 			return 'fa fa-plug';
+		case 'version':
+			return 'fa fa-superscript';
 		default:
 			return 'fa fa-tasks';
 	}

@@ -501,6 +501,7 @@ COMPONENT('editor', function(self, config) {
 		var REGPLUGINOP_REPLACE = /(\s)+=(\s)+function/g;
 		var REGFUNCTION = /((\s)+=(\s)+function)/;
 		var REGTASKOP = /('|").*?('|")/g;
+		var REGVERSION = /version[":-='\s]+[a-z0-9."',\s]+/;
 		var REGJC = /data---=".*?(__|")/g;
 
 		var schemaoperation_replace = function(text) {
@@ -549,31 +550,41 @@ COMPONENT('editor', function(self, config) {
 			var is = null;
 			var name, type, oldschema, oldplugin, pluginvariable, oldtask, taskvariable, tmp;
 			var val = editor.getValue();
+			var version = '';
 
 			if (mode === 'totaljsresources' || mode === 'javascript' || mode === 'totaljs' || mode === 'css' || mode === 'sass' || mode === 'html' || mode === 'todo' || mode === 'bash' || mode === 'python' || mode === 'php' || mode === 'shell' || mode === 'htmlmixed' || mode === 'null' || mode === 'clike' || mode === 'yaml') {
 				var lines = val.split('\n');
 				for (var i = 0; i < lines.length; i++) {
 
-					var m = mode === 'todo' ? lines[i].match(REGTODO2) : lines[i].match(REGTODO);
+					var line = lines[i];
+					var m = mode === 'todo' ? line.match(REGTODO2) : line.match(REGTODO);
 
-					if (m && !REGTODODONE.test(lines[i]))
-						todos.push({ line: i + 1, ch: m.index || 0, name: lines[i].substring(m.index, 200).replace(REGTODOREPLACE, '').replace(REGTODOCLEAN, '').trim() });
+					if (m && !REGTODODONE.test(line))
+						todos.push({ line: i + 1, ch: m.index || 0, name: line.substring(m.index, 200).replace(REGTODOREPLACE, '').replace(REGTODOCLEAN, '').trim() });
+
+					if (line && mode !== 'css') {
+						m = line.match(REGVERSION);
+						if (m) {
+							version = m.toString().replace(/(version|\s|"|'|=|:)+/g, '').trim();
+							components.push({ line: i, ch: m.index || 0, name: version, type: 'version' });
+						}
+					}
 
 					if (mode === 'javascript' || mode === 'totaljs' || mode === 'html' || mode === 'htmlmixed') {
 
-						if (is != null && lines[i].substring(is, 3) === '});') {
+						if (is != null && line.substring(is, 3) === '});') {
 							components[components.length - 1].lineto = i;
 							is = null;
 						}
 
-						m = lines[i].match(REGJC);
+						m = line.match(REGJC);
 						if (m) {
 							name = m[0].replace(/data---="|_{2,}|"/g, '').trim();
 							if (components.findIndex('name', name ) === -1)
 								components.push({ line: i, ch: m.index || 0, name: name, type: 'htmlcomponent' });
 						}
 
-						m = lines[i].match(REGPART);
+						m = line.match(REGPART);
 						if (m) {
 							name = m[0].match(REGPARTCLEAN);
 							tmp = m[0].toLowerCase();
@@ -605,7 +616,7 @@ COMPONENT('editor', function(self, config) {
 							}
 						}
 
-						m = lines[i].match(REGHELPER);
+						m = line.match(REGHELPER);
 						if (m) {
 							var end = m[0].indexOf('=');
 							if (end === -1)
@@ -615,10 +626,10 @@ COMPONENT('editor', function(self, config) {
 							if (name) {
 
 								if (type === 'Thel' || type === 'FUNC') {
-									var subm = lines[i].match(REGFUNCTION);
+									var subm = line.match(REGFUNCTION);
 									if (!subm)
 										continue;
-									name = name.trim() + lines[i].substring(lines[i].indexOf('(', subm.index), lines[i].indexOf(')', subm.index + 8) + 1);
+									name = name.trim() + line.substring(line.indexOf('(', subm.index), line.indexOf(')', subm.index + 8) + 1);
 								}
 
 								var beg = m.index || 0;
@@ -626,21 +637,21 @@ COMPONENT('editor', function(self, config) {
 							}
 						}
 
-						m = lines[i].match(REGCONSOLE);
+						m = line.match(REGCONSOLE);
 						if (m) {
 							name = m[0].length > 20 ? (m[0].substring(0, 30) + '...') : m[0];
-							var tmpindex = lines[i].indexOf('//');
+							var tmpindex = line.indexOf('//');
 							if (tmpindex === -1 || tmpindex > m.index)
 								components.push({ line: i, ch: 0, name: name, type: 'console' });
 						}
 
 						if (oldschema) {
-							m = lines[i].match(REGSCHEMAOP);
+							m = line.match(REGSCHEMAOP);
 							if (m) {
 								m = m[0].replace(REGSCHEMAOP_REPLACE, schemaoperation_replace);
 								components.push({ line: i, ch: 0, name: oldschema + m, type: 'schema' });
 							}
-							m = lines[i].match(REGSCHEMAOP_DEFINE);
+							m = line.match(REGSCHEMAOP_DEFINE);
 							if (m) {
 								m = m[0].replace(REGSCHEMAOP_REPLACE, schemaoperation_replace);
 								components.push({ line: i, ch: 0, name: oldschema + m, type: 'schema' });
@@ -649,7 +660,7 @@ COMPONENT('editor', function(self, config) {
 
 						if (oldplugin) {
 							if (pluginvariable.indexOf('(') == -1) {
-								m = lines[i].match(new RegExp(pluginvariable + '.*?(\\s)=(\\s)function\\(.*?\\)'));
+								m = line.match(new RegExp(pluginvariable + '.*?(\\s)=(\\s)function\\(.*?\\)'));
 								if (m) {
 									m = m[0].replace(REGPLUGINOP_REPLACE, '');
 									m = m.substring(0, m.indexOf(')') + 1).trim().substring(pluginvariable.length);
@@ -659,7 +670,7 @@ COMPONENT('editor', function(self, config) {
 						}
 
 						if (oldtask) {
-							m = lines[i].match(new RegExp(taskvariable + '\\(.*?,'));
+							m = line.match(new RegExp(taskvariable + '\\(.*?,'));
 							if (m) {
 								m = m[0].match(REGTASKOP);
 								if (m) {
@@ -726,6 +737,7 @@ COMPONENT('editor', function(self, config) {
 
 			EXEC(config.components, components);
 			EXEC(config.todo, todos);
+			SET('code.fileversion', version);
 			setTimeout2(self.ID + 'colorpalette', self.refreshcolorpaletter, 1000);
 		};
 
@@ -1060,6 +1072,7 @@ COMPONENT('editor', function(self, config) {
 
 	self.clear = function(content) {
 		SET('code.colorpalette', EMPTYARRAY);
+		SET('code.fileversion');
 		content && editor.setValue('');
 		editor.clearHistory();
 	};
@@ -1075,6 +1088,7 @@ COMPONENT('editor', function(self, config) {
 			return;
 
 		markers = {};
+		NUL('code.fileversion');
 		SET('code.colorpalette', EMPTYARRAY);
 		editor.setValue(value || '');
 		editor.refresh();
