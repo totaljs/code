@@ -73,7 +73,7 @@ NEWSCHEMA('Users', function(schema) {
 			}
 
 			if (item.blocked && MAIN.ws)
-				MAIN.ws.send2(WSBLOCKED, client => client.user.id === item.id);
+				MAIN.ws.send(WSBLOCKED, client => client.user.id === item.id);
 		}
 
 		MAIN.save(1);
@@ -129,7 +129,7 @@ NEWSCHEMA('Users', function(schema) {
 			}
 
 			item.blocked = true;
-			MAIN.ws.send2(WSBLOCKED, client => client.user.id === item.id);
+			MAIN.ws.send(WSBLOCKED, client => client.user.id === item.id);
 			MAIN.users.splice(index, 1);
 			MAIN.save();
 		}
