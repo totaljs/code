@@ -1372,6 +1372,9 @@ COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 			case 'yaml':
 				return 'fa fa-cog';
 			case 'c':
+			case 'wasm':
+			case 'wat':
+			case 'wast':
 				return 'fa fa-code';
 		}
 		return 'fa-file-o far';
@@ -11594,6 +11597,11 @@ COMPONENT('markdown', function (self) {
 						break;
 					case 'xml':
 						type = 'text/xml';
+						break;
+					case 'wat':
+					case 'wast':
+					case 'wasm':
+						type = 'text/webassembly';
 						break;
 				}
 
