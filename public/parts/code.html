@@ -2429,12 +2429,12 @@
 					if (sync)
 						data.sync = sync;
 
-					AJAX('GET /api/projects/{id}/modify/ REPEAT'.arg(code.data), data, function(response) {
+					AJAX('GET /api/projects/{id}/modify/ REPEAT'.arg(code.data), data, ASETTER('message/response', function(response) {
 						FUNC.success((response.value === 'synchronized' ? '@(<b>{0}</b> saved and synchronized.)' : '@(<b>{0}</b> saved successfully.)').format(data.path));
 						common.electron && code.data.repository && user.localsave && exports.savelocal();
-					});
+						SETTER('loading/hide');
+					}));
 
-					SETTER('loading/hide');
 					return;
 				}
 
@@ -2498,7 +2498,7 @@
 				clearTimeout2('code.modified');
 				clearTimeout2('EditorGutterColor');
 
-				AJAX('POST /api/files/{id}/ REPEAT'.arg(code.data), data, function(response) {
+				AJAX('POST /api/files/{id}/ REPEAT'.arg(code.data), data, ASETTER('message/response', function(response) {
 
 					SETTER('loading/hide', 500);
 
@@ -2511,7 +2511,7 @@
 					common.electron && code.data.repository && user.localsave && exports.savelocal();
 					SET('code.current.lastmodified', { user: user.name, updated: new Date() });
 					data.diff.length && UPD('code.current.diff');
-				});
+				}));
 
 			}, 300);
 		};

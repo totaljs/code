@@ -13,7 +13,7 @@ NEWSCHEMA('FilesPart', function(schema) {
 	schema.define('line', Number);
 	schema.define('ch', Number);
 	schema.define('type', 'String(20)', true);
-	schema.define('name', 'String(200)', true);
+	schema.define('name', 'String(200)');
 });
 
 NEWSCHEMA('FilesDiff', function(schema) {
