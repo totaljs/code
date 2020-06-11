@@ -2167,7 +2167,7 @@
 			AJAX('GET /api/projects/{id}/changelog/'.arg(code.data), { path: code.current.path }, function(response) {
 				if (code.current && code.current.lastmodified && response) {
 					var tmp = code.current.lastmodified;
-					if (response.user !== user.name && (tmp.user !== response.user || tmp.updated.getTime() !== response.updated.getTime())) {
+					if (response.user && response.user !== user.name && (tmp.user !== response.user || tmp.updated.getTime() !== response.updated.getTime())) {
 						FUNC.info('@(<b>{0}</b> changed this file <b>{1}</b>.)'.format(response.user, Thelpers.time(response.updated)));
 						if (!code.SYNC && code.usersfile && code.usersfile.length === 1) {
 							SETTER('loading/show');
