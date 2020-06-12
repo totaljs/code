@@ -70,6 +70,8 @@ Thelpers.shortpath = function(path) {
 
 Thelpers.particon = function(type) {
 	switch (type) {
+		case 'markdown':
+			return 'fa fa-heading';
 		case 'helper':
 			return 'fa fa-align-left';
 		case 'FUNC':

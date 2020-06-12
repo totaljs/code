@@ -535,6 +535,8 @@ COMPONENT('editor', function(self, config) {
 			SET('code.colorpalette', keys);
 		};
 
+		var allowed_modes = { totaljsresources: 1, javascript: 1, totaljs: 1, css: 1, sass: 1, html: 1, todo: 1, bash: 1, python: 1, php: 1, shell: 1, htmlmixed: 1, 'null': 1, clike: 1, yaml: 1, markdown: 1 };
+
 		self.prerender_colors = function(changescount) {
 
 			config.change && EXEC(config.change, changescount || 0);
@@ -552,12 +554,20 @@ COMPONENT('editor', function(self, config) {
 			var val = editor.getValue();
 			var version = '';
 
-			if (mode === 'totaljsresources' || mode === 'javascript' || mode === 'totaljs' || mode === 'css' || mode === 'sass' || mode === 'html' || mode === 'todo' || mode === 'bash' || mode === 'python' || mode === 'php' || mode === 'shell' || mode === 'htmlmixed' || mode === 'null' || mode === 'clike' || mode === 'yaml') {
+			if (allowed_modes[mode]) {
 				var lines = val.split('\n');
 				for (var i = 0; i < lines.length; i++) {
 
 					var line = lines[i];
-					var m = mode === 'todo' ? line.match(REGTODO2) : line.match(REGTODO);
+					var m;
+
+					if (mode === 'markdown') {
+						if ((/^#{1,4}\s/).test(line))
+							components.push({ line: i, ch: 0, name: line.trim(), type: 'markdown' });
+						continue;
+					}
+
+					m = mode === 'todo' ? line.match(REGTODO2) : line.match(REGTODO);
 
 					if (m && !REGTODODONE.test(line))
 						todos.push({ line: i + 1, ch: m.index || 0, name: line.substring(m.index, 200).replace(REGTODOREPLACE, '').replace(REGTODOCLEAN, '').trim() });

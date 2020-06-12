@@ -132,10 +132,21 @@
 	});
 
 	Thelpers.partvariables = function(item) {
+
 		var val = item.name;
-		var index = val.indexOf('(');
+		var index;
+
+		if (item.type === 'markdown') {
+			index = val.indexOf(' ');
+			var color = index === 1 ? 'green' : index === 2 ? 'red' : index === 3 ? 'orange' : index === 4 ? 'yellow' : 'gray';
+			val = '<span class="badge badge-{1} badge-small">H{0}</span> '.format(index, color) + val.substring(index + 1).replace(/(^|\s)?\:[a-z][a-z0-9\-\s]+\:/g, ' ').replace(/"|'|`/g, '');
+			return val;
+		}
+
+		index = val.indexOf('(');
 		if (index === -1) {
 			var plus = '';
+
 			if (item.type === 'component') {
 				plus = ' <i class="pull-right fa fa-exclamation-circle red mt2"></i>';
 				var stop = false;
