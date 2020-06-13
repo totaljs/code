@@ -575,7 +575,7 @@ COMPONENT('editor', function(self, config) {
 					if (line && mode !== 'css') {
 						m = line.match(REGVERSION);
 						if (m) {
-							version = m.toString().replace(/(version|\s|"|'|=|:)+/g, '').trim();
+							version = m.toString().replace(/(version|\s|"|'|=|:)+/g, '').replace(/(,|\.|-|"|')$/,'').trim();
 							components.push({ line: i, ch: m.index || 0, name: version, type: 'version' });
 						}
 					}
