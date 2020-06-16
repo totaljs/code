@@ -1789,6 +1789,7 @@
 			}
 
 			if (node.children) {
+				items.push({ value: 'filter', name: '@(Show this folder only)', icon: 'filter green' });
 				items.push({ value: 'file', name: '@(Create file)', icon: '!far fa-file-text-o' });
 				items.push({ value: 'directory', name: '@(Create directory)', icon: '!far fa-folder-o' });
 			} else {
@@ -1826,6 +1827,9 @@
 				}
 
 				switch (item.value) {
+					case 'filter':
+						SETTER('tree/shownested', node.path);
+						break;
 					case 'download':
 						location.href = '/api/download/' + code.data.id + '/?path=' + encodeURIComponent(path);
 						break;

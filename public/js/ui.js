@@ -1294,6 +1294,7 @@ COMPONENT('exec', function(self, config) {
 COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 
 	var REGBK = /(-|_)bk\.$/i;
+	var items = {};
 
 	Thelpers.treefilecolor = function(filename) {
 		if (filename.charAt(0) === '.' || REGBK.test(filename))
@@ -1415,6 +1416,33 @@ COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 		self.closest('.ui-viewbox').component().resizescrollbar();
 	};
 
+	self.shownested = function(item) {
+
+		if (typeof(item) === 'string')
+			item = items[item];
+
+		if (!item)
+			return;
+
+		var builder = [];
+		var selected = selindex === -1 ? -1 : config.pk ? cache[selindex][config.pk] : cache[selindex];
+
+		var key = config.pk ? item[config.pk] : counter;
+		if (key === selected)
+			selindex = counter;
+
+		builder.push('<div class="extrabutton" data-name="reset"><i class="fa fa-times red"></i>{0}</div>'.format(item.path));
+
+		for (var i = 0; i < item.children.length; i++) {
+			var child = item.children[i];
+			builder.push('<div class="node{0}">'.format(child.isopen ? ' show' : '') + self.template(child));
+			child.children && self.renderchildren(builder, child, 1, selected);
+			builder.push('</div>');
+		}
+
+		self.html(builder.join(''));
+	};
+
 	self.make = function() {
 		self.aclass('ui-tree');
 
@@ -1422,7 +1450,11 @@ COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 		var ddtarget = null;
 
 		self.event('click', '.extrabutton', function() {
-			EXEC(config.extrabutton);
+			var name = $(this).attrd('name');
+			if (name === 'reset')
+				self.refresh();
+			else
+				EXEC(config.extrabutton);
 		});
 
 		self.event('dragenter dragover dragexit drop dragleave', function (e) {
@@ -1648,7 +1680,7 @@ COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 		self.resizescrollbar();
 	};
 
-	self.renderchildren = function(builder, item, level, selected) {
+	self.renderchildren = function(builder, item, level, selected, addtocache) {
 		builder.push('<div class="children children{0}" data-level="{0}">'.format(level));
 		item.children.forEach(function(item) {
 			counter++;
@@ -1659,10 +1691,13 @@ COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 			if (key === selected)
 				selindex = counter;
 
+			if (addtocache)
+				items[key] = item;
+
 			item.isopen = !!(expanded[key] && item.children);
 			builder.push('<div class="node{0}">'.format(item.isopen ? ' show' : ''));
 			builder.push(self.template(item));
-			item.children && self.renderchildren(builder, item, level + 1, selected);
+			item.children && self.renderchildren(builder, item, level + 1, selected, addtocache);
 			builder.push('</div>');
 		});
 		builder.push('</div>');
@@ -1686,6 +1721,7 @@ COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 		selindex = -1;
 		counter = 0;
 		cache = {};
+		items = {};
 
 		var extra = true;
 		if (value) {
@@ -1708,10 +1744,11 @@ COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 			var key = config.pk ? item[config.pk] : counter;
 			if (key === selected)
 				selindex = counter;
+			items[key] = item;
 			item.isopen = !!(expanded[key] && item.children);
 			builder.push('<div class="node{0}">'.format(item.isopen ? ' show' : '') + self.template(item));
 			if (item.children)
-				self.renderchildren(builder, item, 1, selected);
+				self.renderchildren(builder, item, 1, selected, true);
 			else if (!cache.first)
 				cache.first = item;
 			builder.push('</div>');
