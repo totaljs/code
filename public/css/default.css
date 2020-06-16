@@ -307,7 +307,7 @@ header .tools .external { color: #a2a286; }
 .tabs nav > span em { display: block; font-size: 9px; color: gray; font-style: normal; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; font-weight: normal; }
 .tabs nav .selected { background-color: white; height: 39px; color: #000000; }
 .tabs nav i { color: gray; font-size: 15px; position: absolute; left: 7px; top: 8px; width: 15px; cursor: pointer; text-align: center; }
-.tabs nav .modified { color: red; }
+.tabs nav .modified { color: red !important; }
 .tabs nav .modified:before { content: '*'; margin-right: 2px; }
 .tabs nav .modified i { color: red !important; }
 .tabs-bk nav .modified i { color: red; left: 9px; top: 10px; }
