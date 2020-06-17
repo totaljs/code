@@ -8,7 +8,7 @@
       "url": "https://github.com/totaljs/code"
   },
   "dependencies": {
-    "total.js": "latest",
+    "total4": "beta",
     "pg": "latest"
   },
   "scripts": {
