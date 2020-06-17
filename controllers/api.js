@@ -262,8 +262,8 @@ function users_online() {
 	var self = this;
 	var arr = [];
 
-	for (var i = 0; i < MAIN.ws._keys.length; i++) {
-		var key = MAIN.ws._keys[i];
+	for (var i = 0; i < MAIN.ws.keys.length; i++) {
+		var key = MAIN.ws.keys[i];
 		var conn = MAIN.ws.connections[key];
 
 		var item = {};
@@ -304,9 +304,12 @@ function custom_ip() {
 
 function custom_ipsever() {
 	var self = this;
-	REQUEST('https://ipecho.net/plain', ['get'], function(err, response) {
-		self.plain(response || 'undefined');
-	});
+	var opt = {};
+	opt.url = 'https://ipecho.net/plain';
+	opt.callback = function(err, response) {
+		self.plain(response.body || 'undefined');
+	};
+	REQUEST(opt);
 }
 
 function files_changes(id) {
