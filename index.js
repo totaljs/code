@@ -1,16 +1,20 @@
 // ===================================================
-// FOR DEVELOPMENT
-// Total.js - framework for Node.js platform
+// Total.js start script
 // https://www.totaljs.com
 // ===================================================
 
 const options = {};
 
-options.ip = '0.0.0.0';
-options.port = parseInt(process.argv[2]);
+// options.ip = '127.0.0.1';
+// options.port = parseInt(process.argv[2]);
+// options.unixsocket = require('path').join(require('os').tmpdir(), 'app_name');
 // options.config = { name: 'Total.js' };
 // options.sleep = 3000;
 // options.inspector = 9229;
 // options.watch = ['private'];
+// options.livereload = true;
 
-require('total4/debug')(options);
+if (process.argv.indexOf('--release', 1) !== -1 || process.argv.indexOf('release', 1) !== -1)
+	require('total4').http('release', options);
+else
+	require('total4/debug')(options);

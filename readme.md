@@ -12,11 +12,11 @@ Online collaboration tool for __Total Developers__. We recommend to use [__bundl
 ![Electron](http://cdn.totaljs.com/images/code-electron-02.jpg)
 
 - __can be provided only in Linux/Unix or MacOS__
-- install latest version of Total.js from NPM `$ npm install total.js`
+- install latest version of Total.js from NPM `$ npm install`
 - download example
-- run `$ node debug.js`
+- run `$ node index.js`
 - open browser `http://127.0.0.1:8000`
-- __IMPORTANT__: new version works with Total.js `+3.3.0` only
+- __IMPORTANT__: new version works with Total.js `+4` only
 
 ---
 
