@@ -576,7 +576,7 @@ COMPONENT('editor', function(self, config) {
 						m = line.match(REGVERSION);
 						if (m) {
 							version = m.toString().replace(/(version|\s|"|'|=|:)+/g, '').replace(/(,|\.|-|"|')$/,'').trim();
-							components.push({ line: i, ch: m.index || 0, name: version, type: 'version' });
+							version && components.push({ line: i, ch: m.index || 0, name: version, type: 'version' });
 						}
 					}
 
