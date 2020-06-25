@@ -727,6 +727,7 @@
 			}
 
 			sub.push({ name: '@(UID)', icon: 'chevron-right', value: 'uid' });
+			sub.push({ name: '@(UID 16)', icon: 'chevron-right', value: 'uid16' });
 			sub.push({ name: '@(GUID)', icon: 'chevron-right', value: 'guid' });
 			sub.push({ name: '@(Password)', icon: 'chevron-right', value: 'password' });
 			sub.push({ name: '@(URL / Hostname)', icon: 'chevron-right', value: 'url' });
@@ -1054,6 +1055,7 @@
 							SET('common.form', 'snippets');
 							break;
 						case 'uid':
+						case 'uid16':
 						case 'ip':
 						case 'ipserver':
 							AJAX('GET /api/common/{0}/'.format(value.value), function(response) {

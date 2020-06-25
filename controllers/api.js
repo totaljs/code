@@ -71,6 +71,7 @@ exports.install = function() {
 	ROUTE('+GET    /api/users/export/',                                       users_export);
 	ROUTE('+GET    /api/common/directories/',                                 directories);
 	ROUTE('+GET    /api/common/uid/',                                         custom_uid);
+	ROUTE('+GET    /api/common/uid16/',                                       custom_uid16);
 	ROUTE('+GET    /api/common/ip/',                                          custom_ip);
 	ROUTE('+GET    /api/common/ipserver/',                                    custom_ipsever);
 	ROUTE('+POST   /api/common/encrypt/                   *Encoder            --> @exec');
@@ -296,6 +297,10 @@ function files_minify() {
 
 function custom_uid() {
 	this.plain(UID('custom'));
+}
+
+function custom_uid16() {
+	this.plain(UID16('custom'));
 }
 
 function custom_ip() {
