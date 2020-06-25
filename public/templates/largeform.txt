@@ -5,8 +5,8 @@
 		</div>
 	</div>
 	<nav data---="validation__NAME">
-		<button name="submit" disabled>SUBMIT</button>
-		<button name="cancel">Cancel</button>
+		<button name="submit" disabled><i class="fa fa-check-circle"></i>@(SUBMIT)</button>
+		<button name="cancel">@(Cancel)</button>
 	</nav>
 </div>
 
