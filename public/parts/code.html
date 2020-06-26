@@ -2443,6 +2443,7 @@
 						FUNC.success((response.value === 'synchronized' ? '@(<b>{0}</b> saved and synchronized.)' : '@(<b>{0}</b> saved successfully.)').format(data.path));
 						common.electron && code.data.repository && user.localsave && exports.savelocal();
 						SETTER('loading/hide');
+						editor.diffgutterclear();
 					}));
 
 					return;
@@ -2515,12 +2516,12 @@
 					if (close === true)
 						exports.closeforce();
 
-					editor.diffgutterclear();
 					FUNC.wssend({ TYPE: 'save', connid: common.id, projectid: code.projectid, id: user.id, user: user.name });
 					FUNC.success((response.value === 'synchronized' ? '@(<b>{0}</b> saved and synchronized.)' : '@(<b>{0}</b> saved successfully.)').format(data.path));
 					common.electron && code.data.repository && user.localsave && exports.savelocal();
 					SET('code.current.lastmodified', { user: user.name, updated: new Date() });
 					data.diff.length && UPD('code.current.diff');
+					editor.diffgutterclear();
 				}));
 
 			}, 300);
