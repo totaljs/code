@@ -6,7 +6,7 @@ button { outline: 0; }
 .ui-disabled .ui-editor { cursor: not-allowed; }
 .CodeMirror-gutters { background-color: white !important; }
 .CodeMirror-scroll { overflow-scrolling: touch; }
-.CodeMirror { contain: strict; font-size: 15px; font-family: Menlo,Consolas,monospace; line-height: 23px; user-select: none; }
+.CodeMirror { contain: strict; font-size: 15px; font-family: Menlo,Consolas,monospace; line-height: 23px; }
 .CodeMirror-scrollbar-filler { background-color: #303030; }
 .CodeMirror-simplescroll-horizontal div, .CodeMirror-simplescroll-vertical div { position: absolute; background: #A0A0A0; }
 .CodeMirror-simplescroll-horizontal, .CodeMirror-simplescroll-vertical { position: absolute; z-index: 6; background: #D0D0D0; }
