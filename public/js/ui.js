@@ -192,13 +192,9 @@ COMPONENT('editor', function(self, config) {
 
 	self.diffgutterclear = function() {
 
-		var lines = self.find('.cm-changed-line');
-
-		for (var i = 0; i < lines.length; i++) {
-			var el = $(lines[i]);
-			var index = +el.find('.CodeMirror-linenumber').html();
-			editor.removeLineClass(index - 1, null, 'cm-changed-line');
-		}
+		var count = editor.lineCount();
+		for (var i = 0; i < count; i++)
+			editor.removeLineClass(i, null, 'cm-changed-line');
 
 		editor.doc.clearGutter('GutterDiff');
 		cache_lines = editor.getValue().split('\n');
@@ -6771,7 +6767,7 @@ COMPONENT('directory', 'minwidth:200', function(self, config) {
 					if (self.opt.callback) {
 						if (sel.length)
 							self.opt.callback(self.opt.items[+sel.attrd('index')], self.opt.element);
-						else
+						else if (self.opt.custom)
 							self.opt.callback(this.value, self.opt.element, true);
 					}
 					self.hide();
