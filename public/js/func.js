@@ -839,10 +839,11 @@ FUNC.request = function(text, body) {
 		}
 
 
-		var jso = null;
+		var json = null;
 		try {
 			json = JSON.parse(response.response);
 		} catch (e) {}
+
 		builder.push(template.format('Response (' + (response.duration / 1000) + ' s)', json ? ('<pre>' + FUNC.formatjson(json) + '</pre>') : Thelpers.encode(response.response).replace(/\n/g, '<br />')));
 
 		PUSH('^output', '<div class="output-response"><div class="output-response-caption" title="{0}">{0}</div>{1}</div>'.format(Thelpers.encode(response.url), builder.join('')));
