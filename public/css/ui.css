@@ -97,7 +97,7 @@ div.CodeMirror span.CodeMirror-matchingbracket { border-bottom: 2px solid blue; 
 .ui-tree .show > .item { font-weight: bold; color: black; }
 .ui-tree .selected { background-color: rgba(100,100,100,0.08); color: black; }
 .ui-tree .item-ddhere { background-color: rgba(100,100,100,0.15) !important; }
-.ui-tree .node:last-child .item { border-bottom: 0; }
+.ui-tree .node:last-child > .item { border-bottom: 0; }
 /*.td .ui-tree .item-ddhere { background-color: #404040 !important; }*/
 .ui-tree .children1 { background-position: 12px 0; }
 .ui-tree .children2 { background-position: 24px 0; }
