@@ -618,7 +618,7 @@ function makebundle(id) {
 		if (filename.toLowerCase().lastIndexOf('.bundle') === -1)
 			filename += '.bundle';
 
-		F.backup(filename, project.path, function(err) {
+		BACKUP(filename, project.path, function(err) {
 			if (err)
 				self.invalid(err);
 			else {
