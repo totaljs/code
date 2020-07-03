@@ -116,7 +116,7 @@ NEWSCHEMA('ExternalBundle', function(schema) {
 		MAIN.changelog($.user, $.id, p);
 		MAIN.change('upload', $.user, project, p);
 
-		F.download(model.url, Path.join(project.path, 'bundles', model.name), $.done());
+		DOWNLOAD(model.url, Path.join(project.path, 'bundles', model.name), $.done());
 	});
 });
 
@@ -144,7 +144,7 @@ NEWSCHEMA('ExternalPackage', function(schema) {
 		MAIN.changelog($.user, $.id, p);
 		MAIN.change('upload', $.user, project, p);
 
-		F.download(model.url, Path.join(project.path, 'packages', model.name), $.done());
+		DOWNLOAD(model.url, Path.join(project.path, 'packages', model.name), $.done());
 	});
 });
 
@@ -172,7 +172,7 @@ NEWSCHEMA('ExternalModule', function(schema) {
 		MAIN.changelog($.user, $.id, p);
 		MAIN.change('upload', $.user, project, p);
 
-		F.download(model.url, Path.join(project.path, 'modules', model.name), $.done());
+		DOWNLOAD(model.url, Path.join(project.path, 'modules', model.name), $.done());
 	});
 });
 
@@ -200,7 +200,7 @@ NEWSCHEMA('ExternalSchema', function(schema) {
 		MAIN.changelog($.user, $.id, p);
 		MAIN.change('upload', $.user, project, p);
 
-		F.download(model.url, Path.join(project.path, 'schemas', model.name), $.done());
+		DOWNLOAD(model.url, Path.join(project.path, 'schemas', model.name), $.done());
 	});
 });
 
@@ -228,7 +228,7 @@ NEWSCHEMA('ExternalDefinition', function(schema) {
 		MAIN.changelog($.user, $.id, p);
 		MAIN.change('upload', $.user, project, p);
 
-		F.download(model.url, Path.join(project.path, 'definitions', model.name), $.done());
+		DOWNLOAD(model.url, Path.join(project.path, 'definitions', model.name), $.done());
 	});
 });
 
@@ -256,6 +256,6 @@ NEWSCHEMA('ExternalOperation', function(schema) {
 		MAIN.changelog($.user, $.id, p);
 		MAIN.change('upload', $.user, project, p);
 
-		F.download(model.url, Path.join(project.path, 'operations', model.name), $.done());
+		DOWNLOAD(model.url, Path.join(project.path, 'operations', model.name), $.done());
 	});
 });
