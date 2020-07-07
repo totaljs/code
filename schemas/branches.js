@@ -16,7 +16,6 @@ NEWSCHEMA('Branches', function(schema) {
 		arg.push(project.path);
 		arg.push(PATH.databases(project.id + '_changes.nosql'));
 		arg.push(PATH.databases(project.id + '_parts.nosql'));
-		console.log(PATH.databases('branch_backup.sh') + ' ' + arg.join(' '));
 		Exec(PATH.databases('branch_backup.sh') + ' ' + arg.join(' '), { shell: '/bin/sh' }, callback || NOOP);
 	};
 
