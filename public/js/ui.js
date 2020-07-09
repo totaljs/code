@@ -6096,12 +6096,13 @@ COMPONENT('validation', 'delay:100;flags:visible', function(self, config) {
 	};
 });
 
-COMPONENT('infopanel', function(self) {
+COMPONENT('infopanel', function(self, config, cls) {
 
 	var is = false;
 	var cache;
 	var tsshow;
 	var tshide;
+	var callback;
 
 	// self.singleton();
 	self.readonly();
@@ -6111,7 +6112,7 @@ COMPONENT('infopanel', function(self) {
 	// self.blind();
 
 	self.make = function() {
-		self.aclass('ui-infopanel hidden invisible');
+		self.aclass(cls + ' hidden invisible');
 		$(document).on('click mousedown', self.hide);
 
 		self.on('resize + scroll', function() {
@@ -6126,11 +6127,15 @@ COMPONENT('infopanel', function(self) {
 				is = false;
 				self.aclass('hidden invisible');
 				cache = null;
+				callback && setTimeout(function(callback) {
+					callback();
+				}, 1000, callback);
+				callback = null;
 			}, 100);
 		}
 	};
 
-	self.show = function(el, render, offsetX, offsetY, top) {
+	self.show = function(el, render, offsetX, offsetY, top, cb) {
 
 		var main = self.element;
 
@@ -6143,6 +6148,7 @@ COMPONENT('infopanel', function(self) {
 			return;
 		}
 
+		callback = cb;
 		clearTimeout(tshide);
 		clearTimeout(tsshow);
 		is = false;
@@ -8619,8 +8625,14 @@ COMPONENT('combo', function(self) {
 		progress = self.find('.progress');
 
 		self.event('click', function() {
+			if (common.isinfopanel)
+				return;
+
 			var combo = GET('code.data.combo');
-			combo && SETTER('infopanel', 'show', self.element, function(el) {
+			if (!combo)
+				return;
+			common.isinfopanel = true;
+			SETTER('infopanel/show', self.element, function(el) {
 
 				// @ULTRA BAD HACK
 				var builder = [];
@@ -8639,7 +8651,9 @@ COMPONENT('combo', function(self) {
 					builder.push('<div class="infopanel-combo"><b>{1}</b><span>{0}</span></div>'.format(votes[i].name, votes[i].combo));
 
 				el.html(builder.join(''));
-			}, 90, 45, true);
+			}, 90, 45, true, function() {
+				common.isinfopanel = false;
+			});
 		});
 	};
 

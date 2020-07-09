@@ -1840,11 +1840,18 @@
 						location.href = '/api/download/' + code.data.id + '/?path=' + encodeURIComponent(path);
 						break;
 					case 'metainfo':
+
+						if (common.isinfopanel)
+							return;
+
 						AJAX('GET /api/metainfo/' + code.data.id + '/?path=' + encodeURIComponent(path), function(response) {
+							common.isinfopanel = true;
 							response.mode = '0' + (response.mode & parseInt('777', 8)).toString(8);
 							SETTER('infopanel/show', el, function(el) {
 								el.html('<div class="metainfo"><b><i class="far fa-file-text-o"></i> {4}</b>Size: {0}<br />Mode: {1}<br />Modified: {2}<br />Created: {3}</div>'.format(response.size.filesize(), response.mode, response.mtime.format(), response.ctime.format(), path));
-							}, -10, -105, false);
+							}, -10, -105, false, function() {
+								common.isinfopanel = false;
+							});
 						});
 						break;
 					case 'bundles':
@@ -2800,9 +2807,15 @@
 		};
 
 		exports.usersonline = function(el) {
-			AJAX('GET /api/users/online/', function(response) {
-				SETTER('infopanel/show', el, function(el) {
 
+			if (common.isinfopanel) {
+				SETTER('infopanel/hide');
+				return;
+			}
+
+			AJAX('GET /api/users/online/', function(response) {
+				response.length && SETTER('infopanel/show', el, function(el) {
+					common.isinfopanel = true;
 					var builder = [];
 					for (var i = 0; i < 10; i++) {
 						var user = response[i];
@@ -2813,19 +2826,28 @@
 
 					!builder.length && FUNC.warning('@(No-one works.)');
 					el.html(builder.join(''));
-				}, 0, -20);
+				}, 0, -20, null, function() {
+					common.isinfopanel = false;
+				});
 			});
 		};
 
 		exports.warnings = function(el, e) {
+			if (common.isinfopanel)
+				return;
 			SETTER('infopanel/show', el, function(el) {
 				var builder = [];
 				for (var i = 0; i < 10; i++) {
 					var err = code.errors && code.errors[i];
 					err && builder.push('<div class="infopanel-line exec" data-exec="code/warnings_goto" data-pos="{1}x{2}"><b>:{1}</b><span>{0}</span></div>'.format(err.reason || err.raw, err.line, err.character));
 				}
-				!builder.length && FUNC.warning('@(File doesn\'t contain any warnings.)');
+				if (builder.length)
+					common.isinfopanel = true;
+				else
+					FUNC.warning('@(File doesn\'t contain any warnings.)');
 				el.html(builder.join(''));
+			}, 0, 0, null, function() {
+				common.isinfopanel = false;
 			});
 		};
 

@@ -263,19 +263,21 @@ function users_online() {
 	var self = this;
 	var arr = [];
 
-	for (var i = 0; i < MAIN.ws.keys.length; i++) {
-		var key = MAIN.ws.keys[i];
-		var conn = MAIN.ws.connections[key];
+	if (MAIN.ws && MAIN.ws.keys) {
+		for (var i = 0; i < MAIN.ws.keys.length; i++) {
+			var key = MAIN.ws.keys[i];
+			var conn = MAIN.ws.connections[key];
 
-		var item = {};
+			var item = {};
 
-		var project = conn.code.projectid ? MAIN.projects.findItem('id', conn.code.projectid) : null;
-		if (project)
-			item.project = project.name + (conn.code.fileid || '');
+			var project = conn.code.projectid ? MAIN.projects.findItem('id', conn.code.projectid) : null;
+			if (project)
+				item.project = project.name + (conn.code.fileid || '');
 
-		item.name = conn.user.name;
-		item.ip = conn.ip;
-		arr.push(item);
+			item.name = conn.user.name;
+			item.ip = conn.ip;
+			arr.push(item);
+		}
 	}
 
 	self.json(arr);
