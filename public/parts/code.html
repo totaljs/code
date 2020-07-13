@@ -1563,10 +1563,10 @@
 			is && common.electron && code.data.repository && items.push({ value: 5, name: '@(Save locally)', icon: 'floppy-o' });
 			is && items.push({ value: 4, name: '@(Restore from backup)', icon: 'history' });
 			is && items.push({ value: 18, name: '@(Clear changes)', icon: 'recycle red' });
-			is && code.data.pathsync && items.push({ value: 6, name: '@(Save synchronized)', icon: 'sync green' });
-			common.electron && code.data.repository && items.push({ value: 7, name: '@(Download <strong>last changes</strong>)', icon: 'floppy-o' });
 			is && items.push({ value: 99, name: '<strong>@(Code review)</strong>', icon: 'check-circle green' });
 			is && items.push('-');
+			is && code.data.pathsync && items.push({ value: 6, name: '@(Save synchronized)', icon: 'sync green' });
+			common.electron && code.data.repository && items.push({ value: 7, name: '@(Download <strong>last changes</strong>)', icon: 'floppy-o' });
 			items.push({ value: 13, name: common.showparts ? '@(Disable parts panel)' : '<strong>@(Enable parts panel)</strong>', icon: 'puzzle-piece' + (common.showparts ? '' : ' green') });
 			items.push({ value: 15, name: common.powermode ? '@(Disable power mode)' : '<strong>@(Enable power mode)</strong>', icon: 'flask' + (common.powermode ? '' : ' green') });
 			items.push({ value: 17, name: '@(To-Do list)', icon: 'check' });
