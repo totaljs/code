@@ -40,7 +40,7 @@ NEWSCHEMA('Users', function(schema) {
 
 	schema.setSave(function($) {
 
-		var model = $.$clean();
+		var model = $.clean();
 		var tmp = model.name.split(' ');
 
 		model.initials = tmp[0][0] + (tmp.length > 1 ? tmp[1][0] : '');
@@ -87,7 +87,7 @@ NEWSCHEMA('Users', function(schema) {
 			return;
 		}
 
-		var model = $.$clean();
+		var model = $.clean();
 		var tmp = model.name.split(' ');
 		model.initials = tmp[0][0] + (tmp.length > 1 ? tmp[1][0] : '');
 		model.id = model.id.slug().replace(/-/g, '');
