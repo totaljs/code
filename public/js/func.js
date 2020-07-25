@@ -171,15 +171,22 @@ FUNC.bytelength = function(str) {
 FUNC.cleanduplicatedlines = function(val) {
 
 	var output = [];
+	var cache = [];
+
 	val = val.split('\n');
+
 	for (var i = 0; i < val.length; i++) {
 		var line = val[i];
 		if (!line) {
 			output.push('');
 			continue;
 		}
-		if (output.indexOf(line) === -1)
+
+		var k = line.trim();
+		if (cache.indexOf(k) !== -1) {
 			output.push(line);
+			cache.push(k);
+		}
 	}
 
 	return output.join('\n');
@@ -1154,4 +1161,37 @@ FUNC.formatjson = function(obj) {
 	}).replace(reguid2, function(text) {
 		return '<span class="db-uid">' + text + '</span>';
 	});
+};
+
+FUNC.removecssclass = function(cls, value) {
+
+	var lines = value.split('\n');
+	var builder = [];
+
+	for (var i = 0; i < lines.length; i++) {
+		var line = lines[i];
+		var beg = 0;
+		var index = line.indexOf('{', beg);
+		if (index === -1) {
+			builder.push(line);
+			continue;
+		}
+
+		var sel = line.substring(0, index).split(',').trim();
+		var upd = [];
+
+		for (var j = 0; j < sel.length; j++) {
+			var item = sel[j];
+			if (item.indexOf(cls) === -1)
+				upd.push(item);
+		}
+
+		if (upd.length)
+			builder.push(upd.join('') + ' ' + line.substring(index));
+
+		if (builder[builder.length - 1] === '')
+			builder.pop();
+	}
+
+	return builder.join('\n');
 };

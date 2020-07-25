@@ -711,6 +711,9 @@
 				tools.push({ name: '@(Lower Case)', icon: 'font', value: 'lower' });
 				tools.push({ name: '@(Clean duplicated lines)', icon: 'broom', value: 'cleanduplicatedlines' });
 
+				if (code.current.ext === 'css')
+					tools.push({ name: '@(Remove dark mode)', icon: 'adjust', value: 'removedarkmode' });
+
 				if (sel.length === 1 && (/^[\.\w\/\:\-]*$/i).test(text)) {
 					tools.push('-');
 					tools.push({ name: '@(Resolve IP address)', icon: 'ethernet', value: 'resolve' });
@@ -1554,6 +1557,7 @@
 			is && code.components && code.components.length && items.push({ value: 8, name: '@(Used parts)', icon: 'puzzle-piece', shortcut: 'F2' });
 			// is && items.push({ value: 10, name: '@(Insert snippet)', icon: 'paste', shortcut: 'F4' });
 			is && (/js|css|html/).test(code.current.ext) && items.push({ value: 12, name: '@(Insert icon)', icon: 'images', shortcut: 'F6' });
+			is && code.current.ext === 'css' && items.push({ value: 98, name: '@(Remove dark mode)', icon: 'adjust' });
 			is && items.length && items.push('-');
 			is && items.push({ value: 1, name: '@(Reload)', icon: 'refresh', shortcut: 'F5' });
 			is && items.push({ value: 2, name: '@(Find)', icon: 'search', command: 'find' });
@@ -1656,6 +1660,12 @@
 						break;
 					case 23:
 						location.href = '/api/projects/{id}/download/'.arg(code.data);
+						break;
+					case 98:
+						var cursor = editor.editor.getCursor(true);
+						editor.editor.setValue(FUNC.removecssclass('.ui-dark', editor.editor.getValue()));
+						editor.editor.setCursor(cursor, 200);
+						editor.editor.focus();
 						break;
 					case 21:
 						SETTER('loading/show');
