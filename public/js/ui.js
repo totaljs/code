@@ -6619,7 +6619,13 @@ COMPONENT('viewbox', 'margin:0;scroll:true;delay:100;scrollbar:0;visibleY:1;heig
 		var c = cls + '-hidden';
 		self.hclass(c) && self.rclass(c, 100);
 		scrollbar && scrollbar.resize();
-		scrolltop && self.scrolltop(0);
+
+		if (scrolltop) {
+			if (config.scrolltop)
+				self.scrolltop(0);
+			else if (config.scrollbottom)
+				self.scrollbottom(0);
+		}
 
 		if (!init) {
 			self.rclass('invisible', 250);
@@ -6632,7 +6638,7 @@ COMPONENT('viewbox', 'margin:0;scroll:true;delay:100;scrollbar:0;visibleY:1;heig
 	};
 
 	self.setter = function() {
-		setTimeout(self.resize, config.delay, config.scrolltop);
+		setTimeout(self.resize, config.delay, true);
 	};
 });
 
@@ -8910,9 +8916,8 @@ COMPONENT('tooltip', function(self) {
 
 });
 
-COMPONENT('windows', 'menuicon:fa fa-navicon;reoffsetresize:0', function(self, config) {
+COMPONENT('windows', 'menuicon:fa fa-navicon;reoffsetresize:0', function(self, config, cls) {
 
-	var cls = 'ui-' + self.name;
 	var cls2 = '.' + cls;
 	var cache = {};
 	var services = [];
@@ -8982,7 +8987,7 @@ COMPONENT('windows', 'menuicon:fa fa-navicon;reoffsetresize:0', function(self, c
 	};
 
 	self.recompile = function() {
-		setTimeout2(self.iD + 'compile', COMPILE, 50);
+		setTimeout2(self.ID + 'compile', COMPILE, 50);
 	};
 
 	self.resizeforce = function() {
@@ -9023,6 +9028,8 @@ COMPONENT('windows', 'menuicon:fa fa-navicon;reoffsetresize:0', function(self, c
 
 	events.down = function(e) {
 
+		var E = e;
+
 		if (e.type === 'touchstart') {
 			drag.touch = true;
 			e = e.touches[0];
@@ -9041,7 +9048,7 @@ COMPONENT('windows', 'menuicon:fa fa-navicon;reoffsetresize:0', function(self, c
 		drag.resize = el.hclass(cls + '-resize');
 		drag.is = false;
 
-		e.preventDefault();
+		E.preventDefault();
 
 		var myoffset = self.element.position();
 		var pos;
@@ -9074,6 +9081,7 @@ COMPONENT('windows', 'menuicon:fa fa-navicon;reoffsetresize:0', function(self, c
 			if (drag.resize) {
 				if (drag.item.meta.actions.resize == false)
 					return;
+				drag.resize = drag.item.meta.actions.resize;
 			} else {
 				if (drag.item.meta.actions.move == false)
 					return;
@@ -9112,12 +9120,17 @@ COMPONENT('windows', 'menuicon:fa fa-navicon;reoffsetresize:0', function(self, c
 					if ((off.minwidth && w < off.minwidth) || (off.minheight && h < off.minheight) || (off.maxwidth && w > off.maxwidth) || (off.maxheight && h > off.maxheight))
 						break;
 
-					obj.width = w;
-					drag.el.css(obj);
-					obj.height = h;
-					delete obj.width;
-					delete obj.top;
-					drag.body.css(obj);
+					if (drag.resize === true || drag.resize === 'width') {
+						obj.width = w;
+						drag.el.css(obj);
+					}
+
+					if (drag.resize === true || drag.resize === 'height') {
+						obj.height = h;
+						delete obj.width;
+						delete obj.top;
+						drag.body.css(obj);
+					}
 					break;
 
 				case 'tr':
@@ -9127,13 +9140,19 @@ COMPONENT('windows', 'menuicon:fa fa-navicon;reoffsetresize:0', function(self, c
 					if ((off.minwidth && w < off.minwidth) || (off.minheight && h < off.minheight) || (off.maxwidth && w > off.maxwidth) || (off.maxheight && h > off.maxheight))
 						break;
 
-					obj.width = w;
-					obj.top = y;
-					drag.el.css(obj);
-					obj.height = h;
-					delete obj.width;
-					delete obj.top;
-					drag.body.css(obj);
+					if (drag.resize === true || drag.resize === 'width') {
+						obj.width = w;
+						obj.top = y;
+						drag.el.css(obj);
+					}
+
+					if (drag.resize === true || drag.resize === 'height') {
+						obj.height = h;
+						delete obj.width;
+						delete obj.top;
+						drag.body.css(obj);
+					}
+
 					break;
 
 				case 'bl':
@@ -9144,12 +9163,18 @@ COMPONENT('windows', 'menuicon:fa fa-navicon;reoffsetresize:0', function(self, c
 					if ((off.minwidth && w < off.minwidth) || (off.minheight && h < off.minheight) || (off.maxwidth && w > off.maxwidth) || (off.maxheight && h > off.maxheight))
 						break;
 
-					obj.left = x;
-					obj.width = w;
-					drag.el.css(obj);
-					delete obj.width;
-					obj.height = h;
-					drag.body.css(obj);
+					if (drag.resize === true || drag.resize === 'width') {
+						obj.left = x;
+						obj.width = w;
+						drag.el.css(obj);
+						delete obj.width;
+					}
+
+					if (drag.resize === true || drag.resize === 'height') {
+						obj.height = h;
+						drag.body.css(obj);
+					}
+
 					break;
 
 				case 'br':
@@ -9159,11 +9184,17 @@ COMPONENT('windows', 'menuicon:fa fa-navicon;reoffsetresize:0', function(self, c
 					if ((off.minwidth && w < off.minwidth) || (off.minheight && h < off.minheight) || (off.maxwidth && w > off.maxwidth) || (off.maxheight && h > off.maxheight))
 						break;
 
-					obj.width = w;
-					drag.el.css(obj);
-					delete obj.width;
-					obj.height = h;
-					drag.body.css(obj);
+					if (drag.resize === true || drag.resize === 'width') {
+						obj.width = w;
+						drag.el.css(obj);
+						delete obj.width;
+					}
+
+					if (drag.resize === true || drag.resize === 'height') {
+						obj.height = h;
+						drag.body.css(obj);
+					}
+
 					break;
 			}
 
@@ -9174,8 +9205,8 @@ COMPONENT('windows', 'menuicon:fa fa-navicon;reoffsetresize:0', function(self, c
 			obj.left = evt.pageX - drag.x - drag.offX;
 			obj.top = evt.pageY - drag.y - drag.offY;
 
-			if (obj.top < 10)
-				obj.top = 10;
+			if (obj.top < 0)
+				obj.top = 0;
 
 			drag.el.css(obj);
 		}
@@ -9213,7 +9244,7 @@ COMPONENT('windows', 'menuicon:fa fa-navicon;reoffsetresize:0', function(self, c
 	};
 
 	var wsavecallback = function(item) {
-		var key = 'win_' + item.meta.id;
+		var key = 'win_' + item.meta.cachekey;
 		var obj = {};
 		obj.x = item.x;
 		obj.y = item.y;
@@ -9227,43 +9258,56 @@ COMPONENT('windows', 'menuicon:fa fa-navicon;reoffsetresize:0', function(self, c
 
 	self.wsave = function(obj) {
 		if (obj.meta.actions && obj.meta.actions.autosave)
-			setTimeout2(self.ID + '_win_' + obj.meta.id, wsavecallback, 500, null, obj);
+			setTimeout2(self.ID + '_win_' + obj.meta.cachekey, wsavecallback, 500, null, obj);
 	};
 
 	self.wadd = function(item) {
 
 		var hidden = '';
+		var ishidden = false;
+
+		if (!item.cachekey)
+			item.cachekey = item.id;
+
+		if (item.cachekey)
+			item.cachekey += '' + item.offset.width + 'x' + item.offset.height;
 
 		if (item.actions && item.actions.autosave) {
-			pos = PREF['win_' + item.id];
+			pos = PREF['win_' + item.cachekey];
 			if (pos) {
 
 				var mx = 0;
 				var my = 0;
+
+				var keys = Object.keys(cache);
+				var plus = 0;
+
+				for (var i = 0; i < keys.length; i++) {
+					if (cache[keys[i]].meta.cachekey === item.cachekey)
+						plus += 50;
+				}
 
 				if (config.reoffsetresize && pos.ww != null && pos.wh != null) {
 					mx = pos.ww - WW;
 					my = pos.wh - WH;
 				}
 
-				item.offset.x = pos.x - mx;
-				item.offset.y = pos.y - my;
+				item.offset.x = (pos.x - mx) + plus;
+				item.offset.y = (pos.y - my) + plus;
 				item.offset.width = pos.width;
 				item.offset.height = pos.height;
-
-				var ishidden = false;
 
 				if (pos.hidden && (item.hidden == null || item.hidden)) {
 					ishidden = true;
 					item.hidden = true;
 				}
-
-				if (!ishidden)
-					ishidden = item.hidden;
-
-				hidden = ishidden ? ' hidden' : '';
 			}
 		}
+
+		if (!ishidden)
+			ishidden = item.hidden;
+
+		hidden = ishidden ? ' hidden' : '';
 
 		var el = $('<div class="{0}-item{2}" data-id="{id}" style="left:{x}px;top:{y}px;width:{width}px"><span class="{0}-resize {0}-resize-tl"></span><span class="{0}-resize {0}-resize-tr"></span><span class="{0}-resize {0}-resize-bl"></span><span class="{0}-resize {0}-resize-br"></span><div class="{0}-title"><i class="fa fa-times {0}-control" data-name="close"></i><i class="far fa-window-maximize {0}-control" data-name="maximize"></i><i class="far fa-window-minimize {0}-control" data-name="minimize"></i><i class="{1} {0}-control {0}-lastbutton" data-name="menu"></i><span>{{ title }}</span></div><div class="{0}-body" style="height:{height}px"></div></div>'.format(cls, config.menuicon, hidden).arg(item.offset).arg(item));
 		var body = el.find(cls2 + '-body');
@@ -9466,6 +9510,10 @@ COMPONENT('windows', 'menuicon:fa fa-navicon;reoffsetresize:0', function(self, c
 		obj.meta.data && data.push(obj);
 
 		self.append(el);
+
+		setTimeout(function(obj) {
+			obj.setcommand('focus');
+		}, 100, obj);
 		return obj;
 	};
 
@@ -9545,9 +9593,8 @@ COMPONENT('windows', 'menuicon:fa fa-navicon;reoffsetresize:0', function(self, c
 
 });
 
-COMPONENT('dockable', 'menuicon:fa fa-navicon;style:2;parent:window;margin:0;reoffsetresize:0', function(self, config) {
+COMPONENT('dockable', 'menuicon:fa fa-navicon;style:2;parent:window;margin:0;reoffsetresize:0', function(self, config, cls) {
 
-	var cls = 'ui-' + self.name;
 	var cls2 = '.' + cls;
 	var cache = {};
 	var services = [];

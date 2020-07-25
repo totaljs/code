@@ -1,7 +1,9 @@
+const CP = require('child_process');
 const READDIROPTIONS = { withFileTypes: true };
 const Path = require('path');
 const Fs = require('fs');
-const Exec = require('child_process').exec;
+const Exec = CP.exec;
+const Spawn = CP.spawn;
 
 exports.install = function() {
 
@@ -470,11 +472,13 @@ function makerequestscript(id) {
 		}
 	}
 
+	var meta = {};
 	var beg = Date.now();
+	var id = self.query.id;
 
-	self.childtimeout = setTimeout(function() {
-		child.kill(9);
-	}, 19000);
+	meta.childtimeout = setTimeout(function() {
+		meta.child.kill(9);
+	}, id ? (60000 * 30) : 19000);
 
 	var ext = U.getExtension(self.query.path);
 	var can = { js: 1, sh: 1 };
@@ -484,13 +488,35 @@ function makerequestscript(id) {
 		return;
 	}
 
-	var child = Exec((ext === 'sh' ? 'bash ' : 'node ') + Path.join(project.path, self.query.path), function(err, stdout, stderr) {
-		clearTimeout(self.childtimeout);
-		var data = {};
-		data.response = stderr || stdout;
-		data.duration = Date.now() - beg;
-		self.json(data);
-	});
+	if (id) {
+
+		self.success();
+
+		MAIN.spawns[id] = meta.child = Spawn((ext === 'sh' ? 'bash ' : 'node'), [Path.join(project.path, self.query.path)], { detached: true, cwd: project.path });
+		meta.child.on('close', function() {
+			delete MAIN.spawns[id];
+			MAIN.send({ TYPE: 'spawn', id: id, body: '\n--END--\n' + (Date.now() - beg) + ' ms' }, user);
+			clearTimeout(meta.childtimeout);
+			meta = null;
+		});
+
+		meta.child.stdout.on('data', function(data) {
+			MAIN.send({ TYPE: 'spawn', id: id, body: data.toString('utf8') }, user);
+		});
+
+		meta.child.stderr.on('data', function(data) {
+			MAIN.send({ TYPE: 'spawn', id: id, body: data.toString('utf8'), error: true }, user);
+		});
+
+	} else {
+		meta.child = Exec((ext === 'sh' ? 'bash ' : 'node ') + Path.join(project.path, self.query.path), function(err, stdout, stderr) {
+			clearTimeout(meta.childtimeout);
+			var data = {};
+			data.response = stderr || stdout;
+			data.duration = Date.now() - beg;
+			self.json(data);
+		});
+	}
 }
 
 function timespent() {

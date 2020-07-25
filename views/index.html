@@ -218,6 +218,9 @@
 				case 'offline':
 					$('.channel[data-value="{0}"]'.format(msg.id)).tclass('online', msg.TYPE === 'online');
 					break;
+				case 'spawn':
+					PUSH('common.spawns.' + msg.id, msg.body);
+					break;
 				case 'chat':
 					if (W.chat)
 						EXEC('chat/insert', msg);
@@ -534,9 +537,9 @@
 				return;
 
 			// BUILD
-			if ((/\/scripts\/|\.sh$/g).test(code.current.path)) {
+			if ((/\/scripts\/|\.sh$/g).test(code.current.path) || code.data.servicemode) {
 				if (code.current.ext === 'js' || code.current.ext === 'sh')
-					FUNC.requestscript(code.data.id, code.current.path);
+					FUNC.requestscriptspawn(code.data.id, code.current.path);
 			} else if (code.current.ext === 'api') {
 				var editor = FIND('editor').editor;
 				FUNC.request(editor.getSelections().join(''), editor.getValue());

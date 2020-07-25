@@ -42,6 +42,7 @@ function realtime() {
 		// {"TYPE":"edit"
 		// {"TYPE":"online"
 		// {"TYPE":"offline"
+		// {"TYPE":"x" -> spawn destroy
 		if (msg[9] === 'e') {
 			msg = msg.parseJSON();
 			client.code.fileid && refresh_collaborators(self, client);
@@ -52,7 +53,12 @@ function realtime() {
 			refresh_collaborators(self, client, true);
 		} else if (msg[9] === 's' && msg[12] === 'e')
 			self.send(msg);
-		else
+		else if (msg[9] === 'x') {
+			msg = msg.parseJSON();
+			if (MAIN.spawns[msg.id]) {
+				MAIN.spawns[msg.id].kill(9);
+			}
+		} else
 			self.send(msg, openidcomparer);
 	});
 }

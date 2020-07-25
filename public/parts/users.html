@@ -1,4 +1,4 @@
-<div class="container">
+<div class="container-fluid">
 	<br />
 	<div class="toolbar toolbar-right">
 		<button class="exec" data-exec="users/execrefresh" title="Refreshes all user browsers which are online"><i class="fa fa-refresh"></i>@(Refresh browsers)</button>
@@ -13,11 +13,11 @@
 	<div data---="datagrid__users.grid__dblclick:users/edit;checked:users/checked;highlight:true;margin:20;cluster:false">
 		<script type="text/plain">
 			[
-				{ name: 'id', text: '@(User ID)', template: '{{ if online }}<i class="fa fa-circle green fs11 mr5" title="@(Online)"></i>{{ fi }}{{ if blocked }}<span class="badge badge-small badge-red">@(blocked)</span>{{ fi }}{{ id }}', width: 200 },
+				{ name: 'id', text: '@(ID)', template: '{{ if online }}<i class="fa fa-circle green fs11 mr5" title="@(Online)"></i>{{ fi }}{{ if blocked }}<span class="badge badge-small badge-red">@(blocked)</span>{{ fi }}{{ id }}', width: 120 },
 				{ name: 'name', text: '@(Name)', width: 200 },
 				{ name: 'email', text: '@(Email)', width: 200 },
-				{ name: 'phone', text: '@(Phone)', width: 140 },
-				{ name: 'position', text: '@(Position)', width: 150 },
+				{ name: 'phone', text: '@(Phone)', width: 200 },
+				{ name: 'position', text: '@(Position)', width: 200 },
 				{ name: 'sa', text: '@(Admin)', template: '{{ if sa }}<i class="fa fa-check-square green"></i>{{ fi }}', options: [{ text: 'yes', value: true }, { text: 'no', value: false }], width: 100, align: 1 },
 				{ name: 'logged', text: '@(Logged)', align: 'center', template: '{{ logged | format(\'dd.MM.yyyy\') }}', align: 1, width: 100 },
 				{ name: 'created', text: '@(Created)', align: 'center', template: '{{ created | format(\'dd.MM.yyyy\') }}', align: 1, width: 100 }

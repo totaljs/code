@@ -6,6 +6,7 @@ MAIN.version = '1.5.0';
 // Projects
 MAIN.projects = [];
 MAIN.projectsonline = {};
+MAIN.spawns = {};
 
 // Users
 MAIN.users = [];
@@ -153,8 +154,13 @@ MAIN.changelog = function(user, project, path, removed) {
 	});
 };
 
-MAIN.send = function(msg) {
-	MAIN.ws && MAIN.ws.send(msg);
+MAIN.send = function(msg, user) {
+	if (MAIN.ws) {
+		if (user)
+			MAIN.ws.send(msg, client => client.user === user);
+		else
+			MAIN.ws.send(msg);
+	}
 };
 
 Fs.readFile(PATH.databases('users.json'), function(err, data) {

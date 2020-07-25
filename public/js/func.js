@@ -753,6 +753,32 @@ FUNC.aligntext = function(sel) {
 	return sel;
 };
 
+FUNC.requestscriptspawn = function(id, path) {
+	SETTER('loading/show');
+
+	var winid = 'w' + GUID(10);
+	AJAX('GET /api/request/{0}/?path={1}&id={2}'.format(id, encodeURIComponent(path), winid), function(response, err) {
+		SETTER('loading/hide', 100);
+
+		if (err) {
+			SETTER('message/warning', err.toString());
+			return;
+		}
+
+		var obj = {};
+		obj.id = winid;
+		obj.cachekey = 'spawn';
+		obj.offset = { x: 600, y: 400, width: 650, height: 300, minwidth: 200, minheight: 200 };
+		obj.title = '<i class="fa fa-pulse fa-spinner"></i>' + Thelpers.encode(path);
+		obj.html = '<div data---="viewbox__common.spawns.{0}__parent:.ui-windows-body;scrollbottom:1;scrollbar:1"><div class="padding"><pre data-bind="common.spawns.{0}__text:value?value.join(\'\'):\'\'" style="padding:0;margin:0;font-family:Menlo,Menlo2;font-size:14px"></pre></div></div>'.format(obj.id);
+		obj.actions = { minimize: true, maximize: true, move: true, resize: true, close: true, autosave: true };
+		obj.destroy = function() {
+			SETTER('websocket/send', { TYPE: 'x', id: winid });
+		};
+		PUSH('windows', obj);
+	});
+};
+
 FUNC.requestscript = function(id, path) {
 	SETTER('loading/show');
 	AJAX('GET /api/request/{0}/?path={1}'.format(id, encodeURIComponent(path)), function(response, err) {
