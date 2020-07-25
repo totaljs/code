@@ -326,6 +326,7 @@ header .tools .external { color: #a2a286; }
 .td .tabs .options2:hover { color: white; }
 .td .tabs .options:hover { color: white; }
 
+.tabs .livereloadindicator { position: absolute; right: 4px; font-size: 8px; top: 4px; animation: 1s uncomplete infinite forwards; }
 .tabs .preview { float: right; font-size: 20px; margin: 11px 13px 0 0; cursor: pointer; color: #4285F4; }
 .tabs .preview:hover { opacity: 0.6; }
 .td .tabs .options:hover { color: white; }

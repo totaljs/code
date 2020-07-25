@@ -1195,3 +1195,23 @@ FUNC.removecssclass = function(cls, value) {
 
 	return builder.join('\n');
 };
+
+FUNC.livereload = function() {
+	code.data && code.data.url && code.data.url.length > 3 && W.WSLIVERELOAD && W.WSLIVERELOAD.send(code.data.url.replace(/^(https|http):\/\//g, ''));
+};
+
+FUNC.livereloadconnect = function() {
+
+	if (W.WSLIVERELOAD)
+		return;
+
+	var ws = new WebSocket('wss://livereload.totaljs.com/?hostname=' + code.data.url.replace(/^(https|http):\/\//g, ''));
+	ws.onopen = function() {
+		W.WSLIVERELOAD = ws;
+	};
+	ws.onclose = function() {
+		W.WSLIVERELOAD = null;
+		if (code.data && code.data.livereload)
+			setTimeout(FUNC.livereloadconnect, 3000);
+	};
+};

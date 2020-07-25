@@ -27,6 +27,7 @@ NEWSCHEMA('Projects', function(schema) {
 	schema.define('servicemode', Boolean);
 	schema.define('resetcombo', Boolean);
 	schema.define('resettime', Boolean);
+	schema.define('allowlivereload', Boolean);
 
 	schema.setGet(function($) {
 		var item = MAIN.projects.findItem('id', $.id);
@@ -373,7 +374,7 @@ NEWSCHEMA('Projects', function(schema) {
 				users.push({ id: tmpuser.id, name: tmpuser.name, collaborator: !!(item.time ? item.time[tmpuser.id] : 0) });
 			}
 
-			$.callback({ servicemode: item.servicemode, branch: item.branch, allowbundle: item.allowbundle, review: !!PREF.token, files: files, directories: directories, url: item.url, name: item.name, icon: item.icon, repository: item.repository, id: item.id, documentation: item.documentation, support: item.support, pathsync: item.pathsync, combo: item.combo, time: item.time, todo: item.todo, users: users });
+			$.callback({ servicemode: item.servicemode, livereload: item.allowlivereload, branch: item.branch, allowbundle: item.allowbundle, review: !!PREF.token, files: files, directories: directories, url: item.url, name: item.name, icon: item.icon, repository: item.repository, id: item.id, documentation: item.documentation, support: item.support, pathsync: item.pathsync, combo: item.combo, time: item.time, todo: item.todo, users: users });
 
 		}, n => !SKIP.test(n) && (!skip || !skip.test(n)));
 	});

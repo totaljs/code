@@ -52,6 +52,7 @@
 
 		<div class="body-title">@(Total.js Code Editor v)<span data-bind="common.version__text"></span></div>
 		<section class="tabs">
+			<span class="livereloadindicator" data-bind="code.data.livereload__show" class="hidden"><i class="fa fa-circle green"></i></span>
 			<a data-bind="code.data.url__href__show" target="_blank" class="preview" title="@(Preview)"><i class="fa fa-globe"></i></a>
 			<span class="options exec hidden" data-bind="code.editor__show" data-exec="code/options_editor"><i class="fa fa-cog"></i></span>
 			<span class="options2 exec hidden" data-bind="code.editor__show" data-exec="code/branches"><i class="fa fa-code-branch"></i></span>
@@ -2273,6 +2274,12 @@
 				SET('code.data', response);
 				SET('code.tree', tree);
 
+				W.WSLIVERELOAD && W.WSLIVERELOAD.close();
+				W.WSLIVERELOAD = null;
+
+				if (response.livereload)
+					setTimeout(FUNC.livereloadconnect, 1000);
+
 				if (!skip) {
 					SET('code.editor', {});
 					SET('code.open', []);
@@ -2461,6 +2468,7 @@
 						common.electron && code.data.repository && user.localsave && exports.savelocal();
 						SETTER('loading/hide');
 						editor.diffgutterclear();
+						FUNC.livereload(data.path);
 					}));
 
 					return;
@@ -2539,6 +2547,7 @@
 					SET('code.current.lastmodified', { user: user.name, updated: new Date() });
 					data.diff.length && UPD('code.current.diff');
 					editor.diffgutterclear();
+					FUNC.livereload(data.path);
 				}));
 
 			}, 300);
