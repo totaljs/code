@@ -1197,7 +1197,16 @@ FUNC.removecssclass = function(cls, value) {
 };
 
 FUNC.livereload = function(filename) {
-	code.data && code.data.url && code.data.url.length > 3 && W.WSLIVERELOAD && W.WSLIVERELOAD.send(code.data.url.replace(/^(https|http):\/\//g, '') + (filename || ''));
+
+	var timeout = 100;
+
+	// Needs restaring of the server
+	if (filename.indexOf('/public/') === -1)
+		timeout = 2500;
+
+	code.data && code.data.url && code.data.url.length > 3 && W.WSLIVERELOAD && setTimeout2('livereload', function(filename) {
+		W.WSLIVERELOAD.send(code.data.url.replace(/^(https|http):\/\//g, '') + filename);
+	}, timeout, null, filename || '');
 };
 
 FUNC.livereloadconnect = function() {
