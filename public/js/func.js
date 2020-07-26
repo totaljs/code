@@ -1196,8 +1196,8 @@ FUNC.removecssclass = function(cls, value) {
 	return builder.join('\n');
 };
 
-FUNC.livereload = function() {
-	code.data && code.data.url && code.data.url.length > 3 && W.WSLIVERELOAD && W.WSLIVERELOAD.send(code.data.url.replace(/^(https|http):\/\//g, ''));
+FUNC.livereload = function(filename) {
+	code.data && code.data.url && code.data.url.length > 3 && W.WSLIVERELOAD && W.WSLIVERELOAD.send(code.data.url.replace(/^(https|http):\/\//g, '') + (filename || ''));
 };
 
 FUNC.livereloadconnect = function() {
