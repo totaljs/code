@@ -1603,7 +1603,7 @@
 						if (code.SYNC)
 							FUNC.warning('@(You can\'t replace all spaces to tabs in collaboration mode.)');
 						else
-							editor.editor.setValue(FUNC.spaces_to_tabs(editor.editor.getValue()));
+							editor.restore(FUNC.spaces_to_tabs(editor.editor.getValue()));
 						break;
 					case 4:
 						SET('common.form', 'backups');

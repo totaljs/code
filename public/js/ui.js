@@ -195,7 +195,7 @@ COMPONENT('editor', function(self, config) {
 			}
 		}
 
-		setTimeout2('EditorGutterColor', self.prerender_colors, 999, 20, count);
+		setTimeout2('EditorGutterColor', self.prerender_colors, 999, 20);
 	};
 
 	self.diffgutterclear = function() {
@@ -308,6 +308,7 @@ COMPONENT('editor', function(self, config) {
 
 		var shortcut = function(name) {
 			return function() {
+				EXEC(config.change, self.dom.querySelector('.cm-diff') ? 1 : 0);
 				EXEC(config.shortcut, name);
 			};
 		};
@@ -548,9 +549,9 @@ COMPONENT('editor', function(self, config) {
 
 		var allowed_modes = { totaljsresources: 1, javascript: 1, totaljs: 1, css: 1, sass: 1, html: 1, todo: 1, bash: 1, python: 1, php: 1, shell: 1, htmlmixed: 1, 'null': 1, clike: 1, yaml: 1, markdown: 1 };
 
-		self.prerender_colors = function(changescount) {
+		self.prerender_colors = function() {
 
-			config.change && EXEC(config.change, changescount || 0);
+			config.change && EXEC(config.change, self.dom.querySelector('.cm-diff') ? 1 : 0);
 
 			if (cache_diffs_checksum === checksum)
 				return;
@@ -924,8 +925,9 @@ COMPONENT('editor', function(self, config) {
 		editor.on('change', function(a, b) {
 
 			if (b.origin === 'setValue') {
-				if (!cache_lines_skip)
+				if (!cache_lines_skip) {
 					cache_lines = editor.getValue().split('\n');
+				}
 			} else {
 
 				if (code.SYNC) {
@@ -981,7 +983,7 @@ COMPONENT('editor', function(self, config) {
 					combo && combo();
 			}
 
-			setTimeout2('EditorGutterColor', self.prerender_colors, 999, 20, count);
+			setTimeout2('EditorGutterColor', self.prerender_colors, 999, 20);
 
 			if (count)
 				setTimeout2('EditorLineChange' + lf, self.rebuild_autocomplete2, 1000, null, lf);
@@ -1060,10 +1062,14 @@ COMPONENT('editor', function(self, config) {
 		delete doc.cacheddiffs;
 		delete doc.cachediffshighlight;
 
-		editor.swapDoc(doc);
 		cache_lines_skip = true;
+		editor.swapDoc(doc);
 		editor.refresh();
-		cache_lines_skip = false;
+
+		setTimeout(function() {
+			cache_lines_skip = false;
+		}, 100);
+
 		checksum = -1;
 
 		if (!cache_lines)
@@ -1087,15 +1093,17 @@ COMPONENT('editor', function(self, config) {
 		}
 
 		autocomplete_unique = null;
-		setTimeout2('EditorGutterColor', self.prerender_colors, 500, 20, changes);
+		setTimeout2('EditorGutterColor', self.prerender_colors, 500, 20);
 		setTimeout2('EditorRebuild', self.rebuild_autocomplete, 500);
 	};
 
 	self.clear = function(content) {
 		SET('code.colorpalette', EMPTYARRAY);
 		SET('code.fileversion');
+		cache_lines_skip = true;
 		content && editor.setValue('');
 		editor.clearHistory();
+		cache_lines_skip = false;
 	};
 
 	self.setter = function(value, path, type) {
@@ -1111,6 +1119,7 @@ COMPONENT('editor', function(self, config) {
 		markers = {};
 		NUL('code.fileversion');
 		SET('code.colorpalette', EMPTYARRAY);
+
 		editor.setValue(value || '');
 		editor.refresh();
 
@@ -1127,14 +1136,14 @@ COMPONENT('editor', function(self, config) {
 		}, 2000);
 
 		checksum = -1;
-		setTimeout2('EditorGutterColor', self.prerender_colors, 999, 20, 0);
+		setTimeout2('EditorGutterColor', self.prerender_colors, 999, 20);
 		self.resize();
 	};
 
 	self.flush = function() {
 		clearTimeout2('EditorGutterColor');
 		checksum = -1;
-		self.prerender_colors(0);
+		self.prerender_colors();
 	};
 
 	self.state = function(type) {
