@@ -1201,7 +1201,7 @@ FUNC.livereload = function(filename) {
 	var timeout = 100;
 
 	// Needs restaring of the server
-	if ((/\/(public|views)\//gi).test(filename))
+	if (!(/\/(public|views)\//gi).test(filename))
 		timeout = 2500;
 
 	code.data && code.data.url && code.data.url.length > 3 && W.WSLIVERELOAD && setTimeout2('livereload', function(filename) {
