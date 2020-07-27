@@ -1187,7 +1187,7 @@ FUNC.removecssclass = function(cls, value) {
 		}
 
 		if (upd.length)
-			builder.push(upd.join('') + ' ' + line.substring(index));
+			builder.push(upd.join(', ') + ' ' + line.substring(index));
 
 		if (builder[builder.length - 1] === '')
 			builder.pop();

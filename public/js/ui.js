@@ -181,13 +181,21 @@ COMPONENT('editor', function(self, config) {
 		var current = editor.getValue().split('\n');
 		var lines = value.split('\n');
 
+		cache_lines_skip = true;
 		editor.setValue(value);
 		self.diffgutterclear();
+		cache_lines_skip = false;
+
+		var count = 0;
 
 		for (var i = 0; i < lines.length; i++) {
-			if (lines[i] !== current[i])
+			if (lines[i] !== current[i]) {
+				count++;
 				self.diffgutter(i);
+			}
 		}
+
+		setTimeout2('EditorGutterColor', self.prerender_colors, 999, 20, count);
 	};
 
 	self.diffgutterclear = function() {

@@ -1147,13 +1147,12 @@
 			// cache
 			if (type === 1 && code.editor.body && code.current) {
 				setTimeout2('code.modified', function() {
-
 					if (!code.current)
 						return;
 
-					var diffel = editor.find('.cm-diff:first-child');
+					var diffel = editor.dom.querySelector('.cm-diff');
 					var is = 0;
-					if (diffel.length) {
+					if (diffel) {
 						exports.cache_set();
 						if (!code.current.modified) {
 							code.current.modified = true;
@@ -1163,6 +1162,7 @@
 						code.current.modified = false;
 						is = 2;
 					}
+
 					is && exports.element.find('section.tabs').find('span[data-value="{0}"]'.format(code.current.path)).tclass('modified', is === 1);
 					exports.tablocked();
 				}, 250);
