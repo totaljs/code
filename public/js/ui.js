@@ -1051,8 +1051,6 @@ COMPONENT('editor', function(self, config) {
 
 	self.paste = function(doc) {
 
-		editor.execCommand('clearSearch');
-
 		cache_lines = doc.cachedlines || editor.getValue().split('\n');
 		cache_diffs = doc.cacheddiffs || {};
 		cache_diffs_highlight = doc.cachediffshighlight || {};
@@ -1072,18 +1070,25 @@ COMPONENT('editor', function(self, config) {
 
 		checksum = -1;
 
+		if ($('.search').find('input').val()) {
+			editor.execCommand('findPersistentNext');
+			editor.execCommand('countMatches');
+		} else {
+			setTimeout(function() {
+				editor.execCommand('clearSearch');
+				editor.execCommand('clearMatches');
+			}, 200);
+		}
+
 		if (!cache_lines)
 			return;
 
 		var keys;
 
-		var changes = 0;
 		if (cache_diffs) {
 			keys = Object.keys(cache_diffs);
-			for (var i = 0; i < keys.length; i++) {
+			for (var i = 0; i < keys.length; i++)
 				self.diffgutter(+keys[i], null, true, false);
-				changes++;
-			}
 		}
 
 		if (cache_diffs_highlight) {

@@ -45,24 +45,26 @@ hr { border-color: #E0E0E0; }
 .panelsearch { height: 27px; }
 
 .search { height: 28px; border-bottom: 1px solid #E0E0E0; font-size: 12px; }
-.search > span { width: 74px; border-right: 1px solid #E0E0E0; float: left; line-height: 28px; text-align: center; color: #A0A0A0; }
-.search > span i { margin-right: 5px; }
-.search > div { margin: 0 75px; }
-.search > div input { width: 100%; height: 27px; border: 0; padding: 0 5px; margin: 0; outline: 0; color: #000000; font-weight: bold; }
+.search .count { float: right; width: 40px; line-height: 27px; text-align: right; margin-right: 10px; color: #E62222; font-weight: bold; }
+.search > .label { width: 74px; border-right: 1px solid #E0E0E0; float: left; line-height: 28px; text-align: center; color: #A0A0A0; }
+.search > .label i { margin-right: 5px; }
+.search > div { margin: 0 130px 0 75px; }
+.search > div input { width: 100%; height: 27px; border: 0; padding: 0 5px; margin: 0; outline: 0; color: #000000; }
+.search .is { font-weight: bold; }
 .search > nav { float: right; }
 .search > nav button { width: 24px; height: 27px; outline: 0; background-color: white; border: 0; font-size: 11px; border-left: 1px solid #E0E0E0; border-radius: 0; }
 .search > nav button:hover { background-color: #F8F8F8; }
 .search > nav button:disabled { color: #C0C0C0;  background-color: white; }
-.td .search > span { width: 73px; }
+.td .search > .label { width: 73px; }
 /*.codepanel .search { margin-right: 350px; }*/
 
 .td .search { border-bottom-color: #404040; background-color: #303030; }
-.td .search > span { border-right-color: #404040; color: #777777; border-bottom: 1px solid #404040; line-height: 27px; }
+.td .search > .label { border-right-color: #404040; color: #777777; border-bottom: 1px solid #404040; line-height: 27px; }
 .td .search > div input { background-color: #303030; color: white; }
 .td .search > nav button { background-color: #303030; color: white; border-left-color: #404040; }
 .td .search > nav button:hover { background-color: #353535; }
 .td .search > nav button:disabled { color: #505050; background-color: #303030; }
-
+.td .search .count { color: #F5F352; }
 /*
 .bbfooter { position: absolute; bottom: 0; border-bottom: 1px solid #E0E0E0; height: 1px; left: 1px; right: 1px; z-index: 10; }
 .td .bbfooter { border-bottom-color: #303030; }*/

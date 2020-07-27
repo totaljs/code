@@ -64,12 +64,13 @@
 		</section>
 		<div data-bind="code.editor.path__visible" class="invisible">
 			<div class="search">
-				<span><i class="fa fa-search"></i>@(Search)</span>
+				<span class="label"><i class="fa fa-search"></i>@(Search)</span>
 				<nav>
 					<button class="search-cancel hidden" name="clear" title="@(Clear search)"><i class="fa fa-times red"></i></button>
 					<button class="search-op" name="prev" disabled="disabled" title="@(Previous result)"><i class="fa fa-angle-up"></i></button>
 					<button class="search-op" name="next" disabled="disabled" title="@(Next result)"><i class="fa fa-angle-down"></i></button>
 				</nav>
+				<span class="count hidden"></span>
 				<div><input type="text" maxlength="100" placeholder="@(Type to search and press enter)" /></div>
 			</div>
 		</div>

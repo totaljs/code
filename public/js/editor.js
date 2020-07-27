@@ -489,6 +489,19 @@ WAIT('CodeMirror.defineMode', function() {
 		trim: true
 	};
 
+	var countel = null;
+
+	function refreshcount() {
+		if (!countel)
+			countel = $('.search').find('.count');
+		setTimeout2(defaults.style, function() {
+			if (countel) {
+				var tmp = document.querySelectorAll('.cm-matchhighlight').length;
+				countel.text(tmp + 'x').tclass('hidden', !tmp);
+			}
+		}, 100);
+	}
+
 	function State(options) {
 		this.options = {};
 		for (var name in defaults)
@@ -558,6 +571,7 @@ WAIT('CodeMirror.defineMode', function() {
 				state.matchesonscroll.clear();
 				state.matchesonscroll = null;
 			}
+			refreshcount();
 		}
 	}
 
@@ -593,6 +607,7 @@ WAIT('CodeMirror.defineMode', function() {
 			if (selection.length >= state.options.minChars)
 				addOverlay(cm, selection, false, state.options.style);
 		});
+		refreshcount();
 	}
 
 	function isWord(cm, from, to) {
@@ -627,6 +642,9 @@ WAIT('CodeMirror.defineMode', function() {
 			stream.skipTo(query.charAt(0)) || stream.skipToEnd();
 		}};
 	}
+
+	CodeMirror.commands.countMatches = function(cm) { refreshcount(); };
+	CodeMirror.commands.clearMatches = function(cm) { removeOverlay(cm); };
 });
 
 (function(mod) {
@@ -3131,26 +3149,6 @@ https://twitter.com/JoelBesada/status/670343885655293952
 		return cm.getSearchCursor(query, pos, { caseFold: queryCaseInsensitive(query), multiline: true });
 	}
 
-	function persistentDialog(cm, text, deflt, onEnter, onKeyDown) {
-		cm.openDialog(text, onEnter, { value: deflt, selectValueOnOpen: true, closeOnEnter: false, onKeyDown: onKeyDown, onClose: function() {
-			clearSearch(cm);
-		}});
-	}
-
-	function dialog(cm, text, shortText, deflt, f) {
-		if (cm.openDialog)
-			cm.openDialog(text, f, {value: deflt, selectValueOnOpen: true});
-		else
-			f(prompt(shortText, deflt));
-	}
-
-	function confirmDialog(cm, text, shortText, fs) {
-		if (cm.openConfirm)
-			cm.openConfirm(text, fs);
-		else if (confirm(shortText))
-			fs[0]();
-	}
-
 	function parseString(string) {
 		return string.replace(/\\([nrt\\])/g, function(match, ch) {
 			if (ch == 'n') return '\n';
@@ -3191,63 +3189,10 @@ https://twitter.com/JoelBesada/status/670343885655293952
 		}
 	}
 
-	function doSearch(cm, rev, persistent, immediate) {
+	function doSearch(cm, rev) {
 		var state = getSearchState(cm);
 		if (state.query)
 			return findNext(cm, rev);
-
-		/*
-		var q = cm.getSelection() || state.lastQuery;
-		if (q instanceof RegExp && q.source == 'x^')
-			q = null;
-		if (persistent && cm.openDialog) {
-			var hiding = null;
-			var searchNext = function(query, event) {
-				CodeMirror.e_stop(event);
-				if (!query)
-					return;
-				if (query != state.queryText) {
-					startSearch(cm, state, query);
-					state.posFrom = state.posTo = cm.getCursor();
-				}
-				if (hiding)
-					hiding.style.opacity = 1;
-
-				findNext(cm, event.shiftKey, function(_, to) {
-					var dialog;
-					if (to.line < 3 && document.querySelector && (dialog = cm.display.wrapper.querySelector('.CodeMirror-dialog')) && dialog.getBoundingClientRect().bottom - 4 > cm.cursorCoords(to, 'window').top)
-						(hiding = dialog).style.opacity = .4;
-				});
-			};
-
-			persistentDialog(cm, getQueryDialog(cm), q, searchNext, function(event, query) {
-				var keyName = CodeMirror.keyName(event);
-				var extra = cm.getOption('extraKeys'), cmd = (extra && extra[keyName]) || CodeMirror.keyMap[cm.getOption('keyMap')][keyName];
-				if (cmd == 'findNext' || cmd == 'findPrev' || cmd == 'findPersistentNext' || cmd == 'findPersistentPrev') {
-					CodeMirror.e_stop(event);
-					startSearch(cm, getSearchState(cm), query);
-					cm.execCommand(cmd);
-				} else if (cmd == 'find' || cmd == 'findPersistent') {
-					CodeMirror.e_stop(event);
-					searchNext(query, event);
-				}
-			});
-
-			if (immediate && q) {
-				startSearch(cm, state, q);
-				findNext(cm, rev);
-			}
-
-		} else {
-			dialog(cm, getQueryDialog(cm), 'Search for:', q, function(query) {
-				if (query && !state.query)
-					cm.operation(function() {
-						startSearch(cm, state, query);
-						state.posFrom = state.posTo = cm.getCursor();
-						findNext(cm, rev);
-					});
-			});
-		}*/
 	}
 
 	function findNext(cm, rev, callback) {
@@ -3277,6 +3222,7 @@ https://twitter.com/JoelBesada/status/670343885655293952
 				return;
 			state.query = state.queryText = null;
 			var search = $('.search');
+			search.find('input').val('').rclass('is');
 			search.find('.search-op').prop('disabled', true);
 			search.find('.search-cancel').tclass('hidden', true);
 			cm.removeOverlay(state.overlay);
@@ -3287,85 +3233,21 @@ https://twitter.com/JoelBesada/status/670343885655293952
 		});
 	}
 
-	function getQueryDialog(cm)  {
-		return '<span class="CodeMirror-search-label">' + cm.phrase('Search:') + '</span> <input type="text" style="width: 10em" class="CodeMirror-search-field"/> <span style="color: #888" class="CodeMirror-search-hint">' + cm.phrase('(Use /re/ syntax for regexp search)') + '</span>';
-	}
-
-	function getReplaceQueryDialog(cm) {
-		return ' <input type="text" style="width: 10em" class="CodeMirror-search-field"/> <span style="color: #888" class="CodeMirror-search-hint">' + cm.phrase('(Use /re/ syntax for regexp search)') + '</span>';
-	}
-
-	function getReplacementQueryDialog(cm) {
-		return '<span class="CodeMirror-search-label">' + cm.phrase('With:') + '</span> <input type="text" style="width: 10em" class="CodeMirror-search-field"/>';
-	}
-
-	function getDoReplaceConfirm(cm) {
-		return '<span class="CodeMirror-search-label">' + cm.phrase('Replace?') + '</span> <button>' + cm.phrase('Yes') + '</button> <button>' + cm.phrase('No') + '</button> <button>' + cm.phrase('All') + '</button> <button>' + cm.phrase('Stop') + '</button>';
-	}
-
-	function replaceAll(cm, query, text) {
-		cm.operation(function() {
-			for (var cursor = getSearchCursor(cm, query); cursor.findNext();) {
-				if (typeof(query) != 'string') {
-					var match = cm.getRange(cursor.from(), cursor.to()).match(query);
-					cursor.replace(text.replace(/\$(\d)/g, function(_, i) {
-						return match[i];
-					}));
-				} else
-					cursor.replace(text);
-			}
-		});
-	}
-
-	function replace(cm, all) {
-		if (cm.getOption('readOnly'))
-			return;
-		var query = cm.getSelection() || getSearchState(cm).lastQuery;
-		var dialogText = '<span class="CodeMirror-search-label">' + (all ? cm.phrase('Replace all:') : cm.phrase('Replace:')) + '</span>';
-		dialog(cm, dialogText + getReplaceQueryDialog(cm), dialogText, query, function(query) {
-			if (!query)
-				return;
-			query = parseQuery(query);
-			dialog(cm, getReplacementQueryDialog(cm), cm.phrase('Replace with:'), '', function(text) {
-				text = parseString(text);
-				if (all) {
-					replaceAll(cm, query, text);
-				} else {
-					clearSearch(cm);
-					var cursor = getSearchCursor(cm, query, cm.getCursor('from'));
-					var advance = function() {
-						var start = cursor.from(), match;
-						if (!(match = cursor.findNext())) {
-							cursor = getSearchCursor(cm, query);
-							if (!(match = cursor.findNext()) || (start && cursor.from().line == start.line && cursor.from().ch == start.ch))
-								return;
-						}
-						cm.setSelection(cursor.from(), cursor.to());
-						cm.scrollIntoView({from: cursor.from(), to: cursor.to()});
-						confirmDialog(cm, getDoReplaceConfirm(cm), cm.phrase('Replace?'), [function() {doReplace(match);}, advance, function() {
-							replaceAll(cm, query, text);
-						}]);
-					};
-					var doReplace = function(match) {
-						cursor.replace(typeof query == 'string' ? text : text.replace(/\$(\d)/g, function(_, i) {
-							return match[i];
-						}));
-						advance();
-					};
-					advance();
-				}
-			});
-		});
-	}
-
 	FIND('editor', function(com) {
 		var cm = com.editor;
 		var el = $('.search');
+		var input = el.find('input');
 
 		var state = function(t) {
-			el.find('.search-op').prop('disabled', !t.value);
-			el.find('.search-cancel').tclass('hidden', !t.value);
+			var is = !!t.value;
+			input.tclass('is', is);
+			el.find('.search-op').prop('disabled', !is);
+			el.find('.search-cancel').tclass('hidden', !is);
 		};
+
+		input.on('focus blur', function(e) {
+			input.tclass('b', e.type === 'focus');
+		});
 
 		el.on('click', 'button', function() {
 			var t = this;
@@ -3419,6 +3301,4 @@ https://twitter.com/JoelBesada/status/670343885655293952
 	CodeMirror.commands.findNext = doSearch;
 	CodeMirror.commands.findPrev = function(cm) { doSearch(cm, true); };
 	CodeMirror.commands.clearSearch = clearSearch;
-	CodeMirror.commands.replace = replace;
-	CodeMirror.commands.replaceAll = function(cm) { replace(cm, true); };
 });
