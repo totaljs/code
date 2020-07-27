@@ -614,7 +614,7 @@
 			var tools = [];
 			var tmp;
 
-			if ((/\/scripts\/|\.sh$/g).test(code.current.path))
+			if ((/\/scripts\/|\.sh$/g).test(code.current.path) || (code.data.servicemode && (code.current.ext === 'js' || code.current.ext === 'sh')))
 				items.push({ name: '@(Run script)', icon: 'play-circle red', value: 'run', classname: 'b', shortcut: (common.ismac ? 'CMD' : 'CTRL') + '+B' });
 
 			if (can) {
@@ -1664,7 +1664,7 @@
 						break;
 					case 98:
 						var cursor = editor.editor.getCursor(true);
-						editor.editor.setValue(FUNC.removecssclass('.ui-dark', editor.editor.getValue()));
+						editor.restore(FUNC.removecssclass('.ui-dark', editor.editor.getValue()));
 						editor.editor.setCursor(cursor, 200);
 						editor.editor.focus();
 						break;
