@@ -908,8 +908,8 @@
 				}
 
 				if (value.value === 'run') {
-					if ((/\/scripts\/|\.sh$/g).test(code.current.path))
-						FUNC.requestscript(code.data.id, code.current.path);
+					if ((/\/scripts\/|\.sh$/g).test(code.current.path) || (code.data.servicemode && (code.current.ext === 'js' || code.current.ext === 'sh')))
+						FUNC.requestscriptspawn(code.data.id, code.current.path);
 					else
 						FUNC.request(text, editor.getValue());
 					return;
