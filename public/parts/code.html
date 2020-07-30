@@ -1263,27 +1263,17 @@
 
 					var sel = EDITOR.editor.listSelections()[0];
 					var plus = type === 'swaplineup' ? -1 : 1;
-					var linefrom = sel.head.line < sel.anchor.line ? sel.head.line : sel.anchor.line;
-					var lineto = sel.head.line > sel.anchor.line ? sel.head.line : sel.anchor.line;
 
-					if (sel.anchor.line !== sel.head.line) {
+					var cfrom = EDITOR.editor.getCursor(true);
+					var cto = EDITOR.editor.getCursor(false);
 
-						var is = sel.anchor.ch === sel.head.ch && sel.anchor.line !== sel.head.line;
-						// console.log(is);
+					if (cto.sticky === 'after')
+						cto.line--;
 
-						if (plus === 1) {
-							if (sel.head.sticky === 'after') {
-								EDITOR.editor.setSelection({ line: sel.anchor.line, ch: 0 }, { line: sel.head.line - 1 });
-								sel = EDITOR.editor.listSelections()[0];
-							}
-						} else {
-							if (sel.head.sticky === 'before')
-								EDITOR.editor.setSelection({ line: linefrom, ch: 0 }, { line: lineto });
-						}
-					}
+					var linefrom = cfrom.line;
+					var lineto = cto.line;
 
-					linefrom = sel.head.line < sel.anchor.line ? sel.head.line : sel.anchor.line;
-					lineto = sel.head.line > sel.anchor.line ? sel.head.line : sel.anchor.line;
+					EDITOR.editor.setSelection({ ch: 0, line: linefrom }, { line: lineto });
 
 					if (plus === -1 && (linefrom - 1) < 0)
 						return;

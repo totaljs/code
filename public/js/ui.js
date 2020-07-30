@@ -1076,6 +1076,10 @@ COMPONENT('editor', function(self, config) {
 			}, 200);
 		}
 
+		setTimeout(function() {
+			EXEC(config.change, self.dom.querySelector('.cm-diff') ? 1 : 0);
+		}, 50);
+
 		if (!cache_lines)
 			return;
 
