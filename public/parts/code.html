@@ -1267,16 +1267,18 @@
 					var lineto = sel.head.line > sel.anchor.line ? sel.head.line : sel.anchor.line;
 
 					if (sel.anchor.line !== sel.head.line) {
+
+						var is = sel.anchor.ch === sel.head.ch && sel.anchor.line !== sel.head.line;
+						// console.log(is);
+
 						if (plus === 1) {
 							if (sel.head.sticky === 'after') {
 								EDITOR.editor.setSelection({ line: sel.anchor.line, ch: 0 }, { line: sel.head.line - 1 });
 								sel = EDITOR.editor.listSelections()[0];
 							}
 						} else {
-							if (sel.head.sticky === 'before') {
+							if (sel.head.sticky === 'before')
 								EDITOR.editor.setSelection({ line: linefrom, ch: 0 }, { line: lineto });
-								sel = EDITOR.editor.listSelections()[0];
-							}
 						}
 					}
 
