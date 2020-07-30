@@ -186,13 +186,9 @@ COMPONENT('editor', function(self, config) {
 		self.diffgutterclear();
 		cache_lines_skip = false;
 
-		var count = 0;
-
 		for (var i = 0; i < lines.length; i++) {
-			if (lines[i] !== current[i]) {
-				count++;
+			if (lines[i] !== current[i])
 				self.diffgutter(i);
-			}
 		}
 
 		setTimeout2('EditorGutterColor', self.prerender_colors, 999, 20);
@@ -452,7 +448,7 @@ COMPONENT('editor', function(self, config) {
 		options.showCursorWhenSelecting = true;
 		options.blastCode = true;
 		options.autoCloseBrackets = true;
-		options.extraKeys = { 'Alt-F': 'findPersistent', 'Alt-Enter': adddate, 'Ctrl-Enter': findnext, 'Ctrl--': comment, 'Cmd--': comment, 'Cmd-Enter': findnext, 'Esc': clearsearch, 'Cmd-D': findmatch, 'Ctrl-D': findmatch, 'Cmd-S': shortcut('save'), 'Ctrl-S': shortcut('save'), 'Alt-W': shortcut('close'), 'Cmd-W': shortcut('close'), Enter: 'newlineAndIndentContinue', Tab: tabulator, 'Alt-Tab': shortcut('nexttab') };
+		options.extraKeys = { 'Alt-F': 'findPersistent', 'Alt-Enter': adddate, 'Ctrl-Enter': findnext, 'Ctrl--': comment, 'Cmd--': comment, 'Cmd-Enter': findnext, 'Esc': clearsearch, 'Cmd-D': findmatch, 'Ctrl-D': findmatch, 'Cmd-S': shortcut('save'), 'Ctrl-S': shortcut('save'), 'Alt-W': shortcut('close'), 'Cmd-W': shortcut('close'), Enter: 'newlineAndIndentContinue', Tab: tabulator, 'Alt-Tab': shortcut('nexttab'), 'Alt-Up': shortcut('swaplineup'), 'Alt-Down': shortcut('swaplinedown') };
 
 		if (common.electron) {
 			options.extraKeys['Cmd-Tab'] = shortcut('nexttab');

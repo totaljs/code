@@ -1258,6 +1258,51 @@
 				case 'close':
 					setTimeout2('closetab', exports.close, 200);
 					break;
+				case 'swaplineup':
+				case 'swaplinedown':
+
+					var sel = EDITOR.editor.listSelections()[0];
+					var plus = type === 'swaplineup' ? -1 : 1;
+					var linefrom = sel.head.line < sel.anchor.line ? sel.head.line : sel.anchor.line;
+					var lineto = sel.head.line > sel.anchor.line ? sel.head.line : sel.anchor.line;
+
+					if (sel.anchor.line !== sel.head.line) {
+						if (plus === 1) {
+							if (sel.head.sticky === 'after') {
+								EDITOR.editor.setSelection({ line: sel.anchor.line, ch: 0 }, { line: sel.head.line - 1 });
+								sel = EDITOR.editor.listSelections()[0];
+							}
+						} else {
+							if (sel.head.sticky === 'before') {
+								EDITOR.editor.setSelection({ line: linefrom, ch: 0 }, { line: lineto });
+								sel = EDITOR.editor.listSelections()[0];
+							}
+						}
+					}
+
+					linefrom = sel.head.line < sel.anchor.line ? sel.head.line : sel.anchor.line;
+					lineto = sel.head.line > sel.anchor.line ? sel.head.line : sel.anchor.line;
+
+					if (plus === -1 && (linefrom - 1) < 0)
+						return;
+
+					if (plus === 1 && (lineto + 1) >= EDITOR.editor.lineCount())
+						return;
+
+					var selection = EDITOR.editor.getSelection();
+					if (!selection)
+						selection = EDITOR.editor.getLine(linefrom);
+
+					if (plus === 1) {
+						EDITOR.editor.replaceRange(EDITOR.editor.getLine(lineto + plus), { ch: 0, line: linefrom }, { line: lineto });
+						EDITOR.editor.replaceRange(selection, { ch: 0, line: linefrom + plus }, { line: linefrom + plus });
+					} else {
+						EDITOR.editor.replaceRange(EDITOR.editor.getLine(linefrom + plus), { ch: 0, line: linefrom }, { line: lineto });
+						EDITOR.editor.replaceRange(selection, { ch: 0, line: linefrom + plus }, { line: linefrom + plus });
+					}
+
+					EDITOR.editor.setSelection({ ch: 0, line: linefrom + plus }, { line: lineto + plus });
+					break;
 			}
 		};
 
