@@ -3,11 +3,6 @@ f /*auto*/
 $font     : Arial;
 $color    : #4285F4;
 
-@font-face {
-	font-family: 'Menlo2';
-	src: url('../webfonts/menlo.woff2') format('woff2'), url('../webfonts/menlo.woff') format('woff'), url('../webfonts/menlo.ttf') format('truetype');
-}
-
 .fa,.fab,.fad,.fal,.far,.fas { -webkit-transform:none !important; }
 
 html,body { margin: 0; padding: 0; overflow: hidden; }
@@ -69,7 +64,7 @@ hr { border-color: #E0E0E0; }
 .bbfooter { position: absolute; bottom: 0; border-bottom: 1px solid #E0E0E0; height: 1px; left: 1px; right: 1px; z-index: 10; }
 .td .bbfooter { border-bottom-color: #303030; }*/
 
-#clipboardbody  { width: 100%; height: 100%; outline: 0; background-color: transparent; border: 0; font-family: Menlo,Menlo2,Consolas,monospace; padding: 10px; margin: 0; color: #000000; resize: none; }
+#clipboardbody  { width: 100%; height: 100%; outline: 0; background-color: transparent; border: 0; font-family: Menlo,Menlo2; padding: 10px; margin: 0; color: #000000; resize: none; }
 .td #clipboardbody { color: white; }
 
 .timespent-date { font-size: 18px; color: #000000; margin-bottom: 20px; }
@@ -103,7 +98,7 @@ hr { border-color: #E0E0E0; }
 .td #combo { color: white; }
 .td .timespent hr { border-color: #303030; border-top-width: 4px; }
 
-.realtimewindowbody { white-space: pre-wrap; font-family: Menlo,Menlo2,Consolas,monospace; color: #000000; font-size: 11px; margin-right: 40px; padding: 10px 30px 10px 10px; overflow: hidden; }
+.realtimewindowbody { white-space: pre-wrap; font-family: Menlo,Menlo2; color: #000000; font-size: 11px; margin-right: 40px; padding: 10px 30px 10px 10px; overflow: hidden; }
 .td .realtimewindowbody { color: white; }
 
 .centered { width: 100%; display: table; }
@@ -144,7 +139,7 @@ h3 i { margin-right: 5px; color: $color; }
 
 .h { font-size: 20px; color: white; height: 50px; line-height: 50px; font-weight: bold; border-bottom: 1px solid #303030; margin-bottom: 10px; }
 .h i { margin-right: 8px; }
-.timespent pre { font-family: Menlo,Menlo2,Consolas,monospace; font-size: 14px; color: #C0C0C0; }
+.timespent pre { font-family: Menlo,Menlo2; font-size: 14px; color: #C0C0C0; }
 .timespent pre b { color: yellow; }
 
 .m { margin-bottom: 20px; }
@@ -649,7 +644,7 @@ header .tools .external { color: #a2a286; }
 .todocurrent { background-color: #FFFFD5; padding: 5px 0; }
 .td .todocurrent { background-color: #303030; }
 
-.monospace { font-family: Menlo,Menlo2,Consolas,monospace; }
+.monospace { font-family: Menlo, Menlo2; }
 .todolist { padding: 5px 0; }
 .todolist i { margin-right: 5px; }
 .todo { padding: 0 10px; color: gray; border-top: 1px solid #E0E0E0; font-size: 12px; cursor: pointer; height: 24px; line-height: 24px; }
@@ -718,7 +713,7 @@ header .tools .external { color: #a2a286; }
 
 .output-response pre { padding: 0 10px; border-radius: 2px; cursor: text; color: #000000; tab-size: 2; overflow: hidden; }
 .td .output-response pre { color: white; }
-.output-response { font-size: 12px; font-family: Menlo,Menlo2,Consolas,monospace; }
+.output-response { font-size: 12px; font-family: Menlo, Menlo2; }
 .output-response-caption { font-weight: bold; margin-bottom: 10px; font-size: 11px; color: white; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; color: #c678dd; border: 1px solid #c678dd; background-color: rgba(198,120,221,0.1); padding: 3px 5px; border-radius: 2px; }
 .output-response-header { font-weight: bold; color: #000000; font-size: 11px; }
 .output-response-header-value { font-size: 10px; margin: 2px 0 5px; color: gray; line-height: 12px; word-wrap: break-word; border-bottom: 1px dotted #404040; padding-bottom: 5px; }

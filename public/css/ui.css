@@ -1,6 +1,14 @@
 /*auto*/
 /* UI uses components on componentator.com CDN */
 
+@font-face {
+	font-family: 'Menlo2';
+	font-style: normal;
+	font-weight: normal;
+	font-display: auto;
+	src: url('../webfonts/menlo.woff2') format('woff2'), url('../webfonts/menlo.woff') format('woff'), url('../webfonts/menlo.ttf') format('truetype');
+}
+
 button { outline: 0; }
 
 .ui-disabled .ui-editor { cursor: not-allowed; }
