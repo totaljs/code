@@ -1237,7 +1237,16 @@ COMPONENT('editor', function(self, config) {
 						var t = item.items[j].type;
 						if (t !== 'schema' && t !== 'route') {
 							var n = item.items[j].name;
-							autocomplete.push({ html: '<i class="' + Thelpers.particon(item.items[j].type) + '"></i> <b>' + n + '</b>', search: n, code: n });
+							var c = n;
+
+							if (t === 'plugin') {
+								n = c = c.replace('.', '/');
+								var tmp = c.lastIndexOf('(');
+								if (tmp !== -1)
+									c = c.substring(0, tmp);
+							}
+
+							autocomplete.push({ html: '<i class="' + Thelpers.particon(item.items[j].type) + '"></i> <b>' + n + '</b>', search: n, code: c });
 						}
 					}
 				}
