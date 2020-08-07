@@ -561,6 +561,7 @@ COMPONENT('editor', function(self, config) {
 			var name, type, oldschema, oldplugin, pluginvariable, oldtask, taskvariable, tmp;
 			var val = editor.getValue();
 			var version = '';
+			var version_file = '';
 
 			if (allowed_modes[mode]) {
 				var lines = val.split('\n');
@@ -584,7 +585,10 @@ COMPONENT('editor', function(self, config) {
 						m = line.match(REGVERSION);
 						if (m) {
 							version = m.toString().replace(/(version|\s|"|'|=|:)+/g, '').replace(/(,|\.|-|"|')$/,'').trim();
-							version && components.push({ line: i, ch: m.index || 0, name: version, type: 'version' });
+							if (version && (/\d/g).test(version)) {
+								version_file = version;
+								components.push({ line: i, ch: m.index || 0, name: version, type: 'version' });
+							}
 						}
 					}
 
@@ -755,7 +759,7 @@ COMPONENT('editor', function(self, config) {
 
 			EXEC(config.components, components);
 			EXEC(config.todo, todos);
-			SET('code.fileversion', version);
+			SET('code.fileversion', version_file);
 			setTimeout2(self.ID + 'colorpalette', self.refreshcolorpaletter, 1000);
 		};
 
