@@ -1167,6 +1167,7 @@ FUNC.removecssclass = function(cls, value) {
 
 	var lines = value.split('\n');
 	var builder = [];
+	var regwhite = (/\s$/);
 
 	for (var i = 0; i < lines.length; i++) {
 		var line = lines[i];
@@ -1177,17 +1178,31 @@ FUNC.removecssclass = function(cls, value) {
 			continue;
 		}
 
-		var sel = line.substring(0, index).split(',').trim();
+		var selectors = line.substring(0, index);
+		var plus = '';
+
+		for (var j = 0; j < selectors.length; j++) {
+			var c = selectors.charAt(j);
+			if (c === '\t')
+				plus += c;
+			else
+				break;
+		}
+
+		var sel = selectors.split(',');
 		var upd = [];
 
 		for (var j = 0; j < sel.length; j++) {
 			var item = sel[j];
-			if (item.indexOf(cls) === -1)
-				upd.push(item);
+			var trimmed = item.trim();
+			if (trimmed.indexOf(cls) === -1)
+				upd.push(trimmed);
 		}
 
-		if (upd.length)
-			builder.push(upd.join(', ') + ' ' + line.substring(index));
+		if (upd.length) {
+			var tmp = plus + upd.join(', ');
+			builder.push(tmp + (regwhite.test(tmp) ? '' : ' ') + line.substring(index).trim());
+		}
 
 		if (builder[builder.length - 1] === '')
 			builder.pop();
