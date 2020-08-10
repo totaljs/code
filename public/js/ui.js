@@ -558,7 +558,7 @@ COMPONENT('editor', function(self, config) {
 			var components = [];
 			var mode = editor.getMode().name;
 			var is = null;
-			var name, type, oldschema, oldplugin, pluginvariable, oldtask, taskvariable, tmp, oldcommand;
+			var name, type, oldschema, oldplugin, pluginvariable, oldtask, taskvariable, tmp;
 			var val = editor.getValue();
 			var version = '';
 			var version_file = '';
@@ -584,7 +584,7 @@ COMPONENT('editor', function(self, config) {
 					if (line && mode !== 'css') {
 						m = line.match(REGVERSION);
 						if (m) {
-							version = m.toString().replace(/(version|\s|"|'|=|:)+/g, '').replace(/(,|\.|-|"|')$/,'').trim();
+							version = m.toString().replace(/(version|\s|"|'|=|:)+/g, '').replace(/[^\d,.]+/g, '').replace(/(,|\.|-|"|')$/,'').trim();
 							if (version && (/\d/g).test(version)) {
 								version_file = version;
 								components.push({ line: i, ch: m.index || 0, name: version, type: 'version' });
@@ -622,9 +622,6 @@ COMPONENT('editor', function(self, config) {
 								switch(type) {
 									case 'newsc':
 										oldschema = name;
-										break;
-									case 'newco':
-										oldcommand = name;
 										break;
 									case 'newta':
 										oldtask = name;
