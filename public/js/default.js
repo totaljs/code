@@ -90,6 +90,8 @@ Thelpers.particon = function(type) {
 			return 'fa fa-bolt';
 		case 'middleware':
 			return 'fa fa-filter';
+		case 'command':
+			return 'fas fa-bullhorn';
 		case 'htmlcomponent':
 			return 'fa fa-code';
 		case 'component':
