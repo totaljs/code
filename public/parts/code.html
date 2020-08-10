@@ -1759,6 +1759,8 @@
 
 				if (!node.children.findItem('name', 'auth.js'))
 					items.push({ makefile: true, name: '@(Create:) auth.js', icon: 'file-text-o' });
+				if (!node.children.findItem('name', 'commands.js'))
+					items.push({ makefile: true, name: '@(Create:) commands.js', icon: 'file-text-o' });
 				if (!node.children.findItem('name', 'db.js'))
 					items.push({ makefile: true, name: '@(Create:) db.js', icon: 'file-text-o' });
 				if (!node.children.findItem('name', 'func.js'))
@@ -2792,6 +2794,9 @@
 
 					if (!files.config)
 						opt.items.push({ name: '<strong>@(Create):</strong> /config', icon: '!far fa-file-text-o', value: '/config' });
+
+					if (!files['index.js'])
+						opt.items.push({ name: '<strong>@(Create):</strong> /index.js', icon: '!far fa-file-text-o', value: '/index.js' });
 
 					if (!files['config-release'])
 						opt.items.push({ name: '<strong>@(Create):</strong> /config-release', icon: '!far fa-file-text-o', value: '/config-release' });
