@@ -154,11 +154,11 @@ NEWSCHEMA('Projects', function(schema) {
 
 				if (ext === 'js') {
 					// ErrorBuilder
-					var tmp = content.match(/\$\.invalid\('[a-z-0-9]+'\)/gi);
+					var tmp = content.match(/\.invalid\('[a-z-0-9]+'\)/gi);
 					if (tmp) {
 						for (var j = 0; j < tmp.length; j++) {
 							var m = (tmp[j] + '');
-							m = m.substring(11, m.length - 2);
+							m = m.substring(10, m.length - 2);
 							key = m;
 							file = filename.substring(item.path.length);
 							texts[key] = m;
