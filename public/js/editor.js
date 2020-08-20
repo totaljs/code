@@ -575,6 +575,14 @@ WAIT('CodeMirror.defineMode', function() {
 		}
 	}
 
+	function checkstr(str) {
+		for (var i = 0; i < str.length; i++) {
+			var c = str.charCodeAt(i);
+			if ((c > 47 && c < 58) || (c > 64 && c < 123) || (c > 128))
+				return true;
+		}
+	}
+
 	function highlightMatches(cm) {
 		cm.operation(function() {
 
@@ -582,7 +590,7 @@ WAIT('CodeMirror.defineMode', function() {
 			removeOverlay(cm);
 
 			if (!cm.somethingSelected() && state.options.showToken) {
-				var re = state.options.showToken === true ? /[\w$]/ : state.options.showToken;
+				var re = state.options.showToken === true ? /[^\W\s$]/ : state.options.showToken;
 				var cur = cm.getCursor(), line = cm.getLine(cur.line), start = cur.ch, end = start;
 				while (start && re.test(line.charAt(start - 1))) --start;
 				while (end < line.length && re.test(line.charAt(end))) ++end;
@@ -600,7 +608,7 @@ WAIT('CodeMirror.defineMode', function() {
 
 			var selection = cm.getRange(from, to);
 
-			if ((/\W/).test(selection))
+			if (!checkstr(selection))
 				return;
 
 			if (state.options.trim) selection = selection.replace(/^\s+|\s+$/g, '');
