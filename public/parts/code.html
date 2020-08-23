@@ -115,7 +115,7 @@
 		</div>
 		<div class="status-modified exec" data-bind="code.current.lastmodified__template__show" data-path="common.form" data-value="'backups'">
 			<script type="text/html">
-				{{ if value }}
+				{{ if value && value.updated }}
 					{{ value.user | initials }}
 				 	<div><i class="fa fa-history"></i><b title="{{ value.updated | format('[date]') }}" class="time" data-time="{{ value.updated | utc }}">{{ value.updated | time }}</b></div>
 				{{ fi }}

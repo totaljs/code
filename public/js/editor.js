@@ -578,9 +578,10 @@ WAIT('CodeMirror.defineMode', function() {
 	function checkstr(str) {
 		for (var i = 0; i < str.length; i++) {
 			var c = str.charCodeAt(i);
-			if ((c > 47 && c < 58) || (c > 64 && c < 123) || (c > 128))
-				return true;
+			if (!((c > 47 && c < 58) || (c > 64 && c < 123) || (c > 128)))
+				return false;
 		}
+		return true;
 	}
 
 	function highlightMatches(cm) {
