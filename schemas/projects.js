@@ -442,7 +442,7 @@ NEWSCHEMA('Projects', function(schema) {
 			return;
 		}
 
-		var path = $.query.path;
+		var path = $.query.path || '';
 		var user = $.user;
 
 		if (!user.sa) {
