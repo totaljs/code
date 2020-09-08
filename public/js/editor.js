@@ -1813,7 +1813,7 @@ SNIPPETS.push({ type: 'js', search: 'for var', text: '<b>for in</b>', code: 'for
 SNIPPETS.push({ type: 'js', search: 'foreach forEach', text: '<b>forEach</b>', code: 'forEach(function(item) {\n{0}});', ch: 30, priority: 1 });
 SNIPPETS.push({ type: 'js', search: '$.invalid', text: '<b>$.invalid()</b>', code: 'if (err) {\n\t{0}$.invalid(err);\n\t{0}return;\n{0}}', ch: 30 });
 SNIPPETS.push({ type: 'js', search: 'callback', text: '<b>callback</b>', code: 'callback', ch: 9, priority: 1 });
-SNIPPETS.push({ type: 'js', search: 'callback function', text: '<b>function() {</b>', code: 'function() {\n\t{0}\n{0}};', ch: 30, priority: 1, special: 1 });
+SNIPPETS.push({ type: 'js', search: 'callback function', text: '<b>function() {</b>', code: 'function() {\n\t{0}\n{0}}', ch: 30, priority: 1, special: 1 });
 SNIPPETS.push({ type: 'js', search: 'callback function', text: '<b>function(err, response) {</b>', code: 'function(err, response) {\n\t{0}\n{0}}', ch: 30, priority: 1, special: 1 });
 SNIPPETS.push({ type: 'js', search: 'callback function', text: '<b>function(response) {</b>', code: 'function(response) {\n\t{0}\n{0}}', ch: 30, priority: 1, special: 1 });
 SNIPPETS.push({ type: 'js', search: 'callback function', text: '<b>function(item, next) {</b>', code: 'function(item, next) {\n\t{0}\n{0}}', ch: 30, priority: 1, special: 1 });
@@ -1821,11 +1821,10 @@ SNIPPETS.push({ type: 'js', search: 'callback function', text: '<b>function($) {
 SNIPPETS.push({ type: 'js', search: 'Object.keys', text: '<b>Object.keys</b>', code: 'Object.keys()', ch: 13, priority: 1 });
 SNIPPETS.push({ type: 'js', search: 'schema.define', text: '<b>schema.define</b>', code: 'schema.define(\'\', String, true);', ch: 16, priority: 1 });
 SNIPPETS.push({ type: 'js', search: 'schema.required', text: '<b>schema.required</b>', code: 'schema.required(\'\', model => model.age > 33);', ch: 18, priority: 1 });
-SNIPPETS.push({ type: 'js', search: 'schema.addTask', text: '<b>schema.addTask</b>', code: 'schema.addTask(\'\', \'\');', ch: 17, priority: 1 });
-SNIPPETS.push({ type: 'js', search: 'schema.addOperation', text: '<b>schema.addOperation</b>', code: 'schema.addOperation(\'\', \'\');', ch: 22, priority: 1 });
 SNIPPETS.push({ type: 'js', search: 'schema.addWorkflow', text: '<b>schema.addWorkflow</b>', code: 'schema.addWorkflow(\'\', function($, model) {\n\t{0}\n{0}});', ch: 21, priority: 1 });
 SNIPPETS.push({ type: 'js', search: 'schema.addWorkflowExtension', text: '<b>schema.addWorkflowExtension</b>', code: 'schema.addWorkflowExtension(\'\', function($, data) {\n\t{0}\n{0}});', ch: 21, priority: 1 });
-SNIPPETS.push({ type: 'js', search: 'schema.middleware', text: '<b>schema.middleware</b>', code: 'schema.middleware(function($, next) {\n\t{0}\n{0}});', ch: 2, line: 1, priority: 1 });
+SNIPPETS.push({ type: 'js', search: 'schema.addTask', text: '<b>schema.addTask</b>', code: 'schema.addTask(\'\', \'\');', ch: 17, priority: 1 });
+SNIPPETS.push({ type: 'js', search: 'schema.addOperation', text: '<b>schema.addOperation</b>', code: 'schema.addOperation(\'\', \'\');', ch: 22, priority: 1 });
 SNIPPETS.push({ type: 'js', search: 'schema.setSave setsave', text: '<b>schema.setSave</b>', code: 'schema.setSave(function($, model) {\n\t{0}\n{0}});', ch: 21, line: 1, priority: 1 });
 SNIPPETS.push({ type: 'js', search: 'schema.setPatch setpatch', text: '<b>schema.setPatch</b>', code: 'schema.setPatch(function($, model) {\n\t{0}\n{0}});', ch: 22, line: 1, priority: 1 });
 SNIPPETS.push({ type: 'js', search: 'schema.setInsert setinsert', text: '<b>schema.setInsert</b>', code: 'schema.setInsert(function($, model) {\n\t{0}\n{0}});', ch: 2, line: 1, priority: 1 });
@@ -1842,6 +1841,7 @@ SNIPPETS.push({ type: 'js', search: 'schema.setRemoveExtension', text: '<b>schem
 SNIPPETS.push({ type: 'js', search: 'schema.setQueryExtension', text: '<b>schema.setQueryExtension</b>', code: 'schema.setQueryExtension(function($, data) {\n\t{0}\n{0}});', ch: 2, line: 1, priority: 1 });
 SNIPPETS.push({ type: 'js', search: 'schema.setReadExtension', text: '<b>schema.setReadExtension</b>', code: 'schema.setReadExtension(function($, data) {\n\t{0}\n{0}});', ch: 2, line: 1, priority: 1 });
 SNIPPETS.push({ type: 'js', search: 'schema.setGetExtension', text: '<b>schema.setGetExtension</b>', code: 'schema.setGetExtension(function($, data) {\n\t{0}\n{0}});', ch: 2, line: 1, priority: 1 });
+SNIPPETS.push({ type: 'js', search: 'schema.middleware', text: '<b>schema.middleware</b>', code: 'schema.middleware(function($, next) {\n\t{0}\n{0}});', ch: 2, line: 1, priority: 1 });
 SNIPPETS.push({ type: 'js', search: 'MERGE', text: '<b>MERGE</b>', code: 'MERGE(\'\', \'\');', ch: 8 });
 SNIPPETS.push({ type: 'js', search: 'ROUTE', text: '<b>ROUTE</b>', code: 'ROUTE(\'\', \'\');', ch: 8 });
 SNIPPETS.push({ type: 'js', search: 'WEBSOCKET', text: '<b>WEBSOCKET</b>', code: 'WEBSOCKET(\'\', action, [\'json\']);', ch: 12 });
