@@ -45,12 +45,14 @@ function realtime() {
 		// {"TYPE":"x" -> spawn destroy
 		if (msg[9] === 'e') {
 			msg = msg.parseJSON();
-			client.code.fileid && refresh_collaborators(self, client);
-			client.code.projectid = msg.projectid || '';
-			client.code.fileid = msg.fileid;
-			client.code.openid = (msg.openid || 0).toString();
-			client.code.ts = Date.now();
-			refresh_collaborators(self, client, true);
+			if (msg) {
+				client.code.fileid && refresh_collaborators(self, client);
+				client.code.projectid = msg.projectid || '';
+				client.code.fileid = msg.fileid;
+				client.code.openid = (msg.openid || 0).toString();
+				client.code.ts = Date.now();
+				refresh_collaborators(self, client, true);
+			}
 		} else if (msg[9] === 's' && msg[12] === 'e')
 			self.send(msg);
 		else if (msg[9] === 'x') {

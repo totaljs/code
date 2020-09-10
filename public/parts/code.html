@@ -1154,7 +1154,7 @@
 
 					var diffel = editor.dom.querySelector('.cm-diff');
 					var is = 0;
-					if (diffel) {
+					if (diffel && !HIDDEN(diffel)) {
 						exports.cache_set();
 						if (!code.current.modified) {
 							code.current.modified = true;
