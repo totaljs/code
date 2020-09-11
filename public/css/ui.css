@@ -100,10 +100,10 @@ div.CodeMirror span.CodeMirror-matchingbracket { border-bottom: 2px solid blue; 
 .ui-tree .icon { color: #777777; }
 .ui-tree .item > div { display: inline-block; }
 .ui-tree .item:hover span { display: block; }
-.ui-tree .item:hover { background-color: rgba(100,100,100,0.1); }
+.ui-tree .item:hover { background-color: rgba(100,100,100,0.15); }
 .ui-tree .show > .children { display: block; }
 .ui-tree .show > .item { font-weight: bold; color: black; }
-.ui-tree .selected { background-color: rgba(100,100,100,0.08); color: black; }
+.ui-tree .selected { background-color: rgba(100,100,100,0.07); color: black; }
 .ui-tree .item-ddhere { background-color: rgba(100,100,100,0.15) !important; }
 .ui-tree .node:last-child > .item { border-bottom: 0; }
 /*.td .ui-tree .item-ddhere { background-color: #404040 !important; }*/

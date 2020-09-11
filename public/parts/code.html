@@ -858,6 +858,11 @@
 					return;
 				}
 
+				if (value.value === 'removedarkmode') {
+					editor.replaceSelection(FUNC.removecssclass('.ui-dark', text));
+					return;
+				}
+
 				if (value.value === 'cleanduplicatedlines') {
 					editor.replaceSelection(FUNC.cleanduplicatedlines(text));
 					return;

@@ -477,7 +477,7 @@ header .tools .external { color: #a2a286; }
 /*.td .ui-tree .item { border-bottom-color: #353535; }
 .td .ui-tree .item:hover { background-color: #303030; }*/
 
-.td .ui-tree .item:hover { background-color: rgba(150,150,150,0.1); }
+.td .ui-tree .item:hover { background-color: rgba(150,150,150,0.11); }
 .td .ui-tree .selected { background-color: rgba(150,150,150,0.08); color: white; }
 .td .ui-tree .item-ddhere { background-color: rgba(150,150,150,0.15) !important; }
 

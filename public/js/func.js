@@ -1168,41 +1168,76 @@ FUNC.removecssclass = function(cls, value) {
 	var lines = value.split('\n');
 	var builder = [];
 	var regwhite = (/\s$/);
+	var index;
+	var end;
 
 	for (var i = 0; i < lines.length; i++) {
 		var line = lines[i];
 		var beg = 0;
-		var index = line.indexOf('{', beg);
+
+		index = line.indexOf('{', beg);
+
 		if (index === -1) {
 			builder.push(line);
 			continue;
 		}
 
-		var selectors = line.substring(0, index);
-		var plus = '';
+		var cmd = [];
+		var subindex = 0;
+		var end = 0;
 
-		for (var j = 0; j < selectors.length; j++) {
-			var c = selectors.charAt(j);
-			if (c === '\t')
-				plus += c;
-			else
+		while (true) {
+			end = line.indexOf('}', subindex + 1);
+
+			if (end === -1) {
+				cmd.push(line.substring(subindex));
 				break;
+			}
+
+			cmd.push(line.substring(subindex, end + 1));
+			subindex = end + 1;
 		}
 
-		var sel = selectors.split(',');
-		var upd = [];
+		var cleaned = [];
 
-		for (var j = 0; j < sel.length; j++) {
-			var item = sel[j];
-			var trimmed = item.trim();
-			if (trimmed.indexOf(cls) === -1)
-				upd.push(trimmed);
+		for (var x = 0; x < cmd.length; x++) {
+
+			if (cmd[x] === '{' || cmd[x] === '}') {
+				cleaned.push(cmd[x]);
+				continue;
+			}
+
+			subindex = cmd[x].indexOf('{');
+
+			var selectors = cmd[x].substring(0, subindex);
+			var plus = '';
+
+			for (var j = 0; j < selectors.length; j++) {
+				var c = selectors.charAt(j);
+				if (c === '\t')
+					plus += c;
+				else
+					break;
+			}
+
+			var sel = selectors.split(',');
+			var upd = [];
+
+			for (var j = 0; j < sel.length; j++) {
+				var item = sel[j];
+				var trimmed = item.trim();
+				if (trimmed && trimmed.indexOf(cls) === -1)
+					upd.push(trimmed);
+			}
+
+			if (upd.length) {
+				var tmp = plus + upd.join(', ');
+				cleaned.push(tmp + (regwhite.test(tmp) ? '' : ' ') + cmd[x].substring(subindex));
+			}
 		}
 
-		if (upd.length) {
-			var tmp = plus + upd.join(', ');
-			builder.push(tmp + (regwhite.test(tmp) ? '' : ' ') + line.substring(index).trim());
-		}
+		if (cleaned.length)
+			builder.push(cleaned.join(''));
 
 		if (builder[builder.length - 1] === '')
 			builder.pop();
