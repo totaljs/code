@@ -1157,9 +1157,9 @@
 					if (!code.current)
 						return;
 
-					var diffel = editor.dom.querySelector('.cm-diff');
+					var diffel = editor.ismodified();
 					var is = 0;
-					if (diffel && !HIDDEN(diffel)) {
+					if (diffel) {
 						exports.cache_set();
 						if (!code.current.modified) {
 							code.current.modified = true;
@@ -2496,7 +2496,13 @@
 
 				var data = {};
 				var val = editor.editor.getValue();
-				var changes = $('.cm-diff').length;
+				var changes = 0;
+				var changesdiff = $('.cm-diff');
+
+				for (var i = 0; i < changesdiff.length; i++) {
+					if (!HIDDEN(changesdiff[i]))
+						changes++;
+				}
 
 				data.body = code.NOTRIM[code.current.ext] ? val : FUNC.rtrim(val);
 

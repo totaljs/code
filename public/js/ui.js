@@ -77,6 +77,7 @@ COMPONENT('editor', function(self, config) {
 	var lorem = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'.split(' ');
 	var HSM = { annotateScrollbar: true, delay: 100 };
 	var cache_lines = null;
+	var cache_lines_diff = false;
 	var cache_lines_skip = false;
 	var cache_diffs = {};
 	var cache_diffs_highlight = {};
@@ -182,6 +183,7 @@ COMPONENT('editor', function(self, config) {
 		var lines = value.split('\n');
 
 		cache_lines_skip = true;
+		cache_lines_diff = true;
 		editor.setValue(value);
 		self.diffgutterclear();
 		cache_lines_skip = false;
@@ -304,7 +306,7 @@ COMPONENT('editor', function(self, config) {
 
 		var shortcut = function(name) {
 			return function() {
-				EXEC(config.change, self.dom.querySelector('.cm-diff') ? 1 : 0);
+				EXEC(config.change, self.ismodified() ? 1 : 0);
 				EXEC(config.shortcut, name);
 			};
 		};
@@ -545,10 +547,22 @@ COMPONENT('editor', function(self, config) {
 		};
 
 		var allowed_modes = { totaljsresources: 1, javascript: 1, totaljs: 1, css: 1, sass: 1, html: 1, todo: 1, bash: 1, python: 1, php: 1, shell: 1, htmlmixed: 1, 'null': 1, clike: 1, yaml: 1, markdown: 1 };
+		var ismodifiedbody = false;
+
+		self.ismodified = function() {
+			var is = !HIDDEN(self.dom.querySelector('.cm-diff'));
+			if (is)
+				return is;
+			if (!cache_lines_diff)
+				return ismodifiedbody;
+			ismodifiedbody = cache_lines.join('\n') !== editor.getValue();
+			cache_lines_diff = false;
+			return ismodifiedbody;
+		};
 
 		self.prerender_colors = function() {
 
-			config.change && EXEC(config.change, self.dom.querySelector('.cm-diff') ? 1 : 0);
+			EXEC(config.change, self.ismodified() ? 1 : 0);
 
 			if (cache_diffs_checksum === checksum)
 				return;
@@ -925,10 +939,11 @@ COMPONENT('editor', function(self, config) {
 
 		editor.on('change', function(a, b) {
 
+			cache_lines_diff = true;
+
 			if (b.origin === 'setValue') {
-				if (!cache_lines_skip) {
+				if (!cache_lines_skip)
 					cache_lines = editor.getValue().split('\n');
-				}
 			} else {
 
 				if (code.SYNC) {
@@ -1052,6 +1067,7 @@ COMPONENT('editor', function(self, config) {
 
 	self.paste = function(doc) {
 
+		cache_lines_diff = true;
 		cache_lines = doc.cachedlines || editor.getValue().split('\n');
 		cache_diffs = doc.cacheddiffs || {};
 		cache_diffs_highlight = doc.cachediffshighlight || {};
@@ -1082,7 +1098,7 @@ COMPONENT('editor', function(self, config) {
 		}
 
 		setTimeout(function() {
-			EXEC(config.change, self.dom.querySelector('.cm-diff') ? 1 : 0);
+			EXEC(config.change, self.ismodified() ? 1 : 0);
 		}, 50);
 
 		if (!cache_lines)
