@@ -77,6 +77,7 @@ COMPONENT('editor', function(self, config) {
 	var lorem = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'.split(' ');
 	var HSM = { annotateScrollbar: true, delay: 100 };
 	var cache_lines = null;
+	var cache_lines_body = '';
 	var cache_lines_diff = false;
 	var cache_lines_skip = false;
 	var cache_diffs = {};
@@ -203,7 +204,9 @@ COMPONENT('editor', function(self, config) {
 			editor.removeLineClass(i, null, 'cm-changed-line');
 
 		editor.doc.clearGutter('GutterDiff');
-		cache_lines = editor.getValue().split('\n');
+		cache_lines_body = editor.getValue();
+		cache_lines = cache_lines_body.split('\n');
+		cache_lines_diff = true;
 		cache_diffs = {};
 		cache_diffs_highlight = {};
 		cache_diffs_checksum = 0;
@@ -942,8 +945,10 @@ COMPONENT('editor', function(self, config) {
 			cache_lines_diff = true;
 
 			if (b.origin === 'setValue') {
-				if (!cache_lines_skip)
-					cache_lines = editor.getValue().split('\n');
+				if (!cache_lines_skip) {
+					cache_lines_body = editor.getValue();
+					cache_lines = cache_lines_body.split('\n');
+				}
 			} else {
 
 				if (code.SYNC) {
@@ -1044,6 +1049,7 @@ COMPONENT('editor', function(self, config) {
 		var doc = editor.doc.copy(history);
 		if (history) {
 			doc.cachedlines = cache_lines;
+			doc.cachedbody = cache_lines_body;
 			doc.cacheddiffs = cache_diffs;
 			doc.cachediffshighlight = cache_diffs_highlight;
 			doc.cachedusers = cache_users;
@@ -1068,11 +1074,13 @@ COMPONENT('editor', function(self, config) {
 	self.paste = function(doc) {
 
 		cache_lines_diff = true;
-		cache_lines = doc.cachedlines || editor.getValue().split('\n');
+		cache_lines_body = doc.cachedbody || editor.getValue();
+		cache_lines = doc.cachedlines || cache_lines_body.split('\n');
 		cache_diffs = doc.cacheddiffs || {};
 		cache_diffs_highlight = doc.cachediffshighlight || {};
 		cache_users = doc.cachedusers || {};
 
+		delete doc.cachedbody;
 		delete doc.cachedlines;
 		delete doc.cacheddiffs;
 		delete doc.cachediffshighlight;
