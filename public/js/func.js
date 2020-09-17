@@ -1255,7 +1255,7 @@ FUNC.livereload = function(filename) {
 		timeout = 2500;
 
 	code.data && code.data.url && code.data.url.length > 3 && W.WSLIVERELOAD && setTimeout2('livereload', function(filename) {
-		W.WSLIVERELOAD.send(code.data.url.replace(/^(https|http):\/\//g, '') + filename);
+		W.WSLIVERELOAD.send(code.data.url.replace(/^(https|http):\/\//g, '') + filename + ',' + user.id);
 	}, timeout, null, filename || '');
 };
 

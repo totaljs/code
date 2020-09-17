@@ -538,12 +538,17 @@
 
 			// BUILD
 			if ((/\/scripts\/|\.sh$/g).test(code.current.path) || code.data.servicemode) {
-				if (code.current.ext === 'js' || code.current.ext === 'sh')
+				if (code.current.ext === 'js' || code.current.ext === 'sh') {
 					FUNC.requestscriptspawn(code.data.id, code.current.path);
-			} else if (code.current.ext === 'api') {
+					return;
+				}
+			}
+
+			if (code.current.ext === 'api') {
 				var editor = FIND('editor').editor;
 				FUNC.request(editor.getSelections().join(''), editor.getValue());
 			}
+
 		}, true);
 
 		SETTER(true, 'shortcuts', 'register', 'alt+w,cmd+w,alt+f4', function(e) {
