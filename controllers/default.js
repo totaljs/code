@@ -26,14 +26,6 @@ function docs(id) {
 		return;
 	}
 
-	if (!self.user.sa) {
-		var user = project.users.indexOf($.user.id);
-		if (!user) {
-			self.throw401();
-			return;
-		}
-	}
-
 	NOSQL(id + '_parts').find().callback(function(err, response) {
 		var docs = JSON.stringify(response);
 		Fs.readFile(PATH.public('docs.html'), function(err, data) {
