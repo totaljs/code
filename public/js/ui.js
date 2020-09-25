@@ -1697,7 +1697,9 @@ COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 	self.expand = function(index) {
 		if (index == null) {
 			self.find('.expand').each(function() {
-				$(this).parent().aclass('show');
+				var el = $(this);
+				el.parent().aclass('show');
+				el.find('> .icon').rclass('fa-folder').aclass('fa-folder-open');
 			});
 		} else {
 			self.find('[data-index="{0}"]'.format(index)).each(function() {
@@ -1711,6 +1713,7 @@ COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 						el = el.closest('.children').prev();
 						if (!el.hclass('expand'))
 							break;
+						el.find('> .icon').rclass('fa-folder').aclass('fa-folder-open');
 						var parent = el.parent().aclass('show');
 						var tmp = +parent.find('> .item').attrd('index');
 						var item = cache[tmp];
@@ -1727,7 +1730,9 @@ COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 	self.collapse = function(index) {
 		if (index == null) {
 			self.find('.expand').each(function() {
-				$(this).parent().rclass('show');
+				var el = $(this);
+				el.parent().rclass('show');
+				el.find('> .icon').aclass('fa-folder').rclass('fa-folder-open');
 			});
 		} else {
 			self.find('[data-index="{0}"]'.format(index)).each(function() {
@@ -1741,6 +1746,7 @@ COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 						el = el.closest('.children').prev();
 						if (!el.hclass('expand'))
 							break;
+						el.find('> .icon').aclass('fa-folder').rclass('fa-folder-open');
 						el.parent().rclass('show');
 					}
 				}
