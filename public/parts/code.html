@@ -2852,6 +2852,9 @@
 				// element
 				SET('code.statusform.path', '');
 				SET('code.statusform.name', dname);
+				var tmp = $('.extrabutton[data-name="reset"]');
+				if (tmp.length)
+					code.statusform.path = tmp.text();
 				return;
 			}
 

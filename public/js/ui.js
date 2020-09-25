@@ -1358,6 +1358,8 @@ COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 
 	var REGBK = /(-|_)bk\.$/i;
 	var items = {};
+	var nestedkey = null;
+	var nesteditem = null;
 
 	Thelpers.treefilecolor = function(filename) {
 		if (filename.charAt(0) === '.' || REGBK.test(filename))
@@ -1503,7 +1505,9 @@ COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 			builder.push('</div>');
 		}
 
+		nestedkey = key;
 		self.html(builder.join(''));
+		self.resizescrollbar();
 	};
 
 	self.make = function() {
@@ -1514,9 +1518,11 @@ COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 
 		self.event('click', '.extrabutton', function() {
 			var name = $(this).attrd('name');
-			if (name === 'reset')
+			if (name === 'reset') {
+				nestedkey = null;
 				self.refresh();
-			else
+				self.resizescrollbar();
+			} else
 				EXEC(config.extrabutton);
 		});
 
@@ -1754,6 +1760,9 @@ COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 			if (key === selected)
 				selindex = counter;
 
+			if (nestedkey && nestedkey === key)
+				nesteditem = item;
+
 			if (addtocache)
 				items[key] = item;
 
@@ -1807,6 +1816,10 @@ COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 			var key = config.pk ? item[config.pk] : counter;
 			if (key === selected)
 				selindex = counter;
+
+			if (nestedkey && nestedkey === key)
+				nesteditem = item;
+
 			items[key] = item;
 			item.isopen = !!(expanded[key] && item.children);
 			builder.push('<div class="node{0}">'.format(item.isopen ? ' show' : '') + self.template(item));
@@ -1824,6 +1837,11 @@ COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 			// self.select(selindex);
 		} else
 			config.first !== false && cache.first && setTimeout(self.first, 100);
+
+		if (nesteditem) {
+			self.shownested(nesteditem);
+			nesteditem = null;
+		}
 	};
 });
 
