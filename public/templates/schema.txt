@@ -6,7 +6,7 @@ NEWSCHEMA('SCHEMA_NAME', function(schema) {
 		$.success();
 	});
 
-	schema.setGet(function($) {
+	schema.setRead(function($) {
 		$.success();
 	});
 
