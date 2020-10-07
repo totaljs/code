@@ -10,11 +10,11 @@ NEWSCHEMA('SCHEMA_NAME', function(schema) {
 		$.success();
 	});
 
-	schema.setInsert(function($) {
+	schema.setInsert(function($, model) {
 		$.success();
 	});
 
-	schema.setUpdate(function($) {
+	schema.setUpdate(function($, model) {
 		$.success();
 	});
 
