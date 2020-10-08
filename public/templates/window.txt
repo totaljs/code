@@ -1,8 +1,6 @@
-<div data---="window__common.window__if:NAME;icon:hashtag;autofocus:true;reload:NAME/reload;scrollbar:1" class="hidden">
-	<div data-scope="NAME">
-		<div class="padding">
-			YOUR CODE
-		</div>
+<div data---="window__common.window__if:NAME;icon:hashtag;autofocus:true;reload:NAME/reload;scrollbar:1" class="hidden" data-scope="NAME">
+	<div class="padding">
+		YOUR CODE
 	</div>
 </div>
 

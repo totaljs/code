@@ -1,10 +1,8 @@
-<div data---="largeform__common.form__if:NAME;icon:hashtag;autofocus:true;reload:NAME/reload;scrollbar:1;submit:NAME/submit;width:800" class="hidden">
-	<div data-scope="NAME">
-		<div class="padding">
-			YOUR CODE
-		</div>
+<div data---="largeform__common.form__if:NAME;icon:hashtag;autofocus:true;reload:NAME/reload;scrollbar:1;submit:NAME/submit;width:800" class="hidden" data-scope="NAME">
+	<div class="padding">
+		YOUR CODE
 	</div>
-	<nav data---="validation__NAME">
+	<nav data---="validation__?">
 		<button name="submit" disabled><i class="fa fa-check-circle"></i>@(SUBMIT)</button>
 		<button name="cancel">@(Cancel)</button>
 	</nav>
