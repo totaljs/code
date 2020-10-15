@@ -52,6 +52,7 @@ button { outline: 0; }
 .CodeMirror-focused .cm-matchhighlight { }
 .cm-matchhighlight { font-weight: bold; color: #000 !important; border-bottom: 2px solid #000; }
 .td .cm-matchhighlight { font-weight: bold; color: yellow !important; border-bottom: 2px solid yellow; }
+.cm-searching { background: #4285F4; color: #FFF !important; border-bottom: 0 !important; }
 .CodeMirror-selection-highlight-scrollbar { background-color: #777; }
 .CodeMirror-gutters { text-align: right; }
 div.CodeMirror span.CodeMirror-matchingbracket { border-bottom: 2px solid blue; color: inherit; }
