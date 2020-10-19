@@ -577,13 +577,14 @@ WAIT('CodeMirror.defineMode', function() {
 	function checkstr(str) {
 		for (var i = 0; i < str.length; i++) {
 			var c = str.charCodeAt(i);
-			if ((c > 47 && c < 58) || (c > 64 && c < 123) || (c > 128))
-				return true;
+			if (!((c > 47 && c < 58) || (c > 64 && c < 123) || (c > 128)))
+				return false;
 		}
-		return false;
+		return true;
 	}
 
 	function highlightMatches(cm) {
+
 		cm.operation(function() {
 
 			var state = cm.state.matchHighlighter;
@@ -600,7 +601,9 @@ WAIT('CodeMirror.defineMode', function() {
 			}
 
 			var from = cm.getCursor('from'), to = cm.getCursor('to');
-			if (from.line != to.line)
+			var diff = Math.abs(from.ch - to.ch);
+
+			if (from.line != to.line || diff < 2)
 				return;
 
 			if (state.options.wordsOnly && !isWord(cm, from, to))
@@ -612,8 +615,9 @@ WAIT('CodeMirror.defineMode', function() {
 				return;
 
 			if (state.options.trim) selection = selection.replace(/^\s+|\s+$/g, '');
-			if (selection.length >= state.options.minChars)
+			if (selection.length >= state.options.minChars) {
 				addOverlay(cm, selection, false, state.options.style);
+			}
 		});
 		refreshcount();
 	}
@@ -651,7 +655,7 @@ WAIT('CodeMirror.defineMode', function() {
 		}};
 	}
 
-	CodeMirror.commands.countMatches = function(cm) { refreshcount(); };
+	CodeMirror.commands.countMatches = function() { refreshcount(); };
 	CodeMirror.commands.clearMatches = function(cm) { removeOverlay(cm); };
 });
 
