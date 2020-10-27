@@ -43,7 +43,7 @@ NEWSCHEMA('Users', function(schema) {
 		var model = $.clean();
 		var tmp = model.name.split(' ');
 
-		model.initials = tmp[0][0] + (tmp.length > 1 ? tmp[1][0] : '');
+		model.initials = tmp[0][0] + ((tmp.length > 1 ? tmp[1][0] : tmp[0].length > 1 ? tmp[0][tmp[0].length - 1] : '') || '');
 
 		var item = MAIN.users.findItem('id', model.id);
 		if (item == null) {
