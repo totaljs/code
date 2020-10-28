@@ -638,8 +638,10 @@
 				if (can && code.current.ext === 'js') {
 					tmp = ((/varchar|int|boolean/i).test(text));
 					tmp && items.push({ name: '@(Transform SQL to schema)', icon: 'database', value: 'sql2schema' });
-					tools.push({ name: '@(Parse keys)', icon: 'barcode', value: 'parsekeys' });
 				}
+
+				if (can)
+					tools.push({ name: '@(Parse keys)', icon: 'barcode', value: 'parsekeys' });
 
 				if ((code.current.ext === 'css' || code.current.ext === 'html') && (/\:(\s)?#|#\w{6}|color\:/).test(text))
 					items.push({ name: '@(Transform for Dark mode)', icon: 'tint', value: 'darkmode' });

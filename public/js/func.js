@@ -341,6 +341,9 @@ FUNC.usercolor = function(value) {
 	var initials = (arr[0].substring(0, 1) + (arr[1] || '').substring(0, 1));
 	var sum = 0;
 
+	if (initials.length === 1 && arr[0].length > 1)
+		initials += arr[0].substring(arr[0].length - 1);
+
 	for (var i = 0; i < value.length; i++)
 		sum += value.charCodeAt(i);
 
