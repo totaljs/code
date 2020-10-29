@@ -342,7 +342,7 @@ FUNC.usercolor = function(value) {
 	var sum = 0;
 
 	if (initials.length === 1 && arr[0].length > 1)
-		initials += arr[0].substring(arr[0].length - 1);
+		initials += arr[0].substring(arr[0].length - 1).toUpperCase();
 
 	for (var i = 0; i < value.length; i++)
 		sum += value.charCodeAt(i);
