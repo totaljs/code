@@ -910,6 +910,7 @@ FUNC.alignrouting = function(text) {
 	var maxmethod = 0;
 	var maxurl = 0;
 	var maxschema = 0;
+	var maxid = 0;
 
 	for (var i = 0; i < lines.length; i++) {
 		var line = lines[i];
@@ -928,8 +929,21 @@ FUNC.alignrouting = function(text) {
 		if (data[1].length > maxurl)
 			maxurl = data[1].length;
 
-		if (data[2] && data[2].length > maxschema)
-			maxschema = data[2].length;
+		if (line.indexOf('API') === -1) {
+
+			if (data[2] && data[2].length > maxschema)
+				maxschema = data[2].length;
+
+		} else {
+
+			if (data[2] && data[2].length > maxid)
+				maxid = data[2].length;
+
+			if (data[3] && data[3].length > maxschema)
+				maxschema = data[3].length;
+
+		}
+
 
 		beg = line.indexOf(',');
 	}
@@ -937,6 +951,9 @@ FUNC.alignrouting = function(text) {
 	maxmethod += 4;
 	maxurl += 4;
 	maxschema += 2;
+
+	if (maxid)
+		maxid += 4;
 
 	for (var i = 0; i < lines.length; i++) {
 		var line = lines[i];
@@ -951,6 +968,9 @@ FUNC.alignrouting = function(text) {
 		var builder = [];
 
 		for (var j = 0; j < data.length; j++) {
+
+			var c = data[j].charAt(0);
+
 			// method
 			switch (j) {
 
@@ -963,7 +983,21 @@ FUNC.alignrouting = function(text) {
 					break;
 
 				case 2: // schema
-					builder.push(data[j].padRight(maxschema, ' '));
+
+					if (c === '-' || c === '+' || c === '#') {
+						builder.push(data[j].padRight(maxid, ' '));
+					} else {
+						maxid && builder.push(''.padRight(maxid, ' '));
+						builder.push(data[j].padRight(maxschema, ' '));
+					}
+
+					break;
+
+				case 3: // schema
+					if (c === '-' || c === '+' || c === '#')
+						builder.push(' ' + data[j]);
+					else
+						builder.push(data[j].padRight(maxschema, ' '));
 					break;
 
 				default: // operations
@@ -974,7 +1008,7 @@ FUNC.alignrouting = function(text) {
 		}
 
 		var clean = line.substring(end).replace(/\s{2,}/, ' ');
-		lines[i] = line.substring(0, beg) + '\'' + builder.join('') + clean;
+		lines[i] = line.substring(0, beg) + '\'' + builder.join('').trim() + clean;
 	}
 
 	return lines.join('\n');
