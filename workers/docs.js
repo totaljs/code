@@ -395,10 +395,13 @@ require('total4');
 			var gkk = gk[a].replace(/,|\./g, '');
 			if (!gkk)
 				continue;
-			var gi = groups[gkk];
 
-			md.push('#### ' + gk[a]);
-			md.push('');
+			var gi = groups[gkk];
+			if (!gi || !gi.length)
+				continue;
+
+			var mdindexer = md.length;
+			var is = false;
 
 			for (var i = 0; i < gi.length; i++) {
 				var item = gi[i];
@@ -415,10 +418,11 @@ require('total4');
 				if (!op)
 					continue;
 
-				md.push('::: __`' + item.method.padRight(7, ' ') + '`__ `' + item.url + (item.method === 'API' ? ('   ' + item.operation) : '') + '`');
+				md.push('::: __`' + item.method.padRight(7, ' ') + '`__ `' + item.url + (item.method === 'API' ? ('  ' + item.operation) : '') + '`');
 				md.push('');
 
 				var tmpindex = md.length;
+				is = true;
 
 				if (item.auth)
 					md.push('- request __must be authorized__');
@@ -500,6 +504,9 @@ require('total4');
 				md.push('');
 
 			}
+
+			if (is)
+				md.splice(mdindexer, 0, '#### ' + gk[a] + '\n');
 
 		}
 

@@ -79,7 +79,7 @@ NEWSCHEMA('Projects', function(schema) {
 		MAIN.log($.user, 'wiki_make', item, filename);
 		WORKER2('docs', [item.path], function(err, response) {
 			var md = response.toString('utf8');
-			md = '# Wiki: __' + item.name + '__\n\n- URL address: <' + item.url + '>\n- Author: __' + $.user.name + '__\n- Updated: `' + NOW.format('yyyy-MM-dd HH:mm') + '`\n\n\n## REST API endpoints\n\n' + md;
+			md = '# Wiki: __' + item.name + '__\n\n- URL address: <' + item.url + '>\n- Author: __' + $.user.name + '__\n- Updated: `' + NOW.format('yyyy-MM-dd HH:mm') + '`\n\n\n## __REST API__ endpoints\n\n' + md;
 			Fs.writeFile(PATH.databases('wiki_' + $.id + '.md'), md, NOOP);
 			$.success($.id);
 		});
