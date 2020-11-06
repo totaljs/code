@@ -68,6 +68,28 @@ NEWSCHEMA('Projects', function(schema) {
 		});
 	});
 
+	schema.addWorkflow('wiki_make', function($) {
+		var item = MAIN.projects.findItem('id', $.id);
+		if (!item) {
+			$.invalid('error-project');
+			return;
+		}
+
+		var filename = Path.join(item.path);
+		MAIN.log($.user, 'wiki_make', item, filename);
+		WORKER2('docs', [item.path], function(err, response) {
+			var md = response.toString('utf8');
+			md = '# Wiki: __' + item.name + '__\n\n- URL address: <' + item.url + '>\n- Author: __' + $.user.name + '__\n- Updated: `' + NOW.format('yyyy-MM-dd HH:mm') + '`\n\n\n## REST API endpoints\n\n' + md;
+			Fs.writeFile(PATH.databases('wiki_' + $.id + '.md'), md, NOOP);
+			$.success($.id);
+		});
+	});
+
+	schema.addWorkflow('wiki_read', function($) {
+		$.controller.file('~' + PATH.databases('wiki_' + $.id + '.md'));
+		$.cancel();
+	});
+
 	schema.addWorkflow('translate', function($) {
 
 		var item = MAIN.projects.findItem('id', $.id);

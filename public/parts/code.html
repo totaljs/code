@@ -728,6 +728,7 @@
 			}
 
 			sub = [];
+
 			if ((/^(js|css|html)$/).test(code.current.ext)) {
 				sub.push({ name: '@(UI components)', icon: 'chevron-right', value: 'ui' });
 				// sub.push({ name: '@(Snippet)', icon: 'chevron-right', value: 'snippet' });
@@ -1627,6 +1628,7 @@
 			items.push({ value: 20, name: '@(Translate application)', icon: 'language' });
 
  			user.sa && items.push({ value: 23, name: '@(Download source-code)', icon: 'download' });
+			items.push({ name: '@(Create Wiki)', icon: '!fa fa-book', value: 98 });
 
 			if (code.data.allowbundle) {
 				items.push('-');
@@ -1701,6 +1703,12 @@
 						break;
 					case 18:
 						exports.clearchanges();
+						break;
+					case 98:
+						AJAX('GET /api/projects/{id}/wiki/'.arg(code.data), function(response) {
+							SETTER('clipboard/copy', 'https://wiki.totaljs.com/?url=' + location.origin + '/wiki/' + response.value + '/');
+							SETTER('notifybar/success', '@(Wiki has been created and copied into the clipboard)');
+						});
 						break;
 					case 19:
 						location.href = '/api/projects/{id}/bundle/'.arg(code.data);
