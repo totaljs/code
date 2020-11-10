@@ -1747,6 +1747,7 @@ SNIPPETS.push({ type: 'css', search: '@media xs mobile', text: '<b>media: XS</b>
 SNIPPETS.push({ type: 'css', search: '@media sm mobile', text: '<b>media: SM</b>', code: '@media (max-width:991px) and (min-width:768px) {\n\t{0}\n}', ch: 47 });
 SNIPPETS.push({ type: 'css', search: '@media md mobile', text: '<b>media: MD</b>', code: '@media (max-width:1199px) and (min-width:992px) {\n\t{0}\n}', ch: 48 });
 SNIPPETS.push({ type: 'css', search: '@media lg mobile', text: '<b>media: LG</b>', code: '@media (min-width:1200px) {\n\t{0}\n}', ch: 26 });
+SNIPPETS.push({ type: 'css', search: 'line height', text: '<b>line-height</b>', code: 'line-height: px;', ch: 14 });
 SNIPPETS.push({ type: 'css', search: 'position relative inline block', text: 'display: <b>inline-block</b>', code: 'position: relative; display: inline-block;', ch: 43 });
 SNIPPETS.push({ type: 'css', search: 'position absolute', text: '<b>absolute</b>', code: 'position: absolute;', ch: 20 });
 SNIPPETS.push({ type: 'css', search: 'position fixed', text: '<b>fixed</b>', code: 'position: fixed;', ch: 17 });
@@ -1777,7 +1778,6 @@ SNIPPETS.push({ type: 'css', search: 'text decoration underline', text: '<b>text
 SNIPPETS.push({ type: 'css', search: 'text decoration line through', text: '<b>text-decoration: line-through</b>', code: 'text-decoration: line-through;', ch: 31 });
 SNIPPETS.push({ type: 'css', search: 'text transform uppercase', text: '<b>text-transform: uppercase</b>', code: 'text-transform: uppercase;', ch: 27 });
 SNIPPETS.push({ type: 'css', search: 'text transform lowercase', text: '<b>text-transform: lowercase</b>', code: 'text-transform: transform;', ch: 27 });
-SNIPPETS.push({ type: 'css', search: 'line height', text: '<b>line-height</b>', code: 'line-height: px;', ch: 14 });
 SNIPPETS.push({ type: 'css', search: 'linear gradient', text: '<b>linear-gradient</b>', code: 'background: linear-gradient(0deg,#F0F0F0,#D0D0D0);', ch: 34 });
 SNIPPETS.push({ type: 'css', search: 'appearance', text: '<b>appearance</b>', code: 'appearance: ;', ch: 13 });
 SNIPPETS.push({ type: 'css', search: '@keyframes', text: 'keyframes', code: '@keyframes  {\n\t0% {}\n\t50% {}\n\t100% {}\n}', ch: 12 });
