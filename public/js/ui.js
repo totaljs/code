@@ -602,7 +602,7 @@ COMPONENT('editor', function(self, config) {
 					if (line && mode !== 'css') {
 						m = line.match(REGVERSION);
 						if (m) {
-							version = m.toString().replace(/(version|\s|"|'|=|:)+/g, '').replace(/[^\d,.]+/g, '').replace(/(,|\.|-|"|')$/,'').trim();
+							version = m.toString().replace(/(version|\s|"|'|=|:)+/g, '').replace(/[^\d,.]+/g, '').replace(/(,|\.|-|"|')$/,'').trim().replace(/^[,.\-\s]+|[,.\-\s]+$/g, '');
 							if (version && (/\d/g).test(version)) {
 								version_file = version;
 								components.push({ line: i, ch: m.index || 0, name: version, type: 'version' });
