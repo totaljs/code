@@ -43,8 +43,8 @@ exports.install = function() {
 	ROUTE('+GET     /api/projects/timespent/',                                timespent);
 	ROUTE('+GET     /api/projects/{id}/modify/',                           	  files_modify);
 	ROUTE('+GET     /api/projects/{id}/bundle/',                           	  makebundle, [10000]);
-	ROUTE('+GET     /api/projects/{id}/wiki/              *Projects           --> @wiki_make', [10000]);
-	ROUTE('+GET     /api/projects/{id}/localize/          *Projects           --> @localize', [10000]);
+	ROUTE('+GET     /api/projects/{id}/wiki/              *Projects           --> @wiki_make', [30000]);
+	ROUTE('+GET     /api/projects/{id}/localize/          *Projects           --> @localize', [30000]);
 	ROUTE('+GET     /api/projects/discover/',                                 autodiscover);
 	ROUTE('GET      /wiki/{id}/                           *Projects           --> @wiki_read');
 

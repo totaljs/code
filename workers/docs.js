@@ -1,6 +1,10 @@
 const Fs = require('fs');
 require('total4');
 
+DEF.onError = function() {
+	process.exit(1);
+};
+
 (function() {
 
 	function analyze(body) {
@@ -233,7 +237,7 @@ require('total4');
 				route.method = arr[0].replace(/-|\+/g, '').toUpperCase();
 				route.auth = arr[0].indexOf('+') !== -1;
 				route.url = arr[1].trim();
-				route.schema = (route.method === 'API' ? arr[3] : arr[2]).replace(/\*/g, '');
+				route.schema = ((route.method === 'API' ? arr[3] : arr[2]) || '').replace(/\*/g, '');
 
 				var index = arr.findIndex('-->');
 				if (index === -1)

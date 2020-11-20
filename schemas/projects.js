@@ -69,6 +69,7 @@ NEWSCHEMA('Projects', function(schema) {
 	});
 
 	schema.addWorkflow('wiki_make', function($) {
+
 		var item = MAIN.projects.findItem('id', $.id);
 		if (!item) {
 			$.invalid('error-project');
@@ -78,6 +79,12 @@ NEWSCHEMA('Projects', function(schema) {
 		var filename = Path.join(item.path);
 		MAIN.log($.user, 'wiki_make', item, filename);
 		WORKER2('docs', [item.path], function(err, response) {
+
+			if (err) {
+				$.invalid(err);
+				return;
+			}
+
 			var md = response.toString('utf8');
 			md = '# Wiki: __' + item.name + '__\n\n- URL address: <' + item.url + '>\n- Author: __' + $.user.name + '__\n- Updated: `' + NOW.format('yyyy-MM-dd HH:mm') + '`\n\n\n## __REST API__ endpoints\n\n' + md;
 			Fs.writeFile(PATH.databases('wiki_' + $.id + '.md'), md, NOOP);
