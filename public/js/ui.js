@@ -577,6 +577,7 @@ COMPONENT('editor', function(self, config) {
 			var mode = editor.getMode().name;
 			var is = null;
 			var name, type, oldschema, oldplugin, pluginvariable, oldtask, taskvariable, tmp;
+			var ispluginable = false;
 			var val = editor.getValue();
 			var version = '';
 			var version_file = '';
@@ -647,11 +648,16 @@ COMPONENT('editor', function(self, config) {
 										break;
 									case 'plugi':
 										oldplugin = name;
-										pluginvariable = m[0].substring(m[0].indexOf('(', 10) + 1, m[0].indexOf(')'));
+										ispluginable = tmp.substring(0, 10) === 'pluginable';
+										pluginvariable = m[0].substring(m[0].indexOf('(', ispluginable ? 20 : 10) + 1, m[0].indexOf(')'));
 										break;
 								}
 
-								components.push({ line: i, ch: beg, name: name.trim(), type: type.substring(0, 3) === 'on(' ? 'event' : type === 'exten' ? 'extension' : type === 'compo' ? 'component' : type === 'newsc' ? 'schema' : type === 'confi' ? 'config' : type === 'newop' ? 'operation' : type === 'newta' ? 'task' : type === 'newco' ? 'command' : type === 'watch' ? 'watcher' : type === 'plugi' ? tmp.substring(0, 10) === 'pluginable' ? 'pluginable' : 'plugin' : type === 'middl' ? 'middleware' : type === 'route' ? 'route' : 'undefined' });
+
+								if (type === 'watch' && oldplugin)
+									name = name.replace(/\?/g, oldplugin);
+
+								components.push({ line: i, ch: beg, name: name.trim(), type: type.substring(0, 3) === 'on(' ? 'event' : type === 'exten' ? 'extension' : type === 'compo' ? 'component' : type === 'newsc' ? 'schema' : type === 'confi' ? 'config' : type === 'newop' ? 'operation' : type === 'newta' ? 'task' : type === 'newco' ? 'command' : type === 'watch' ? 'watcher' : type === 'plugi' ? ispluginable ? 'pluginable' : 'plugin' : type === 'middl' ? 'middleware' : type === 'route' ? 'route' : 'undefined' });
 								is = beg;
 							}
 						}
@@ -704,7 +710,7 @@ COMPONENT('editor', function(self, config) {
 								if (m) {
 									m = m[0].replace(REGPLUGINOP_REPLACE, '');
 									m = m.substring(0, m.indexOf(')') + 1).trim().substring(pluginvariable.length);
-									components.push({ line: i, ch: 0, name: oldplugin + m, type: 'plugin' });
+									components.push({ line: i, ch: 0, name: oldplugin + m, type: ispluginable ? 'pluginable' : 'plugin' });
 								}
 							}
 						}
