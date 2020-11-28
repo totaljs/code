@@ -82,6 +82,8 @@ Thelpers.particon = function(type) {
 			return 'fa fa-cog';
 		case 'plugin':
 			return 'fa fa-plug';
+		case 'pluginable':
+			return 'fas fa-border-outer';
 		case 'route':
 			return 'fa fa-link';
 		case 'watcher':
