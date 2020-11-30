@@ -3,7 +3,7 @@ const MSG_ONLINE = { TYPE: 'online' };
 const MSG_OFFLINE = { TYPE: 'offline' };
 
 exports.install = function() {
-	WEBSOCKET('/', realtime, ['authorize'], 1024);
+	WEBSOCKET('/', realtime, ['authorize', 'text'], 1024);
 };
 
 function realtime() {
