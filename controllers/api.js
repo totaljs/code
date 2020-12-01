@@ -67,7 +67,7 @@ exports.install = function() {
 	ROUTE('+GET     /api/templates/{id}/',                                    template);
 	ROUTE('+GET     /api/download/{id}/',                                     files_download);
 	ROUTE('+GET     /api/metainfo/{id}/',                                     files_metainfo);
-	ROUTE('+POST    /api/files/minify/                     *Minify',          files_minify);
+	ROUTE('+POST    /api/files/minify/                     *Minify           --> @exec');
 	ROUTE('+GET     /logout/',                                                redirect_logout);
 
 	ROUTE('+GET    /api/users/online/',                                       users_online);
@@ -294,11 +294,6 @@ function users_refresh() {
 		self.success();
 	} else
 		self.invalid('error-permissions');
-}
-
-function files_minify() {
-	var self = this;
-	self.body.$workflow('exec', (err, response) => self.plain(response || ''));
 }
 
 function custom_uid() {

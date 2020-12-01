@@ -30,16 +30,18 @@ NEWSCHEMA('Minify', function(schema) {
 		var model = $.model;
 		switch (model.type) {
 			case 'js':
-				model.body = U.minifyScript(model.body);
+				model.body = U.minify_js(model.body);
 				break;
 			case 'css':
-				model.body = U.minifyStyle(model.body);
+				model.body = U.minify_css(model.body);
 				break;
 			case 'html':
-				model.body = U.minifyHTML(model.body);
+				model.body = U.minify_html(model.body);
 				break;
 		}
-		$.callback(model.body);
+
+		$.controller.plain(model.body);
+		$.cancel();
 	});
 
 });
