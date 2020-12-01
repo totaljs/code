@@ -10,7 +10,7 @@ exports.install = function() {
 	ROUTE('+GET /docs/{id}/', docs);
 
 	// File routes
-	FILE('/manifest.json', manifest);
+	ROUTE('FILE /manifest.json', manifest);
 };
 
 function manifest(req, res) {
