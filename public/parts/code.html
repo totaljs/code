@@ -243,7 +243,7 @@
 			obj.offset = { x: 600, y: 300, width: 600, height: 400, minwidth: 200, minheight: 200 };
 			obj.title = '<i class="fa fa-life-ring"></i>@(Chat support with contributors)';
 			var meta = $.param({ token: common.token, nick: user.name, position: user.position, darkmode: $(document.body).hclass('td') ? 1 : 0, reference: user.id, source: location.hostname });
-			obj.html = '<div class="messenger"><{1} src="{0}" frameborder="0" scrolling="no" allowtransparency="true" allow="geolocation *; microphone *; camera *; midi *; encrypted-media *"></{1}></div>'.format('https://support.totaljs.com/?' + meta, common.electron ? 'webview' : 'iframe');
+			obj.html = '<div class="messenger"><{1} src="{0}" frameborder="0" scrolling="no" allowtransparency="true" allow="geolocation *; microphone *; camera *; midi *; encrypted-media *"></{1}></div>'.format('https://support.totaljs.com/?' + meta, 'iframe'); // common.electron ? 'webview' : 'iframe');
 			obj.actions = { minimize: true, maximize: true, move: true, resize: true, close: true, autosave: true };
 			PUSH('windows', obj);
 		};
