@@ -427,15 +427,11 @@ function makerequest() {
 	var beg = Date.now();
 
 	builder.exec(function(err, response, output) {
-		if (err)
-			self.invalid(err);
-		else {
-			output.url = method + ' ' + url;
-			output.value = undefined;
-			output.duration = Date.now() - beg;
-			output.statustext = U.httpstatus(output.status);
-			self.json(output);
-		}
+		output.url = method + ' ' + url;
+		output.value = undefined;
+		output.duration = Date.now() - beg;
+		output.statustext = U.httpstatus(output.status);
+		self.json(output);
 	});
 }
 

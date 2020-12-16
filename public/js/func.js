@@ -792,11 +792,6 @@ FUNC.requestscript = function(id, path) {
 
 		SETTER('loading/hide', 100);
 
-		if (err) {
-			SETTER('message/warning', err.toString());
-			return;
-		}
-
 		if (response instanceof Array) {
 			SETTER('message/warning', response[0].error);
 			return;
@@ -831,19 +826,9 @@ FUNC.request = function(text, body) {
 	});
 
 	SETTER('loading', 'show');
-	AJAX('POST /api/request/', { body: text }, function(response, err) {
+	AJAX('POST /api/request/', { body: text }, function(response) {
 
 		SETTER('loading', 'hide', 100);
-
-		if (err) {
-			SETTER('message', 'warning', err.toString());
-			return;
-		}
-
-		if (response instanceof Array) {
-			SETTER('message', 'warning', response[0].error);
-			return;
-		}
 
 		var builder = [];
 		var keys = Object.keys(response.headers);
