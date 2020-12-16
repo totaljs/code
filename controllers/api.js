@@ -433,7 +433,7 @@ function makerequest() {
 			output.url = method + ' ' + url;
 			output.value = undefined;
 			output.duration = Date.now() - beg;
-			output.statustext = U.httpStatus(output.status);
+			output.statustext = U.httpstatus(output.status);
 			self.json(output);
 		}
 	});

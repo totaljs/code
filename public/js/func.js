@@ -768,12 +768,8 @@ FUNC.requestscriptspawn = function(id, path) {
 
 	var winid = 'w' + GUID(10);
 	AJAX('GET /api/request/{0}/?path={1}&id={2}'.format(id, encodeURIComponent(path), winid), function(response, err) {
-		SETTER('loading/hide', 100);
 
-		if (err) {
-			SETTER('message/warning', err.toString());
-			return;
-		}
+		SETTER('loading/hide', 100);
 
 		var obj = {};
 		obj.id = winid;
@@ -785,6 +781,7 @@ FUNC.requestscriptspawn = function(id, path) {
 		obj.destroy = function() {
 			SETTER('websocket/send', { TYPE: 'x', id: winid });
 		};
+
 		PUSH('windows', obj);
 	});
 };

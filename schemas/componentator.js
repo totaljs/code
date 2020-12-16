@@ -18,13 +18,13 @@ NEWSCHEMA('Componentator', function(schema) {
 				if ($.query.minify === 'true') {
 					switch ($.query.ext) {
 						case 'html':
-							content = U.minifyHTML(content);
+							content = U.minify_html(content);
 							break;
 						case 'css':
-							content = U.minifyStyle(content);
+							content = U.minify_css(content);
 							break;
 						case 'js':
-							content = U.minifyScript(content);
+							content = U.minify_js(content);
 							break;
 					}
 				}
