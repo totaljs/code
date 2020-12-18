@@ -18,6 +18,10 @@
 			com.reconfigure({ title: id ? '@(Update)' : '@(Create)' });
 		};
 
+		exports.submit = function(hide) {
+			hide();
+		};
+
 	});
 
 </script>

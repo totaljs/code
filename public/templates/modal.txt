@@ -35,10 +35,7 @@
 		};
 
 		exports.submit = function(hide) {
-			var data = CLONE('?');
-			AJAX('POST /api/something/{id} REPEAT'.arg(data, ''), data, FUNC.messageresponse('@(NAME has been saved sucessfully.)', function() {
-				hide();
-			}));
+			hide();
 		};
 
 	});
