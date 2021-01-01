@@ -69,7 +69,7 @@
 		</div>
 	</div>
 	<nav data---="validation__projectsform">
-		<button name="submit" disabled="disabled"><i class="far fa-floppy-o mr5"></i>@(Save)</button>
+		<button name="submit" disabled="disabled"><i class="far fa-floppy-o mr5"></i>@(SAVE)</button>
 		<button name="cancel">@(Cancel)</button>
 	</nav>
 </div>
@@ -102,6 +102,10 @@
 			var data = CLONE(GETR('projectsform'));
 			AJAX('POST /api/projects/', data, function(response) {
 				if (response.success) {
+
+					if (W.code && W.code.data && data.id === W.code.data.id)
+						EXEC('code/refresh');
+
 					SET('common.form', '');
 					SETTER('notifybar/success', '@(The project has been saved successfully.)');
 					EXEC('projects/refresh');
