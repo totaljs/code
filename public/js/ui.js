@@ -1421,6 +1421,8 @@ COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 				return 'far fa-file-alt';
 			case 'md':
 				return 'fab fa-markdown';
+			case 'build':
+				return 'fa fa-paint-brush';
 			case 'bundle':
 			case 'package':
 				return 'fa fa-box';
@@ -1480,7 +1482,7 @@ COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 		}
 	};
 
-	self.template = Tangular.compile('<div class="item{{ if children }} expand{{ fi }}{{ name | treefilecolor }}" data-index="{{ $pointer }}" title="{{ name }}"><i class="icon {{ if children }}fa fa-folder{{ if isopen }}-open {{ fi }}{{ if name === \'threads\' }} special{{ fi }}{{ else }}{{ name | fileicon }}{{ fi }}"></i><span class="options"><i class="fa fa-ellipsis-h"></i></span><div>{{ name }}</div></div>');
+	self.template = Tangular.compile('<div class="item{{ if children }} expand{{ fi }}{{ name | treefilecolor }}" data-index="{{ $pointer }}" title="{{ name }}"><i class="icon {{ if children }}fa fa-folder{{ if isopen }}-open {{ fi }}{{ if name === \'threads\' || name === \'builds\' }} special{{ fi }}{{ else }}{{ name | fileicon }}{{ fi }}"></i><span class="options"><i class="fa fa-ellipsis-h"></i></span><div>{{ name }}</div></div>');
 	self.readonly();
 
 	self.resizescrollbar = function() {
@@ -13075,4 +13077,89 @@ COMPONENT('invisible', function(self) {
 			self.rclass('invisible');
 		}, 300);
 	};
+});
+
+COMPONENT('builder', 'url:https://builder.totaljs.com', function(self, config, cls) {
+
+	var self = this;
+	var opt = {};
+	var iframe;
+
+	self.singleton();
+	self.readonly();
+
+	self.make = function() {
+
+		var dom = document.createElement('DIV');
+		$('body').prepend(dom);
+
+		self.replace($(dom));
+
+		self.aclass(cls + ' hidden');
+		self.css({ position: 'absolute', 'z-index': 100, left: 0, top: common.electron ? 28 : 0, right: 0, bottom: 0 });
+		self.on('resize', self.resize);
+		$(W).on('resize', self.resize);
+
+		$(W).on('message', function(e) {
+			e = e.originalEvent;
+			var data = e.data;
+
+			if (typeof(data) === 'string')
+				data = PARSE(data);
+
+			switch (data.TYPE) {
+				case 'builder_close':
+					self.hide();
+					break;
+				case 'builder_ready':
+					WAIT(function() {
+						return iframe && iframe.contentWindow;
+					}, function() {
+						iframe.contentWindow.postMessage(STRINGIFY(opt.data), '*');
+						SETTER('loading/hide', 500);
+					});
+					break;
+				case 'builder_save':
+					delete data.TYPE;
+					opt.callback && opt.callback(data, self.hide);
+					break;
+			}
+		});
+	};
+
+	self.hide = function() {
+		if (iframe) {
+			self.find('iframe').remove();
+			iframe = null;
+			self.aclass('hidden');
+		}
+	};
+
+	self.make_iframe = function() {
+		iframe && self.find('iframe').remove();
+		self.append('<iframe src="{0}" scrolling="no" frameborder="0"></iframe>'.format(config.url));
+		iframe = self.find('iframe')[0];
+		self.resize();
+		self.rclass('hidden');
+	};
+
+	self.resize = function() {
+
+		if (!iframe)
+			return;
+
+		var css = {};
+		css.width = WW;
+		css.height = WH - self.css('top').parseInt();
+		self.css(css);
+		$(iframe).css(css);
+	};
+
+	self.load = function(data, callback) {
+		opt.data = data;
+		opt.callback = callback;
+		self.make_iframe();
+		self.rclass('hidden');
+	};
+
 });

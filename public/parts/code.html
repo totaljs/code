@@ -1459,6 +1459,29 @@
 			if (!item || item.children)
 				return;
 
+			if ((/\.build$/).test(item.path)) {
+				// open designer
+				AJAX('GET /api/projects/{id}/edit/'.arg(code.data), { path: item.path }, function(response) {
+					SETTER('loading/show');
+					SETTER('loading/hide', 2000);
+					SETTER('builder/load', response, function(response) {
+						SETTER('loading/show');
+						var data = {};
+						data.body = STRINGIFY(response);
+						data.path = item.path;
+						data.parts = [];
+						AJAX('POST /api/files/{id}/ REPEAT'.arg(code.data), data, ASETTER('message/response', function(response) {
+							SETTER('loading/hide', 500);
+							FUNC.wssend({ TYPE: 'save', connid: common.id, projectid: code.projectid, id: user.id, user: user.name });
+							FUNC.success((response.value === 'synchronized' ? '@(<b>{0}</b> saved and synchronized.)' : '@(<b>{0}</b> saved successfully.)').format(data.path));
+							common.electron && code.data.repository && user.localsave && exports.savelocal();
+							FUNC.livereload(data.path);
+						}));
+					});
+				});
+				return;
+			}
+
 			code.SYNCUSER = null;
 			code.SYNCID = null;
 
@@ -1769,6 +1792,11 @@
 			if (node.name === 'bundles')
 				items.push({ value: 'bundles', name: '@(Download bundles)', icon: 'cloud-download', classname: 'b' });
 
+			if (node.name === 'builds') {
+				if (!node.children.findItem('name', 'app.build'))
+					items.push({ makefile: true, name: '@(Create:) app.build', icon: 'paint-brush' });
+			}
+
 			if (node.name === 'definitions') {
 
 				items.push({ value: 'definitions', name: '@(Download definitions)', icon: 'cloud-download', classname: 'b' });
@@ -1976,7 +2004,7 @@
 		};
 
 		exports.close = function(el, e) {
-			var path = code.current.path;
+			var path = code.current ? code.current.path : '';
 			if (el instanceof jQuery)
 				path = el.parent().attrd('value');
 			var tab = code.open.findItem('path', path);
@@ -2726,6 +2754,9 @@
 
 					for (var i = 0; i < code.tree.length; i++)
 						directory[code.tree[i].name] = 1;
+
+					if (!directory.builds)
+						opt.items.push({ name: '<strong>@(Create):</strong> /builds', icon: '!far fa-folder', value: '/builds/' });
 
 					if (!directory.bundles)
 						opt.items.push({ name: '<strong>@(Create):</strong> /bundles', icon: '!far fa-folder', value: '/bundles/' });
