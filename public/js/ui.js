@@ -13137,7 +13137,7 @@ COMPONENT('builder', 'url:https://builder.totaljs.com', function(self, config, c
 
 	self.make_iframe = function() {
 		iframe && self.find('iframe').remove();
-		self.append('<iframe src="{0}?darkmode={1}" scrolling="no" frameborder="0"></iframe>'.format(config.url, user.darkmode));
+		self.append('<iframe src="{0}?darkmode={1}" scrolling="no" frameborder="0"></iframe>'.format(config.url, $('body').hclass('td') ? 1 : 0));
 		iframe = self.find('iframe')[0];
 		self.resize();
 		self.rclass('hidden');
@@ -13156,7 +13156,7 @@ COMPONENT('builder', 'url:https://builder.totaljs.com', function(self, config, c
 	};
 
 	self.load = function(data, callback) {
-		opt.data = data;
+		opt.data = (data ? data.substring(0, data.length - 1) + ',' : '{') + '"user":' + JSON.stringify({ id: user.id, name: user.name, url: location.origin, email: user.email, sa: user.sa }) + '}';
 		opt.callback = callback;
 		self.make_iframe();
 		self.rclass('hidden');
