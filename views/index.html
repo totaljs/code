@@ -638,8 +638,8 @@
 			common.idletime++;
 
 			// 7 minutes idle time
-			if (common.idletime > 7)
-				location.href = $('.pause').attr('href');
+			if (common.idletime > 7 && !FIND('builder').element.hclass('hidden'))
+				location.href = $('.pause').attr('href')
 
 		});
 
