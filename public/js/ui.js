@@ -13137,7 +13137,7 @@ COMPONENT('builder', 'url:https://builder.totaljs.com', function(self, config, c
 
 	self.make_iframe = function() {
 		iframe && self.find('iframe').remove();
-		self.append('<iframe src="{0}" scrolling="no" frameborder="0"></iframe>'.format(config.url));
+		self.append('<iframe src="{0}?darkmode={1}" scrolling="no" frameborder="0"></iframe>'.format(config.url, user.darkmode));
 		iframe = self.find('iframe')[0];
 		self.resize();
 		self.rclass('hidden');
