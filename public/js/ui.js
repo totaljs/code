@@ -1422,7 +1422,7 @@ COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 			case 'md':
 				return 'fab fa-markdown';
 			case 'build':
-				return 'fa fa-paint-brush';
+				return 'fa fa-code-branch';
 			case 'bundle':
 			case 'package':
 				return 'fa fa-box';
