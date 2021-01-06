@@ -640,7 +640,7 @@
 			var builder = FIND('builder');
 
 			// 7 minutes idle time
-			if (common.idletime > 7 && (!builder || !builder.element.hclass('hidden')))
+			if (common.idletime > 7 && (!builder || builder.element.hclass('hidden')))
 				location.href = $('.pause').attr('href')
 
 		});
