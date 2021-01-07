@@ -1,4 +1,4 @@
-<div data---="form__common.form__if:NAME;icon:hashtag;autofocus:true;reload:?/reload;scrollbar:1;submit:?/submit;width:500" class="hidden" data-scope="NAME">
+<div data---="miniform__common.form__if:NAME;icon:hashtag;autofocus:true;reload:?/reload;scrollbar:1;submit:?/submit;width:800" class="hidden" data-scope="NAME">
 	<div class="padding">
 		YOUR CODE
 	</div>
