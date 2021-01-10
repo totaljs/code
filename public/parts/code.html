@@ -630,6 +630,9 @@
 				items.push({ name: '@(Copy with syntax)', icon: 'print', value: 'copysyntax' });
 				items.push({ name: '@(Copy as Markdown)', icon: '!fab fa-markdown', value: 'copymarkdown' });
 
+				if (text.indexOf('<') !== -1)
+					items.push({ name: '@(Copy without tags)', icon: '!far fa-copy', value: 'copytext' });
+
 				if (text.indexOf('.define(\'') !== -1)
 					items.push({ name: '@(Copy as JSON)', icon: '!fa fa-code', value: 'copyasjson' });
 
@@ -788,9 +791,10 @@
 					sub.push({ name: '@(HTML template)', icon: 'code', value: 'template', id: 'html' });
 					sub.push({ name: '@(Mail template)', icon: 'code', value: 'template', id: 'email' });
 					sub.push({ name: '@(Plugin)', icon: 'code', value: 'template', id: 'plugin' });
+					sub.push({ name: '@(j-MiniForm)', icon: 'code', value: 'template', id: 'miniform' });
 					sub.push({ name: '@(j-Form)', icon: 'code', value: 'template', id: 'form' });
 					sub.push({ name: '@(j-LargeForm)', icon: 'code', value: 'template', id: 'largeform' });
-					sub.push({ name: '@(j-MiniForm)', icon: 'code', value: 'template', id: 'miniform' });
+					sub.push({ name: '@(j-FullForm)', icon: 'code', value: 'template', id: 'fullform' });
 					sub.push({ name: '@(j-Modal)', icon: 'code', value: 'template', id: 'modal' });
 					sub.push({ name: '@(j-Panel)', icon: 'code', value: 'template', id: 'panel' });
 					sub.push({ name: '@(j-Window)', icon: 'code', value: 'template', id: 'window' });
@@ -874,6 +878,11 @@
 
 				if (value.value === 'copyasjson') {
 					SETTER('clipboard/copy', FUNC.makejsonfromschema(text));
+					return;
+				}
+
+				if (value.value === 'copytext') {
+					SETTER('clipboard/copy', text.removeTags());
 					return;
 				}
 
