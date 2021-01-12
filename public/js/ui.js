@@ -13096,7 +13096,7 @@ COMPONENT('builder', 'url:https://builder.totaljs.com', function(self, config, c
 		self.replace($(dom));
 
 		self.aclass(cls + ' hidden');
-		self.css({ position: 'absolute', 'z-index': 100, left: 0, top: common.electron ? 28 : 0, right: 0, bottom: 0 });
+		self.css({ position: 'absolute', 'z-index': 100, left: 0, top: common.electron ? (common.ismac ? 28 : 1) : 0, right: 0, bottom: 0 });
 		self.on('resize', self.resize);
 		$(W).on('resize', self.resize);
 
