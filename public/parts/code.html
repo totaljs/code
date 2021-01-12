@@ -390,6 +390,7 @@
 				obj.actions = { minimize: false, maximize: false, move: true, resize: true, autosave: true, menu: true, hide: true };
 				obj.make = function(el) {
 					el.parent().find('.ui-windows-lastbutton').rclass2('fa-').aclass('fa-trash-o');
+					el.closest('.ui-windows-item').css('z-index', 101);
 				};
 				obj.close = function(next) {
 					next();
