@@ -142,9 +142,13 @@
 
 		if (common.electron) {
 			process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
-			common.META = require('electron').remote.getGlobal('META') || EMPTYOBJECT;
-			if (common.META.version && navigator.userAgent.indexOf('Macintosh') !== -1)
-				$('body').aclass('electron');
+
+			(function() {
+				var Electron = require('electron');
+				common.META = Electron.remote ? Electron.remote.getGlobal('META') || EMPTYOBJECT : Electron.ipcRenderer.sendSync('getMeta');
+				if (common.META.version && navigator.userAgent.indexOf('Macintosh') !== -1)
+					$('body').aclass('electron');
+			})();
 		}
 
 		CACHEPATH('common.recent', '1 year');
