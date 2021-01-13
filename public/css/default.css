@@ -691,6 +691,8 @@ header .tools .external { color: #a2a286; }
 .td .ui-scrollbar-y span, .td .ui-scrollbar-x span{ background-color: #505050; }
 .td .ui-scrollbar-y, .td .ui-scrollbar-x { background-color: #303030; }
 .td .ui-scrollbar-y span:hover, .td .ui-scrollbar-x span:hover { background-color: #606060; }
+.td .ui-scrollbar-shadow-top{background:linear-gradient(#0000006b,transparent)!important}
+.td .ui-scrollbar-shadow-bottom{background:linear-gradient(transparent,#0000006b)!important}
 
 .ui-panel-toolbar { padding: 0 10px 0; height: 20px; border-bottom: 1px solid #E0E0E0; }
 .td .ui-panel-toolbar { border-bottom-color: #303030; }
