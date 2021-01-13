@@ -1067,7 +1067,96 @@ FUNC.colorize = function(css, cls) {
 		}
 	}
 
-	return builder.join('\n');
+	var arr = [];
+	var prev = '';
+	for (var i = 0; i < builder.length; i++) {
+		var line = builder[i];
+		if (prev === line)
+			continue;
+		prev = line;
+		arr.push(line);
+	}
+
+	return arr.join('\n');
+};
+
+FUNC.responsive = function(css) {
+
+	var lines = css.split('\n');
+	var builder = [];
+
+	for (var i = 0; i < lines.length; i++) {
+
+		var line = lines[i];
+
+		if (!line) {
+			builder.push('');
+			continue;
+		}
+
+		var beg = line.indexOf('{');
+		if (beg === -1)
+			continue;
+
+		var end = line.lastIndexOf('}');
+		if (end === -1)
+			continue;
+
+		var cmd = line.substring(beg + 1, end).split(';');
+		var cmdnew = [];
+
+		for (var j = 0; j < cmd.length; j++) {
+			var c = cmd[j].trim().split(':').trim();
+			switch (c[0]) {
+				case 'margin':
+				case 'left':
+				case 'top':
+				case 'right':
+				case 'bottom':
+				case 'padding':
+				case 'max-width':
+				case 'max-height':
+				case 'position':
+				case 'z-index':
+				case 'min-width':
+				case 'min-height':
+				case 'margin-left':
+				case 'margin-top':
+				case 'margin-right':
+				case 'margin-bottom':
+				case 'padding-left':
+				case 'padding-top':
+				case 'padding-right':
+				case 'padding-bottom':
+				case 'width':
+				case 'font':
+				case 'font-size':
+				case 'line-height':
+				case 'height':
+					cmdnew.push(c[0] + ': ' + c[1]);
+					break;
+			}
+		}
+		if (cmdnew.length) {
+			var selector = line.substring(0, beg).trim();
+			var sel = selector.split(',').trim();
+			for (var k = 0; k < sel.length; k++)
+				sel[k] = sel[k].trim().replace(/\s{2,}/g, ' ');
+			builder.push(sel.join(', ') + ' { ' + cmdnew.join('; ') + '; }');
+		}
+	}
+
+	var arr = [];
+	var prev = '';
+	for (var i = 0; i < builder.length; i++) {
+		var line = builder[i];
+		if (prev === line)
+			continue;
+		prev = line;
+		arr.push(line);
+	}
+
+	return arr.join('\n');
 };
 
 FUNC.makejsonfromschema = function(val) {

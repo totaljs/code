@@ -648,9 +648,12 @@
 					tools.push({ name: '@(Parse keys)', icon: 'barcode', value: 'parsekeys' });
 
 				if ((code.current.ext === 'css' || code.current.ext === 'html') && (/\:(\s)?#|#\w{6}|color\:/).test(text))
-					items.push({ name: '@(Transform for Dark mode)', icon: 'tint', value: 'darkmode' });
+					items.push({ name: '@(Transform to Dark mode)', icon: 'tint', value: 'darkmode' });
 
-				if ((/(#)?[A-F0-9]{6}/i).test(text))
+				if ((code.current.ext === 'css' || code.current.ext === 'html'))
+					items.push({ name: '@(Transform to Responsive)', icon: 'tablet', value: 'responsive' });
+
+				if ((/(#)?[A-F0-9]{6}/i).test(text) && text.indexOf('\n') === -1)
 					items.push({ name: '@(Convert to RGBA)', icon: 'palette', value: 'hex2rgba' });
 
 				if (((/\d+,(\s)?\d+,(\s)?\d+/i)).test(text))
@@ -864,6 +867,11 @@
 
 				if (value.value === 'darkmode') {
 					editor.replaceSelection(FUNC.colorize(text, '.ui-dark'));
+					return;
+				}
+
+				if (value.value === 'responsive') {
+					editor.replaceSelection(FUNC.responsive(text));
 					return;
 				}
 
