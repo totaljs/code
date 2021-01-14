@@ -59,10 +59,11 @@ NEWSCHEMA('Chat', function(schema) {
 				MAIN.save(1);
 			}
 
-			MAIN.ws && MAIN.ws.send2(msg, client => client.user.id === msg.owner || client.user.id === msg.user);
+			MAIN.ws && MAIN.ws.send(msg, client => client.user.id === msg.owner || client.user.id === msg.user);
+
 		} else if (MAIN.ws) {
 
-			MAIN.ws.send2(msg);
+			MAIN.ws.send(msg);
 
 			var offline = 0;
 

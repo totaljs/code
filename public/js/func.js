@@ -171,15 +171,22 @@ FUNC.bytelength = function(str) {
 FUNC.cleanduplicatedlines = function(val) {
 
 	var output = [];
+	var cache = [];
+
 	val = val.split('\n');
+
 	for (var i = 0; i < val.length; i++) {
 		var line = val[i];
 		if (!line) {
 			output.push('');
 			continue;
 		}
-		if (output.indexOf(line) === -1)
+
+		var k = line.trim();
+		if (cache.indexOf(k) !== -1) {
 			output.push(line);
+			cache.push(k);
+		}
 	}
 
 	return output.join('\n');
@@ -333,6 +340,9 @@ FUNC.usercolor = function(value) {
 	var arr = value.substring(index + 1).replace(/\s{2,}/g, ' ').trim().split(' ');
 	var initials = (arr[0].substring(0, 1) + (arr[1] || '').substring(0, 1));
 	var sum = 0;
+
+	if (initials.length === 1 && arr[0].length > 1)
+		initials += arr[0].substring(arr[0].length - 1).toUpperCase();
 
 	for (var i = 0; i < value.length; i++)
 		sum += value.charCodeAt(i);
@@ -753,16 +763,34 @@ FUNC.aligntext = function(sel) {
 	return sel;
 };
 
+FUNC.requestscriptspawn = function(id, path) {
+	SETTER('loading/show');
+
+	var winid = 'w' + GUID(10);
+	AJAX('GET /api/request/{0}/?path={1}&id={2}'.format(id, encodeURIComponent(path), winid), function(response, err) {
+
+		SETTER('loading/hide', 100);
+
+		var obj = {};
+		obj.id = winid;
+		obj.cachekey = 'spawn';
+		obj.offset = { x: 600, y: 400, width: 650, height: 300, minwidth: 200, minheight: 200 };
+		obj.title = '<i class="fa fa-pulse fa-spinner"></i>' + Thelpers.encode(path);
+		obj.html = '<div data---="viewbox__common.spawns.{0}__parent:.ui-windows-body;scrollbottom:1;scrollbar:1"><div class="padding"><pre data-bind="common.spawns.{0}__text:value?value.join(\'\'):\'\'" style="padding:0;margin:0;font-family:Menlo,Menlo2;font-size:14px"></pre></div></div>'.format(obj.id);
+		obj.actions = { minimize: true, maximize: true, move: true, resize: true, close: true, autosave: true };
+		obj.destroy = function() {
+			SETTER('websocket/send', { TYPE: 'x', id: winid });
+		};
+
+		PUSH('windows', obj);
+	});
+};
+
 FUNC.requestscript = function(id, path) {
 	SETTER('loading/show');
 	AJAX('GET /api/request/{0}/?path={1}'.format(id, encodeURIComponent(path)), function(response, err) {
 
 		SETTER('loading/hide', 100);
-
-		if (err) {
-			SETTER('message/warning', err.toString());
-			return;
-		}
 
 		if (response instanceof Array) {
 			SETTER('message/warning', response[0].error);
@@ -798,19 +826,9 @@ FUNC.request = function(text, body) {
 	});
 
 	SETTER('loading', 'show');
-	AJAX('POST /api/request/', { body: text }, function(response, err) {
+	AJAX('POST /api/request/', { body: text }, function(response) {
 
 		SETTER('loading', 'hide', 100);
-
-		if (err) {
-			SETTER('message', 'warning', err.toString());
-			return;
-		}
-
-		if (response instanceof Array) {
-			SETTER('message', 'warning', response[0].error);
-			return;
-		}
 
 		var builder = [];
 		var keys = Object.keys(response.headers);
@@ -838,7 +856,13 @@ FUNC.request = function(text, body) {
 				builder.push(template.format(key, Thelpers.encode(val)));
 		}
 
-		builder.push(template.format('Response (' + (response.duration / 1000) + ' s)', Thelpers.encode(response.response).replace(/\n/g, '<br />')));
+
+		var json = null;
+		try {
+			json = JSON.parse(response.response);
+		} catch (e) {}
+
+		builder.push(template.format('Response (' + (response.duration / 1000) + ' s)', json ? ('<pre>' + FUNC.formatjson(json) + '</pre>') : Thelpers.encode(response.response).replace(/\n/g, '<br />')));
 
 		PUSH('^output', '<div class="output-response"><div class="output-response-caption" title="{0}">{0}</div>{1}</div>'.format(Thelpers.encode(response.url), builder.join('')));
 		SET('common.form', 'output');
@@ -868,6 +892,7 @@ FUNC.alignrouting = function(text) {
 	var maxmethod = 0;
 	var maxurl = 0;
 	var maxschema = 0;
+	var maxid = 0;
 
 	for (var i = 0; i < lines.length; i++) {
 		var line = lines[i];
@@ -886,8 +911,21 @@ FUNC.alignrouting = function(text) {
 		if (data[1].length > maxurl)
 			maxurl = data[1].length;
 
-		if (data[2] && data[2].length > maxschema)
-			maxschema = data[2].length;
+		if (line.indexOf('API') === -1) {
+
+			if (data[2] && data[2].length > maxschema)
+				maxschema = data[2].length;
+
+		} else {
+
+			if (data[2] && data[2].length > maxid)
+				maxid = data[2].length;
+
+			if (data[3] && data[3].length > maxschema)
+				maxschema = data[3].length;
+
+		}
+
 
 		beg = line.indexOf(',');
 	}
@@ -895,6 +933,9 @@ FUNC.alignrouting = function(text) {
 	maxmethod += 4;
 	maxurl += 4;
 	maxschema += 2;
+
+	if (maxid)
+		maxid += 4;
 
 	for (var i = 0; i < lines.length; i++) {
 		var line = lines[i];
@@ -909,6 +950,9 @@ FUNC.alignrouting = function(text) {
 		var builder = [];
 
 		for (var j = 0; j < data.length; j++) {
+
+			var c = data[j].charAt(0);
+
 			// method
 			switch (j) {
 
@@ -921,7 +965,21 @@ FUNC.alignrouting = function(text) {
 					break;
 
 				case 2: // schema
-					builder.push(data[j].padRight(maxschema, ' '));
+
+					if (c === '-' || c === '+' || c === '#') {
+						builder.push(data[j].padRight(maxid, ' '));
+					} else {
+						maxid && builder.push(''.padRight(maxid, ' '));
+						builder.push(data[j].padRight(maxschema, ' '));
+					}
+
+					break;
+
+				case 3: // schema
+					if (c === '-' || c === '+' || c === '#')
+						builder.push(' ' + data[j]);
+					else
+						builder.push(data[j].padRight(maxschema, ' '));
 					break;
 
 				default: // operations
@@ -932,7 +990,7 @@ FUNC.alignrouting = function(text) {
 		}
 
 		var clean = line.substring(end).replace(/\s{2,}/, ' ');
-		lines[i] = line.substring(0, beg) + '\'' + builder.join('') + clean;
+		lines[i] = line.substring(0, beg) + '\'' + builder.join('').trim() + clean;
 	}
 
 	return lines.join('\n');
@@ -1009,7 +1067,96 @@ FUNC.colorize = function(css, cls) {
 		}
 	}
 
-	return builder.join('\n');
+	var arr = [];
+	var prev = '';
+	for (var i = 0; i < builder.length; i++) {
+		var line = builder[i];
+		if (prev === line)
+			continue;
+		prev = line;
+		arr.push(line);
+	}
+
+	return arr.join('\n');
+};
+
+FUNC.responsive = function(css) {
+
+	var lines = css.split('\n');
+	var builder = [];
+
+	for (var i = 0; i < lines.length; i++) {
+
+		var line = lines[i];
+
+		if (!line) {
+			builder.push('');
+			continue;
+		}
+
+		var beg = line.indexOf('{');
+		if (beg === -1)
+			continue;
+
+		var end = line.lastIndexOf('}');
+		if (end === -1)
+			continue;
+
+		var cmd = line.substring(beg + 1, end).split(';');
+		var cmdnew = [];
+
+		for (var j = 0; j < cmd.length; j++) {
+			var c = cmd[j].trim().split(':').trim();
+			switch (c[0]) {
+				case 'margin':
+				case 'left':
+				case 'top':
+				case 'right':
+				case 'bottom':
+				case 'padding':
+				case 'max-width':
+				case 'max-height':
+				case 'position':
+				case 'z-index':
+				case 'min-width':
+				case 'min-height':
+				case 'margin-left':
+				case 'margin-top':
+				case 'margin-right':
+				case 'margin-bottom':
+				case 'padding-left':
+				case 'padding-top':
+				case 'padding-right':
+				case 'padding-bottom':
+				case 'width':
+				case 'font':
+				case 'font-size':
+				case 'line-height':
+				case 'height':
+					cmdnew.push(c[0] + ': ' + c[1]);
+					break;
+			}
+		}
+		if (cmdnew.length) {
+			var selector = line.substring(0, beg).trim();
+			var sel = selector.split(',').trim();
+			for (var k = 0; k < sel.length; k++)
+				sel[k] = sel[k].trim().replace(/\s{2,}/g, ' ');
+			builder.push(sel.join(', ') + ' { ' + cmdnew.join('; ') + '; }');
+		}
+	}
+
+	var arr = [];
+	var prev = '';
+	for (var i = 0; i < builder.length; i++) {
+		var line = builder[i];
+		if (prev === line)
+			continue;
+		prev = line;
+		arr.push(line);
+	}
+
+	return arr.join('\n');
 };
 
 FUNC.makejsonfromschema = function(val) {
@@ -1108,4 +1255,130 @@ FUNC.parsekeys = function(value) {
 FUNC.maketabname = function(path) {
 	var index = path.lastIndexOf('/');
 	return path.substring(index + 1);
+};
+
+FUNC.formatjson = function(obj) {
+	var reguid2 = /"\d{14,}[a-z]{3}[01]{1}|"\d{9,14}[a-z]{2}[01]{1}a|"\d{4,18}[a-z]{2}\d{1}[01]{1}b|"[0-9a-f]{4,18}[a-z]{2}\d{1}[01]{1}c"/g;
+	obj.HTML = undefined;
+	return JSON.stringify(obj, null, '\t').replace(/\t.*?:\s/g, function(text) {
+		return '<span class="db-object">' + text + '</span>';
+	}).replace(/\/span>false/g, function() {
+		return '/span><span class="db-string">false</span>';
+	}).replace(/\/span>null/g, function() {
+		return '/span><span class="db-null">null</span>';
+	}).replace(reguid2, function(text) {
+		return '<span class="db-uid">' + text + '</span>';
+	});
+};
+
+FUNC.removecssclass = function(cls, value) {
+
+	var lines = value.split('\n');
+	var builder = [];
+	var regwhite = (/\s$/);
+	var index;
+	var end;
+
+	for (var i = 0; i < lines.length; i++) {
+		var line = lines[i];
+		var beg = 0;
+
+		index = line.indexOf('{', beg);
+
+		if (index === -1) {
+			builder.push(line);
+			continue;
+		}
+
+		var cmd = [];
+		var subindex = 0;
+		var end = 0;
+
+		while (true) {
+			end = line.indexOf('}', subindex + 1);
+
+			if (end === -1) {
+				cmd.push(line.substring(subindex));
+				break;
+			}
+
+			cmd.push(line.substring(subindex, end + 1));
+			subindex = end + 1;
+		}
+
+		var cleaned = [];
+
+		for (var x = 0; x < cmd.length; x++) {
+
+			if (cmd[x] === '{' || cmd[x] === '}') {
+				cleaned.push(cmd[x]);
+				continue;
+			}
+
+			subindex = cmd[x].indexOf('{');
+
+			var selectors = cmd[x].substring(0, subindex);
+			var plus = '';
+
+			for (var j = 0; j < selectors.length; j++) {
+				var c = selectors.charAt(j);
+				if (c === '\t')
+					plus += c;
+				else
+					break;
+			}
+
+			var sel = selectors.split(',');
+			var upd = [];
+
+			for (var j = 0; j < sel.length; j++) {
+				var item = sel[j];
+				var trimmed = item.trim();
+				if (trimmed && trimmed.indexOf(cls) === -1)
+					upd.push(trimmed);
+			}
+
+			if (upd.length) {
+				var tmp = plus + upd.join(', ');
+				cleaned.push(tmp + (regwhite.test(tmp) ? '' : ' ') + cmd[x].substring(subindex));
+			}
+		}
+
+		if (cleaned.length)
+			builder.push(cleaned.join(''));
+
+		if (builder[builder.length - 1] === '')
+			builder.pop();
+	}
+
+	return builder.join('\n');
+};
+
+FUNC.livereload = function(filename) {
+
+	var timeout = 100;
+
+	// Needs restaring of the server
+	if (!(/\/(public|views)\//gi).test(filename))
+		timeout = 2500;
+
+	code.data && code.data.url && code.data.url.length > 3 && W.WSLIVERELOAD && setTimeout2('livereload', function(filename) {
+		W.WSLIVERELOAD.send(code.data.url.replace(/^(https|http):\/\//g, '') + filename + ',' + user.id);
+	}, timeout, null, filename || '');
+};
+
+FUNC.livereloadconnect = function() {
+
+	if (W.WSLIVERELOAD)
+		return;
+
+	var ws = new WebSocket('wss://livereload.totaljs.com/?hostname=' + code.data.url.replace(/^(https|http):\/\//g, ''));
+	ws.onopen = function() {
+		W.WSLIVERELOAD = ws;
+	};
+	ws.onclose = function() {
+		W.WSLIVERELOAD = null;
+		if (code.data && code.data.livereload)
+			setTimeout(FUNC.livereloadconnect, 3000);
+	};
 };

@@ -9,6 +9,7 @@
 	PLUGIN('NAME', function(exports) {
 
 		exports.reload = function() {
+			exports.refresh();
 		};
 
 		exports.refresh = function() {

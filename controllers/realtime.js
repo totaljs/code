@@ -3,7 +3,7 @@ const MSG_ONLINE = { TYPE: 'online' };
 const MSG_OFFLINE = { TYPE: 'offline' };
 
 exports.install = function() {
-	WEBSOCKET('/', realtime, ['authorize'], 1024);
+	ROUTE('+SOCKET /', realtime, ['text'], 1024);
 };
 
 function realtime() {
@@ -42,18 +42,26 @@ function realtime() {
 		// {"TYPE":"edit"
 		// {"TYPE":"online"
 		// {"TYPE":"offline"
+		// {"TYPE":"x" -> spawn destroy
 		if (msg[9] === 'e') {
 			msg = msg.parseJSON();
-			client.code.fileid && refresh_collaborators(self, client);
-			client.code.projectid = msg.projectid || '';
-			client.code.fileid = msg.fileid;
-			client.code.openid = (msg.openid || 0).toString();
-			client.code.ts = Date.now();
-			refresh_collaborators(self, client, true);
+			if (msg) {
+				client.code.fileid && refresh_collaborators(self, client);
+				client.code.projectid = msg.projectid || '';
+				client.code.fileid = msg.fileid;
+				client.code.openid = (msg.openid || 0).toString();
+				client.code.ts = Date.now();
+				refresh_collaborators(self, client, true);
+			}
 		} else if (msg[9] === 's' && msg[12] === 'e')
-			self.send2(msg);
-		else
-			self.send2(msg, openidcomparer);
+			self.send(msg);
+		else if (msg[9] === 'x') {
+			msg = msg.parseJSON();
+			if (MAIN.spawns[msg.id]) {
+				MAIN.spawns[msg.id].kill(9);
+			}
+		} else
+			self.send(msg, openidcomparer);
 	});
 }
 
@@ -70,8 +78,8 @@ function refresh_collaborators(ws, client, add) {
 	MSG_OPEN.project = [];
 	MSG_OPEN.file = [];
 
-	for (var i = 0; i < ws._keys.length; i++) {
-		var key = ws._keys[i];
+	for (var i = 0; i < ws.keys.length; i++) {
+		var key = ws.keys[i];
 		var con = ws.connections[key];
 
 		if (!con.code.fileid || (con.code.id !== client.code.id && !add))
@@ -89,5 +97,5 @@ function refresh_collaborators(ws, client, add) {
 	else
 		MSG_OPEN.TYPE = 'close';
 
-	ws.send2(MSG_OPEN);
+	ws.send(MSG_OPEN);
 }

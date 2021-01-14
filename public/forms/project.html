@@ -3,7 +3,7 @@
 		<div class="padding">
 			<div class="row">
 				<div class="col-sm-6 m">
-					<div data---="input__?.path__required:true__'/www/www/'">@(Path)</div>
+					<div data---="input__?.path__required:true__'/www/www/'">@(Absolute path)</div>
 					<div class="help">
 						<span class="link exec" data-exec="?/autocomplete"><i class="fa fa-search"></i>@(Browse)</span>
 					</div>
@@ -45,8 +45,11 @@
 			<div data---="checkbox__?.skiptmp__null__true">@(Skip <b>tmp</b> directory)</div>
 			<div data---="checkbox__?.skipsrc__null__true">@(Skip <b>.src</b> directory)</div>
 			<div data---="checkbox__?.skipnm__null__true">@(Skip <b>node_modules</b> directory)</div>
-			<div data---="checkbox__?.allowscripts__null__true">@(Allow scripts)</div>
 			<div data---="checkbox__?.allowbundle__null__true">@(Allow bundle making)</div>
+			<hr />
+			<div data---="checkbox__?.allowscripts__null__true">@(Allow scripts)</div>
+			<div data---="checkbox__?.allowlivereload__null__false">@(Allow live reload)</div>
+			<div data---="checkbox__?.servicemode__null__false">@(Enable a service mode)</div>
 		</div>
 		<hr class="nmt nmb" />
 		<div class="padding">
@@ -66,7 +69,7 @@
 		</div>
 	</div>
 	<nav data---="validation__projectsform">
-		<button name="submit" disabled="disabled"><i class="far fa-floppy-o mr5"></i>@(Save)</button>
+		<button name="submit" disabled="disabled"><i class="far fa-floppy-o mr5"></i>@(SAVE)</button>
 		<button name="cancel">@(Cancel)</button>
 	</nav>
 </div>
@@ -99,6 +102,10 @@
 			var data = CLONE(GETR('projectsform'));
 			AJAX('POST /api/projects/', data, function(response) {
 				if (response.success) {
+
+					if (W.code && W.code.data && data.id === W.code.data.id)
+						EXEC('code/refresh');
+
 					SET('common.form', '');
 					SETTER('notifybar/success', '@(The project has been saved successfully.)');
 					EXEC('projects/refresh');

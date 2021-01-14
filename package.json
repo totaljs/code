@@ -1,14 +1,14 @@
 {
   "name": "Code",
   "description": "Code Editor is a simple web alternative to Sublime Text Editor with real-time collaboration.",
-  "version": "1.0.0",
-  "main": "release.js",
+  "version": "1.5.0",
+  "main": "index.js",
   "repository": {
       "type": "git",
       "url": "https://github.com/totaljs/code"
   },
   "dependencies": {
-    "total.js": "latest",
+    "total4": "latest",
     "pg": "latest"
   },
   "scripts": {

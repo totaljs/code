@@ -10,7 +10,7 @@
 				{{ end }}
 			</script>
 		</div>
-		<div data---="viewbox__code.tree__scrollbar:1;parent:.ui-dockable-body;margin:86" data-bind="code.data__show" class="hidden">
+		<div data---="viewbox__code.tree__scrollbar:1;parent:.ui-dockable-body;margin:86;visibleY:0" data-bind="code.data__show" class="hidden">
 			<div class="changedfiles hidden" data-bind="code.recent__template__show:value && value.length">
 				<script type="text/html">
 					<div><i class="far fa-clock-o"></i>@(Last changed files)</div>
@@ -52,6 +52,7 @@
 
 		<div class="body-title">@(Total.js Code Editor v)<span data-bind="common.version__text"></span></div>
 		<section class="tabs">
+			<span class="livereloadindicator" data-bind="code.data.livereload__show" class="hidden"><i class="fa fa-circle green"></i></span>
 			<a data-bind="code.data.url__href__show" target="_blank" class="preview" title="@(Preview)"><i class="fa fa-globe"></i></a>
 			<span class="options exec hidden" data-bind="code.editor__show" data-exec="code/options_editor"><i class="fa fa-cog"></i></span>
 			<span class="options2 exec hidden" data-bind="code.editor__show" data-exec="code/branches"><i class="fa fa-code-branch"></i></span>
@@ -63,12 +64,13 @@
 		</section>
 		<div data-bind="code.editor.path__visible" class="invisible">
 			<div class="search">
-				<span><i class="fa fa-search"></i>@(Search)</span>
+				<span class="label"><i class="fa fa-search"></i>@(Search)</span>
 				<nav>
 					<button class="search-cancel hidden" name="clear" title="@(Clear search)"><i class="fa fa-times red"></i></button>
 					<button class="search-op" name="prev" disabled="disabled" title="@(Previous result)"><i class="fa fa-angle-up"></i></button>
 					<button class="search-op" name="next" disabled="disabled" title="@(Next result)"><i class="fa fa-angle-down"></i></button>
 				</nav>
+				<span class="count hidden"></span>
 				<div><input type="text" maxlength="100" placeholder="@(Type to search and press enter)" /></div>
 			</div>
 		</div>
@@ -82,6 +84,17 @@
 				<div class="alert hidden" data-bind="code.multiple__show" data-name="multiple" style="z-index:1001"><i class="fa fa-times exec" data-exec="code/warning"></i><i class="fa fa-users"></i>@(Be careful because another user is editing content of this file.) <span class="link exec b ml5" data-exec="code/syncdata"><i class="fa fa-refresh fa-spin mr5"></i>@(Synchronize)</span> @(or) <span class="link exec" data-exec="code/warning">@(Cancel)</span>.</div>
 			</div>
 		</div>
+
+		<div data-bind="code.fileversion__text__show" class="fileversion"></div>
+
+		<div data-bind="code.colorpalette__template" class="colorpalette">
+			<script type="text/html">
+				{{ foreach m in value }}
+					<span class="exec" data-exec="code/appendcolor" data-color="{{ m }}" title="{{ m }}" style="background-color:{{ m }}"></span>
+				{{ end }}
+			</script>
+		</div>
+
 	</div>
 
 	<section class="status invisible" data-bind="code.data__invisible:!value">
@@ -102,7 +115,7 @@
 		</div>
 		<div class="status-modified exec" data-bind="code.current.lastmodified__template__show" data-path="common.form" data-value="'backups'">
 			<script type="text/html">
-				{{ if value }}
+				{{ if value && value.updated }}
 					{{ value.user | initials }}
 				 	<div><i class="fa fa-history"></i><b title="{{ value.updated | format('[date]') }}" class="time" data-time="{{ value.updated | utc }}">{{ value.updated | time }}</b></div>
 				{{ fi }}
@@ -230,7 +243,7 @@
 			obj.offset = { x: 600, y: 300, width: 600, height: 400, minwidth: 200, minheight: 200 };
 			obj.title = '<i class="fa fa-life-ring"></i>@(Chat support with contributors)';
 			var meta = $.param({ token: common.token, nick: user.name, position: user.position, darkmode: $(document.body).hclass('td') ? 1 : 0, reference: user.id, source: location.hostname });
-			obj.html = '<div class="messenger"><{1} src="{0}" frameborder="0" scrolling="no" allowtransparency="true" allow="geolocation *; microphone *; camera *; midi *; encrypted-media *"></{1}></div>'.format('https://support.totaljs.com/?' + meta, common.electron ? 'webview' : 'iframe');
+			obj.html = '<div class="messenger"><{1} src="{0}" frameborder="0" scrolling="no" allowtransparency="true" allow="geolocation *; microphone *; camera *; midi *; encrypted-media *"></{1}></div>'.format('https://support.totaljs.com/?' + meta, 'iframe'); // common.electron ? 'webview' : 'iframe');
 			obj.actions = { minimize: true, maximize: true, move: true, resize: true, close: true, autosave: true };
 			PUSH('windows', obj);
 		};
@@ -340,6 +353,11 @@
 			SETTER('tree/selectpath', el.attrd('path') || '');
 		};
 
+		function watchlogfilescroll() {
+			SETTER(true, '#viewboxdebug/scrollbottom', 0);
+			SETTER('#viewboxdebug/resizescrollbar');
+		}
+
 		function watchlogfile() {
 			var thread = code.current && code.current.path ? code.current.path.match(/\/threads\/\w+/) : null;
 			AJAX(('GET /api/projects/{id}/logfile/' + (thread ? '?thread=' + thread.toString().substring(9) : '')).arg(code.data), function(response) {
@@ -347,8 +365,7 @@
 				if (response !== common.debugprev) {
 					common.debugprev = response;
 					SET('common.debughtml', Thelpers.encode(response).replace(/\n/g, '<br />'));
-					SETTER(true, '#viewboxdebug/scrollbottom', 0);
-					SETTER('#viewboxdebug/resizescrollbar');
+					setTimeout(watchlogfilescroll, 200);
 				}
 			});
 		}
@@ -373,6 +390,7 @@
 				obj.actions = { minimize: false, maximize: false, move: true, resize: true, autosave: true, menu: true, hide: true };
 				obj.make = function(el) {
 					el.parent().find('.ui-windows-lastbutton').rclass2('fa-').aclass('fa-trash-o');
+					el.closest('.ui-windows-item').css('z-index', 101);
 				};
 				obj.close = function(next) {
 					next();
@@ -598,7 +616,7 @@
 			var tools = [];
 			var tmp;
 
-			if ((/\/scripts\/|\.sh$/g).test(code.current.path))
+			if ((/\/scripts\/|\.sh$/g).test(code.current.path) || (code.data.servicemode && (code.current.ext === 'js' || code.current.ext === 'sh')))
 				items.push({ name: '@(Run script)', icon: 'play-circle red', value: 'run', classname: 'b', shortcut: (common.ismac ? 'CMD' : 'CTRL') + '+B' });
 
 			if (can) {
@@ -613,6 +631,9 @@
 				items.push({ name: '@(Copy with syntax)', icon: 'print', value: 'copysyntax' });
 				items.push({ name: '@(Copy as Markdown)', icon: '!fab fa-markdown', value: 'copymarkdown' });
 
+				if (text.indexOf('<') !== -1)
+					items.push({ name: '@(Copy without tags)', icon: '!far fa-copy', value: 'copytext' });
+
 				if (text.indexOf('.define(\'') !== -1)
 					items.push({ name: '@(Copy as JSON)', icon: '!fa fa-code', value: 'copyasjson' });
 
@@ -621,13 +642,18 @@
 				if (can && code.current.ext === 'js') {
 					tmp = ((/varchar|int|boolean/i).test(text));
 					tmp && items.push({ name: '@(Transform SQL to schema)', icon: 'database', value: 'sql2schema' });
-					tools.push({ name: '@(Parse keys)', icon: 'barcode', value: 'parsekeys' });
 				}
 
-				if ((code.current.ext === 'css' || code.current.ext === 'html') && (/\:(\s)?#|#\w{6}|color\:/).test(text))
-					items.push({ name: '@(Transform for Dark mode)', icon: 'tint', value: 'darkmode' });
+				if (can)
+					tools.push({ name: '@(Parse keys)', icon: 'barcode', value: 'parsekeys' });
 
-				if ((/(#)?[A-F0-9]{6}/i).test(text))
+				if ((code.current.ext === 'css' || code.current.ext === 'html') && (/\:(\s)?#|#\w{6}|color\:/).test(text))
+					items.push({ name: '@(Transform to Dark mode)', icon: 'tint', value: 'darkmode' });
+
+				if ((code.current.ext === 'css' || code.current.ext === 'html'))
+					items.push({ name: '@(Transform to Responsive)', icon: 'tablet', value: 'responsive' });
+
+				if ((/(#)?[A-F0-9]{6}/i).test(text) && text.indexOf('\n') === -1)
 					items.push({ name: '@(Convert to RGBA)', icon: 'palette', value: 'hex2rgba' });
 
 				if (((/\d+,(\s)?\d+,(\s)?\d+/i)).test(text))
@@ -696,6 +722,9 @@
 				tools.push({ name: '@(Lower Case)', icon: 'font', value: 'lower' });
 				tools.push({ name: '@(Clean duplicated lines)', icon: 'broom', value: 'cleanduplicatedlines' });
 
+				if (code.current.ext === 'css')
+					tools.push({ name: '@(Remove dark mode)', icon: 'adjust', value: 'removedarkmode' });
+
 				if (sel.length === 1 && (/^[\.\w\/\:\-]*$/i).test(text)) {
 					tools.push('-');
 					tools.push({ name: '@(Resolve IP address)', icon: 'ethernet', value: 'resolve' });
@@ -706,12 +735,14 @@
 			}
 
 			sub = [];
+
 			if ((/^(js|css|html)$/).test(code.current.ext)) {
 				sub.push({ name: '@(UI components)', icon: 'chevron-right', value: 'ui' });
 				// sub.push({ name: '@(Snippet)', icon: 'chevron-right', value: 'snippet' });
 			}
 
 			sub.push({ name: '@(UID)', icon: 'chevron-right', value: 'uid' });
+			sub.push({ name: '@(UID16)', icon: 'chevron-right', value: 'uid16' });
 			sub.push({ name: '@(GUID)', icon: 'chevron-right', value: 'guid' });
 			sub.push({ name: '@(Password)', icon: 'chevron-right', value: 'password' });
 			sub.push({ name: '@(URL / Hostname)', icon: 'chevron-right', value: 'url' });
@@ -746,6 +777,7 @@
 					sub.push({ name: '@(Schema)', icon: 'code', value: 'template', id: 'schema' });
 					sub.push({ name: '@(Operation)', icon: 'code', value: 'template', id: 'operation' });
 					sub.push({ name: '@(Task)', icon: 'code', value: 'template', id: 'task' });
+					sub.push({ name: '@(Start script)', icon: 'code', value: 'template', id: 'index' });
 				} else if (code.current.ext === 'json') {
 					sub.push({ name: '@(openplatform.json)', icon: 'code', value: 'template', id: 'openplatform' });
 					sub.push({ name: '@(package.json)', icon: 'code', value: 'template', id: 'package' });
@@ -763,14 +795,16 @@
 					sub.push({ name: '@(HTML template)', icon: 'code', value: 'template', id: 'html' });
 					sub.push({ name: '@(Mail template)', icon: 'code', value: 'template', id: 'email' });
 					sub.push({ name: '@(Plugin)', icon: 'code', value: 'template', id: 'plugin' });
+					sub.push({ name: '@(j-MiniForm)', icon: 'code', value: 'template', id: 'miniform' });
 					sub.push({ name: '@(j-Form)', icon: 'code', value: 'template', id: 'form' });
 					sub.push({ name: '@(j-LargeForm)', icon: 'code', value: 'template', id: 'largeform' });
+					sub.push({ name: '@(j-FullForm)', icon: 'code', value: 'template', id: 'fullform' });
 					sub.push({ name: '@(j-Modal)', icon: 'code', value: 'template', id: 'modal' });
 					sub.push({ name: '@(j-Panel)', icon: 'code', value: 'template', id: 'panel' });
 					sub.push({ name: '@(j-Window)', icon: 'code', value: 'template', id: 'window' });
 				}
 
-				items.push({ name: '@(Insert template)', icon: 'plus-circle', value: 'template', children: sub });
+				items.push({ name: '@(Insert template)', icon: 'plus-circle green', value: 'template', children: sub });
 			}
 
 			SETTER('menu/showxy', e.pageX + 5, e.pageY - 15, items, function(value) {
@@ -836,6 +870,16 @@
 					return;
 				}
 
+				if (value.value === 'responsive') {
+					editor.replaceSelection(FUNC.responsive(text));
+					return;
+				}
+
+				if (value.value === 'removedarkmode') {
+					editor.replaceSelection(FUNC.removecssclass('.ui-dark', text));
+					return;
+				}
+
 				if (value.value === 'cleanduplicatedlines') {
 					editor.replaceSelection(FUNC.cleanduplicatedlines(text));
 					return;
@@ -843,6 +887,11 @@
 
 				if (value.value === 'copyasjson') {
 					SETTER('clipboard/copy', FUNC.makejsonfromschema(text));
+					return;
+				}
+
+				if (value.value === 'copytext') {
+					SETTER('clipboard/copy', text.removeTags());
 					return;
 				}
 
@@ -888,8 +937,8 @@
 				}
 
 				if (value.value === 'run') {
-					if ((/\/scripts\/|\.sh$/g).test(code.current.path))
-						FUNC.requestscript(code.data.id, code.current.path);
+					if ((/\/scripts\/|\.sh$/g).test(code.current.path) || (code.data.servicemode && (code.current.ext === 'js' || code.current.ext === 'sh')))
+						FUNC.requestscriptspawn(code.data.id, code.current.path);
 					else
 						FUNC.request(text, editor.getValue());
 					return;
@@ -1039,6 +1088,7 @@
 							SET('common.form', 'snippets');
 							break;
 						case 'uid':
+						case 'uid16':
 						case 'ip':
 						case 'ipserver':
 							AJAX('GET /api/common/{0}/'.format(value.value), function(response) {
@@ -1097,7 +1147,7 @@
 							break;
 						case 'translate':
 							for (var i = 0; i < sel.length; i++)
-								sel[i] = 'T' + HASH(sel[i]).toString();
+								sel[i] = 'T' + HASH(sel[i]).toString(36);
 							editor.replaceSelections(sel);
 							break;
 						case 'slug':
@@ -1126,13 +1176,12 @@
 			// cache
 			if (type === 1 && code.editor.body && code.current) {
 				setTimeout2('code.modified', function() {
-
 					if (!code.current)
 						return;
 
-					var diffel = editor.find('.cm-diff:first-child');
+					var diffel = editor.ismodified();
 					var is = 0;
-					if (diffel.length) {
+					if (diffel) {
 						exports.cache_set();
 						if (!code.current.modified) {
 							code.current.modified = true;
@@ -1142,6 +1191,7 @@
 						code.current.modified = false;
 						is = 2;
 					}
+
 					is && exports.element.find('section.tabs').find('span[data-value="{0}"]'.format(code.current.path)).tclass('modified', is === 1);
 					exports.tablocked();
 				}, 250);
@@ -1235,6 +1285,43 @@
 					break;
 				case 'close':
 					setTimeout2('closetab', exports.close, 200);
+					break;
+				case 'swaplineup':
+				case 'swaplinedown':
+
+					var sel = EDITOR.editor.listSelections()[0];
+					var plus = type === 'swaplineup' ? -1 : 1;
+
+					var cfrom = EDITOR.editor.getCursor(true);
+					var cto = EDITOR.editor.getCursor(false);
+
+					if (cto.sticky === 'after')
+						cto.line--;
+
+					var linefrom = cfrom.line;
+					var lineto = cto.line;
+
+					EDITOR.editor.setSelection({ ch: 0, line: linefrom }, { line: lineto });
+
+					if (plus === -1 && (linefrom - 1) < 0)
+						return;
+
+					if (plus === 1 && (lineto + 1) >= EDITOR.editor.lineCount())
+						return;
+
+					var selection = EDITOR.editor.getSelection();
+					if (!selection)
+						selection = EDITOR.editor.getLine(linefrom);
+
+					if (plus === 1) {
+						EDITOR.editor.replaceRange(EDITOR.editor.getLine(lineto + plus), { ch: 0, line: linefrom }, { line: lineto });
+						EDITOR.editor.replaceRange(selection, { ch: 0, line: linefrom + plus }, { line: linefrom + plus });
+					} else {
+						EDITOR.editor.replaceRange(EDITOR.editor.getLine(linefrom + plus), { ch: 0, line: linefrom }, { line: lineto });
+						EDITOR.editor.replaceRange(selection, { ch: 0, line: linefrom + plus }, { line: linefrom + plus });
+					}
+
+					EDITOR.editor.setSelection({ ch: 0, line: linefrom + plus }, { line: lineto + plus });
 					break;
 			}
 		};
@@ -1391,6 +1478,29 @@
 			if (!item || item.children)
 				return;
 
+			if ((/\.build$/).test(item.path)) {
+				// open designer
+				AJAX('GET /api/projects/{id}/edit/'.arg(code.data), { path: item.path }, function(response) {
+					SETTER('loading/show');
+					SETTER('loading/hide', 2000);
+					SETTER('builder/load', response, function(response) {
+						SETTER('loading/show');
+						var data = {};
+						data.body = STRINGIFY(response);
+						data.path = item.path;
+						data.parts = [];
+						AJAX('POST /api/files/{id}/ REPEAT'.arg(code.data), data, ASETTER('message/response', function(response) {
+							SETTER('loading/hide', 500);
+							FUNC.wssend({ TYPE: 'save', connid: common.id, projectid: code.projectid, id: user.id, user: user.name });
+							FUNC.success((response.value === 'synchronized' ? '@(<b>{0}</b> saved and synchronized.)' : '@(<b>{0}</b> saved successfully.)').format(data.path));
+							common.electron && code.data.repository && user.localsave && exports.savelocal();
+							FUNC.livereload(data.path);
+						}));
+					});
+				});
+				return;
+			}
+
 			code.SYNCUSER = null;
 			code.SYNCID = null;
 
@@ -1537,6 +1647,7 @@
 			is && code.components && code.components.length && items.push({ value: 8, name: '@(Used parts)', icon: 'puzzle-piece', shortcut: 'F2' });
 			// is && items.push({ value: 10, name: '@(Insert snippet)', icon: 'paste', shortcut: 'F4' });
 			is && (/js|css|html/).test(code.current.ext) && items.push({ value: 12, name: '@(Insert icon)', icon: 'images', shortcut: 'F6' });
+			is && code.current.ext === 'css' && items.push({ value: 98, name: '@(Remove dark mode)', icon: 'adjust' });
 			is && items.length && items.push('-');
 			is && items.push({ value: 1, name: '@(Reload)', icon: 'refresh', shortcut: 'F5' });
 			is && items.push({ value: 2, name: '@(Find)', icon: 'search', command: 'find' });
@@ -1546,10 +1657,10 @@
 			is && common.electron && code.data.repository && items.push({ value: 5, name: '@(Save locally)', icon: 'floppy-o' });
 			is && items.push({ value: 4, name: '@(Restore from backup)', icon: 'history' });
 			is && items.push({ value: 18, name: '@(Clear changes)', icon: 'recycle red' });
-			is && code.data.pathsync && items.push({ value: 6, name: '@(Save synchronized)', icon: 'sync green' });
-			common.electron && code.data.repository && items.push({ value: 7, name: '@(Download <strong>last changes</strong>)', icon: 'floppy-o' });
 			is && items.push({ value: 99, name: '<strong>@(Code review)</strong>', icon: 'check-circle green' });
 			is && items.push('-');
+			is && code.data.pathsync && items.push({ value: 6, name: '@(Save synchronized)', icon: 'sync green' });
+			common.electron && code.data.repository && items.push({ value: 7, name: '@(Download <strong>last changes</strong>)', icon: 'floppy-o' });
 			items.push({ value: 13, name: common.showparts ? '@(Disable parts panel)' : '<strong>@(Enable parts panel)</strong>', icon: 'puzzle-piece' + (common.showparts ? '' : ' green') });
 			items.push({ value: 15, name: common.powermode ? '@(Disable power mode)' : '<strong>@(Enable power mode)</strong>', icon: 'flask' + (common.powermode ? '' : ' green') });
 			items.push({ value: 17, name: '@(To-Do list)', icon: 'check' });
@@ -1559,6 +1670,7 @@
 			items.push({ value: 20, name: '@(Translate application)', icon: 'language' });
 
  			user.sa && items.push({ value: 23, name: '@(Download source-code)', icon: 'download' });
+			items.push({ name: '@(Create Wiki)', icon: '!fa fa-book', value: 98 });
 
 			if (code.data.allowbundle) {
 				items.push('-');
@@ -1581,7 +1693,7 @@
 						if (code.SYNC)
 							FUNC.warning('@(You can\'t replace all spaces to tabs in collaboration mode.)');
 						else
-							editor.editor.setValue(FUNC.spaces_to_tabs(editor.editor.getValue()));
+							editor.restore(FUNC.spaces_to_tabs(editor.editor.getValue()));
 						break;
 					case 4:
 						SET('common.form', 'backups');
@@ -1634,11 +1746,23 @@
 					case 18:
 						exports.clearchanges();
 						break;
+					case 98:
+						AJAX('GET /api/projects/{id}/wiki/'.arg(code.data), function(response) {
+							SETTER('clipboard/copy', 'https://wiki.totaljs.com/?url=' + location.origin + '/wiki/' + response.value + '/');
+							SETTER('notifybar/success', '@(Wiki has been created and copied into the clipboard)');
+						});
+						break;
 					case 19:
 						location.href = '/api/projects/{id}/bundle/'.arg(code.data);
 						break;
 					case 23:
 						location.href = '/api/projects/{id}/download/'.arg(code.data);
+						break;
+					case 98:
+						var cursor = editor.editor.getCursor(true);
+						editor.restore(FUNC.removecssclass('.ui-dark', editor.editor.getValue()));
+						editor.editor.setCursor(cursor, 200);
+						editor.editor.focus();
 						break;
 					case 21:
 						SETTER('loading/show');
@@ -1687,12 +1811,19 @@
 			if (node.name === 'bundles')
 				items.push({ value: 'bundles', name: '@(Download bundles)', icon: 'cloud-download', classname: 'b' });
 
+			if (node.name === 'builds') {
+				if (!node.children.findItem('name', 'app.build'))
+					items.push({ makefile: true, name: '@(Create:) app.build', icon: 'paint-brush' });
+			}
+
 			if (node.name === 'definitions') {
 
 				items.push({ value: 'definitions', name: '@(Download definitions)', icon: 'cloud-download', classname: 'b' });
 
 				if (!node.children.findItem('name', 'auth.js'))
 					items.push({ makefile: true, name: '@(Create:) auth.js', icon: 'file-text-o' });
+				if (!node.children.findItem('name', 'commands.js'))
+					items.push({ makefile: true, name: '@(Create:) commands.js', icon: 'file-text-o' });
 				if (!node.children.findItem('name', 'db.js'))
 					items.push({ makefile: true, name: '@(Create:) db.js', icon: 'file-text-o' });
 				if (!node.children.findItem('name', 'func.js'))
@@ -1778,6 +1909,7 @@
 			}
 
 			if (node.children) {
+				items.push({ value: 'filter', name: '@(Show this folder only)', icon: 'filter green' });
 				items.push({ value: 'file', name: '@(Create file)', icon: '!far fa-file-text-o' });
 				items.push({ value: 'directory', name: '@(Create directory)', icon: '!far fa-folder-o' });
 			} else {
@@ -1815,15 +1947,25 @@
 				}
 
 				switch (item.value) {
+					case 'filter':
+						SETTER('tree/shownested', node.path);
+						break;
 					case 'download':
 						location.href = '/api/download/' + code.data.id + '/?path=' + encodeURIComponent(path);
 						break;
 					case 'metainfo':
+
+						if (common.isinfopanel)
+							return;
+
 						AJAX('GET /api/metainfo/' + code.data.id + '/?path=' + encodeURIComponent(path), function(response) {
+							common.isinfopanel = true;
 							response.mode = '0' + (response.mode & parseInt('777', 8)).toString(8);
 							SETTER('infopanel/show', el, function(el) {
 								el.html('<div class="metainfo"><b><i class="far fa-file-text-o"></i> {4}</b>Size: {0}<br />Mode: {1}<br />Modified: {2}<br />Created: {3}</div>'.format(response.size.filesize(), response.mode, response.mtime.format(), response.ctime.format(), path));
-							}, -10, -105, false);
+							}, -10, -105, false, function() {
+								common.isinfopanel = false;
+							});
 						});
 						break;
 					case 'bundles':
@@ -1881,7 +2023,7 @@
 		};
 
 		exports.close = function(el, e) {
-			var path = code.current.path;
+			var path = code.current ? code.current.path : '';
 			if (el instanceof jQuery)
 				path = el.parent().attrd('value');
 			var tab = code.open.findItem('path', path);
@@ -2156,7 +2298,7 @@
 			AJAX('GET /api/projects/{id}/changelog/'.arg(code.data), { path: code.current.path }, function(response) {
 				if (code.current && code.current.lastmodified && response) {
 					var tmp = code.current.lastmodified;
-					if (response.user !== user.name && (tmp.user !== response.user || tmp.updated.getTime() !== response.updated.getTime())) {
+					if (response.user && response.user !== user.name && (tmp.user !== response.user || tmp.updated.getTime() !== response.updated.getTime())) {
 						FUNC.info('@(<b>{0}</b> changed this file <b>{1}</b>.)'.format(response.user, Thelpers.time(response.updated)));
 						if (!code.SYNC && code.usersfile && code.usersfile.length === 1) {
 							SETTER('loading/show');
@@ -2234,6 +2376,12 @@
 				SET('document.title', common.name + ': ' + response.name);
 				SET('code.data', response);
 				SET('code.tree', tree);
+
+				W.WSLIVERELOAD && W.WSLIVERELOAD.close();
+				W.WSLIVERELOAD = null;
+
+				if (response.livereload)
+					setTimeout(FUNC.livereloadconnect, 1000);
 
 				if (!skip) {
 					SET('code.editor', {});
@@ -2405,7 +2553,13 @@
 
 				var data = {};
 				var val = editor.editor.getValue();
-				var changes = $('.cm-diff').length;
+				var changes = 0;
+				var changesdiff = $('.cm-diff');
+
+				for (var i = 0; i < changesdiff.length; i++) {
+					if (!HIDDEN(changesdiff[i]))
+						changes++;
+				}
 
 				data.body = code.NOTRIM[code.current.ext] ? val : FUNC.rtrim(val);
 
@@ -2418,12 +2572,14 @@
 					if (sync)
 						data.sync = sync;
 
-					AJAX('GET /api/projects/{id}/modify/ REPEAT'.arg(code.data), data, function(response) {
+					AJAX('GET /api/projects/{id}/modify/ REPEAT'.arg(code.data), data, ASETTER('message/response', function(response) {
 						FUNC.success((response.value === 'synchronized' ? '@(<b>{0}</b> saved and synchronized.)' : '@(<b>{0}</b> saved successfully.)').format(data.path));
 						common.electron && code.data.repository && user.localsave && exports.savelocal();
-					});
+						SETTER('loading/hide');
+						editor.diffgutterclear();
+						FUNC.livereload(data.path);
+					}));
 
-					SETTER('loading/hide');
 					return;
 				}
 
@@ -2487,20 +2643,21 @@
 				clearTimeout2('code.modified');
 				clearTimeout2('EditorGutterColor');
 
-				AJAX('POST /api/files/{id}/ REPEAT'.arg(code.data), data, function(response) {
+				AJAX('POST /api/files/{id}/ REPEAT'.arg(code.data), data, ASETTER('message/response', function(response) {
 
 					SETTER('loading/hide', 500);
 
 					if (close === true)
 						exports.closeforce();
 
-					editor.diffgutterclear();
 					FUNC.wssend({ TYPE: 'save', connid: common.id, projectid: code.projectid, id: user.id, user: user.name });
 					FUNC.success((response.value === 'synchronized' ? '@(<b>{0}</b> saved and synchronized.)' : '@(<b>{0}</b> saved successfully.)').format(data.path));
 					common.electron && code.data.repository && user.localsave && exports.savelocal();
 					SET('code.current.lastmodified', { user: user.name, updated: new Date() });
 					data.diff.length && UPD('code.current.diff');
-				});
+					editor.diffgutterclear();
+					FUNC.livereload(data.path);
+				}));
 
 			}, 300);
 		};
@@ -2617,6 +2774,9 @@
 					for (var i = 0; i < code.tree.length; i++)
 						directory[code.tree[i].name] = 1;
 
+					if (!directory.builds)
+						opt.items.push({ name: '<strong>@(Create):</strong> /builds', icon: '!far fa-folder', value: '/builds/' });
+
 					if (!directory.bundles)
 						opt.items.push({ name: '<strong>@(Create):</strong> /bundles', icon: '!far fa-folder', value: '/bundles/' });
 
@@ -2707,6 +2867,9 @@
 					if (!files.config)
 						opt.items.push({ name: '<strong>@(Create):</strong> /config', icon: '!far fa-file-text-o', value: '/config' });
 
+					if (!files['index.js'])
+						opt.items.push({ name: '<strong>@(Create):</strong> /index.js', icon: '!far fa-file-text-o', value: '/index.js' });
+
 					if (!files['config-release'])
 						opt.items.push({ name: '<strong>@(Create):</strong> /config-release', icon: '!far fa-file-text-o', value: '/config-release' });
 
@@ -2749,6 +2912,9 @@
 				// element
 				SET('code.statusform.path', '');
 				SET('code.statusform.name', dname);
+				var tmp = $('.extrabutton[data-name="reset"]');
+				if (tmp.length)
+					code.statusform.path = tmp.text();
 				return;
 			}
 
@@ -2772,10 +2938,21 @@
 			});
 		};
 
-		exports.usersonline = function(el) {
-			AJAX('GET /api/users/online/', function(response) {
-				SETTER('infopanel/show', el, function(el) {
+		exports.appendcolor = function(el) {
+			var color = el.attrd('color');
+			color && editor.editor.replaceSelection(color);
+		};
 
+		exports.usersonline = function(el) {
+
+			if (common.isinfopanel) {
+				SETTER('infopanel/hide');
+				return;
+			}
+
+			AJAX('GET /api/users/online/', function(response) {
+				response.length && SETTER('infopanel/show', el, function(el) {
+					common.isinfopanel = true;
 					var builder = [];
 					for (var i = 0; i < 10; i++) {
 						var user = response[i];
@@ -2786,19 +2963,28 @@
 
 					!builder.length && FUNC.warning('@(No-one works.)');
 					el.html(builder.join(''));
-				}, 0, -20);
+				}, 0, -20, null, function() {
+					common.isinfopanel = false;
+				});
 			});
 		};
 
 		exports.warnings = function(el, e) {
+			if (common.isinfopanel)
+				return;
 			SETTER('infopanel/show', el, function(el) {
 				var builder = [];
 				for (var i = 0; i < 10; i++) {
 					var err = code.errors && code.errors[i];
 					err && builder.push('<div class="infopanel-line exec" data-exec="code/warnings_goto" data-pos="{1}x{2}"><b>:{1}</b><span>{0}</span></div>'.format(err.reason || err.raw, err.line, err.character));
 				}
-				!builder.length && FUNC.warning('@(File doesn\'t contain any warnings.)');
+				if (builder.length)
+					common.isinfopanel = true;
+				else
+					FUNC.warning('@(File doesn\'t contain any warnings.)');
 				el.html(builder.join(''));
+			}, 0, 0, null, function() {
+				common.isinfopanel = false;
 			});
 		};
 

@@ -24,8 +24,8 @@
 <body data---="exec" class="@{if (user.darkmode === 2 && (NOW.getHours()<=6 || NOW.getHours()>=18)) || (user.darkmode !== 0 && user.darkmode !== 2)}td @{fi}invisible codebody" data-jc-class="invisible">
 
 	<div class="bbfooter"></div>
-
 	<div data---="loading" class="ui-loading"><div></div></div>
+	<div data---="LAZY builder"></div>
 	<div data---="LAZY imageviewer"></div>
 	<div data---="LAZY suggestion__null__placeholder:@(Search)"></div>
 	<div data---="LAZY autocomplete__null__height:200"></div>
@@ -42,7 +42,7 @@
 	<div data---="confirm"></div>
 	<div data---="shortcuts__null"></div>
 	<div data---="mainprogress__common.percentage"></div>
-	<div data---="LAZY message__null__button:@(OK)"></div>
+	<div data---="LAZY message__null__button:@(OK);style:2"></div>
 	<div data---="LAZY emoji"></div>
 	<div data---="LAZY colorpicker"></div>
 	<div data---="windows__windows"></div>
@@ -118,7 +118,7 @@
 			if (common.electron && !common.ismac)
 				$('header').aclass('electron-header-border');
 
-			ENV('dockmargin', common.electron ? (common.ismac ? 72 : 50) : 50);
+			ENV('dockmargin', common.electron ? (common.ismac ? 78 : 50) : 50);
 
 			if (!common.recent)
 				common.recent = [];
@@ -142,9 +142,13 @@
 
 		if (common.electron) {
 			process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
-			common.META = require('electron').remote.getGlobal('META') || EMPTYOBJECT;
-			if (common.META.version && navigator.userAgent.indexOf('Macintosh') !== -1)
-				$('body').aclass('electron');
+
+			(function() {
+				var Electron = require('electron');
+				common.META = Electron.remote ? Electron.remote.getGlobal('META') || EMPTYOBJECT : Electron.ipcRenderer.sendSync('getMeta');
+				if (common.META.version && navigator.userAgent.indexOf('Macintosh') !== -1)
+					$('body').aclass('electron');
+			})();
 		}
 
 		CACHEPATH('common.recent', '1 year');
@@ -217,6 +221,9 @@
 				case 'online':
 				case 'offline':
 					$('.channel[data-value="{0}"]'.format(msg.id)).tclass('online', msg.TYPE === 'online');
+					break;
+				case 'spawn':
+					PUSH('common.spawns.' + msg.id, msg.body);
 					break;
 				case 'chat':
 					if (W.chat)
@@ -534,13 +541,18 @@
 				return;
 
 			// BUILD
-			if ((/\/scripts\/|\.sh$/g).test(code.current.path)) {
-				if (code.current.ext === 'js' || code.current.ext === 'sh')
-					FUNC.requestscript(code.data.id, code.current.path);
-			} else if (code.current.ext === 'api') {
+			if ((/\/scripts\/|\.sh$/g).test(code.current.path) || code.data.servicemode) {
+				if (code.current.ext === 'js' || code.current.ext === 'sh') {
+					FUNC.requestscriptspawn(code.data.id, code.current.path);
+					return;
+				}
+			}
+
+			if (code.current.ext === 'api') {
 				var editor = FIND('editor').editor;
 				FUNC.request(editor.getSelections().join(''), editor.getValue());
 			}
+
 		}, true);
 
 		SETTER(true, 'shortcuts', 'register', 'alt+w,cmd+w,alt+f4', function(e) {
@@ -629,9 +641,11 @@
 			FUNC.autodarkmode();
 			common.idletime++;
 
+			var builder = FIND('builder');
+
 			// 7 minutes idle time
-			if (common.idletime > 7)
-				location.href = $('.pause').attr('href');
+			if (common.idletime > 7 && (!builder || builder.element.hclass('hidden')))
+				location.href = $('.pause').attr('href')
 
 		});
 

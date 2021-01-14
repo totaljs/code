@@ -1,7 +1,9 @@
+const CP = require('child_process');
 const READDIROPTIONS = { withFileTypes: true };
 const Path = require('path');
 const Fs = require('fs');
-const Exec = require('child_process').exec;
+const Exec = CP.exec;
+const Spawn = CP.spawn;
 
 exports.install = function() {
 
@@ -41,8 +43,10 @@ exports.install = function() {
 	ROUTE('+GET     /api/projects/timespent/',                                timespent);
 	ROUTE('+GET     /api/projects/{id}/modify/',                           	  files_modify);
 	ROUTE('+GET     /api/projects/{id}/bundle/',                           	  makebundle, [10000]);
-	ROUTE('+GET     /api/projects/{id}/localize/          *Projects           --> @localize', [10000]);
+	ROUTE('+GET     /api/projects/{id}/wiki/              *Projects           --> @wiki_make', [30000]);
+	ROUTE('+GET     /api/projects/{id}/localize/          *Projects           --> @localize', [30000]);
 	ROUTE('+GET     /api/projects/discover/',                                 autodiscover);
+	ROUTE('GET      /wiki/{id}/                           *Projects           --> @wiki_read');
 
 	ROUTE('+POST    /api/database/pg/                     *DBCommand          --> @exec', [10000]);
 
@@ -63,7 +67,7 @@ exports.install = function() {
 	ROUTE('+GET     /api/templates/{id}/',                                    template);
 	ROUTE('+GET     /api/download/{id}/',                                     files_download);
 	ROUTE('+GET     /api/metainfo/{id}/',                                     files_metainfo);
-	ROUTE('+POST    /api/files/minify/                     *Minify',          files_minify);
+	ROUTE('+POST    /api/files/minify/                     *Minify           --> @exec');
 	ROUTE('+GET     /logout/',                                                redirect_logout);
 
 	ROUTE('+GET    /api/users/online/',                                       users_online);
@@ -71,6 +75,7 @@ exports.install = function() {
 	ROUTE('+GET    /api/users/export/',                                       users_export);
 	ROUTE('+GET    /api/common/directories/',                                 directories);
 	ROUTE('+GET    /api/common/uid/',                                         custom_uid);
+	ROUTE('+GET    /api/common/uid16/',                                       custom_uid16);
 	ROUTE('+GET    /api/common/ip/',                                          custom_ip);
 	ROUTE('+GET    /api/common/ipserver/',                                    custom_ipsever);
 	ROUTE('+POST   /api/common/encrypt/                   *Encoder            --> @exec');
@@ -262,19 +267,21 @@ function users_online() {
 	var self = this;
 	var arr = [];
 
-	for (var i = 0; i < MAIN.ws._keys.length; i++) {
-		var key = MAIN.ws._keys[i];
-		var conn = MAIN.ws.connections[key];
+	if (MAIN.ws && MAIN.ws.keys) {
+		for (var i = 0; i < MAIN.ws.keys.length; i++) {
+			var key = MAIN.ws.keys[i];
+			var conn = MAIN.ws.connections[key];
 
-		var item = {};
+			var item = {};
 
-		var project = conn.code.projectid ? MAIN.projects.findItem('id', conn.code.projectid) : null;
-		if (project)
-			item.project = project.name + (conn.code.fileid || '');
+			var project = conn.code.projectid ? MAIN.projects.findItem('id', conn.code.projectid) : null;
+			if (project)
+				item.project = project.name + (conn.code.fileid || '');
 
-		item.name = conn.user.name;
-		item.ip = conn.ip;
-		arr.push(item);
+			item.name = conn.user.name;
+			item.ip = conn.ip;
+			arr.push(item);
+		}
 	}
 
 	self.json(arr);
@@ -289,13 +296,12 @@ function users_refresh() {
 		self.invalid('error-permissions');
 }
 
-function files_minify() {
-	var self = this;
-	self.body.$workflow('exec', (err, response) => self.plain(response || ''));
-}
-
 function custom_uid() {
 	this.plain(UID('custom'));
+}
+
+function custom_uid16() {
+	this.plain(UID16('custom'));
 }
 
 function custom_ip() {
@@ -304,9 +310,12 @@ function custom_ip() {
 
 function custom_ipsever() {
 	var self = this;
-	REQUEST('https://ipecho.net/plain', ['get'], function(err, response) {
-		self.plain(response || 'undefined');
-	});
+	var opt = {};
+	opt.url = 'https://ipecho.net/plain';
+	opt.callback = function(err, response) {
+		self.plain(response.body || 'undefined');
+	};
+	REQUEST(opt);
 }
 
 function files_changes(id) {
@@ -314,7 +323,7 @@ function files_changes(id) {
 	var builder = NOSQL(id + '_changes').find2();
 
 	if (self.query.recent)
-		builder.rule(doc => doc.type === 'save' | doc.type === 'save_sync');
+		builder.rule('doc.type===\'save\'||doc.type===\'save_sync\'');
 
 	builder.take(self.query.recent ? 30 : 50).callback(function(err, response) {
 		for (var i = 0; i < response.length; i++) {
@@ -418,15 +427,11 @@ function makerequest() {
 	var beg = Date.now();
 
 	builder.exec(function(err, response, output) {
-		if (err)
-			self.invalid(err.toString());
-		else {
-			output.url = method + ' ' + url;
-			output.value = undefined;
-			output.duration = Date.now() - beg;
-			output.statustext = U.httpStatus(output.status);
-			self.json(output);
-		}
+		output.url = method + ' ' + url;
+		output.value = undefined;
+		output.duration = Date.now() - beg;
+		output.statustext = U.httpstatus(output.status);
+		self.json(output);
 	});
 }
 
@@ -460,11 +465,13 @@ function makerequestscript(id) {
 		}
 	}
 
+	var meta = {};
 	var beg = Date.now();
+	var id = self.query.id;
 
-	self.childtimeout = setTimeout(function() {
-		child.kill(9);
-	}, 19000);
+	meta.childtimeout = setTimeout(function() {
+		meta.child.kill(9);
+	}, id ? (60000 * 30) : 19000);
 
 	var ext = U.getExtension(self.query.path);
 	var can = { js: 1, sh: 1 };
@@ -474,13 +481,35 @@ function makerequestscript(id) {
 		return;
 	}
 
-	var child = Exec((ext === 'sh' ? 'bash ' : 'node ') + Path.join(project.path, self.query.path), function(err, stdout, stderr) {
-		clearTimeout(self.childtimeout);
-		var data = {};
-		data.response = stderr || stdout;
-		data.duration = Date.now() - beg;
-		self.json(data);
-	});
+	if (id) {
+
+		self.success();
+
+		MAIN.spawns[id] = meta.child = Spawn((ext === 'sh' ? 'bash ' : 'node'), [Path.join(project.path, self.query.path)], { detached: true, cwd: project.path });
+		meta.child.on('close', function() {
+			delete MAIN.spawns[id];
+			MAIN.send({ TYPE: 'spawn', id: id, body: '\n--END--\n' + (Date.now() - beg) + ' ms' }, user);
+			clearTimeout(meta.childtimeout);
+			meta = null;
+		});
+
+		meta.child.stdout.on('data', function(data) {
+			MAIN.send({ TYPE: 'spawn', id: id, body: data.toString('utf8') }, user);
+		});
+
+		meta.child.stderr.on('data', function(data) {
+			MAIN.send({ TYPE: 'spawn', id: id, body: data.toString('utf8'), error: true }, user);
+		});
+
+	} else {
+		meta.child = Exec((ext === 'sh' ? 'bash ' : 'node ') + Path.join(project.path, self.query.path), function(err, stdout, stderr) {
+			clearTimeout(meta.childtimeout);
+			var data = {};
+			data.response = stderr || stdout;
+			data.duration = Date.now() - beg;
+			self.json(data);
+		});
+	}
 }
 
 function timespent() {
@@ -610,7 +639,7 @@ function makebundle(id) {
 		if (filename.toLowerCase().lastIndexOf('.bundle') === -1)
 			filename += '.bundle';
 
-		F.backup(filename, project.path, function(err) {
+		BACKUP(filename, project.path, function(err) {
 			if (err)
 				self.invalid(err);
 			else {

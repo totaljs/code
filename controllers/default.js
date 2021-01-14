@@ -10,7 +10,7 @@ exports.install = function() {
 	ROUTE('+GET /docs/{id}/', docs);
 
 	// File routes
-	FILE('/manifest.json', manifest);
+	ROUTE('FILE /manifest.json', manifest);
 };
 
 function manifest(req, res) {
@@ -24,14 +24,6 @@ function docs(id) {
 	if (project == null) {
 		self.throw404();
 		return;
-	}
-
-	if (!self.user.sa) {
-		var user = project.users.indexOf($.user.id);
-		if (!user) {
-			self.throw401();
-			return;
-		}
 	}
 
 	NOSQL(id + '_parts').find().callback(function(err, response) {

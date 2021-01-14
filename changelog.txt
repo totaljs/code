@@ -1,3 +1,10 @@
+========================= 1.5
+
+- added color palette
+- added version parser
+- added Transform to Responsive
+- updated tree by adding `Show this folder only`
+
 ========================= 1.4
 
 - new and improved UI

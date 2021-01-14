@@ -40,10 +40,10 @@ NEWSCHEMA('Users', function(schema) {
 
 	schema.setSave(function($) {
 
-		var model = $.model.$clean();
+		var model = $.clean();
 		var tmp = model.name.split(' ');
 
-		model.initials = tmp[0][0] + (tmp.length > 1 ? tmp[1][0] : '');
+		model.initials = (tmp[0][0] + ((tmp.length > 1 ? tmp[1][0] : tmp[0].length > 1 ? tmp[0][tmp[0].length - 1] : '') || '')).toUpperCase();
 
 		var item = MAIN.users.findItem('id', model.id);
 		if (item == null) {
@@ -73,7 +73,7 @@ NEWSCHEMA('Users', function(schema) {
 			}
 
 			if (item.blocked && MAIN.ws)
-				MAIN.ws.send2(WSBLOCKED, client => client.user.id === item.id);
+				MAIN.ws.send(WSBLOCKED, client => client.user.id === item.id);
 		}
 
 		MAIN.save(1);
@@ -87,9 +87,9 @@ NEWSCHEMA('Users', function(schema) {
 			return;
 		}
 
-		var model = $.model.$clean();
+		var model = $.clean();
 		var tmp = model.name.split(' ');
-		model.initials = tmp[0][0] + (tmp.length > 1 ? tmp[1][0] : '');
+		model.initials = (tmp[0][0] + (tmp.length > 1 ? tmp[1][0] : '')).toUpperCase();
 		model.id = model.id.slug().replace(/-/g, '');
 		model.password = model.password.sha256();
 		model.created = NOW;
@@ -129,7 +129,7 @@ NEWSCHEMA('Users', function(schema) {
 			}
 
 			item.blocked = true;
-			MAIN.ws.send2(WSBLOCKED, client => client.user.id === item.id);
+			MAIN.ws.send(WSBLOCKED, client => client.user.id === item.id);
 			MAIN.users.splice(index, 1);
 			MAIN.save();
 		}

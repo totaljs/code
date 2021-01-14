@@ -13,7 +13,7 @@ NEWSCHEMA('FilesPart', function(schema) {
 	schema.define('line', Number);
 	schema.define('ch', Number);
 	schema.define('type', 'String(20)', true);
-	schema.define('name', 'String(200)', true);
+	schema.define('name', 'String(200)');
 });
 
 NEWSCHEMA('FilesDiff', function(schema) {
@@ -224,7 +224,7 @@ NEWSCHEMA('Files', function(schema) {
 	});
 
 	schema.addWorkflow('parts', function($) {
-		NOSQL($.id + '_parts').find().rule(doc => doc.path.indexOf('-bk.js') === -1).callback($.callback);
+		NOSQL($.id + '_parts').find().rule('doc.path.indexOf(\'-bk.js\')===-1').callback($.callback);
 	});
 
 	schema.addWorkflow('changelog', function($) {
@@ -235,8 +235,8 @@ NEWSCHEMA('Files', function(schema) {
 			return;
 		}
 
-		var builder = TABLE('changelog').one2();
-		builder.fields('user', 'updated');
+		var builder = TABLE('changelog').one();
+		builder.fields('user,updated');
 		builder.where('projectid', $.id);
 		builder.where('path', $.query.path);
 		project.branch && builder.where('branch', project.branch);
@@ -427,7 +427,7 @@ NEWSCHEMA('FilesRename', function(schema) {
 
 			MAIN.log($.user, 'files_rename', project, model.oldpath, model.newpath);
 			MAIN.change('rename', $.user, project, model.oldpath + ' --> ' + model.newpath);
-			NOSQL($.id + '_parts').modify({ $path: 'val.replace(\'{0}\', \'{1}\')'.format(oldpath, newpath) }).search('path', oldpath, 'beg');
+			NOSQL($.id + '_parts').modify({ '=path': 'doc.path.replace(\'{0}\', \'{1}\')'.format(oldpath, newpath) }).rule('doc.path.starstWith(arg.path)', { path: oldpath });
 
 			var length = project.todo ? project.todo.length : 0;
 			if (length) {
@@ -492,7 +492,7 @@ NEWSCHEMA('FilesRemove', function(schema) {
 			}
 
 			// Removes parts
-			NOSQL(project.id + '_parts').remove().search('path', model.path, 'beg');
+			NOSQL(project.id + '_parts').remove().rule('doc.path.starstWith(arg.path)', { path: model.path });
 
 			var length = project.todo.length;
 			if (length) {

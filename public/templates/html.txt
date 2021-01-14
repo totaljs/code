@@ -13,6 +13,7 @@
 	<link rel="stylesheet" href="https://cdn.componentator.com/spa.min@18.css" />
 	<script src="https://cdn.componentator.com/spa.min@18.js"></script>
 	<!--
+	@{if DEBUG}<script src="//cdn.componentator.com/livereload.js"></script>@{fi}
 	@{import('meta', 'head', 'default.css', 'default.js', 'favicon.ico')}
 	-->
 </head>

@@ -1,28 +1,5 @@
 var MD_INLINE_OPTIONS = { headlines: false };
 
-W.DECRYPT = function(hex, key) {
-	var index = hex.lastIndexOf('x');
-	if (index === -1)
-		return;
-	var hash = +hex.substring(index + 1);
-	var o = hex.substring(0, index);
-	if (HASH(o + (key || ''), true) === hash) {
-		o = decodeURIComponent(o.replace(/(..)/g, '%$1'));
-		var c = o.charAt(0);
-		return c === '[' || c === '{' || c === '"' ? PARSE(o) : o;
-	}
-};
-
-W.ENCRYPT = function(str, key) {
-	if (typeof(str) === 'object')
-		str = STRINGIFY(str);
-	var arr = unescape(encodeURIComponent(str)).split('');
-	for (var i = 0; i < arr.length; i++)
-		arr[i] = arr[i].charCodeAt(0).toString(16);
-	var o = arr.join('');
-	return o + 'x' + HASH(o + (key || ''), true);
-};
-
 $(W).on('message', function(e) {
 	var data = e.originalEvent.data;
 	if (data && data instanceof String) {
@@ -70,6 +47,8 @@ Thelpers.shortpath = function(path) {
 
 Thelpers.particon = function(type) {
 	switch (type) {
+		case 'markdown':
+			return 'fa fa-heading';
 		case 'helper':
 			return 'fa fa-align-left';
 		case 'FUNC':
@@ -80,6 +59,8 @@ Thelpers.particon = function(type) {
 			return 'fa fa-cog';
 		case 'plugin':
 			return 'fa fa-plug';
+		case 'pluginable':
+			return 'fas fa-border-outer';
 		case 'route':
 			return 'fa fa-link';
 		case 'watcher':
@@ -88,6 +69,8 @@ Thelpers.particon = function(type) {
 			return 'fa fa-bolt';
 		case 'middleware':
 			return 'fa fa-filter';
+		case 'command':
+			return 'fas fa-bullhorn';
 		case 'htmlcomponent':
 			return 'fa fa-code';
 		case 'component':
@@ -99,6 +82,8 @@ Thelpers.particon = function(type) {
 			return 'fa fa-font';
 		case 'operation':
 			return 'fa fa-plug';
+		case 'version':
+			return 'fa fa-superscript';
 		default:
 			return 'fa fa-tasks';
 	}
@@ -110,6 +95,10 @@ Thelpers.initials = function(value, coloronly) {
 		var index = value.indexOf('.');
 		var arr = value.substring(index + 1).replace(/\s{2,}/g, ' ').trim().split(' ');
 		var initials = (arr[0].substring(0, 1) + (arr[1] || '').substring(0, 1));
+
+		if (initials.length === 1 && arr[0].length > 1)
+			initials += arr[0].substring(arr[0].length - 1).toUpperCase();
+
 		var sum = 0;
 
 		for (var i = 0; i < value.length; i++)
@@ -150,6 +139,16 @@ setInterval(function() {
 
 Thelpers.filesize = function(value, decimals, type) {
 	return value ? value.filesize(decimals, type) : '...';
+};
+
+Thelpers.color = function(value) {
+	var hash = HASH(value, true);
+	var color = '#';
+	for (var i = 0; i < 3; i++) {
+		var value = (hash >> (i * 8)) & 0xFF;
+		color += ('00' + value.toString(16)).substr(-2);
+	}
+	return color;
 };
 
 Number.prototype.filesize = function(decimals, type) {

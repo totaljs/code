@@ -1,8 +1,8 @@
 name                  : Code
 allow_custom_titles   : true
 
-cookie                : __sauth
-authkey               : seEdCollabo
+cookie   (generate)   : 10
+authkey  (generate)   : 10
 
 backup                : /www/tmp/backup/
 autodiscover          : /www/www/

@@ -2,7 +2,7 @@ const IS_WINDOWS = require('os').platform().substring(0, 3).toLowerCase() === 'w
 const SKIP = (IS_WINDOWS ? /\\\.git\// : /\/\.git\// );
 const Path = require('path');
 const Fs = require('fs');
-const Internal = require('total.js/internal');
+const Internal = require('total4/internal');
 
 NEWSCHEMA('Projects', function(schema) {
 
@@ -24,8 +24,10 @@ NEWSCHEMA('Projects', function(schema) {
 	schema.define('skipnm', Boolean);
 	schema.define('allowbundle', Boolean);
 	schema.define('allowscripts', Boolean);
+	schema.define('servicemode', Boolean);
 	schema.define('resetcombo', Boolean);
 	schema.define('resettime', Boolean);
+	schema.define('allowlivereload', Boolean);
 
 	schema.setGet(function($) {
 		var item = MAIN.projects.findItem('id', $.id);
@@ -46,6 +48,11 @@ NEWSCHEMA('Projects', function(schema) {
 		MAIN.log($.user, 'files_read', item, filename);
 		Fs.readFile(filename, function(err, data) {
 
+			if (err) {
+				$.invalid(err);
+				return;
+			}
+
 			var index = -1;
 
 			while (true) {
@@ -57,11 +64,37 @@ NEWSCHEMA('Projects', function(schema) {
 			if (index !== -1)
 				data = data.slice(index);
 
-			if (err)
-				$.invalid(err);
-			else
-				$.callback(data.toString('utf8'));
+			$.callback(data.toString('utf8'));
 		});
+	});
+
+	schema.addWorkflow('wiki_make', function($) {
+
+		var item = MAIN.projects.findItem('id', $.id);
+		if (!item) {
+			$.invalid('error-project');
+			return;
+		}
+
+		var filename = Path.join(item.path);
+		MAIN.log($.user, 'wiki_make', item, filename);
+		WORKER2('docs', [item.path], function(err, response) {
+
+			if (err) {
+				$.invalid(err);
+				return;
+			}
+
+			var md = response.toString('utf8');
+			md = '# Wiki: __' + item.name + '__\n\n- URL address: <' + item.url + '>\n- Author: __' + $.user.name + '__\n- Updated: `' + NOW.format('yyyy-MM-dd HH:mm') + '`\n\n\n## __REST API__ endpoints\n\n' + md;
+			Fs.writeFile(PATH.databases('wiki_' + $.id + '.md'), md, NOOP);
+			$.success($.id);
+		});
+	});
+
+	schema.addWorkflow('wiki_read', function($) {
+		$.controller.file('~' + PATH.databases('wiki_' + $.id + '.md'));
+		$.cancel();
 	});
 
 	schema.addWorkflow('translate', function($) {
@@ -89,7 +122,7 @@ NEWSCHEMA('Projects', function(schema) {
 					continue;
 				}
 
-				var key = 'T' + command.command.hash();
+				var key = 'T' + command.command.makeid();
 				text[key] = command.command;
 				max = Math.max(max, key.length);
 				command = Internal.findLocalization(content, command.end);
@@ -133,7 +166,7 @@ NEWSCHEMA('Projects', function(schema) {
 						continue;
 					}
 
-					key = 'T' + command.command.hash();
+					key = 'T' + command.command.makeid();
 					file = filename.substring(item.path.length);
 
 					texts[key] = command.command;
@@ -150,11 +183,11 @@ NEWSCHEMA('Projects', function(schema) {
 
 				if (ext === 'js') {
 					// ErrorBuilder
-					var tmp = content.match(/\$\.invalid\('[a-z-0-9]+'\)/gi);
+					var tmp = content.match(/\.invalid\('[a-z-0-9]+'\)/gi);
 					if (tmp) {
 						for (var j = 0; j < tmp.length; j++) {
 							var m = (tmp[j] + '');
-							m = m.substring(11, m.length - 2);
+							m = m.substring(10, m.length - 2);
 							key = m;
 							file = filename.substring(item.path.length);
 							texts[key] = m;
@@ -278,6 +311,9 @@ NEWSCHEMA('Projects', function(schema) {
 				items.push(data);
 		}
 
+
+		items.quicksort('created', true);
+
 		if ($.query.check) {
 			items.wait(function(item, next) {
 
@@ -367,7 +403,7 @@ NEWSCHEMA('Projects', function(schema) {
 				users.push({ id: tmpuser.id, name: tmpuser.name, collaborator: !!(item.time ? item.time[tmpuser.id] : 0) });
 			}
 
-			$.callback({ branch: item.branch, allowbundle: item.allowbundle, review: !!PREF.token, files: files, directories: directories, url: item.url, name: item.name, icon: item.icon, repository: item.repository, id: item.id, documentation: item.documentation, support: item.support, pathsync: item.pathsync, combo: item.combo, time: item.time, todo: item.todo, users: users });
+			$.callback({ servicemode: item.servicemode, livereload: item.allowlivereload, branch: item.branch, allowbundle: item.allowbundle, review: !!PREF.token, files: files, directories: directories, url: item.url, name: item.name, icon: item.icon, repository: item.repository, id: item.id, documentation: item.documentation, support: item.support, pathsync: item.pathsync, combo: item.combo, time: item.time, todo: item.todo, users: users });
 
 		}, n => !SKIP.test(n) && (!skip || !skip.test(n)));
 	});
@@ -435,7 +471,7 @@ NEWSCHEMA('Projects', function(schema) {
 			return;
 		}
 
-		var path = $.query.path;
+		var path = $.query.path || '';
 		var user = $.user;
 
 		if (!user.sa) {

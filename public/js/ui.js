@@ -77,6 +77,8 @@ COMPONENT('editor', function(self, config) {
 	var lorem = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'.split(' ');
 	var HSM = { annotateScrollbar: true, delay: 100 };
 	var cache_lines = null;
+	var cache_lines_body = '';
+	var cache_lines_diff = false;
 	var cache_lines_skip = false;
 	var cache_diffs = {};
 	var cache_diffs_highlight = {};
@@ -181,27 +183,30 @@ COMPONENT('editor', function(self, config) {
 		var current = editor.getValue().split('\n');
 		var lines = value.split('\n');
 
+		cache_lines_skip = true;
+		cache_lines_diff = true;
 		editor.setValue(value);
 		self.diffgutterclear();
+		cache_lines_skip = false;
 
 		for (var i = 0; i < lines.length; i++) {
 			if (lines[i] !== current[i])
 				self.diffgutter(i);
 		}
+
+		setTimeout2('EditorGutterColor', self.prerender_colors, 999, 20);
 	};
 
 	self.diffgutterclear = function() {
 
-		var lines = self.find('.cm-changed-line');
-
-		for (var i = 0; i < lines.length; i++) {
-			var el = $(lines[i]);
-			var index = +el.find('.CodeMirror-linenumber').html();
-			editor.removeLineClass(index - 1, null, 'cm-changed-line');
-		}
+		var count = editor.lineCount();
+		for (var i = 0; i < count; i++)
+			editor.removeLineClass(i, null, 'cm-changed-line');
 
 		editor.doc.clearGutter('GutterDiff');
-		cache_lines = editor.getValue().split('\n');
+		cache_lines_body = editor.getValue();
+		cache_lines = cache_lines_body.split('\n');
+		cache_lines_diff = true;
 		cache_diffs = {};
 		cache_diffs_highlight = {};
 		cache_diffs_checksum = 0;
@@ -304,6 +309,7 @@ COMPONENT('editor', function(self, config) {
 
 		var shortcut = function(name) {
 			return function() {
+				EXEC(config.change, self.ismodified() ? 1 : 0);
 				EXEC(config.shortcut, name);
 			};
 		};
@@ -406,6 +412,13 @@ COMPONENT('editor', function(self, config) {
 			}
 		};
 
+		var adddate = function() {
+			var val = new Date().format('yyyy-MM-dd');
+			var doc = editor.getDoc();
+			var cursor = doc.getCursor();
+			doc.replaceRange(val, cursor);
+		};
+
 		var comment = function() {
 			var sel = editor.getSelections();
 			var cur = editor.getModeAt(editor.getCursor());
@@ -440,7 +453,8 @@ COMPONENT('editor', function(self, config) {
 		options.showCursorWhenSelecting = true;
 		options.blastCode = true;
 		options.autoCloseBrackets = true;
-		options.extraKeys = { 'Alt-F': 'findPersistent', 'Ctrl-Enter': findnext, 'Ctrl--': comment, 'Cmd--': comment, 'Cmd-Enter': findnext, 'Esc': clearsearch, 'Cmd-D': findmatch, 'Ctrl-D': findmatch, 'Cmd-S': shortcut('save'), 'Ctrl-S': shortcut('save'), 'Alt-W': shortcut('close'), 'Cmd-W': shortcut('close'), Enter: 'newlineAndIndentContinue', Tab: tabulator, 'Alt-Tab': shortcut('nexttab') };
+		// 'Alt-Up': shortcut('swaplineup'), 'Alt-Down': shortcut('swaplinedown')
+		options.extraKeys = { 'Alt-F': 'findPersistent', 'Alt-Enter': adddate, 'Ctrl-Enter': findnext, 'Ctrl--': comment, 'Cmd--': comment, 'Cmd-Enter': findnext, 'Esc': clearsearch, 'Cmd-D': findmatch, 'Ctrl-D': findmatch, 'Cmd-S': shortcut('save'), 'Ctrl-S': shortcut('save'), 'Alt-W': shortcut('close'), 'Cmd-W': shortcut('close'), Enter: 'newlineAndIndentContinue', Tab: tabulator, 'Alt-Tab': shortcut('nexttab') };
 
 		if (common.electron) {
 			options.extraKeys['Cmd-Tab'] = shortcut('nexttab');
@@ -491,7 +505,7 @@ COMPONENT('editor', function(self, config) {
 		var REGTODOREPLACE = /^@todo(:)(\s)|(\s)+-(\s)/i;
 		var REGTODODONE = /@done|@canceled/i;
 		var REGTODOCLEAN = /-->|\*\//g;
-		var REGPART = /(COMPONENT|COMPONENT_EXTEND|EXTENSION|CONFIG|NEWSCHEMA|NEWOPERATION|NEWTASK|MIDDLEWARE|WATCH|ROUTE|(^|\s)ON|PLUGIN)+\(.*?\)/g;
+		var REGPART = /(COMPONENT|COMPONENT_EXTEND|EXTENSION|CONFIG|NEWSCHEMA|NEWCOMMAND|NEWOPERATION|NEWTASK|MIDDLEWARE|WATCH|ROUTE|(^|\s)ON|PLUGIN|PLUGINABLE)+\(.*?\)/g;
 		var REGPARTCLEAN = /('|").*?('|")/;
 		var REGHELPER = /(Thelpers|FUNC|REPO|MAIN)\.[a-z0-9A-Z_$]+(\s)+=/g;
 		var REGCONSOLE = /console\.\w+\(.*?\)/g;
@@ -501,6 +515,7 @@ COMPONENT('editor', function(self, config) {
 		var REGPLUGINOP_REPLACE = /(\s)+=(\s)+function/g;
 		var REGFUNCTION = /((\s)+=(\s)+function)/;
 		var REGTASKOP = /('|").*?('|")/g;
+		var REGVERSION = /version[":-='\s]+[a-z0-9."',\s]+/;
 		var REGJC = /data---=".*?(__|")/g;
 
 		var schemaoperation_replace = function(text) {
@@ -513,15 +528,44 @@ COMPONENT('editor', function(self, config) {
 				for (var i = 0; i < arr.length; i++) {
 					el = arr[i];
 					var html = el.innerHTML;
-					if (html.charAt(0) === '#' && (html.length === 4 || html.length === 7))
+					if (html.charAt(0) === '#' && (html.length === 4 || html.length === 7)) {
 						el.style = 'border-bottom:4px solid {0}'.format(html);
+						el.$color = html;
+					}
 				}
 			}
 		});
 
-		self.prerender_colors = function(changescount) {
+		self.refreshcolorpaletter = function() {
+			var arr = document.querySelectorAll('.cm-atom,.cm-builtin');
+			var colorpalette = {};
+			for (var i = 0; i < arr.length; i++) {
+				if (arr[i].offsetParent && arr[i].$color)
+					colorpalette[arr[i].$color] = 1;
+			}
 
-			config.change && EXEC(config.change, changescount || 0);
+			var keys = Object.keys(colorpalette);
+			keys.sort();
+			SET('code.colorpalette', keys);
+		};
+
+		var allowed_modes = { totaljsresources: 1, javascript: 1, totaljs: 1, css: 1, sass: 1, html: 1, todo: 1, bash: 1, python: 1, php: 1, shell: 1, htmlmixed: 1, 'null': 1, clike: 1, yaml: 1, markdown: 1 };
+		var ismodifiedbody = false;
+
+		self.ismodified = function() {
+			var is = !HIDDEN(self.dom.querySelector('.cm-diff'));
+			if (is)
+				return is;
+			if (!cache_lines_diff)
+				return ismodifiedbody;
+			ismodifiedbody = cache_lines.join('\n') !== editor.getValue();
+			cache_lines_diff = false;
+			return ismodifiedbody;
+		};
+
+		self.prerender_colors = function() {
+
+			EXEC(config.change, self.ismodified() ? 1 : 0);
 
 			if (cache_diffs_checksum === checksum)
 				return;
@@ -533,32 +577,55 @@ COMPONENT('editor', function(self, config) {
 			var mode = editor.getMode().name;
 			var is = null;
 			var name, type, oldschema, oldplugin, pluginvariable, oldtask, taskvariable, tmp;
+			var ispluginable = false;
 			var val = editor.getValue();
+			var version = '';
+			var version_file = '';
 
-			if (mode === 'totaljsresources' || mode === 'javascript' || mode === 'totaljs' || mode === 'css' || mode === 'sass' || mode === 'html' || mode === 'todo' || mode === 'bash' || mode === 'python' || mode === 'php' || mode === 'shell' || mode === 'htmlmixed' || mode === 'null' || mode === 'clike' || mode === 'yaml') {
+			if (allowed_modes[mode]) {
 				var lines = val.split('\n');
 				for (var i = 0; i < lines.length; i++) {
 
-					var m = mode === 'todo' ? lines[i].match(REGTODO2) : lines[i].match(REGTODO);
+					var line = lines[i];
+					var m;
 
-					if (m && !REGTODODONE.test(lines[i]))
-						todos.push({ line: i + 1, ch: m.index || 0, name: lines[i].substring(m.index, 200).replace(REGTODOREPLACE, '').replace(REGTODOCLEAN, '').trim() });
+					if (mode === 'markdown') {
+						if ((/^#{1,4}\s/).test(line))
+							components.push({ line: i, ch: 0, name: line.trim(), type: 'markdown' });
+						continue;
+					}
+
+					m = mode === 'todo' ? line.match(REGTODO2) : line.match(REGTODO);
+
+					if (m && !REGTODODONE.test(line))
+						todos.push({ line: i + 1, ch: m.index || 0, name: line.substring(m.index, 200).replace(REGTODOREPLACE, '').replace(REGTODOCLEAN, '').trim() });
+
+					if (line && mode !== 'css') {
+						m = line.match(REGVERSION);
+						if (m) {
+							version = m.toString().replace(/(version|\s|"|'|=|:)+/g, '').replace(/[^\d,.]+/g, '').replace(/(,|\.|-|"|')$/,'').trim().replace(/^[,.\-\s]+|[,.\-\s]+$/g, '');
+							if (version && (/\d/g).test(version)) {
+								version_file = version;
+								components.push({ line: i, ch: m.index || 0, name: version, type: 'version' });
+							}
+						}
+					}
 
 					if (mode === 'javascript' || mode === 'totaljs' || mode === 'html' || mode === 'htmlmixed') {
 
-						if (is != null && lines[i].substring(is, 3) === '});') {
+						if (is != null && line.substring(is, 3) === '});') {
 							components[components.length - 1].lineto = i;
 							is = null;
 						}
 
-						m = lines[i].match(REGJC);
+						m = line.match(REGJC);
 						if (m) {
 							name = m[0].replace(/data---="|_{2,}|"/g, '').trim();
 							if (components.findIndex('name', name ) === -1)
 								components.push({ line: i, ch: m.index || 0, name: name, type: 'htmlcomponent' });
 						}
 
-						m = lines[i].match(REGPART);
+						m = line.match(REGPART);
 						if (m) {
 							name = m[0].match(REGPARTCLEAN);
 							tmp = m[0].toLowerCase();
@@ -581,16 +648,21 @@ COMPONENT('editor', function(self, config) {
 										break;
 									case 'plugi':
 										oldplugin = name;
-										pluginvariable = m[0].substring(m[0].indexOf('(', 10) + 1, m[0].indexOf(')'));
+										ispluginable = tmp.substring(0, 10) === 'pluginable';
+										pluginvariable = m[0].substring(m[0].indexOf('(', ispluginable ? 20 : 10) + 1, m[0].indexOf(')'));
 										break;
 								}
 
-								components.push({ line: i, ch: beg, name: name.trim(), type: type.substring(0, 3) === 'on(' ? 'event' : type === 'exten' ? 'extension' : type === 'compo' ? 'component' : type === 'newsc' ? 'schema' : type === 'confi' ? 'config' : type === 'newop' ? 'operation' : type === 'newta' ? 'task' : type === 'watch' ? 'watcher' : type === 'plugi' ? 'plugin' : type === 'middl' ? 'middleware' : type === 'route' ? 'route' : 'undefined' });
+
+								if (type === 'watch' && oldplugin)
+									name = name.replace(/\?/g, oldplugin);
+
+								components.push({ line: i, ch: beg, name: name.trim(), type: type.substring(0, 3) === 'on(' ? 'event' : type === 'exten' ? 'extension' : type === 'compo' ? 'component' : type === 'newsc' ? 'schema' : type === 'confi' ? 'config' : type === 'newop' ? 'operation' : type === 'newta' ? 'task' : type === 'newco' ? 'command' : type === 'watch' ? 'watcher' : type === 'plugi' ? ispluginable ? 'pluginable' : 'plugin' : type === 'middl' ? 'middleware' : type === 'route' ? 'route' : 'undefined' });
 								is = beg;
 							}
 						}
 
-						m = lines[i].match(REGHELPER);
+						m = line.match(REGHELPER);
 						if (m) {
 							var end = m[0].indexOf('=');
 							if (end === -1)
@@ -600,10 +672,10 @@ COMPONENT('editor', function(self, config) {
 							if (name) {
 
 								if (type === 'Thel' || type === 'FUNC') {
-									var subm = lines[i].match(REGFUNCTION);
+									var subm = line.match(REGFUNCTION);
 									if (!subm)
 										continue;
-									name = name.trim() + lines[i].substring(lines[i].indexOf('(', subm.index), lines[i].indexOf(')', subm.index + 8) + 1);
+									name = name.trim() + line.substring(line.indexOf('(', subm.index), line.indexOf(')', subm.index + 8) + 1);
 								}
 
 								var beg = m.index || 0;
@@ -611,21 +683,21 @@ COMPONENT('editor', function(self, config) {
 							}
 						}
 
-						m = lines[i].match(REGCONSOLE);
+						m = line.match(REGCONSOLE);
 						if (m) {
 							name = m[0].length > 20 ? (m[0].substring(0, 30) + '...') : m[0];
-							var tmpindex = lines[i].indexOf('//');
+							var tmpindex = line.indexOf('//');
 							if (tmpindex === -1 || tmpindex > m.index)
 								components.push({ line: i, ch: 0, name: name, type: 'console' });
 						}
 
 						if (oldschema) {
-							m = lines[i].match(REGSCHEMAOP);
+							m = line.match(REGSCHEMAOP);
 							if (m) {
 								m = m[0].replace(REGSCHEMAOP_REPLACE, schemaoperation_replace);
 								components.push({ line: i, ch: 0, name: oldschema + m, type: 'schema' });
 							}
-							m = lines[i].match(REGSCHEMAOP_DEFINE);
+							m = line.match(REGSCHEMAOP_DEFINE);
 							if (m) {
 								m = m[0].replace(REGSCHEMAOP_REPLACE, schemaoperation_replace);
 								components.push({ line: i, ch: 0, name: oldschema + m, type: 'schema' });
@@ -634,17 +706,17 @@ COMPONENT('editor', function(self, config) {
 
 						if (oldplugin) {
 							if (pluginvariable.indexOf('(') == -1) {
-								m = lines[i].match(new RegExp(pluginvariable + '.*?(\\s)=(\\s)function\\(.*?\\)'));
+								m = line.match(new RegExp(pluginvariable + '.*?(\\s)=(\\s)function\\(.*?\\)'));
 								if (m) {
 									m = m[0].replace(REGPLUGINOP_REPLACE, '');
 									m = m.substring(0, m.indexOf(')') + 1).trim().substring(pluginvariable.length);
-									components.push({ line: i, ch: 0, name: oldplugin + m, type: 'plugin' });
+									components.push({ line: i, ch: 0, name: oldplugin + m, type: ispluginable ? 'pluginable' : 'plugin' });
 								}
 							}
 						}
 
 						if (oldtask) {
-							m = lines[i].match(new RegExp(taskvariable + '\\(.*?,'));
+							m = line.match(new RegExp(taskvariable + '\\(.*?,'));
 							if (m) {
 								m = m[0].match(REGTASKOP);
 								if (m) {
@@ -711,6 +783,8 @@ COMPONENT('editor', function(self, config) {
 
 			EXEC(config.components, components);
 			EXEC(config.todo, todos);
+			SET('code.fileversion', version_file);
+			setTimeout2(self.ID + 'colorpalette', self.refreshcolorpaletter, 1000);
 		};
 
 		var snippets = {};
@@ -874,9 +948,13 @@ COMPONENT('editor', function(self, config) {
 
 		editor.on('change', function(a, b) {
 
+			cache_lines_diff = true;
+
 			if (b.origin === 'setValue') {
-				if (!cache_lines_skip)
-					cache_lines = editor.getValue().split('\n');
+				if (!cache_lines_skip) {
+					cache_lines_body = editor.getValue();
+					cache_lines = cache_lines_body.split('\n');
+				}
 			} else {
 
 				if (code.SYNC) {
@@ -932,7 +1010,7 @@ COMPONENT('editor', function(self, config) {
 					combo && combo();
 			}
 
-			setTimeout2('EditorGutterColor', self.prerender_colors, 999, 20, count);
+			setTimeout2('EditorGutterColor', self.prerender_colors, 999, 20);
 
 			if (count)
 				setTimeout2('EditorLineChange' + lf, self.rebuild_autocomplete2, 1000, null, lf);
@@ -977,6 +1055,7 @@ COMPONENT('editor', function(self, config) {
 		var doc = editor.doc.copy(history);
 		if (history) {
 			doc.cachedlines = cache_lines;
+			doc.cachedbody = cache_lines_body;
 			doc.cacheddiffs = cache_diffs;
 			doc.cachediffshighlight = cache_diffs_highlight;
 			doc.cachedusers = cache_users;
@@ -1000,35 +1079,51 @@ COMPONENT('editor', function(self, config) {
 
 	self.paste = function(doc) {
 
-		editor.execCommand('clearSearch');
-
-		cache_lines = doc.cachedlines || editor.getValue().split('\n');
+		cache_lines_diff = true;
+		cache_lines_body = doc.cachedbody || editor.getValue();
+		cache_lines = doc.cachedlines || cache_lines_body.split('\n');
 		cache_diffs = doc.cacheddiffs || {};
 		cache_diffs_highlight = doc.cachediffshighlight || {};
 		cache_users = doc.cachedusers || {};
 
+		delete doc.cachedbody;
 		delete doc.cachedlines;
 		delete doc.cacheddiffs;
 		delete doc.cachediffshighlight;
 
-		editor.swapDoc(doc);
 		cache_lines_skip = true;
+		editor.swapDoc(doc);
 		editor.refresh();
-		cache_lines_skip = false;
+
+		setTimeout(function() {
+			cache_lines_skip = false;
+		}, 100);
+
 		checksum = -1;
+
+		if ($('.search').find('input').val()) {
+			editor.execCommand('findPersistentNext');
+			editor.execCommand('countMatches');
+		} else {
+			setTimeout(function() {
+				editor.execCommand('clearSearch');
+				editor.execCommand('clearMatches');
+			}, 200);
+		}
+
+		setTimeout(function() {
+			EXEC(config.change, self.ismodified() ? 1 : 0);
+		}, 50);
 
 		if (!cache_lines)
 			return;
 
 		var keys;
 
-		var changes = 0;
 		if (cache_diffs) {
 			keys = Object.keys(cache_diffs);
-			for (var i = 0; i < keys.length; i++) {
+			for (var i = 0; i < keys.length; i++)
 				self.diffgutter(+keys[i], null, true, false);
-				changes++;
-			}
 		}
 
 		if (cache_diffs_highlight) {
@@ -1038,13 +1133,17 @@ COMPONENT('editor', function(self, config) {
 		}
 
 		autocomplete_unique = null;
-		setTimeout2('EditorGutterColor', self.prerender_colors, 500, 20, changes);
+		setTimeout2('EditorGutterColor', self.prerender_colors, 500, 20);
 		setTimeout2('EditorRebuild', self.rebuild_autocomplete, 500);
 	};
 
 	self.clear = function(content) {
+		SET('code.colorpalette', EMPTYARRAY);
+		SET('code.fileversion');
+		cache_lines_skip = true;
 		content && editor.setValue('');
 		editor.clearHistory();
+		cache_lines_skip = false;
 	};
 
 	self.setter = function(value, path, type) {
@@ -1058,6 +1157,9 @@ COMPONENT('editor', function(self, config) {
 			return;
 
 		markers = {};
+		NUL('code.fileversion');
+		SET('code.colorpalette', EMPTYARRAY);
+
 		editor.setValue(value || '');
 		editor.refresh();
 
@@ -1074,14 +1176,14 @@ COMPONENT('editor', function(self, config) {
 		}, 2000);
 
 		checksum = -1;
-		setTimeout2('EditorGutterColor', self.prerender_colors, 999, 20, 0);
+		setTimeout2('EditorGutterColor', self.prerender_colors, 999, 20);
 		self.resize();
 	};
 
 	self.flush = function() {
 		clearTimeout2('EditorGutterColor');
 		checksum = -1;
-		self.prerender_colors(0);
+		self.prerender_colors();
 	};
 
 	self.state = function(type) {
@@ -1170,7 +1272,16 @@ COMPONENT('editor', function(self, config) {
 						var t = item.items[j].type;
 						if (t !== 'schema' && t !== 'route') {
 							var n = item.items[j].name;
-							autocomplete.push({ html: '<i class="' + Thelpers.particon(item.items[j].type) + '"></i> <b>' + n + '</b>', search: n, code: n });
+							var c = n;
+
+							if (t === 'plugin') {
+								n = c = c.replace('.', '/');
+								var tmp = c.lastIndexOf('(');
+								if (tmp !== -1)
+									c = c.substring(0, tmp);
+							}
+
+							autocomplete.push({ html: '<i class="' + Thelpers.particon(item.items[j].type) + '"></i> <b>' + n + '</b>', search: n, code: c });
 						}
 					}
 				}
@@ -1252,6 +1363,9 @@ COMPONENT('exec', function(self, config) {
 COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 
 	var REGBK = /(-|_)bk\.$/i;
+	var items = {};
+	var nestedkey = null;
+	var nesteditem = null;
 
 	Thelpers.treefilecolor = function(filename) {
 		if (filename.charAt(0) === '.' || REGBK.test(filename))
@@ -1307,6 +1421,8 @@ COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 				return 'far fa-file-alt';
 			case 'md':
 				return 'fab fa-markdown';
+			case 'build':
+				return 'fa fa-code-branch';
 			case 'bundle':
 			case 'package':
 				return 'fa fa-box';
@@ -1340,6 +1456,9 @@ COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 			case 'yaml':
 				return 'fa fa-cog';
 			case 'c':
+			case 'wasm':
+			case 'wat':
+			case 'wast':
 				return 'fa fa-code';
 		}
 		return 'fa-file-o far';
@@ -1363,11 +1482,40 @@ COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 		}
 	};
 
-	self.template = Tangular.compile('<div class="item{{ if children }} expand{{ fi }}{{ name | treefilecolor }}" data-index="{{ $pointer }}" title="{{ name }}"><i class="icon {{ if children }}fa fa-folder{{ if isopen }}-open {{ fi }}{{ if name === \'threads\' }} special{{ fi }}{{ else }}{{ name | fileicon }}{{ fi }}"></i><span class="options"><i class="fa fa-ellipsis-h"></i></span><div>{{ name }}</div></div>');
+	self.template = Tangular.compile('<div class="item{{ if children }} expand{{ fi }}{{ name | treefilecolor }}" data-index="{{ $pointer }}" title="{{ name }}"><i class="icon {{ if children }}fa fa-folder{{ if isopen }}-open {{ fi }}{{ if name === \'threads\' || name === \'builds\' }} special{{ fi }}{{ else }}{{ name | fileicon }}{{ fi }}"></i><span class="options"><i class="fa fa-ellipsis-h"></i></span><div>{{ name }}</div></div>');
 	self.readonly();
 
 	self.resizescrollbar = function() {
 		self.closest('.ui-viewbox').component().resizescrollbar();
+	};
+
+	self.shownested = function(item) {
+
+		if (typeof(item) === 'string')
+			item = items[item];
+
+		if (!item)
+			return;
+
+		var builder = [];
+		var selected = selindex === -1 ? -1 : config.pk ? cache[selindex][config.pk] : cache[selindex];
+
+		var key = config.pk ? item[config.pk] : counter;
+		if (key === selected)
+			selindex = counter;
+
+		builder.push('<div class="extrabutton" data-name="reset"><i class="fa fa-times red"></i>{0}</div>'.format(item.path));
+
+		for (var i = 0; i < item.children.length; i++) {
+			var child = item.children[i];
+			builder.push('<div class="node{0}">'.format(child.isopen ? ' show' : '') + self.template(child));
+			child.children && self.renderchildren(builder, child, 1, selected);
+			builder.push('</div>');
+		}
+
+		nestedkey = key;
+		self.html(builder.join(''));
+		self.resizescrollbar();
 	};
 
 	self.make = function() {
@@ -1377,7 +1525,13 @@ COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 		var ddtarget = null;
 
 		self.event('click', '.extrabutton', function() {
-			EXEC(config.extrabutton);
+			var name = $(this).attrd('name');
+			if (name === 'reset') {
+				nestedkey = null;
+				self.refresh();
+				self.resizescrollbar();
+			} else
+				EXEC(config.extrabutton);
 		});
 
 		self.event('dragenter dragover dragexit drop dragleave', function (e) {
@@ -1551,7 +1705,9 @@ COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 	self.expand = function(index) {
 		if (index == null) {
 			self.find('.expand').each(function() {
-				$(this).parent().aclass('show');
+				var el = $(this);
+				el.parent().aclass('show');
+				el.find('> .icon').rclass('fa-folder').aclass('fa-folder-open');
 			});
 		} else {
 			self.find('[data-index="{0}"]'.format(index)).each(function() {
@@ -1565,6 +1721,7 @@ COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 						el = el.closest('.children').prev();
 						if (!el.hclass('expand'))
 							break;
+						el.find('> .icon').rclass('fa-folder').aclass('fa-folder-open');
 						var parent = el.parent().aclass('show');
 						var tmp = +parent.find('> .item').attrd('index');
 						var item = cache[tmp];
@@ -1581,7 +1738,9 @@ COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 	self.collapse = function(index) {
 		if (index == null) {
 			self.find('.expand').each(function() {
-				$(this).parent().rclass('show');
+				var el = $(this);
+				el.parent().rclass('show');
+				el.find('> .icon').aclass('fa-folder').rclass('fa-folder-open');
 			});
 		} else {
 			self.find('[data-index="{0}"]'.format(index)).each(function() {
@@ -1595,6 +1754,7 @@ COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 						el = el.closest('.children').prev();
 						if (!el.hclass('expand'))
 							break;
+						el.find('> .icon').aclass('fa-folder').rclass('fa-folder-open');
 						el.parent().rclass('show');
 					}
 				}
@@ -1603,7 +1763,7 @@ COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 		self.resizescrollbar();
 	};
 
-	self.renderchildren = function(builder, item, level, selected) {
+	self.renderchildren = function(builder, item, level, selected, addtocache) {
 		builder.push('<div class="children children{0}" data-level="{0}">'.format(level));
 		item.children.forEach(function(item) {
 			counter++;
@@ -1614,10 +1774,16 @@ COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 			if (key === selected)
 				selindex = counter;
 
+			if (nestedkey && nestedkey === key)
+				nesteditem = item;
+
+			if (addtocache)
+				items[key] = item;
+
 			item.isopen = !!(expanded[key] && item.children);
 			builder.push('<div class="node{0}">'.format(item.isopen ? ' show' : ''));
 			builder.push(self.template(item));
-			item.children && self.renderchildren(builder, item, level + 1, selected);
+			item.children && self.renderchildren(builder, item, level + 1, selected, addtocache);
 			builder.push('</div>');
 		});
 		builder.push('</div>');
@@ -1641,6 +1807,7 @@ COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 		selindex = -1;
 		counter = 0;
 		cache = {};
+		items = {};
 
 		var extra = true;
 		if (value) {
@@ -1663,10 +1830,15 @@ COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 			var key = config.pk ? item[config.pk] : counter;
 			if (key === selected)
 				selindex = counter;
+
+			if (nestedkey && nestedkey === key)
+				nesteditem = item;
+
+			items[key] = item;
 			item.isopen = !!(expanded[key] && item.children);
 			builder.push('<div class="node{0}">'.format(item.isopen ? ' show' : '') + self.template(item));
 			if (item.children)
-				self.renderchildren(builder, item, 1, selected);
+				self.renderchildren(builder, item, 1, selected, true);
 			else if (!cache.first)
 				cache.first = item;
 			builder.push('</div>');
@@ -1679,6 +1851,11 @@ COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 			// self.select(selindex);
 		} else
 			config.first !== false && cache.first && setTimeout(self.first, 100);
+
+		if (nesteditem) {
+			self.shownested(nesteditem);
+			nesteditem = null;
+		}
 	};
 });
 
@@ -5036,7 +5213,7 @@ COMPONENT('websocket', 'reconnect:3000', function(self, config) {
 	};
 
 	self.send = function(obj) {
-		queue.push(encodeURIComponent(JSON.stringify(obj)));
+		queue.push(JSON.stringify(obj));
 		self.process();
 		return self;
 	};
@@ -5086,7 +5263,7 @@ COMPONENT('websocket', 'reconnect:3000', function(self, config) {
 			return;
 		}
 
-		e.reason && WARN('WebSocket:', decodeURIComponent(e.reason));
+		e.reason && WARN('WebSocket:', e.reason);
 		self.close(true);
 		setTimeout(self.connect, config.reconnect);
 	}
@@ -5094,7 +5271,7 @@ COMPONENT('websocket', 'reconnect:3000', function(self, config) {
 	function onMessage(e) {
 		var data;
 		try {
-			data = PARSE(decodeURIComponent(e.data));
+			data = PARSE(e.data);
 			self.attrd('jc-path') && self.set(data);
 		} catch (e) {
 			WARN('WebSocket "{0}": {1}'.format(url, e.toString()));
@@ -6018,12 +6195,13 @@ COMPONENT('validation', 'delay:100;flags:visible', function(self, config) {
 	};
 });
 
-COMPONENT('infopanel', function(self) {
+COMPONENT('infopanel', function(self, config, cls) {
 
 	var is = false;
 	var cache;
 	var tsshow;
 	var tshide;
+	var callback;
 
 	// self.singleton();
 	self.readonly();
@@ -6033,7 +6211,7 @@ COMPONENT('infopanel', function(self) {
 	// self.blind();
 
 	self.make = function() {
-		self.aclass('ui-infopanel hidden invisible');
+		self.aclass(cls + ' hidden invisible');
 		$(document).on('click mousedown', self.hide);
 
 		self.on('resize + scroll', function() {
@@ -6048,11 +6226,15 @@ COMPONENT('infopanel', function(self) {
 				is = false;
 				self.aclass('hidden invisible');
 				cache = null;
+				callback && setTimeout(function(callback) {
+					callback();
+				}, 1000, callback);
+				callback = null;
 			}, 100);
 		}
 	};
 
-	self.show = function(el, render, offsetX, offsetY, top) {
+	self.show = function(el, render, offsetX, offsetY, top, cb) {
 
 		var main = self.element;
 
@@ -6065,6 +6247,7 @@ COMPONENT('infopanel', function(self) {
 			return;
 		}
 
+		callback = cb;
 		clearTimeout(tshide);
 		clearTimeout(tsshow);
 		is = false;
@@ -6528,7 +6711,13 @@ COMPONENT('viewbox', 'margin:0;scroll:true;delay:100;scrollbar:0;visibleY:1;heig
 		var c = cls + '-hidden';
 		self.hclass(c) && self.rclass(c, 100);
 		scrollbar && scrollbar.resize();
-		scrolltop && self.scrolltop(0);
+
+		if (scrolltop) {
+			if (config.scrolltop)
+				self.scrolltop(0);
+			else if (config.scrollbottom)
+				self.scrollbottom(0);
+		}
 
 		if (!init) {
 			self.rclass('invisible', 250);
@@ -6541,7 +6730,7 @@ COMPONENT('viewbox', 'margin:0;scroll:true;delay:100;scrollbar:0;visibleY:1;heig
 	};
 
 	self.setter = function() {
-		setTimeout(self.resize, config.delay, config.scrolltop);
+		setTimeout(self.resize, config.delay, true);
 	};
 });
 
@@ -6689,7 +6878,7 @@ COMPONENT('directory', 'minwidth:200', function(self, config) {
 					if (self.opt.callback) {
 						if (sel.length)
 							self.opt.callback(self.opt.items[+sel.attrd('index')], self.opt.element);
-						else
+						else if (self.opt.custom)
 							self.opt.callback(this.value, self.opt.element, true);
 					}
 					self.hide();
@@ -7912,9 +8101,8 @@ COMPONENT('clipboard', function(self) {
 	};
 });
 
-COMPONENT('message', function(self, config) {
+COMPONENT('message', 'button:OK', function(self, config, cls) {
 
-	var cls = 'ui-message';
 	var cls2 = '.' + cls;
 	var is, visible = false;
 
@@ -7923,11 +8111,10 @@ COMPONENT('message', function(self, config) {
 	self.nocompile && self.nocompile();
 
 	self.make = function() {
-		self.aclass(cls + ' hidden');
 
-		self.event('click', 'button', function() {
-			self.hide();
-		});
+		var pls = (config.style === 2 ? (' ' + cls + '2') : '');
+		self.aclass(cls + ' hidden' + pls);
+		self.event('click', 'button', self.hide);
 
 		$(window).on('keyup', function(e) {
 			visible && e.which === 27 && self.hide();
@@ -7963,32 +8150,6 @@ COMPONENT('message', function(self, config) {
 		self.content(cls + '-success', message, icon || 'check-circle');
 	};
 
-	self.hide = function() {
-		self.callback && self.callback();
-		self.aclass('hidden');
-		visible = false;
-	};
-
-	self.content = function(classname, text, icon) {
-		!is && self.html('<div><div class="ui-message-icon"><i class="fa fa-' + icon + '"></i></div><div class="ui-message-body"><div class="text"></div><hr /><button>' + (config.button || 'OK') + '</button></div></div>');
-		visible = true;
-		self.rclass2(cls + '-').aclass(classname);
-		self.find(cls2 + '-body').rclass().aclass(cls + '-body');
-
-		if (is)
-			self.find(cls2 + '-icon').find('.fa').rclass2('fa-').aclass('fa-' + icon);
-
-		self.find('.text').html(text);
-		self.rclass('hidden');
-		is = true;
-		setTimeout(function() {
-			self.aclass(cls + '-visible');
-			setTimeout(function() {
-				self.find(cls2 + '-icon').aclass(cls + '-icon-animate');
-			}, 300);
-		}, 100);
-	};
-
 	self.response = function(message, callback, response) {
 
 		var fn;
@@ -8019,6 +8180,36 @@ COMPONENT('message', function(self, config) {
 			message && self.success(message);
 			fn && fn(response);
 		}
+	};
+
+	self.hide = function() {
+		self.callback && self.callback();
+		self.aclass('hidden');
+		visible = false;
+	};
+
+	self.content = function(classname, text, icon) {
+
+		if (icon.indexOf(' ') === -1)
+			icon = 'fa fa-' + icon;
+
+		!is && self.html('<div><div class="{0}-icon"><i class="{1}"></i></div><div class="{0}-body"><div class="{0}-text"></div><hr /><button>{2}</button></div></div>'.format(cls, icon, config.button));
+		visible = true;
+		self.rclass2(cls + '-').aclass(classname);
+		self.find(cls2 + '-body').rclass().aclass(cls + '-body');
+
+		if (is)
+			self.find(cls2 + '-icon').find('.fa').rclass2('fa').aclass(icon);
+
+		self.find(cls2 + '-text').html(text);
+		self.rclass('hidden');
+		is = true;
+		setTimeout(function() {
+			self.aclass(cls + '-visible');
+			setTimeout(function() {
+				self.find(cls2 + '-icon').aclass(cls + '-icon-animate');
+			}, 300);
+		}, 100);
 	};
 });
 
@@ -8539,8 +8730,14 @@ COMPONENT('combo', function(self) {
 		progress = self.find('.progress');
 
 		self.event('click', function() {
+			if (common.isinfopanel)
+				return;
+
 			var combo = GET('code.data.combo');
-			combo && SETTER('infopanel', 'show', self.element, function(el) {
+			if (!combo)
+				return;
+			common.isinfopanel = true;
+			SETTER('infopanel/show', self.element, function(el) {
 
 				// @ULTRA BAD HACK
 				var builder = [];
@@ -8559,7 +8756,9 @@ COMPONENT('combo', function(self) {
 					builder.push('<div class="infopanel-combo"><b>{1}</b><span>{0}</span></div>'.format(votes[i].name, votes[i].combo));
 
 				el.html(builder.join(''));
-			}, 90, 45, true);
+			}, 90, 45, true, function() {
+				common.isinfopanel = false;
+			});
 		});
 	};
 
@@ -8809,9 +9008,8 @@ COMPONENT('tooltip', function(self) {
 
 });
 
-COMPONENT('windows', 'menuicon:fa fa-navicon;reoffsetresize:0', function(self, config) {
+COMPONENT('windows', 'menuicon:fa fa-navicon;reoffsetresize:0', function(self, config, cls) {
 
-	var cls = 'ui-' + self.name;
 	var cls2 = '.' + cls;
 	var cache = {};
 	var services = [];
@@ -8881,7 +9079,7 @@ COMPONENT('windows', 'menuicon:fa fa-navicon;reoffsetresize:0', function(self, c
 	};
 
 	self.recompile = function() {
-		setTimeout2(self.iD + 'compile', COMPILE, 50);
+		setTimeout2(self.ID + 'compile', COMPILE, 50);
 	};
 
 	self.resizeforce = function() {
@@ -8922,6 +9120,8 @@ COMPONENT('windows', 'menuicon:fa fa-navicon;reoffsetresize:0', function(self, c
 
 	events.down = function(e) {
 
+		var E = e;
+
 		if (e.type === 'touchstart') {
 			drag.touch = true;
 			e = e.touches[0];
@@ -8940,7 +9140,7 @@ COMPONENT('windows', 'menuicon:fa fa-navicon;reoffsetresize:0', function(self, c
 		drag.resize = el.hclass(cls + '-resize');
 		drag.is = false;
 
-		e.preventDefault();
+		E.preventDefault();
 
 		var myoffset = self.element.position();
 		var pos;
@@ -8973,6 +9173,7 @@ COMPONENT('windows', 'menuicon:fa fa-navicon;reoffsetresize:0', function(self, c
 			if (drag.resize) {
 				if (drag.item.meta.actions.resize == false)
 					return;
+				drag.resize = drag.item.meta.actions.resize;
 			} else {
 				if (drag.item.meta.actions.move == false)
 					return;
@@ -9011,12 +9212,17 @@ COMPONENT('windows', 'menuicon:fa fa-navicon;reoffsetresize:0', function(self, c
 					if ((off.minwidth && w < off.minwidth) || (off.minheight && h < off.minheight) || (off.maxwidth && w > off.maxwidth) || (off.maxheight && h > off.maxheight))
 						break;
 
-					obj.width = w;
-					drag.el.css(obj);
-					obj.height = h;
-					delete obj.width;
-					delete obj.top;
-					drag.body.css(obj);
+					if (drag.resize === true || drag.resize === 'width') {
+						obj.width = w;
+						drag.el.css(obj);
+					}
+
+					if (drag.resize === true || drag.resize === 'height') {
+						obj.height = h;
+						delete obj.width;
+						delete obj.top;
+						drag.body.css(obj);
+					}
 					break;
 
 				case 'tr':
@@ -9026,13 +9232,19 @@ COMPONENT('windows', 'menuicon:fa fa-navicon;reoffsetresize:0', function(self, c
 					if ((off.minwidth && w < off.minwidth) || (off.minheight && h < off.minheight) || (off.maxwidth && w > off.maxwidth) || (off.maxheight && h > off.maxheight))
 						break;
 
-					obj.width = w;
-					obj.top = y;
-					drag.el.css(obj);
-					obj.height = h;
-					delete obj.width;
-					delete obj.top;
-					drag.body.css(obj);
+					if (drag.resize === true || drag.resize === 'width') {
+						obj.width = w;
+						obj.top = y;
+						drag.el.css(obj);
+					}
+
+					if (drag.resize === true || drag.resize === 'height') {
+						obj.height = h;
+						delete obj.width;
+						delete obj.top;
+						drag.body.css(obj);
+					}
+
 					break;
 
 				case 'bl':
@@ -9043,12 +9255,18 @@ COMPONENT('windows', 'menuicon:fa fa-navicon;reoffsetresize:0', function(self, c
 					if ((off.minwidth && w < off.minwidth) || (off.minheight && h < off.minheight) || (off.maxwidth && w > off.maxwidth) || (off.maxheight && h > off.maxheight))
 						break;
 
-					obj.left = x;
-					obj.width = w;
-					drag.el.css(obj);
-					delete obj.width;
-					obj.height = h;
-					drag.body.css(obj);
+					if (drag.resize === true || drag.resize === 'width') {
+						obj.left = x;
+						obj.width = w;
+						drag.el.css(obj);
+						delete obj.width;
+					}
+
+					if (drag.resize === true || drag.resize === 'height') {
+						obj.height = h;
+						drag.body.css(obj);
+					}
+
 					break;
 
 				case 'br':
@@ -9058,11 +9276,17 @@ COMPONENT('windows', 'menuicon:fa fa-navicon;reoffsetresize:0', function(self, c
 					if ((off.minwidth && w < off.minwidth) || (off.minheight && h < off.minheight) || (off.maxwidth && w > off.maxwidth) || (off.maxheight && h > off.maxheight))
 						break;
 
-					obj.width = w;
-					drag.el.css(obj);
-					delete obj.width;
-					obj.height = h;
-					drag.body.css(obj);
+					if (drag.resize === true || drag.resize === 'width') {
+						obj.width = w;
+						drag.el.css(obj);
+						delete obj.width;
+					}
+
+					if (drag.resize === true || drag.resize === 'height') {
+						obj.height = h;
+						drag.body.css(obj);
+					}
+
 					break;
 			}
 
@@ -9073,8 +9297,8 @@ COMPONENT('windows', 'menuicon:fa fa-navicon;reoffsetresize:0', function(self, c
 			obj.left = evt.pageX - drag.x - drag.offX;
 			obj.top = evt.pageY - drag.y - drag.offY;
 
-			if (obj.top < 10)
-				obj.top = 10;
+			if (obj.top < 0)
+				obj.top = 0;
 
 			drag.el.css(obj);
 		}
@@ -9112,7 +9336,7 @@ COMPONENT('windows', 'menuicon:fa fa-navicon;reoffsetresize:0', function(self, c
 	};
 
 	var wsavecallback = function(item) {
-		var key = 'win_' + item.meta.id;
+		var key = 'win_' + item.meta.cachekey;
 		var obj = {};
 		obj.x = item.x;
 		obj.y = item.y;
@@ -9126,43 +9350,56 @@ COMPONENT('windows', 'menuicon:fa fa-navicon;reoffsetresize:0', function(self, c
 
 	self.wsave = function(obj) {
 		if (obj.meta.actions && obj.meta.actions.autosave)
-			setTimeout2(self.ID + '_win_' + obj.meta.id, wsavecallback, 500, null, obj);
+			setTimeout2(self.ID + '_win_' + obj.meta.cachekey, wsavecallback, 500, null, obj);
 	};
 
 	self.wadd = function(item) {
 
 		var hidden = '';
+		var ishidden = false;
+
+		if (!item.cachekey)
+			item.cachekey = item.id;
+
+		if (item.cachekey)
+			item.cachekey += '' + item.offset.width + 'x' + item.offset.height;
 
 		if (item.actions && item.actions.autosave) {
-			pos = PREF['win_' + item.id];
+			pos = PREF['win_' + item.cachekey];
 			if (pos) {
 
 				var mx = 0;
 				var my = 0;
+
+				var keys = Object.keys(cache);
+				var plus = 0;
+
+				for (var i = 0; i < keys.length; i++) {
+					if (cache[keys[i]].meta.cachekey === item.cachekey)
+						plus += 50;
+				}
 
 				if (config.reoffsetresize && pos.ww != null && pos.wh != null) {
 					mx = pos.ww - WW;
 					my = pos.wh - WH;
 				}
 
-				item.offset.x = pos.x - mx;
-				item.offset.y = pos.y - my;
+				item.offset.x = (pos.x - mx) + plus;
+				item.offset.y = (pos.y - my) + plus;
 				item.offset.width = pos.width;
 				item.offset.height = pos.height;
-
-				var ishidden = false;
 
 				if (pos.hidden && (item.hidden == null || item.hidden)) {
 					ishidden = true;
 					item.hidden = true;
 				}
-
-				if (!ishidden)
-					ishidden = item.hidden;
-
-				hidden = ishidden ? ' hidden' : '';
 			}
 		}
+
+		if (!ishidden)
+			ishidden = item.hidden;
+
+		hidden = ishidden ? ' hidden' : '';
 
 		var el = $('<div class="{0}-item{2}" data-id="{id}" style="left:{x}px;top:{y}px;width:{width}px"><span class="{0}-resize {0}-resize-tl"></span><span class="{0}-resize {0}-resize-tr"></span><span class="{0}-resize {0}-resize-bl"></span><span class="{0}-resize {0}-resize-br"></span><div class="{0}-title"><i class="fa fa-times {0}-control" data-name="close"></i><i class="far fa-window-maximize {0}-control" data-name="maximize"></i><i class="far fa-window-minimize {0}-control" data-name="minimize"></i><i class="{1} {0}-control {0}-lastbutton" data-name="menu"></i><span>{{ title }}</span></div><div class="{0}-body" style="height:{height}px"></div></div>'.format(cls, config.menuicon, hidden).arg(item.offset).arg(item));
 		var body = el.find(cls2 + '-body');
@@ -9365,6 +9602,10 @@ COMPONENT('windows', 'menuicon:fa fa-navicon;reoffsetresize:0', function(self, c
 		obj.meta.data && data.push(obj);
 
 		self.append(el);
+
+		setTimeout(function(obj) {
+			obj.setcommand('focus');
+		}, 100, obj);
 		return obj;
 	};
 
@@ -9444,9 +9685,8 @@ COMPONENT('windows', 'menuicon:fa fa-navicon;reoffsetresize:0', function(self, c
 
 });
 
-COMPONENT('dockable', 'menuicon:fa fa-navicon;style:2;parent:window;margin:0;reoffsetresize:0', function(self, config) {
+COMPONENT('dockable', 'menuicon:fa fa-navicon;style:2;parent:window;margin:0;reoffsetresize:0', function(self, config, cls) {
 
-	var cls = 'ui-' + self.name;
 	var cls2 = '.' + cls;
 	var cache = {};
 	var services = [];
@@ -11563,6 +11803,11 @@ COMPONENT('markdown', function (self) {
 					case 'xml':
 						type = 'text/xml';
 						break;
+					case 'wat':
+					case 'wast':
+					case 'wasm':
+						type = 'text/webassembly';
+						break;
 				}
 
 				CodeMirror.runMode(block.innerHTML.trim().replace(/&lt;|&gt;|&amp;/g, fixtags).replace(/\t/g, '  '), type, $(block).aclass('cm-s-default')[0]);
@@ -12832,4 +13077,89 @@ COMPONENT('invisible', function(self) {
 			self.rclass('invisible');
 		}, 300);
 	};
+});
+
+COMPONENT('builder', 'url:https://builder.totaljs.com', function(self, config, cls) {
+
+	var self = this;
+	var opt = {};
+	var iframe;
+
+	self.singleton();
+	self.readonly();
+
+	self.make = function() {
+
+		var dom = document.createElement('DIV');
+		$('body').prepend(dom);
+
+		self.replace($(dom));
+
+		self.aclass(cls + ' hidden');
+		self.css({ position: 'absolute', 'z-index': 100, left: 0, top: common.electron ? (common.ismac ? 28 : 1) : 0, right: 0, bottom: 0 });
+		self.on('resize', self.resize);
+		$(W).on('resize', self.resize);
+
+		$(W).on('message', function(e) {
+			e = e.originalEvent;
+			var data = e.data;
+
+			if (typeof(data) === 'string')
+				data = PARSE(data);
+
+			switch (data.TYPE) {
+				case 'builder_close':
+					self.hide();
+					break;
+				case 'builder_ready':
+					WAIT(function() {
+						return iframe && iframe.contentWindow;
+					}, function() {
+						iframe.contentWindow.postMessage(STRINGIFY(opt.data), '*');
+						SETTER('loading/hide', 500);
+					});
+					break;
+				case 'builder_save':
+					delete data.TYPE;
+					opt.callback && opt.callback(data, self.hide);
+					break;
+			}
+		});
+	};
+
+	self.hide = function() {
+		if (iframe) {
+			self.find('iframe').remove();
+			iframe = null;
+			self.aclass('hidden');
+		}
+	};
+
+	self.make_iframe = function() {
+		iframe && self.find('iframe').remove();
+		self.append('<iframe src="{0}?darkmode={1}" scrolling="no" frameborder="0"></iframe>'.format(config.url, $('body').hclass('td') ? 1 : 0));
+		iframe = self.find('iframe')[0];
+		self.resize();
+		self.rclass('hidden');
+	};
+
+	self.resize = function() {
+
+		if (!iframe)
+			return;
+
+		var css = {};
+		css.width = WW;
+		css.height = WH - self.css('top').parseInt();
+		self.css(css);
+		$(iframe).css(css);
+	};
+
+	self.load = function(data, callback) {
+		opt.data = (data ? data.substring(0, data.length - 1) + ',' : '{') + '"user":' + JSON.stringify({ id: user.id, name: user.name, url: location.origin, email: user.email, sa: user.sa }) + '}';
+		opt.callback = callback;
+		self.make_iframe();
+		self.rclass('hidden');
+	};
+
 });
