@@ -331,7 +331,28 @@ FUNC.cleancss = function(text) {
 		return text.replace(/:\s(\w)/g, ':$1');
 	}).replace(/\0/g, '\n').replace(/:[a-z0-9#]/gi, function(text) {
 		return ': ' + text.substring(1);
-	}).trim();
+	}).replace(/:\s[a-f0-9#]{3,8}/gi, function(text) {
+		text = text.toUpperCase();
+
+		var prev = '';
+
+		for (var i = 3; i < text.length; i++) {
+
+			var c = text.charAt(i);
+
+			if (i === 3) {
+				prev = c;
+				continue;
+			}
+
+			if (c !== prev)
+				return text;
+
+			prev = c;
+		}
+
+		return text.substring(0, 6);
+	});
 };
 
 FUNC.usercolor = function(value) {
@@ -872,16 +893,34 @@ FUNC.request = function(text, body) {
 FUNC.hex2rgba = function(hex) {
 	var c = (hex.charAt(0) === '#' ? hex.substring(1) : hex).split('');
 	if(c.length === 3)
-		c= [c[0], c[0], c[1], c[1], c[2], c[2]];
+		c = [c[0], c[0], c[1], c[1], c[2], c[2]];
+
+	var a = c.splice(6);
+	if (a.length)
+		a = parseFloat(parseInt((parseInt(a.join(''), 16) / 255) * 1000) / 1000);
+	else
+		a = '1';
+
 	c = '0x' + c.join('');
-	return 'rgba(' + [(c >> 16) & 255, (c >> 8) & 255, c & 255].join(',') + ',1)';
+	return 'rgba(' + [(c >> 16) & 255, (c >> 8) & 255, c & 255].join(',') + ',' + a + ')';
 };
 
 FUNC.rgba2hex = function(rgba) {
-	var m = rgba.match(/\d+,(\s)?\d+,(\s)?\d+/);
+	var m = rgba.match(/\d+,(\s)?\d+,(\s)?\d+,(\s)?[.0-9]+/);
 	if (m) {
 		m = m[0].split(',').trim();
-		return '#' + (m[0] | 1 << 8).toString(16).slice(1) + (m[1] | 1 << 8).toString(16).slice(1) + (m[2] | 1 << 8).toString(16).slice(1);
+
+		var a = m[3];
+		if (a) {
+			if (a.charAt(0) === '.')
+				a = '0' + a;
+			a = a.parseFloat();
+			a = ((a * 255) | 1 << 8).toString(16).slice(1);
+		} else
+			a = '';
+
+		return '#' + ((m[0] | 1 << 8).toString(16).slice(1) + (m[1] | 1 << 8).toString(16).slice(1) + (m[2] | 1 << 8).toString(16).slice(1) + a).toUpperCase();
+
 	} else
 		return rgba;
 };
@@ -1007,7 +1046,7 @@ FUNC.colorize = function(css, cls) {
 		var beg = val.indexOf('rgba(');
 		if (beg === -1)
 			return;
-		return val.substring(beg, val.indexOf(')', beg + 1));
+		return val.substring(beg, val.indexOf(')', beg) + 1);
 	};
 
 	for (var i = 0; i < lines.length; i++) {
