@@ -13108,6 +13108,9 @@ COMPONENT('builder', 'url:https://builder.totaljs.com', function(self, config, c
 				data = PARSE(data);
 
 			switch (data.TYPE) {
+				case 'builder_shortcut':
+					SETTER('shortcuts/exec', data.key);
+					break;
 				case 'builder_close':
 					self.hide();
 					break;
