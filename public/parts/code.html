@@ -1,7 +1,5 @@
 <div id="panel">
-
 	<section class="project exec" data-exec="code/projects" data-bind="!code.data__html b:value.name__title:value.name__text div:'@(Branch:) '+(value.branch||'@(Master)')"><i class="fa fa-angle-down"></i><b>@(Choose project)</b><div><i class="far fa-thumbs-up mr5"></i>@(Thank you for using Total.js)</div></section>
-
 	<div>
 		<div data-bind="common.recent__template__|__code.data__hide" class="hidden">
 			<script type="text/html">
@@ -1566,7 +1564,10 @@
 
 			code.SYNC = false;
 			SET('code.multiple', false);
-			SETTER('loading/show');
+
+			if (!item.iswatcher)
+				SETTER('loading/show');
+
 			AJAX('GET /api/projects/{id}/edit/'.arg(code.data), { path: item.path }, function(response) {
 
 				SETTER('loading/hide', 500);
@@ -1650,6 +1651,7 @@
 			is && code.current.ext === 'css' && items.push({ value: 98, name: '@(Remove dark mode)', icon: 'adjust' });
 			is && items.length && items.push('-');
 			is && items.push({ value: 1, name: '@(Reload)', icon: 'refresh', shortcut: 'F5' });
+			is && items.push({ value: 90, name: '@(Auto-reloader (5 sec.))', icon: 'refresh green' });
 			is && items.push({ value: 2, name: '@(Find)', icon: 'search', command: 'find' });
 			// is && items.push({ value: 2, name: '@(Replace)', icon: 'search', command: 'replaceAll' });
 			is && items.push({ value: 11, name: '@(Translate)', icon: 'language' });
@@ -1682,6 +1684,24 @@
 				switch (item.value) {
 					case 1:
 						FUNC.editor_reload();
+						break;
+					case 90:
+
+						if (code.autorefresh) {
+							code.autorefresh = null;
+							return;
+						}
+
+						code.autorefresh = code.current.path;
+						var autoreload = function() {
+							if (code.autorefresh && code.current && code.current.path === code.autorefresh) {
+								FUNC.editor_reload(true);
+								setTimeout(autoreload, 5000);
+							} else
+								code.autorefresh = null;
+						};
+
+						setTimeout(autoreload, 5000);
 						break;
 					case 2:
 						setTimeout(function() {
@@ -2239,7 +2259,9 @@
 				history.done.pop();
 			}
 
-			setTimeout2('code.autocomplete', editor.rebuild_autocomplete, 1000);
+			if (!tab.iswatcher)
+				setTimeout2('code.autocomplete', editor.rebuild_autocomplete, 1000);
+
 			code.current = tab;
 
 			if (!reload)
@@ -2248,7 +2270,8 @@
 			code.SYNCUSER = null;
 			code.SYNCID = null;
 
-			FUNC.wsopen(code.data.id, code.current.path, code.projectid);
+			if (!tab.iswatcher)
+				FUNC.wsopen(code.data.id, code.current.path, code.projectid);
 
 			code.editor.loaded = true;
 			code.editor.loadedcache = false;
@@ -2259,16 +2282,19 @@
 				code.editor.loadedcache = true;
 			}, 250);
 
-			(function(tab) {
-				AJAX('GET /api/projects/{id}/diff/'.arg(code.data), { path: tab.path }, function(response) {
-					tab.diff = response;
-					if (code.current && tab.path === code.current.path)
-						UPD('code.current.diff');
-				});
-			})(tab);
+			if (!tab.iswatcher) {
+				(function(tab) {
+					AJAX('GET /api/projects/{id}/diff/'.arg(code.data), { path: tab.path }, function(response) {
+						tab.diff = response;
+						if (code.current && tab.path === code.current.path)
+							UPD('code.current.diff');
+					});
+				})(tab);
 
-			// Refresh tasks
-			exports.changelog();
+				// Refresh tasks
+				exports.changelog();
+			} else
+				tab.iswatcher = false;
 		};
 
 		exports.restoreposition = function(cursoronly) {

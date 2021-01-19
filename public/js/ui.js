@@ -6763,13 +6763,19 @@ COMPONENT('mainprogress', function(self) {
 	};
 });
 
-COMPONENT('directory', 'minwidth:200', function(self, config) {
+COMPONENT('directory', 'minwidth:200', function(self, config, cls) {
 
-	var cls = 'ui-directory';
 	var cls2 = '.' + cls;
 	var container, timeout, icon, plus, skipreset = false, skipclear = false, ready = false, input = null, issearch = false;
-	var is = false, selectedindex = 0, resultscount = 0;
-	var template = '<li data-index="{{ $.index }}" data-search="{{ name }}" {{ if selected }} class="current selected{{ if classname }} {{ classname }}{{ fi }}"{{ else if classname }} class="{{ classname }}"{{ fi }}>{{ name | encode | ui_directory_helper }}</li>';
+	var is = false, selectedindex = 0, resultscount = 0, skiphide = false;
+	var templateE = '{{ name | encode | ui_directory_helper }}';
+	var templateR = '{{ name | raw }}';
+	var template = '<li data-index="{{ $.index }}" data-search="{{ $.search }}" {{ if selected }} class="current selected{{ if classname }} {{ classname }}{{ fi }}"{{ else if classname }} class="{{ classname }}"{{ fi }}>{{ if $.checkbox }}<span class="' + cls + '-checkbox"><i class="fa fa-check"></i></span>{{ fi }}{0}</li>';
+	var templateraw = template.format(templateR);
+	var regstrip = /(&nbsp;|<([^>]+)>)/ig;
+	var parentclass;
+
+	template = template.format(templateE);
 
 	Thelpers.ui_directory_helper = function(val) {
 		var t = this;
@@ -6777,6 +6783,8 @@ COMPONENT('directory', 'minwidth:200', function(self, config) {
 	};
 
 	self.template = Tangular.compile(template);
+	self.templateraw = Tangular.compile(templateraw);
+
 	self.readonly();
 	self.singleton();
 	self.nocompile && self.nocompile();
@@ -6794,7 +6802,7 @@ COMPONENT('directory', 'minwidth:200', function(self, config) {
 	self.make = function() {
 
 		self.aclass(cls + ' hidden');
-		self.append('<div class="{1}-search"><span class="{1}-add hidden"><i class="fa fa-plus"></i></span><span class="{1}-button"><i class="fa fa-search"></i></span><div><input type="text" placeholder="{0}" class="{1}-search-input" name="dir{2}" autocomplete="dir{2}" /></div></div><div class="{1}-container"><ul></ul></div>'.format(config.placeholder, cls, Date.now()));
+		self.append('<div class="{1}-search"><span class="{1}-add hidden"><i class="fa fa-plus"></i></span><span class="{1}-button"><i class="fa fa-search"></i></span><div><input type="text" placeholder="{0}" class="{1}-search-input" name="dir{2}" autocomplete="new-password" /></div></div><div class="{1}-container"><ul></ul></div>'.format(config.placeholder, cls, Date.now()));
 		container = self.find('ul');
 		input = self.find('input');
 		icon = self.find(cls2 + '-button').find('.fa');
@@ -6814,6 +6822,11 @@ COMPONENT('directory', 'minwidth:200', function(self, config) {
 			}
 		});
 
+		self.event('focus', 'input', function() {
+			if (self.opt.search === false)
+				$(this).blur();
+		});
+
 		self.event('click', cls2 + '-button', function(e) {
 			skipclear = false;
 			input.val('');
@@ -6823,21 +6836,79 @@ COMPONENT('directory', 'minwidth:200', function(self, config) {
 		});
 
 		self.event('click', cls2 + '-add', function() {
-			if (self.opt.callback) {
+			if (self.opt.custom && self.opt.callback) {
+				self.opt.scope && M.scope(self.opt.scope);
 				self.opt.callback(input.val(), self.opt.element, true);
 				self.hide();
 			}
 		});
 
 		self.event('click', 'li', function(e) {
-			self.opt.callback && self.opt.callback(self.opt.items[+this.getAttribute('data-index')], self.opt.element);
-			self.hide();
-			e.preventDefault();
-			e.stopPropagation();
+
+			if (self.opt.callback) {
+				self.opt.scope && M.scope(self.opt.scope);
+				var item = self.opt.items[+this.getAttribute('data-index')];
+				if (self.opt.checkbox) {
+					item.selected = !item.selected;
+					$(this).tclass('selected', item.selected);
+					var response = [];
+					for (var i = 0; i < self.opt.items.length; i++) {
+						var m = self.opt.items[i];
+						if (m.selected)
+							response.push(m);
+					}
+					self.opt.callback(response, self.opt.element);
+					skiphide = true;
+				} else
+					self.opt.callback(item, self.opt.element);
+			}
+
+			is = true;
+
+			if (!self.opt.checkbox) {
+				self.hide(0);
+				e.preventDefault();
+				e.stopPropagation();
+			}
+
 		});
 
 		var e_click = function(e) {
-			is && !$(e.target).hclass(cls + '-search-input') && self.hide(0);
+
+			if (skiphide) {
+				skiphide = false;
+				return;
+			}
+
+			var node = e.target;
+			var count = 0;
+
+			if (is) {
+				while (true) {
+					var c = node.getAttribute('class') || '';
+					if (c.indexOf(cls + '-search-input') !== -1)
+						return;
+					node = node.parentNode;
+					if (!node || !node.tagName || node.tagName === 'BODY' || count > 3)
+						break;
+					count++;
+				}
+			} else {
+				is = true;
+				while (true) {
+					var c = node.getAttribute('class') || '';
+					if (c.indexOf(cls) !== -1) {
+						is = false;
+						break;
+					}
+					node = node.parentNode;
+					if (!node || !node.tagName || node.tagName === 'BODY' || count > 4)
+						break;
+					count++;
+				}
+			}
+
+			is && self.hide(0);
 		};
 
 		var e_resize = function() {
@@ -6876,6 +6947,7 @@ COMPONENT('directory', 'minwidth:200', function(self, config) {
 					o = true;
 					var sel = self.find('li.current');
 					if (self.opt.callback) {
+						self.opt.scope && M.scope(self.opt.scope);
 						if (sel.length)
 							self.opt.callback(self.opt.items[+sel.attrd('index')], self.opt.element);
 						else if (self.opt.custom)
@@ -6915,47 +6987,45 @@ COMPONENT('directory', 'minwidth:200', function(self, config) {
 			is && self.hide(1);
 		};
 
-		self.on('reflow', fn);
-		self.on('scroll', fn);
-		self.on('resize', fn);
+		self.on('reflow + scroll + resize + resize2', fn);
 		$(W).on('scroll', fn);
 	};
 
 	self.move = function() {
+
 		var counter = 0;
 		var scroller = container.parent();
-		var h = scroller.height();
 		var li = container.find('li');
-		var hli = li.eq(0).innerHeight() || 30;
+		var hli = 0;
 		var was = false;
 		var last = -1;
 		var lastselected = 0;
+		var plus = 0;
 
-		li.each(function(index) {
-			var el = $(this);
+		for (var i = 0; i < li.length; i++) {
+
+			var el = $(li[i]);
 
 			if (el.hclass('hidden')) {
 				el.rclass('current');
-				return;
+				continue;
 			}
 
 			var is = selectedindex === counter;
 			el.tclass('current', is);
 
 			if (is) {
+				hli = (el.innerHeight() || 30) + 1;
+				plus = (hli * 2);
 				was = true;
 				var t = (hli * (counter || 1));
-				var f = Math.ceil((h / hli) / 2);
-				if (counter > f)
-					scroller[0].scrollTop = (t + f) - (h / 2.8 >> 0);
-				else
-					scroller[0].scrollTop = 0;
+				scroller[0].scrollTop = t - plus;
 			}
 
 			counter++;
-			last = index;
+			last = i;
 			lastselected++;
-		});
+		}
 
 		if (!was && last >= 0) {
 			selectedindex = lastselected;
@@ -6998,17 +7068,33 @@ COMPONENT('directory', 'minwidth:200', function(self, config) {
 			if (self.ajaxold !== val) {
 				self.ajaxold = val;
 				setTimeout2(self.ID, function(val) {
-					self.opt.ajax(val, function(items) {
+					self.opt && self.opt.ajax(val, function(items) {
 						var builder = [];
 						var indexer = {};
+						var item;
+						var key = (self.opt.search == true ? self.opt.key : (self.opt.search || self.opt.key)) || 'name';
+
 						for (var i = 0; i < items.length; i++) {
-							var item = items[i];
+							item = items[i];
 							if (self.opt.exclude && self.opt.exclude(item))
 								continue;
 							indexer.index = i;
+							indexer.search = item[key] ? item[key].replace(regstrip, '') : '';
+							indexer.checkbox = self.opt.checkbox === true;
 							resultscount++;
-							builder.push(self.template(item, indexer));
+							builder.push(self.opt.ta(item, indexer));
 						}
+
+						if (self.opt.empty) {
+							item = {};
+							var tmp = self.opt.raw ? '<b>{0}</b>'.format(self.opt.empty) : self.opt.empty;
+							item[self.opt.key || 'name'] = tmp;
+							if (!self.opt.raw)
+								item.template = '<b>{0}</b>'.format(self.opt.empty);
+							indexer.index = -1;
+							builder.unshift(self.opt.ta(item, indexer));
+						}
+
 						skipclear = true;
 						self.opt.items = items;
 						container.html(builder);
@@ -7018,16 +7104,25 @@ COMPONENT('directory', 'minwidth:200', function(self, config) {
 				}, 300, null, val);
 			}
 		} else if (value) {
-			value = value.toSearch();
-			issearch = true;
-			container.find('li').each(function() {
-				var el = $(this);
+			value = value.toSearch().split(' ');
+			var arr = container.find('li');
+			for (var i = 0; i < arr.length; i++) {
+				var el = $(arr[i]);
 				var val = el.attrd('search').toSearch();
-				var is = val.indexOf(value) === -1;
+				var is = false;
+
+				for (var j = 0; j < value.length; j++) {
+					if (val.indexOf(value[j]) === -1) {
+						is = true;
+						break;
+					}
+				}
+
 				el.tclass('hidden', is);
+
 				if (!is)
 					resultscount++;
-			});
+			}
 			skipclear = true;
 			self.move();
 			self.nosearch();
@@ -7051,6 +7146,7 @@ COMPONENT('directory', 'minwidth:200', function(self, config) {
 		// opt.exclude    --> function(item) must return Boolean
 		// opt.search
 		// opt.selected   --> only for String Array "opt.items"
+		// opt.classname
 
 		var el = opt.element instanceof jQuery ? opt.element[0] : opt.element;
 
@@ -7058,6 +7154,16 @@ COMPONENT('directory', 'minwidth:200', function(self, config) {
 			opt.items = EMPTYARRAY;
 
 		self.tclass(cls + '-default', !opt.render);
+
+		if (parentclass) {
+			self.rclass(parentclass);
+			parentclass = null;
+		}
+
+		if (opt.classname) {
+			self.aclass(opt.classname);
+			parentclass = opt.classname;
+		}
 
 		if (!opt.minwidth)
 			opt.minwidth = 200;
@@ -7081,35 +7187,40 @@ COMPONENT('directory', 'minwidth:200', function(self, config) {
 		var type = typeof(items);
 		var item;
 
-		if (type === 'function' && callback) {
-			opt.ajax = items;
-			type = '';
-			items = null;
+		if (type === 'string') {
+			items = GET(items);
+			type = typeof(items);
 		}
 
-		if (type === 'string')
-			items = self.get(items);
+		if (type === 'function' && callback) {
+			type = '';
+			opt.ajax = items;
+			items = null;
+		}
 
 		if (!items && !opt.ajax) {
 			self.hide(0);
 			return;
 		}
 
-		self.bindevents();
-
+		setTimeout(self.bindevents, 500);
 		self.tclass(cls + '-search-hidden', opt.search === false);
 
 		self.opt = opt;
 		opt.class && self.aclass(opt.class);
 
 		input.val('');
+
 		var builder = [];
-		var ta = opt.key ? Tangular.compile(template.replace(/\{\{\sname/g, '{{ ' + opt.key)) : self.template;
 		var selected = null;
+
+		opt.ta = opt.key ? Tangular.compile((opt.raw ? templateraw : template).replace(/\{\{\sname/g, '{{ ' + opt.key)) : opt.raw ? self.templateraw : self.template;
 
 		if (!opt.ajax) {
 			var indexer = {};
+			var key = (opt.search == true ? opt.key : (opt.search || opt.key)) || 'name';
 			for (var i = 0; i < items.length; i++) {
+
 				item = items[i];
 
 				if (typeof(item) === 'string')
@@ -7118,21 +7229,27 @@ COMPONENT('directory', 'minwidth:200', function(self, config) {
 				if (opt.exclude && opt.exclude(item))
 					continue;
 
-				if (item.selected) {
+				if (item.selected || opt.selected === item) {
 					selected = i;
 					skipreset = true;
-				}
+					item.selected = true;
+				} else
+					item.selected = false;
 
+				indexer.checkbox = opt.checkbox === true;
 				indexer.index = i;
-				builder.push(ta(item, indexer));
+				indexer.search = item[key] ? item[key].replace(regstrip, '') : '';
+				builder.push(opt.ta(item, indexer));
 			}
 
 			if (opt.empty) {
 				item = {};
-				item[opt.key || 'name'] = opt.empty;
-				item.template = '<b>{0}</b>'.format(opt.empty);
+				var tmp = opt.raw ? '<b>{0}</b>'.format(opt.empty) : opt.empty;
+				item[opt.key || 'name'] = tmp;
+				if (!opt.raw)
+					item.template = '<b>{0}</b>'.format(opt.empty);
 				indexer.index = -1;
-				builder.unshift(ta(item, indexer));
+				builder.unshift(opt.ta(item, indexer));
 			}
 		}
 
@@ -7159,10 +7276,10 @@ COMPONENT('directory', 'minwidth:200', function(self, config) {
 
 		switch (opt.align) {
 			case 'center':
-				options.left = Math.ceil((offset.left - width / 2) + (width / 2));
+				options.left = Math.ceil((offset.left - width / 2) + (opt.element.innerWidth() / 2));
 				break;
 			case 'right':
-				options.left = (offset.left - width) + w;
+				options.left = (offset.left - width) + opt.element.innerWidth();
 				break;
 			default:
 				options.left = offset.left;
@@ -7170,6 +7287,7 @@ COMPONENT('directory', 'minwidth:200', function(self, config) {
 		}
 
 		options.top = opt.position === 'bottom' ? ((offset.top - self.height()) + element.height()) : offset.top;
+		options.scope = M.scope ? M.scope() : '';
 
 		if (opt.offsetX)
 			options.left += opt.offsetX;
@@ -7177,11 +7295,25 @@ COMPONENT('directory', 'minwidth:200', function(self, config) {
 		if (opt.offsetY)
 			options.top += opt.offsetY;
 
+		var mw = width;
+		var mh = self.height();
+
+		if (options.left < 0)
+			options.left = 10;
+		else if ((mw + options.left) > WW)
+			options.left = (WW - mw) - 10;
+
+		if (options.top < 0)
+			options.top = 10;
+		else if ((mh + options.top) > WH)
+			options.top = (WH - mh) - 10;
+
 		self.css(options);
 
 		!isMOBILE && setTimeout(function() {
 			ready = true;
-			input.focus();
+			if (opt.search !== false)
+				input.focus();
 		}, 200);
 
 		setTimeout(function() {
@@ -7189,9 +7321,12 @@ COMPONENT('directory', 'minwidth:200', function(self, config) {
 			is = true;
 			if (selected == null)
 				scroller[0].scrollTop = 0;
-			else
-				scroller[0].scrollTop = container.find('.selected').offset().top - (self.element.height() / 2 >> 0);
-		}, 50);
+			else {
+				var h = container.find('li:first-child').innerHeight() + 1;
+				var y = (container.find('li.selected').index() * h) - (h * 2);
+				scroller[0].scrollTop = y < 0 ? 0 : y;
+			}
+		}, 100);
 
 		if (is) {
 			self.search();

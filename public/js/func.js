@@ -575,17 +575,20 @@ FUNC.info = function(msg) {
 	SETTER('notifybar/info', msg);
 };
 
-FUNC.editor_reload = function() {
+FUNC.editor_reload = function(watcher) {
 
-	if (!window.code || !window.code.current)
+	if (!W.code || !W.code.current)
 		return;
 
-	SETTER('loading/show');
+	if (!watcher)
+		SETTER('loading/show');
+
 	var tab = code.open.findItem('path', code.current.path);
 	if (tab) {
 		tab.loaded = false;
 		tab.doc = null;
 		tab.reload = true;
+		tab.iswatcher = watcher;
 		EXEC('code/open', tab);
 		SETTER('loading/hide', 500);
 	}
