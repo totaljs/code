@@ -2357,6 +2357,17 @@
 					return;
 				}
 
+				var compare = W.Intl.Collator().compare;
+
+				var sort = function(a, b) {
+					var namea = a.split(/_|-/).join('X');
+					var nameb = b.split(/_|-/).join('X');
+					return compare(namea, nameb);
+				};
+
+				response.directories.sort(sort);
+				response.files.sort(sort);
+
 				var tree = [];
 
 				for (var i = 0; i < response.directories.length; i++)
