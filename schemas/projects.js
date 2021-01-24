@@ -272,7 +272,7 @@ NEWSCHEMA('Projects', function(schema) {
 					item.combo = {};
 
 				if (model.resetchangelog) {
-					NOSQL(model.id + '_changes').remove().callback(console.log);
+					NOSQL(model.id + '_changes').remove();
 				}
 
 				model.resetcombo = undefined;
