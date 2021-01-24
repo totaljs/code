@@ -1768,7 +1768,7 @@
 						break;
 					case 98:
 						AJAX('GET /api/projects/{id}/wiki/'.arg(code.data), function(response) {
-							SETTER('clipboard/copy', 'https://wiki.totaljs.com/?url=' + location.origin + '/wiki/' + response.value + '/');
+							SETTER('clipboard/copy', 'https://docs.totaljs.com/?url=' + location.origin + '/wiki/' + response.value + '/');
 							SETTER('notifybar/success', '@(Wiki has been created and copied into the clipboard)');
 						});
 						break;

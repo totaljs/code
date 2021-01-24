@@ -94,8 +94,8 @@ FUNC.autodiscover = function(callback) {
 
 				model.url = 'https://' + arr.join('.');
 				model.permissions = '';
-				model.documentation = 'https://wiki.totaljs.com';
-				model.support = 'https://messenger.totaljs.com';
+				model.documentation = 'https://docs.totaljs.com';
+				model.support = 'https://paltform.totaljs.com';
 				model.logfile = '';
 				model.users = [];
 				model.backup = true;
