@@ -27,6 +27,7 @@ NEWSCHEMA('Projects', function(schema) {
 	schema.define('servicemode', Boolean);
 	schema.define('resetcombo', Boolean);
 	schema.define('resettime', Boolean);
+	schema.define('resetchangelog', Boolean);
 	schema.define('allowlivereload', Boolean);
 
 	schema.setGet(function($) {
@@ -270,8 +271,13 @@ NEWSCHEMA('Projects', function(schema) {
 				if (model.resetcombo)
 					item.combo = {};
 
+				if (model.resetchangelog) {
+					NOSQL(model.id + '_changes').remove().callback(console.log);
+				}
+
 				model.resetcombo = undefined;
 				model.resettime = undefined;
+				model.resetchangelog = undefined;
 
 				U.extend(item, model);
 				item.updated = NOW;
