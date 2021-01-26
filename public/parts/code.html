@@ -629,6 +629,9 @@
 				items.push({ name: '@(Copy with syntax)', icon: 'print', value: 'copysyntax' });
 				items.push({ name: '@(Copy as Markdown)', icon: '!fab fa-markdown', value: 'copymarkdown' });
 
+				if (code.current.ext === 'css' || code.current.ext === 'js' || code.current.ext === 'html' || code.current.ext === 'sh')
+					items.push({ name: '@(Copy to Carbon.sh)', icon: 'fa fa-image', value: 'copycarbon' });
+
 				if (text.indexOf('<') !== -1)
 					items.push({ name: '@(Copy without tags)', icon: '!far fa-copy', value: 'copytext' });
 
@@ -880,6 +883,17 @@
 
 				if (value.value === 'cleanduplicatedlines') {
 					editor.replaceSelection(FUNC.cleanduplicatedlines(text));
+					return;
+				}
+
+				if (value.value === 'copycarbon') {
+					var cur = editor.getModeAt(editor.getCursor());
+					var t = cur.helperType || cur.name;
+
+					if (t === 'html')
+						t = 'htmlmixed';
+
+					W.open('https://carbon.now.sh/?l={0}&code={1}'.format(t, encodeURIComponent(FUNC.strim(text).replace(/\t/g, '    '))));
 					return;
 				}
 
