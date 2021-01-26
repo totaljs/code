@@ -59,12 +59,17 @@ DEF.onError = function() {
 
 		var index = body.indexOf('.fields(');
 		if (index !== -1) {
+
 			tmp = body.substring(index + 9, body.indexOf(')', index)).split(/'|"/);
 
 			dbfields = [];
 
 			if (tmp[0])
 				dbfields = tmp[0].split(',').trim();
+
+			dbfields = dbfields.remove(function(item) {
+				return item.charAt(0) === '-';
+			});
 
 			if (tmp[3])
 				autofill.skip = tmp[3].split(',').trim();
@@ -119,7 +124,7 @@ DEF.onError = function() {
 		if (autofill) {
 			for (var i = 0; i < autofill.fields.length; i++) {
 				var item = autofill.fields[i];
-				if (!fields[item.name])
+				if (item.name && item.name.charAt(0) !== '-' && !fields[item.name])
 					fields[item.name] = item;
 			}
 		}
@@ -127,7 +132,7 @@ DEF.onError = function() {
 		if (autoquery) {
 			for (var i = 0; i < autoquery.fields.length; i++) {
 				var item = autoquery.fields[i];
-				if (!fields[item.name])
+				if (item.name && item.name.charAt(0) !== '-' && !fields[item.name])
 					fields[item.name] = item;
 			}
 		}
@@ -298,6 +303,8 @@ DEF.onError = function() {
 				if (obj.type.lastIndexOf(')') !== -1 && obj.type.lastIndexOf('(') === -1)
 					obj.type = obj.type.replace(/\)/g, '');
 
+				obj.type = obj.type.replace(/\)\(.*?\)/g, '');
+
 				if (obj.type.charAt(0) === '[' && obj.type.charAt(obj.type.length - 1) !== ']')
 					obj.type += ']';
 
@@ -426,7 +433,21 @@ DEF.onError = function() {
 				md.push('');
 
 				var tmpindex = md.length;
+				var action = CLONE(item);
+
 				is = true;
+
+				if (op.query && op.query.length)
+					action.query = op.query;
+
+				if (schema.prop && schema.prop.length)
+					action.fields = schema.prop;
+
+				action.action = undefined;
+				action.TYPE = undefined;
+
+				md.push('__Notes__:');
+				md.push('- [Make a request](#api_{0})'.format(Buffer.from(encodeURIComponent(JSON.stringify(action, (k, v) => v ? v : undefined)), 'utf8').toString('base64')));
 
 				if (item.auth)
 					md.push('- request __must be authorized__');
@@ -442,10 +463,7 @@ DEF.onError = function() {
 						md.push('- __fields marked as bold__ are required');
 				}
 
-				if (md.last() !== '') {
-					md.splice(tmpindex, 0, '__Notes__:');
-					md.push('');
-				}
+				md.push('');
 
 				if (op.query && op.query.length) {
 					md.push('__Query arguments__:');
