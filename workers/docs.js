@@ -429,7 +429,7 @@ DEF.onError = function() {
 				if (!op)
 					continue;
 
-				md.push('::: __`' + item.method.padRight(7, ' ') + '`__ `' + item.url + (item.method === 'API' ? ('  ' + item.operation) : '') + '`');
+				md.push('::: __`' + item.method.padRight(7, ' ') + '`__ `' + item.url + (item.method === 'API' ? ('  ' + item.operation) : '') + '`' + (item.auth ? ' {authorized}(flag)' : ''));
 				md.push('');
 
 				var tmpindex = md.length;
