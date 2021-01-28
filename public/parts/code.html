@@ -270,7 +270,7 @@
 				if (reg_number.test(text) && (+text) > 32)
 					plus += (plus ? ' ' : '') + text + ' = <code>{0}</code>'.format(String.fromCharCode(text));
 
-				var icon = text.match(/fa(s|d|b|l|r)?\sfa-\w+|fa-\w+\sfa(s|d|b|l|r)/);
+				var icon = text.match(/fa(s|d|b|l|r)?\sfa-[a-z0-9\-]+|fa-[a-z0-9\-]+\sfa(s|d|b|l|r)/);
 				if (icon) {
 					iconel.rclass('hidden').html('<i class="{0}"></i>'.format(icon[0]));
 					iconis = true;
