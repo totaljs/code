@@ -35,6 +35,8 @@ hr { border-color: #E0E0E0; }
 
 #currentcolor { position: absolute; right: 30px; top: 120px; width: 100px; height: 100px; line-height: 100px; text-align: center; font-size: 30px; z-index: 10; border: 1px solid rgba(0,0,0,0.2); box-shadow: 0 3px 5px rgba(0,0,0,0.1); color: white; font-family: monospace; }
 #currentcolor span:first-child { color: #000000; margin-right: 5px; }
+#currenticon { position: absolute; right: 30px; top: 125px; width: 40px; text-align: center; font-size: 25px; z-index: 10; color: #000; font-family: monospace; }
+.td #currenticon { color: #FFF; }
 /*.codepanel #currentcolor { right: 380px; }*/
 
 .panelsearch { height: 27px; }

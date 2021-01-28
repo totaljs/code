@@ -39,6 +39,8 @@
 	<div id="body">
 
 		<div id="currentcolor" class="hidden"><span>B</span><span>W</span></div>
+		<div id="currenticon" class="hidden"></div>
+
 		<div id="combo" data---="combo__editor.combo" data-bind="code.editor.path__show:code/showcombo" class="hidden" title="@(Scoreboard for the project)">
 			<div class="info">
 				<div>@(COMBO)</div>
@@ -120,7 +122,7 @@
 			</script>
 		</div>
 		<div class="status-meta" data-bind="code.editor.body__html:code/statusmeta__delay:500">---</div>
-		<div class="status-info" data-bind="code.cursor__html:code/statusinfo" title="@(Line : Char index : Selected chars)"></div>
+		<div class="status-info" data-bind="code.cursor__exec:code/statusinfo" title="@(Line : Char index : Selected chars)"></div>
 	</section>
 
 	<div data---="statusform__code.statusform.name__exec:code/statusform" class="statusform hidden">
@@ -254,10 +256,12 @@
 			return value ? (isbig ? '<i class="fa fa-exclamation-circle mr5"></i>' : '') + size + ' / ' + FUNC.newlineslength(value).pluralize('@(# lines,# line,# lines,# lines)') : DEF.empty;
 		};
 
-		exports.statusinfo = function(value) {
-
+		var statusinfo = function(obj) {
+			var value = obj.value;
 			var sel = ((value.tch || 0) - (value.fch || 0));
 			var plus = '';
+			var iconel = $('#currenticon');
+			var iconis = false;
 
 			if (sel && editor) {
 				var text = editor.editor.getSelection();
@@ -265,9 +269,22 @@
 				plus = text.charAt(l) + ' = <code>{0}</code>'.format(text.charCodeAt(l));
 				if (reg_number.test(text) && (+text) > 32)
 					plus += (plus ? ' ' : '') + text + ' = <code>{0}</code>'.format(String.fromCharCode(text));
+
+				var icon = text.match(/fa(s|d|b|l|r)?\sfa-\w+|fa-\w+\sfa(s|d|b|l|r)/);
+				if (icon) {
+					iconel.rclass('hidden').html('<i class="{0}"></i>'.format(icon[0]));
+					iconis = true;
+				}
 			}
 
-			return ((value.fline || 0) + 1) + ':' + (value.fch || 0) + (value.fline === value.tline ? (':' + sel) : '') + (plus ? (' ' + plus) : '');
+			if (!iconis)
+				iconel.aclass('hidden');
+
+			obj.el.html(((value.fline || 0) + 1) + ':' + (value.fch || 0) + (value.fline === value.tline ? (':' + sel) : '') + (plus ? (' ' + plus) : ''));
+		};
+
+		exports.statusinfo = function(value, path, el) {
+			setTimeout2('code_statusinfo', statusinfo, 300, null, { value: value, el: el });
 		};
 
 		exports.components = function(components) {
