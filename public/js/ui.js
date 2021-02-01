@@ -549,7 +549,7 @@ COMPONENT('editor', function(self, config) {
 			SET('code.colorpalette', keys);
 		};
 
-		var allowed_modes = { totaljsresources: 1, javascript: 1, totaljs: 1, css: 1, sass: 1, html: 1, todo: 1, bash: 1, python: 1, php: 1, shell: 1, htmlmixed: 1, 'null': 1, clike: 1, yaml: 1, markdown: 1 };
+		var allowed_modes = { totaljsresources: 1, javascript: 1, totaljs_server: 1, totaljs: 1, css: 1, sass: 1, html: 1, todo: 1, bash: 1, python: 1, php: 1, shell: 1, htmlmixed: 1, 'null': 1, clike: 1, yaml: 1, markdown: 1 };
 		var ismodifiedbody = false;
 
 		self.ismodified = function() {
@@ -575,6 +575,10 @@ COMPONENT('editor', function(self, config) {
 			var todos = [];
 			var components = [];
 			var mode = editor.getMode().name;
+
+			if (mode === 'totaljs_server')
+				mode = 'javascript';
+
 			var is = null;
 			var name, type, oldschema, oldplugin, pluginvariable, oldtask, taskvariable, tmp;
 			var ispluginable = false;
@@ -611,7 +615,7 @@ COMPONENT('editor', function(self, config) {
 						}
 					}
 
-					if (mode === 'javascript' || mode === 'totaljs' || mode === 'html' || mode === 'htmlmixed') {
+					if (mode === 'javascript' || mode === 'totaljs' || mode === 'html' || mode === 'htmlmixed' || mode === 'totaljs_server') {
 
 						if (is != null && line.substring(is, 3) === '});') {
 							components[components.length - 1].lineto = i;
@@ -11909,6 +11913,7 @@ COMPONENT('markdown', function (self) {
 						break;
 					case 'js':
 					case 'javascript':
+					case 'totaljs_server':
 						type = 'javascript';
 						break;
 					case 'css':
