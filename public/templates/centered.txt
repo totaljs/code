@@ -1,4 +1,4 @@
-<div data---="centered__common.form__if:NAME;icon:hashtag;autofocus:true;reload:?/reload;scrollbar:1" class="hidden" data-scope="NAME">
+<div data---="centered__common.form__if:NAME;autofocus:true;reload:?/reload;scrollbar:1" class="hidden" data-scope="NAME">
 	<div style="width:300px;margin:0 auto">
 		<div class="padding">
 			CENTERED
