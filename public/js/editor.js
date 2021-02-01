@@ -253,6 +253,12 @@ WAIT('CodeMirror.defineMode', function() {
 		return CodeMirror.overlayMode(htmlbase, totaljsinner);
 	});
 
+	CodeMirror.defineMode('totaljs_server', function(config) {
+		var htmlbase = CodeMirror.getMode(config, 'text/javascript');
+		var totaljsinner = CodeMirror.getMode(config, 'totaljs:server');
+		return CodeMirror.overlayMode(htmlbase, totaljsinner);
+	});
+
 	CodeMirror.defineMode('totaljs:inner', function() {
 		return {
 			token: function(stream) {
@@ -281,6 +287,17 @@ WAIT('CodeMirror.defineMode', function() {
 				if (stream.match(/data-import|(data-jc-(url|scope|import|cache|path|config|id|type|init|class))=/, true))
 					return 'variable-E';
 
+				stream.next();
+				return null;
+			}
+		};
+	});
+
+	CodeMirror.defineMode('totaljs:server', function() {
+		return {
+			token: function(stream) {
+				if (stream.match(/@\(.*?\)/, true))
+					return 'variable-L';
 				stream.next();
 				return null;
 			}
@@ -1965,6 +1982,8 @@ CodeMirror.defineExtension('centerLine', function(line) {
 	}
 
 	CodeMirror.registerHelper('lint', 'javascript', validator);
+	CodeMirror.registerHelper('lint', 'totaljs_server', validator);
+	CodeMirror.registerHelper('lint', 'totaljs:server', validator);
 
 	function parseErrors(errors, output) {
 		for ( var i = 0; i < errors.length; i++) {
