@@ -1424,8 +1424,3 @@ FUNC.livereloadconnect = function() {
 			setTimeout(FUNC.livereloadconnect, 3000);
 	};
 };
-
-FUNC.totalcombat = function(name) {
-	if (common.totalcombat)
-		SETTER(true, 'audio/play', '/sounds/' + name + '.mp3');
-};

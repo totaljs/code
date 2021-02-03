@@ -8919,31 +8919,6 @@ COMPONENT('combo', function(self) {
 
 	var ratingA = function() {
 		var text = self.text();
-
-		switch (text) {
-			case 'Brutality':
-			case 'Fatality':
-			case 'Impressive':
-			case 'Excellent':
-			case 'Awesome':
-
-				var sound = text.toLowerCase();
-
-				switch (sound) {
-					case 'awesome':
-						sound = 'finalround';
-						break;
-					case 'whoah':
-						sound = 'fight';
-						break;
-				}
-
-				if (sum > 20)
-					FUNC.totalcombat(sound);
-
-				break;
-		}
-
 		rating.html(text + '!');
 		rating.stop().css({ 'margin-top': 10, 'font-size': 20, opacity: 1 });
 		setTimeout(ratingB, 200);
@@ -8989,7 +8964,7 @@ COMPONENT('combo', function(self) {
 		count.html(sum + '');
 		count.stop().css('font-size', 24).animate({ 'font-size': 20 }, 300);
 		progress.stop().animate({ width: '100%' }, 100, animA);
-		common.powermodeshaking = sum > 80;
+		common.powermodeshaking = sum > 110;
 	};
 });
 

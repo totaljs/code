@@ -185,7 +185,7 @@
 
 <script>
 
-	var code = { SYNC: false, changes: {}, NOTRIM: { nosql: 1, table: 1, todo: 1, issyncing: false }, dock: [], ready: false };
+	var code = { SYNC: false, changes: {}, NOTRIM: { nosql: 1, table: 1, todo: 1, issyncing: false }, dock: [] };
 
 	code.dock.push({ id: 'project', title: '@(Project)', html: $('#panel'), offset: { x: 200, y: 200, width: 241, minwidth: 200, minheight: 500, dockminwidth: 192, dockmaxwidth: 600, docked: 'left' }, actions: { autosave: true, close: false, dockable: 'left right' }});
 	code.dock.push({ id: 'prop', title: '@(Additional)', html: $('#panel_prop'), hidden: true, offset: { x: 200, y: 200, width: 350, minwidth: 200, minheight: 500, dockminwidth: 200, dockmaxwidth: 600, docked: 'right' }, actions: { autosave: true, close: false, hide: true, dockable: 'left right' }});
@@ -1495,22 +1495,11 @@
 			});
 		};
 
-		var finishhim = function() {
-			if (code.current && code.current.modified)
-				FUNC.totalcombat('finishhim');
-		};
-
-		exports.finishhim = function() {
-			setTimeout2('finishhim', finishhim, 10000);
-		};
-
 		exports.modified = function(changescount) {
 			if (code && code.current && code.current.path) {
 				code.current.modified = changescount == null ? true : changescount > 0;
 				exports.element.find('section.tabs').find('span[data-value="{0}"]'.format(code.current.path)).tclass('modified', code.current.modified);
 				SET('code.current.changes', editor.difflines());
-				if (code.current.modified)
-					exports.finishhim();
 			}
 		};
 
@@ -1518,8 +1507,6 @@
 
 			if (!item || item.children)
 				return;
-
-			clearTimeout2('finishhim');
 
 			if ((/\.build$/).test(item.path)) {
 				// open designer
@@ -1642,12 +1629,6 @@
 				exports.savetabs();
 				exports.element.SETTER('tree/select2', FUNC.treeindex(code.tree, item.path), true);
 				editor.editor.focus();
-				if (!code.ready) {
-					code.ready = true;
-					setTimeout(function() {
-						FUNC.totalcombat('round1');
-					}, 2000);
-				}
 			});
 		};
 
@@ -1716,7 +1697,6 @@
 			common.electron && code.data.repository && items.push({ value: 7, name: '@(Download <strong>last changes</strong>)', icon: 'floppy-o' });
 			items.push({ value: 13, name: common.showparts ? '@(Disable parts panel)' : '<strong>@(Enable parts panel)</strong>', icon: 'puzzle-piece' + (common.showparts ? '' : ' green') });
 			items.push({ value: 15, name: common.powermode ? '@(Disable power mode)' : '<strong>@(Enable power mode)</strong>', icon: 'flask' + (common.powermode ? '' : ' green') });
-			items.push({ value: 25, name: common.totalcombat ? '@(Disable total combat)' : '<strong>@(Enable total combat)</strong>', icon: 'fa fa-hand-rock' });
 			items.push({ value: 17, name: '@(To-Do list)', icon: 'check' });
 			items.push({ value: 14, name: '@(Output panel)', icon: 'rss' });
 			items.push({ value: 9, name: '@(Show log file)', icon: 'bug red', shortcut: 'F10' });
@@ -1778,13 +1758,6 @@
 						break;
 					case 15:
 						TOGGLE('common.powermode');
-						break;
-					case 25:
-						TOGGLE('common.totalcombat');
-
-						if (common.totalcombat)
-							FUNC.totalcombat('start');
-
 						break;
 					case 16:
 						EXEC('code/clipboard');
@@ -2117,7 +2090,6 @@
 		};
 
 		exports.closeforce = function(path) {
-			clearTimeout2('finishhim');
 			exports.closetab(path || code.current.path);
 		};
 
@@ -2406,8 +2378,6 @@
 			if (code.data && code.data.id !== id)
 				FUNC.wsopen(id, '');
 
-			clearTimeout2('finishhim');
-
 			AJAX('GET /api/projects/{0}/files/'.format(id), function(response) {
 
 				SETTER('loading/hide', 1000);
@@ -2644,8 +2614,6 @@
 				return;
 
 			SETTER('loading/show');
-			clearTimeout2('finishhim');
-
 			setTimeout(function() {
 
 				editor.flush();
@@ -2661,9 +2629,6 @@
 				}
 
 				data.body = code.NOTRIM[code.current.ext] ? val : FUNC.rtrim(val);
-
-				if (changes)
-					FUNC.totalcombat('welldone');
 
 				var hashsum = HASH(data.body);
 				if (hashsum === code.current.hashsum && !changes) {
