@@ -26,6 +26,7 @@
 	<div class="bbfooter"></div>
 	<div data---="loading" class="ui-loading"><div></div></div>
 	<div data---="LAZY builder"></div>
+	<div data---="LAZY audio__common.volume"></div>
 	<div data---="LAZY imageviewer"></div>
 	<div data---="LAZY suggestion__null__placeholder:@(Search)"></div>
 	<div data---="LAZY autocomplete__null__height:200"></div>
@@ -126,8 +127,14 @@
 			common.online = true;
 			common.name = document.title;
 
+			if (common.volume == null)
+				common.volume = 30;
+
 			if (common.powermode == null)
 				common.powermode = true;
+
+			if (common.totalcombat == null)
+				common.totalcombat = false;
 
 			if (common.powermodeshaking == null)
 				common.powermodeshaking = false;
@@ -153,8 +160,10 @@
 
 		CACHEPATH('common.recent', '1 year');
 		CACHEPATH('common.showparts', '1 year');
+		CACHEPATH('common.totalcombat', '1 year');
 		CACHEPATH('common.powermode', '1 year');
 		CACHEPATH('common.powermodeshaking', '1 year');
+		CACHEPATH('common.volume', '1 year');
 
 		ENV('date', 'yyyy-MM-dd HH:mm');
 		DEF.dateformat = 'yyyy-MM-dd HH:mm';
@@ -212,8 +221,10 @@
 			SET('common.online', is);
 			!is && SET('common.debug', false);
 
-			if (is && !common.init)
+			if (is && !common.init) {
 				common.init = true;
+				FUNC.totalcombat('start');
+			}
 		});
 
 		ON('message', function(msg) {
@@ -402,7 +413,9 @@
 							REDIRECT('/?id=' + value.projectid);
 							break;
 						case 'removeall':
+
 							SETTER('confirm', 'show', '@(Are you sure you want to clear the project?)', ['"trash-o" @(Remove)', '@(Cancel)'], function(index) {
+
 								if (index)
 									return;
 

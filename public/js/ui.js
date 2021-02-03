@@ -8906,7 +8906,7 @@ COMPONENT('combo', function(self) {
 	}
 
 	self.text = function() {
-		return random('Brutal', 'Awesome', 'Fantastic', 'Extreme', 'Stupendous', 'OMG', 'Impressive', 'Nice', 'Wild', 'Stupendous', 'Grand', 'Super', 'Splendid', 'Whoah', 'Nice', 'Total', 'Fatality');
+		return random('Brutality', 'Awesome', 'Fantastic', 'Excellent', 'Stupendous', 'OMG', 'Impressive', 'Nice', 'Grand', 'Super', 'Whoah', 'Nice', 'Total', 'Fatality');
 	};
 
 	self.summarize = function() {
@@ -8918,7 +8918,33 @@ COMPONENT('combo', function(self) {
 	};
 
 	var ratingA = function() {
-		rating.html(self.text() + '!');
+		var text = self.text();
+
+		switch (text) {
+			case 'Brutality':
+			case 'Fatality':
+			case 'Impressive':
+			case 'Excellent':
+			case 'Awesome':
+
+				var sound = text.toLowerCase();
+
+				switch (sound) {
+					case 'awesome':
+						sound = 'finalround';
+						break;
+					case 'whoah':
+						sound = 'fight';
+						break;
+				}
+
+				if (sum > 20)
+					FUNC.totalcombat(sound);
+
+				break;
+		}
+
+		rating.html(text + '!');
 		rating.stop().css({ 'margin-top': 10, 'font-size': 20, opacity: 1 });
 		setTimeout(ratingB, 200);
 	};
@@ -8963,6 +8989,7 @@ COMPONENT('combo', function(self) {
 		count.html(sum + '');
 		count.stop().css('font-size', 24).animate({ 'font-size': 20 }, 300);
 		progress.stop().animate({ width: '100%' }, 100, animA);
+		common.powermodeshaking = sum > 80;
 	};
 });
 
@@ -13305,4 +13332,105 @@ COMPONENT('builder', 'url:https://builder.totaljs.com', function(self, config, c
 		self.rclass('hidden');
 	};
 
+});
+
+COMPONENT('audio', function(self) {
+
+	var can = false;
+	var volume = 0.5;
+
+	self.items = [];
+	self.readonly();
+	self.singleton();
+
+	self.make = function() {
+		var audio = document.createElement('audio');
+		if (audio.canPlayType && audio.canPlayType('audio/mpeg').replace(/no/, ''))
+			can = true;
+	};
+
+	self.play = function(url) {
+
+		if (!can)
+			return;
+
+		var audio = new window.Audio();
+
+		audio.src = url;
+		audio.volume = volume;
+		audio.play();
+
+		audio.onended = function() {
+			audio.$destroy = true;
+			self.cleaner();
+		};
+
+		audio.onerror = function() {
+			audio.$destroy = true;
+			self.cleaner();
+		};
+
+		audio.onabort = function() {
+			audio.$destroy = true;
+			self.cleaner();
+		};
+
+		self.items.push(audio);
+		return self;
+	};
+
+	self.cleaner = function() {
+		var index = 0;
+		while (true) {
+			var item = self.items[index++];
+			if (item === undefined)
+				return self;
+			if (!item.$destroy)
+				continue;
+			item.pause();
+			item.onended = null;
+			item.onerror = null;
+			item.onsuspend = null;
+			item.onabort = null;
+			item = null;
+			index--;
+			self.items.splice(index, 1);
+		}
+	};
+
+	self.stop = function(url) {
+
+		if (!url) {
+			self.items.forEach(function(item) {
+				item.$destroy = true;
+			});
+			return self.cleaner();
+		}
+
+		var index = self.items.findIndex('src', url);
+		if (index === -1)
+			return self;
+		self.items[index].$destroy = true;
+		return self.cleaner();
+	};
+
+	self.setter = function(value) {
+
+		if (value === undefined)
+			value = 0.5;
+		else
+			value = (value / 100);
+
+		if (value > 1)
+			value = 1;
+		else if (value < 0)
+			value = 0;
+
+		volume = value ? +value : 0;
+		for (var i = 0, length = self.items.length; i < length; i++) {
+			var a = self.items[i];
+			if (!a.$destroy)
+				a.volume = value;
+		}
+	};
 });
