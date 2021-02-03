@@ -8906,7 +8906,7 @@ COMPONENT('combo', function(self) {
 	}
 
 	self.text = function() {
-		return random('Brutality', 'Awesome', 'Fantastic', 'Excellent', 'Stupendous', 'OMG', 'Impressive', 'Nice', 'Grand', 'Super', 'Whoah', 'Nice', 'Total', 'Fatality');
+		return random('Brutality', 'Awesome', 'Fantastic', 'Excellent', 'Stupendous', 'OMG', 'Impressive', 'Nice', 'Grand', 'Super', 'Whoah', 'Nice', 'Fatality');
 	};
 
 	self.summarize = function() {
@@ -8964,7 +8964,6 @@ COMPONENT('combo', function(self) {
 		count.html(sum + '');
 		count.stop().css('font-size', 24).animate({ 'font-size': 20 }, 300);
 		progress.stop().animate({ width: '100%' }, 100, animA);
-		common.powermodeshaking = sum > 110;
 	};
 });
 
