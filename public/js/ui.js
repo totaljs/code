@@ -8919,6 +8919,31 @@ COMPONENT('combo', function(self) {
 
 	var ratingA = function() {
 		var text = self.text();
+
+		switch (text) {
+			case 'Brutality':
+			case 'Fatality':
+			case 'Impressive':
+			case 'Excellent':
+			case 'Awesome':
+
+				var sound = text.toLowerCase();
+
+				switch (sound) {
+					case 'awesome':
+						sound = 'finalround';
+						break;
+					case 'whoah':
+						sound = 'fight';
+						break;
+				}
+
+				if (sum > 20)
+					FUNC.totalcombat(sound);
+
+				break;
+		}
+
 		rating.html(text + '!');
 		rating.stop().css({ 'margin-top': 10, 'font-size': 20, opacity: 1 });
 		setTimeout(ratingB, 200);

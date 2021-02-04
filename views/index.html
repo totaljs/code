@@ -133,6 +133,9 @@
 			if (common.powermode == null)
 				common.powermode = true;
 
+			if (common.totalcombat == null)
+				common.totalcombat = false;
+
 			if (common.powermodeshaking == null)
 				common.powermodeshaking = false;
 
@@ -157,6 +160,7 @@
 
 		CACHEPATH('common.recent', '1 year');
 		CACHEPATH('common.showparts', '1 year');
+		CACHEPATH('common.totalcombat', '1 year');
 		CACHEPATH('common.powermode', '1 year');
 		CACHEPATH('common.powermodeshaking', '1 year');
 		CACHEPATH('common.volume', '1 year');
@@ -216,6 +220,11 @@
 
 			SET('common.online', is);
 			!is && SET('common.debug', false);
+
+			if (is && !common.init) {
+				common.init = true;
+				FUNC.totalcombat('start');
+			}
 		});
 
 		ON('message', function(msg) {
