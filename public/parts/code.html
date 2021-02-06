@@ -2663,8 +2663,8 @@
 
 				data.body = code.NOTRIM[code.current.ext] ? val : FUNC.rtrim(val);
 
-				if (changes)
-					FUNC.totalcombat(now % 2 === 0 ? 'fight' : 'welldone');
+				if (changes && (!code.lastchange || (now - code.lastchange) > 10000))
+					FUNC.totalcombat('welldone');
 
 				var hashsum = HASH(data.body);
 				if (hashsum === code.current.hashsum && !changes) {
