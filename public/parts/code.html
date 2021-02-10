@@ -2640,7 +2640,7 @@
 
 		exports.save = function(close, sync) {
 
-			if (BLOCKED('code_saving', 1000))
+			if (!code.current || BLOCKED('code_saving', 1000))
 				return;
 
 			SETTER('loading/show');
