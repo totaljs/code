@@ -13325,7 +13325,7 @@ COMPONENT('builder', 'url:https://builder.totaljs.com', function(self, config, c
 	};
 
 	self.load = function(data, callback) {
-		opt.data = (data ? data.substring(0, data.length - 1) + ',' : '{') + '"user":' + JSON.stringify({ id: user.id, name: user.name, url: location.origin, email: user.email, sa: user.sa }) + '}';
+		opt.data = (data ? data.substring(0, data.length - 1) + ',' : '{') + '"user":' + JSON.stringify({ id: user.id, name: user.name, uid: location.origin + '/' + code.data.id, url: location.origin, email: user.email, sa: user.sa }) + '}';
 		opt.callback = callback;
 		self.make_iframe();
 		self.rclass('hidden');
