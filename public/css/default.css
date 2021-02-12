@@ -519,6 +519,11 @@ header .tools .external { color: #a2a286; }
 .td span.cm-builtin { color: #66d9ef; }
 .td span.cm-string { color: #e6db74; }
 
+.cm-route-http { color: #b7845f; }
+.cm-route-socket { color: #b25fb7; }
+.cm-route-api { color: #a07a7a; }
+.cm-route-file { color: #70a2a5; }
+
 .td span.cm-variable { color: #f8f8f2; }
 .td span.cm-variable-2 { color: #9effff; }
 .td span.cm-variable-3, .td span.cm-type { color: #66d9ef; }

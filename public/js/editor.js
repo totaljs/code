@@ -287,6 +287,27 @@ WAIT('CodeMirror.defineMode', function() {
 				if (stream.match(/data-import|(data-jc-(url|scope|import|cache|path|config|id|type|init|class))=/, true))
 					return 'variable-E';
 
+				var m = stream.match(/(ROUTE|AJAX|AJAXCACHEREVIEW|AJAXCACHE)\(/, true);
+				if (m) {
+					stream.isroute = true;
+					return null;
+				} else if (stream.isroute) {
+					stream.isroute = false;
+					var iscomment = stream.string.substring(0, stream.column()).indexOf('//') !== -1;
+					if (iscomment) {
+						stream.next();
+						return null;
+					}
+					if (stream.match(/('|")(\+|-)?(GET|POST|PUT|DELETE|PATCH).*?('|")/, true))
+						return 'route-http';
+					if (stream.match(/('|")(\+|-)?API.*?('|")/, true))
+						return 'route-api';
+					if (stream.match(/('|")FILE.*?('|")/, true))
+						return 'route-file';
+					if (stream.match(/('|")(\+|-)?SOCKET.*?('|")/, true))
+						return 'route-socket';
+				}
+
 				stream.next();
 				return null;
 			}
@@ -296,8 +317,36 @@ WAIT('CodeMirror.defineMode', function() {
 	CodeMirror.defineMode('totaljs:server', function() {
 		return {
 			token: function(stream) {
+
 				if (stream.match(/@\(.*?\)/, true))
 					return 'variable-L';
+
+				var m = stream.match(/(ROUTE|AJAX|AJAXCACHEREVIEW|AJAXCACHE)\(/, true);
+				if (m) {
+					stream.isroute = true;
+					return null;
+				} else if (stream.isroute) {
+					stream.isroute = false;
+					var iscomment = stream.string.substring(0, stream.column()).indexOf('//') !== -1;
+					if (iscomment) {
+						stream.next();
+						return null;
+					}
+
+					if (stream.match(/('|")(\+|-)?(GET|POST|PUT|DELETE|PATCH).*?('|")/, true)) {
+						return 'route-http';
+					}
+
+					if (stream.match(/('|")(\+|-)?API.*?('|")/, true))
+						return 'route-api';
+
+					if (stream.match(/('|")FILE.*?('|")/, true))
+						return 'route-file';
+
+					if (stream.match(/('|")(\+|-)?SOCKET.*?('|")/, true))
+						return 'route-socket';
+				}
+
 				stream.next();
 				return null;
 			}
