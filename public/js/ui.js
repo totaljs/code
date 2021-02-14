@@ -441,7 +441,7 @@ COMPONENT('editor', function(self, config) {
 		options.scrollbarStyle = 'simple';
 		options.rulers = [{ column: 130, lineStyle: 'dashed' }, { column: -1, lineStyle: 'dashed' }];
 		options.gutters = ['GutterUser', 'CodeMirror-lint-markers', 'CodeMirror-linenumbers', 'GutterDiff'];
-		options.viewportMargin = 20;
+		options.viewportMargin = 50;
 		options.foldGutter = true;
 		options.highlightSelectionMatches = HSM;
 		options.phrases = {};
