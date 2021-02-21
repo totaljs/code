@@ -630,6 +630,7 @@ function makebundle(id) {
 		data.push('/.bundleignore');
 		data.push('/.gitignore');
 		data.push('/.npmignore');
+		data.push('/*.socket');
 		data.push('/*.todo');
 		data.push('/*.sql');
 		data.push('/*.bundle');
