@@ -2537,7 +2537,6 @@ https://twitter.com/JoelBesada/status/670343885655293952
 	});
 })();
 
-
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
 // Distributed under an MIT license: https://codemirror.net/LICENSE
 (function(mod) {
