@@ -47,6 +47,12 @@ NEWSCHEMA('Projects', function(schema) {
 		var filename = Path.join(item.path, $.query.path);
 
 		MAIN.log($.user, 'files_read', item, filename);
+
+		if (item.isexternal) {
+			FUNC.external(item, 'load', $.query.path, null, $.callback);
+			return;
+		}
+
 		Fs.readFile(filename, function(err, data) {
 
 			if (err) {
@@ -252,7 +258,10 @@ NEWSCHEMA('Projects', function(schema) {
 		var model = $.clean();
 		var users = [];
 
-		model.path = U.path(model.path.replace(/\/\//g, '/').replace(/\\\\/g, '\\'));
+		model.isexternal = (/(https|http)\:\/\//).test(model.path);
+
+		if (!model.isexternal)
+			model.path = U.path(model.path.replace(/\/\//g, '/').replace(/\\\\/g, '\\'));
 
 		for (var i = 0; i < model.users.length; i++) {
 			if (MAIN.users.findItem('id', model.users[i]))
@@ -271,9 +280,8 @@ NEWSCHEMA('Projects', function(schema) {
 				if (model.resetcombo)
 					item.combo = {};
 
-				if (model.resetchangelog) {
+				if (model.resetchangelog)
 					NOSQL(model.id + '_changes').remove();
-				}
 
 				model.resetcombo = undefined;
 				model.resettime = undefined;
@@ -317,16 +325,20 @@ NEWSCHEMA('Projects', function(schema) {
 				items.push(data);
 		}
 
-
 		items.quicksort('created', true);
 
 		if ($.query.check) {
 			items.wait(function(item, next) {
-
-				Fs.lstat(item.path, function(err) {
-					item.notfound = err ? true : false;
+				if (item.isexternal) {
+					// Check URL
+					item.notfound = false;
 					next();
-				});
+				} else {
+					Fs.lstat(item.path, function(err) {
+						item.notfound = err ? true : false;
+						next();
+					});
+				}
 
 			}, () => $.callback(items));
 		} else
@@ -376,18 +388,15 @@ NEWSCHEMA('Projects', function(schema) {
 		if (item.skipnm)
 			skip += (skip ? '|' : '') + (IS_WINDOWS ? '\\\\node_modules\\\\' : '\\/node_modules\\/');
 
-		if (skip)
-			skip = new RegExp(skip);
-		else
-			skip = null;
+		var process = function(files, directories) {
 
-		U.ls(path, function(files, directories) {
+			if (!item.isexternal) {
+				for (var i = 0, length = files.length; i < length; i++)
+					files[i] = files[i].substring(path.length - 1);
 
-			for (var i = 0, length = files.length; i < length; i++)
-				files[i] = files[i].substring(path.length - 1);
-
-			for (var i = 0, length = directories.length; i < length; i++)
-				directories[i] = directories[i].substring(path.length - 1);
+				for (var i = 0, length = directories.length; i < length; i++)
+					directories[i] = directories[i].substring(path.length - 1);
+			}
 
 			if (allowed) {
 				var cleaner = (path) => MAIN.can(allowed, path) == false;
@@ -409,9 +418,25 @@ NEWSCHEMA('Projects', function(schema) {
 				users.push({ id: tmpuser.id, name: tmpuser.name, collaborator: !!(item.time ? item.time[tmpuser.id] : 0) });
 			}
 
-			$.callback({ servicemode: item.servicemode, livereload: item.allowlivereload, branch: item.branch, allowbundle: item.allowbundle, review: !!PREF.token, files: files, directories: directories, url: item.url, name: item.name, icon: item.icon, repository: item.repository, id: item.id, documentation: item.documentation, support: item.support, pathsync: item.pathsync, combo: item.combo, time: item.time, todo: item.todo, users: users });
+			$.callback({ isexternal: item.isexternal, servicemode: item.servicemode, livereload: item.allowlivereload, branch: item.branch, allowbundle: item.allowbundle, review: !!PREF.token, files: files, directories: directories, url: item.url, name: item.name, icon: item.icon, repository: item.repository, id: item.id, documentation: item.documentation, support: item.support, pathsync: item.pathsync, combo: item.combo, time: item.time, todo: item.todo, users: users });
+		};
 
-		}, n => !SKIP.test(n) && (!skip || !skip.test(n)));
+		if (item.isexternal) {
+			FUNC.external(item, 'browse', item.path, JSON.stringify({ skip: skip }), function(err, response) {
+				if (err)
+					$.invalid(err);
+				else
+					process(response.files, response.directories);
+			});
+		} else {
+
+			if (skip)
+				skip = new RegExp(skip);
+			else
+				skip = null;
+
+			U.ls(path, process, n => !SKIP.test(n) && (!skip || !skip.test(n)));
+		}
 	});
 
 	schema.setRemove(function($) {
@@ -590,11 +615,18 @@ NEWSCHEMA('Projects', function(schema) {
 		if (thread && (/\/|\./).test(thread))
 			thread = null;
 
-		var filename = project.logfile ? project.logfile : Path.join(project.path, (thread ? ('/threads/' + thread + '/logs/debug.log') : 'logs/debug.log'));
+		var name = (thread ? ('/threads/' + thread + '/logs/debug.log') : 'logs/debug.log');
+
+		if (project.isexternal) {
+			FUNC.external(project, 'log', (thread ? '' : '/') + name, null, $.callback);
+			return;
+		}
+
+		var filename = project.logfile ? project.logfile : Path.join(project.path, name);
 
 		Fs.stat(filename, function(err, stats) {
 			if (stats) {
-				var start = stats.size - (1024 * 4); // Max 4 kb
+				var start = stats.size - (1024 * 4); // Max. 4 kB
 				if (start < 0)
 					start = 0;
 				var buffer = [];
@@ -608,6 +640,7 @@ NEWSCHEMA('Projects', function(schema) {
 	});
 
 	schema.addWorkflow('logfileclear', function($) {
+
 		var project = MAIN.projects.findItem('id', $.id);
 		if (project == null) {
 			$.invalid('error-project');
@@ -618,7 +651,14 @@ NEWSCHEMA('Projects', function(schema) {
 		if (thread && (/\/|\./).test(thread))
 			thread = null;
 
-		var filename = project.logfile ? project.logfile : Path.join(project.path, (thread ? ('/threads/' + thread + '/logs/debug.log') : 'logs/debug.log'));
+		var name = (thread ? ('/threads/' + thread + '/logs/debug.log') : 'logs/debug.log');
+
+		if (project.isexternal) {
+			FUNC.external(project, 'logclear', project.logfile ? project.logfile : ((thread ? '' : '/') + name), null, $.callback);
+			return;
+		}
+
+		var filename = project.logfile ? project.logfile : Path.join(project.path, name);
 		Fs.truncate(filename, NOOP);
 		$.success();
 	});

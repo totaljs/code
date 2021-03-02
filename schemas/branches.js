@@ -53,9 +53,13 @@ NEWSCHEMA('Branches', function(schema) {
 	schema.setQuery(function($) {
 
 		var project = MAIN.projects.findItem('id', $.id);
-
 		if (project == null) {
 			$.invalid('error-project');
+			return;
+		}
+
+		if (!project.isexternal) {
+			$.invalid('error-external');
 			return;
 		}
 
@@ -100,9 +104,13 @@ NEWSCHEMA('Branches', function(schema) {
 		//    no: change only the branch
 
 		var project = MAIN.projects.findItem('id', $.id);
-
 		if (project == null) {
 			$.invalid('error-project');
+			return;
+		}
+
+		if (!project.isexternal) {
+			$.invalid('error-external');
 			return;
 		}
 
@@ -135,9 +143,13 @@ NEWSCHEMA('Branches', function(schema) {
 	schema.setRemove(function($) {
 
 		var project = MAIN.projects.findItem('id', $.id);
-
 		if (project == null) {
 			$.invalid('error-project');
+			return;
+		}
+
+		if (!project.isexternal) {
+			$.invalid('error-external');
 			return;
 		}
 

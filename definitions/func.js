@@ -138,6 +138,21 @@ FUNC.autodiscover = function(callback) {
 	});
 };
 
+FUNC.external = function(project, type, path, data, callback) {
+	var opt = {};
+	opt.url = project.path;
+	opt.type = 'json';
+	opt.method = 'POST';
+	opt.body = JSON.stringify({ TYPE: type, path: path, data: data });
+	opt.callback = function(err, response) {
+		var data = response.body;
+		if (type === 'browse' || type === 'info' || type === 'save' || type === 'remove' || type === 'create' || type === 'logclear')
+			data = data.parseJSON(true);
+		callback(err, data);
+	};
+	REQUEST(opt);
+};
+
 if (CONF.autodiscover) {
 
 	ON('service', function(counter) {

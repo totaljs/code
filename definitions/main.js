@@ -99,6 +99,28 @@ MAIN.backup = function(user, path, callback, project, changescount) {
 	});
 };
 
+MAIN.backup2 = function(user, path, callback, project, changescount) {
+
+	var name = U.getName(path);
+	var id = HASH(project.path, true).toString(36) + '_' + project.path.slug();
+	var target = path.substring(0, path.length - name.length);
+	var dir = Path.join(CONF.backup, id, target);
+
+	// Creates directories
+	FUNC.mkdir(dir, function() {
+
+		var ext = U.getExtension(name);
+		var add = '-' + NOW.format('yyMMddHHmm') + '_' + user.id + '_' + (changescount || 0) + (project.branch ? ('_' + project.branch) : '');
+
+		if (ext)
+			name = name.replace('.' + ext, add + '.' + ext);
+		else
+			name += add;
+
+		Fs.writeFile(Path.join(dir, name), body, callback);
+	});
+};
+
 MAIN.diffpath = function(project, path) {
 
 	var name = U.getName(path);

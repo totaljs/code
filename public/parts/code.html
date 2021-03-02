@@ -209,7 +209,10 @@
 		});
 
 		exports.branches = function() {
-			SET('common.top', 'branches');
+			if (code.data.isexternal)
+				SETTER('message/warning', '@(External projects can\'t use branches)');
+			else
+				SET('common.top', 'branches');
 		};
 
 		exports.showcombo = function(value) {

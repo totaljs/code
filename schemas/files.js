@@ -200,8 +200,25 @@ NEWSCHEMA('Files', function(schema) {
 		MAIN.log($.user, 'files_save', project, filename, count, model.time, model.changes);
 		MAIN.change('save' + (model.sync ? '_sync' : ''), $.user, project, model.path, count, model.time, model.changes);
 
-		// Tries to create a folder
+		if (project.isexternal) {
 
+			var saveforce = function() {
+				FUNC.external(project, 'save', model.path, model.body, ERROR('files.write'));
+			};
+
+			if (project.backup)
+				MAIN.backup(user, filename, saveforce, project, model.changes || 0);
+			else
+				saveforce();
+
+			MAIN.diff(project, filename, clean.diff);
+			MAIN.changelog(user, $.id, model.path);
+
+			$.success();
+			return;
+		}
+
+		// Tries to create a folder
 		FUNC.mkdir(filename.substring(0, filename.length - name.length), function() {
 
 			if (project.backup)
@@ -293,6 +310,9 @@ NEWSCHEMA('Files', function(schema) {
 		data.user = user.name;
 
 		builder.post(data);
+
+		// @TODO: implement external
+
 		builder.file('file', filename);
 		builder.exec($.callback);
 
@@ -310,6 +330,11 @@ NEWSCHEMA('Files', function(schema) {
 
 		if (!$.user.sa) {
 			$.invalid('error-permissions');
+			return;
+		}
+
+		if (!project.isexternal) {
+			$.invalid('error-external');
 			return;
 		}
 
@@ -414,12 +439,38 @@ NEWSCHEMA('FilesRename', function(schema) {
 		var oldpath = model.oldpath;
 		var newpath = model.newpath;
 
-		model.oldpath = Path.join(project.path, model.oldpath);
-		model.newpath = Path.join(project.path, model.newpath);
+		if (!project.isexternal) {
+			model.oldpath = Path.join(project.path, model.oldpath);
+			model.newpath = Path.join(project.path, model.newpath);
+			if (model.newpath.substring(0, project.path.length) !== project.path) {
+				// out of directory
+				$.invalid('error-permissions');
+				return;
+			}
+		}
 
-		if (model.newpath.substring(0, project.path.length) !== project.path) {
-			// out of directory
-			$.invalid('error-permissions');
+		if (project.isexternal) {
+
+			MAIN.log($.user, 'files_rename', project, model.oldpath, model.newpath);
+			MAIN.change('rename', $.user, project, model.oldpath + ' --> ' + model.newpath);
+			NOSQL($.id + '_parts').modify({ '=path': 'doc.path.replace(\'{0}\', \'{1}\')'.format(oldpath, newpath) }).rule('doc.path.starstWith(arg.path)', { path: oldpath });
+
+			var length = project.todo ? project.todo.length : 0;
+			if (length) {
+				var is = false;
+				for (var i = 0; i < project.todo.length; i++) {
+					var item = project.todo[i];
+					if (item.path.substring(0, oldpath.length) === oldpath) {
+						item.path = item.path.replace(oldpath, newpath);
+						is = true;
+					}
+				}
+				is && MAIN.save(2);
+			}
+
+			MAIN.changelog(user, $.id, $.model.oldpath, true);
+			MAIN.changelog(user, $.id, $.model.newpath);
+			FUNC.external(project, 'rename', '', JSON.stringify({ oldpath: oldpath, newpath: newpath }), $.done());
 			return;
 		}
 
@@ -475,41 +526,47 @@ NEWSCHEMA('FilesRemove', function(schema) {
 			}
 		}
 
-		var filename = Path.join(project.path, model.path);
+		var filename = model.isexternal ? model.path : Path.join(project.path, model.path);
+
 		MAIN.log($.user, 'files_remove', project, model.path);
 		MAIN.change('remove', $.user, project, model.path);
 		MAIN.changelog(user, $.id, model.path, true);
 
-		try {
-			var stats = Fs.lstatSync(filename);
-			if (stats.isFile() && project.backup)
-				MAIN.backup(user, filename, () => Fs.unlink(filename, ERROR('files.remove')), project);
-			else {
-				if (stats.isDirectory())
-					F.path.rmdir(filename);
-				else
-					Fs.unlink(filename, ERROR('files.remove'));
-			}
+		if (project.isexternal) {
+			if (project.backup)
+				MAIN.backup2(user, model.path, () => FUNC.external(project, 'remove', model.path, null, ERROR('files.remove')), project);
+			else
+				FUNC.external(project, 'remove', model.path, null, ERROR('files.remove'));
+		} else {
+			try {
+				var stats = Fs.lstatSync(filename);
+				if (stats.isFile() && project.backup)
+					MAIN.backup(user, filename, () => Fs.unlink(filename, ERROR('files.remove')), project);
+				else {
+					if (stats.isDirectory())
+						F.path.rmdir(filename);
+					else
+						Fs.unlink(filename, ERROR('files.remove'));
+				}
+			} catch (e) {}
+		}
 
-			// Removes parts
-			NOSQL(project.id + '_parts').remove().rule('doc.path.starstWith(arg.path)', { path: model.path });
+		// Removes parts
+		NOSQL(project.id + '_parts').remove().rule('doc.path.starstWith(arg.path)', { path: model.path });
 
-			var length = project.todo.length;
-			if (length) {
-				project.todo = project.todo.remove(function(item) {
-					return item.path.substring(0, model.path.length) === model.path;
-				});
-				if (project.todo.length !== length)
-					MAIN.save(2);
-			}
-
-		} catch (e) {}
+		var length = project.todo.length;
+		if (length) {
+			project.todo = project.todo.remove(item => item.path.substring(0, model.path.length) === model.path);
+			if (project.todo.length !== length)
+				MAIN.save(2);
+		}
 
 		$.success();
 	});
 });
 
 NEWSCHEMA('FilesUpload', function(schema) {
+
 	schema.define('path', 'String', true);
 	schema.addWorkflow('exec', function($) {
 
@@ -541,10 +598,14 @@ NEWSCHEMA('FilesUpload', function(schema) {
 				MAIN.log($.user, 'files_upload', project, model.path + file.filename);
 				MAIN.change('upload', $.user, project, model.path + file.filename);
 				MAIN.changelog(user, $.id, model.path + file.filename);
-				file.move(filename, next);
+				if (project.isexternal) {
+					// @TODO: Send file as base64
+					next();
+				} else
+					file.move(filename, next);
 			});
-		}, $.done());
 
+		}, $.done());
 	});
 });
 
@@ -579,10 +640,15 @@ NEWSCHEMA('FilesCreate', function(schema) {
 
 		model.path = model.path.replace(/\/{2,}/g, '/');
 
-		var filename = Path.join(project.path, model.path);
-
 		MAIN.change('create', $.user, project, model.path);
 		MAIN.changelog($.user, $.id, model.path);
+
+		if (project.isexternal) {
+			FUNC.external(project, 'create', model.path, JSON.stringify({ clone: model.clone, folder: model.folder }), $.callback);
+			return;
+		}
+
+		var filename = Path.join(project.path, model.path);
 
 		Fs.lstat(filename, function(err) {
 
