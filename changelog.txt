@@ -1,5 +1,7 @@
 ========================= 1.6
 
+- added external projects
+
 ========================= 1.5
 
 - added color palette
