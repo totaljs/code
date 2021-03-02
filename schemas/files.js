@@ -130,8 +130,7 @@ NEWSCHEMA('Files', function(schema) {
 			}
 		}
 
-		var filename = Path.join(project.path, model.path);
-		var name = U.getName(filename);
+		var name = U.getName(model.path);
 		var is = false;
 		var clean = $.clean();
 
@@ -197,6 +196,8 @@ NEWSCHEMA('Files', function(schema) {
 
 		is && setTimeout2('combo', MAIN.save, 2000, null, 2);
 
+		var filename = project.isexternal ? model.path : Path.join(project.path, model.path);
+
 		MAIN.log($.user, 'files_save', project, filename, count, model.time, model.changes);
 		MAIN.change('save' + (model.sync ? '_sync' : ''), $.user, project, model.path, count, model.time, model.changes);
 
@@ -207,13 +208,12 @@ NEWSCHEMA('Files', function(schema) {
 			};
 
 			if (project.backup)
-				MAIN.backup(user, filename, saveforce, project, model.changes || 0);
+				MAIN.backup2(user, model.path, saveforce, project, model.changes || 0);
 			else
 				saveforce();
 
 			MAIN.diff(project, filename, clean.diff);
 			MAIN.changelog(user, $.id, model.path);
-
 			$.success();
 			return;
 		}
@@ -255,7 +255,7 @@ NEWSCHEMA('Files', function(schema) {
 		var builder = TABLE('changelog').one();
 		builder.fields('user,updated');
 		builder.where('projectid', $.id);
-		builder.where('path', $.query.path);
+		builder.where('path', $.query.path)
 		project.branch && builder.where('branch', project.branch);
 		builder.callback(function(err, response) {
 			if (response) {
@@ -269,7 +269,7 @@ NEWSCHEMA('Files', function(schema) {
 	schema.addWorkflow('review', function($) {
 
 		var project = MAIN.projects.findItem('id', $.id);
-		if (project == null) {
+		if (!project) {
 			$.invalid('error-project');
 			return;
 		}
@@ -294,29 +294,57 @@ NEWSCHEMA('Files', function(schema) {
 			return;
 		}
 
-		var filename = Path.join(project.path, $.query.path);
-		var builder = RESTBuilder.url('https://review.totaljs.com/upload/');
-		var data = {};
+		var send = function(filename, buffer) {
+			var builder = RESTBuilder.url('https://review.totaljs.com/upload/');
+			var data = {};
 
-		data.ip = $.ip;
-		data.version = 1;
-		data.path = $.query.path;
-		data.token = PREF.token;
-		data.project = project.name;
-		data.projectid = project.id;
-		data.userid = user.id;
-		data.userposition = user.position;
-		data.useremail = user.email;
-		data.user = user.name;
+			data.ip = $.ip;
+			data.version = 1;
+			data.path = $.query.path;
+			data.token = PREF.token;
+			data.project = project.name;
+			data.projectid = project.id;
+			data.userid = user.id;
+			data.userposition = user.position;
+			data.useremail = user.email;
+			data.user = user.name;
+			builder.post(data);
+			builder.file('file', filename, buffer);
+			builder.exec($.callback);
+			MAIN.log($.user, 'files_review', project, filename);
+		}
 
-		builder.post(data);
+		if (project.isexternal) {
+			// do something
 
-		// @TODO: implement external
+			FUNC.external_download(project, $.query.path, function(err, response) {
 
-		builder.file('file', filename);
-		builder.exec($.callback);
+				if (err) {
+					$.invalid(err);
+					return;
+				}
 
-		MAIN.log($.user, 'files_review', project, filename);
+				if (response.status >= 400) {
+					$.invalid(response.status);
+					return;
+				}
+
+				var buffer = [];
+
+				response.stream.on('data', function(chunk) {
+					buffer.push(chunk);
+				});
+
+				response.stream.on('end', function() {
+					send($.query.path.substring(1), Buffer.concat(buffer));
+				});
+
+			});
+
+		} else
+			send(Path.join(project.path, $.query.path));
+
+
 	});
 
 	schema.addWorkflow('download', function($) {
@@ -357,8 +385,7 @@ NEWSCHEMA('Files', function(schema) {
 	schema.addWorkflow('search', function($) {
 
 		var project = MAIN.projects.findItem('id', $.id);
-
-		if (project == null) {
+		if (!project) {
 			$.invalid('error-project');
 			return;
 		}
@@ -366,7 +393,6 @@ NEWSCHEMA('Files', function(schema) {
 		var user = $.user;
 
 		if (!user.sa) {
-
 			if (project.users.indexOf(user.id) === -1) {
 				$.invalid('error-permissions');
 				return;
@@ -378,10 +404,46 @@ NEWSCHEMA('Files', function(schema) {
 			}
 		}
 
-		var filename = Path.join(project.path, $.query.path);
-		var stream = Fs.createReadStream(filename);
 		var output = [];
 		var q = $.query.search.toLowerCase();
+
+		if (project.isexternal) {
+			FUNC.external_download(project, $.query.path, function(err, response) {
+
+				if (err || response.status >= 400) {
+					$.callback(output);
+					return;
+				}
+
+				var stream = response.stream;
+
+				stream.on('error', function() {
+					$.callback(output);
+				});
+
+				stream.on('data', customstreamer(function(line, lineindex) {
+
+					var index = line.toLowerCase().indexOf(q);
+
+					if (output.length > 20)
+						return;
+
+					if (index !== -1) {
+						var beg = index - 20;
+						if (beg < 0)
+							beg = 0;
+						output.push({ line: lineindex + 1, ch: index, name: line.substring(beg).max(50, '...').trim() });
+					}
+
+				}));
+
+				stream.on('end', () => $.callback(output));
+			});
+			return;
+		}
+
+		var filename = Path.join(project.path, $.query.path);
+		var stream = Fs.createReadStream(filename);
 
 		stream.on('error', function() {
 			$.callback(output);
@@ -599,8 +661,12 @@ NEWSCHEMA('FilesUpload', function(schema) {
 				MAIN.change('upload', $.user, project, model.path + file.filename);
 				MAIN.changelog(user, $.id, model.path + file.filename);
 				if (project.isexternal) {
-					// @TODO: Send file as base64
-					next();
+					file.read(function(err, data) {
+						if (err)
+							next();
+						else
+							FUNC.external(project, 'upload', model.path + file.filename, data, next);
+					});
 				} else
 					file.move(filename, next);
 			});

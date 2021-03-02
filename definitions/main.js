@@ -102,7 +102,7 @@ MAIN.backup = function(user, path, callback, project, changescount) {
 MAIN.backup2 = function(user, path, callback, project, changescount) {
 
 	var name = U.getName(path);
-	var id = HASH(project.path, true).toString(36) + '_' + project.path.slug();
+	var id = FUNC.external_path(project);
 	var target = path.substring(0, path.length - name.length);
 	var dir = Path.join(CONF.backup, id, target);
 
@@ -117,7 +117,18 @@ MAIN.backup2 = function(user, path, callback, project, changescount) {
 		else
 			name += add;
 
-		Fs.writeFile(Path.join(dir, name), body, callback);
+		FUNC.external_download(project, path, function(err, response) {
+
+			if (err) {
+				callback(err);
+				return;
+			}
+
+			var writer = Fs.createWriteStream(Path.join(dir, name));
+			response.stream.pipe(writer);
+			CLEANUP(writer, callback);
+		});
+
 	});
 };
 
@@ -125,6 +136,10 @@ MAIN.diffpath = function(project, path) {
 
 	var name = U.getName(path);
 	var target = path.substring(0, path.length - name.length);
+
+	if (project.isexternal)
+		target = FUNC.external_path(project, target);
+
 	var dir;
 
 	if (F.isWindows)
@@ -147,7 +162,8 @@ MAIN.diffpath = function(project, path) {
 };
 
 MAIN.diff = function(project, path, diff) {
-	Fs.writeFile(MAIN.diffpath(project, path), JSON.stringify(diff), ERROR('MAIN.diff'));
+	var filename = MAIN.diffpath(project, path);
+	Fs.writeFile(filename, JSON.stringify(diff), ERROR('MAIN.diff'));
 };
 
 MAIN.log = function(user, type, projectid, path) {
@@ -187,8 +203,11 @@ MAIN.send = function(msg, user) {
 };
 
 Fs.readFile(PATH.databases('users.json'), function(err, data) {
+
 	data && (MAIN.users = data.toString('utf8').parseJSON(true));
+
 	for (var i = 0; i < MAIN.users.length; i++) {
+
 		var user = MAIN.users[i];
 		user.online = false;
 		user.fileid = '';

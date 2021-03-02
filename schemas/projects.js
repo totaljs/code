@@ -107,10 +107,11 @@ NEWSCHEMA('Projects', function(schema) {
 	schema.addWorkflow('translate', function($) {
 
 		var item = MAIN.projects.findItem('id', $.id);
-		var filename = Path.join(item.path, $.query.path);
+		var filename = item.isexternal ? $.query.path : Path.join(item.path, $.query.path);
 
 		MAIN.log($.user, 'files_translate', item, filename);
-		Fs.readFile(filename, function(err, data) {
+
+		var process = function(err, data) {
 
 			if (err) {
 				$.invalid(err);
@@ -142,7 +143,13 @@ NEWSCHEMA('Projects', function(schema) {
 				output.push(keys[i].padRight(max + 5, ' ') + ': ' + text[keys[i]]);
 
 			$.callback(output.join('\n'));
-		});
+		};
+
+		if (item.isexternal)
+			FUNC.external(item, 'load', filename, null, process);
+		else
+			Fs.readFile(filename, process);
+
 	});
 
 	schema.addWorkflow('localize', function($) {
@@ -316,6 +323,7 @@ NEWSCHEMA('Projects', function(schema) {
 			data.repository = item.repository;
 			data.created = item.created;
 			data.id = item.id;
+			data.isexternal = item.isexternal;
 			data.users = item.users;
 
 			if ($.user.sa) {
@@ -331,7 +339,9 @@ NEWSCHEMA('Projects', function(schema) {
 			items.wait(function(item, next) {
 				if (item.isexternal) {
 					// Check URL
-					item.notfound = false;
+					FUNC.external(item, 'ping', null, null, function(err, response) {
+						item.notfound = err || response.success !== true;
+					});
 					next();
 				} else {
 					Fs.lstat(item.path, function(err) {
@@ -348,7 +358,7 @@ NEWSCHEMA('Projects', function(schema) {
 	schema.addWorkflow('files', function($) {
 
 		var item = MAIN.projects.findItem('id', $.id);
-		if (item == null) {
+		if (!item) {
 			$.invalid('error-project');
 			return;
 		}
@@ -413,6 +423,7 @@ NEWSCHEMA('Projects', function(schema) {
 			}
 
 			var users = [];
+
 			for (var i = 0; i < MAIN.users.length; i++) {
 				var tmpuser = MAIN.users[i];
 				users.push({ id: tmpuser.id, name: tmpuser.name, collaborator: !!(item.time ? item.time[tmpuser.id] : 0) });
@@ -479,7 +490,7 @@ NEWSCHEMA('Projects', function(schema) {
 			return;
 		}
 
-		var path = Path.join(CONF.backup, project.path);
+		var path = Path.join(CONF.backup, project.isexternal ? FUNC.external_path(project) : project.path);
 
 		U.ls(path, function(files, directories) {
 			PATH.unlink(files, function() {
@@ -521,7 +532,7 @@ NEWSCHEMA('Projects', function(schema) {
 		var dir = Path.dirname(path);
 		var ext = '';
 
-		path = Path.join(CONF.backup, project.path, dir);
+		path = Path.join(CONF.backup, project.isexternal ? FUNC.external_path(project) : project.path, dir);
 
 		var extindex = name.lastIndexOf('.');
 		if (extindex !== -1) {
@@ -591,7 +602,7 @@ NEWSCHEMA('Projects', function(schema) {
 			}
 		}
 
-		var filename = Path.join(CONF.backup, project.path, path);
+		var filename = Path.join(CONF.backup, project.isexternal ? FUNC.external_path(project) : project.path, path);
 
 		MAIN.log($.user, 'files_restore', project, filename);
 

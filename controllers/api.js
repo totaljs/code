@@ -222,9 +222,33 @@ function files_download(id) {
 	}
 
 	var path = self.query.path || '';
-	var filename = Path.join(item.path, path);
 
 	if (MAIN.authorize(item, self.user, path)) {
+
+		if (item.isexternal) {
+
+			FUNC.external(project, 'download', path, null, function(err, response) {
+
+				if (err) {
+					$.invalid(err);
+					return;
+				}
+
+				if (response.status >= 400) {
+					$.invalid(response.status);
+					return;
+				}
+
+				var ext = U.getExtension(path).toLowerCase();
+				MAIN.log(self.user, 'files_read', item, path);
+				self.stream(U.getContentType(ext), response.stream, self.query.preview ? null : U.getName(path));
+			});
+
+			return;
+		}
+
+		var filename = Path.join(item.path, path);
+
 		Fs.lstat(filename, function(err, stats) {
 
 			if (err || stats.isDirectory()) {
@@ -254,8 +278,8 @@ function files_download(id) {
 				});
 			} else
 				self.stream(U.getContentType(ext), Fs.createReadStream(filename, meta), self.query.preview ? null : U.getName(path));
-
 		});
+
 	} else {
 		self.status = 401;
 		self.invalid('error-permissions');
@@ -319,6 +343,7 @@ function custom_ipsever() {
 }
 
 function files_changes(id) {
+
 	var self = this;
 	var builder = NOSQL(id + '_changes').find2();
 
@@ -558,6 +583,11 @@ function files_modify(id) {
 			self.invalid('error-permissions');
 			return;
 		}
+	}
+
+	if (project.isexternal) {
+		FUNC.external(project, 'modify', self.query.path, null, self.callback());
+		return;
 	}
 
 	var dt = new Date();

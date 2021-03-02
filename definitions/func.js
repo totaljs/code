@@ -1,5 +1,6 @@
 const Fs = require('fs');
 const Path = require('path');
+const Zlib = require('zlib');
 
 FUNC.makeignore = function(arr) {
 
@@ -138,15 +139,33 @@ FUNC.autodiscover = function(callback) {
 	});
 };
 
+FUNC.external_download = function(project, path, callback) {
+	var opt = {};
+	opt.custom = true;
+	opt.url = project.path;
+	opt.type = 'json';
+	opt.method = 'POST';
+	opt.body = JSON.stringify({ TYPE: 'download', path: path });
+	opt.callback = callback;
+	REQUEST(opt);
+};
+
+FUNC.external_path = function(project, path) {
+	var p = HASH(project.path, true).toString(36) + '_' + project.path.slug();
+	return path ? Path.join(p, path) : p;
+};
+
+var EXTERNAL_JSON = { browse: 1, info: 1, save: 1, remove: 1, create: 1, logclear: 1, modify: 1, ping: 1 };
+
 FUNC.external = function(project, type, path, data, callback) {
 	var opt = {};
 	opt.url = project.path;
 	opt.type = 'json';
 	opt.method = 'POST';
-	opt.body = JSON.stringify({ TYPE: type, path: path, data: data });
+	opt.body = JSON.stringify({ TYPE: type, path: path, data: data instanceof Buffer ? data.toString('base64') : data });
 	opt.callback = function(err, response) {
 		var data = response.body;
-		if (type === 'browse' || type === 'info' || type === 'save' || type === 'remove' || type === 'create' || type === 'logclear')
+		if (EXTERNAL_JSON[type])
 			data = data.parseJSON(true);
 		callback(err, data);
 	};
