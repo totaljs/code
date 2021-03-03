@@ -34,7 +34,7 @@
 			opt.callback = function(value) {
 				value = value.trim().replace(/[<>",]/g, '');
 				if (value) {
-					SETTER('confirm/show2', '@(Are you sure you want to create a new branch called <b>"{0}"</b>?)'.format(value || '@(master)'), ['"check-circle" @(Create branch) #4FAE2F', '@(Cancel)'], function() {
+					SETTER('approve/show', '@(Are you sure you want to create a new branch called <b>"{0}"</b>?)'.format(value || '@(master)'), '"check-circle" @(Create branch) #4FAE2F', function() {
 						SETTER('loading/show');
 						AJAX('POST /api/branches/' + code.data.id, { name: value }, ASETTER('notifybar/response', '@(Branch <b>"{0}"</b> has been created successfully.)'.format(value || '@(master)'), function() {
 							SETTER('loading/hide', 1000);
@@ -49,7 +49,7 @@
 
 		exports.remove = function(el) {
 			var id = el.parent().attrd('id');
-			SETTER('confirm/show2', '@(Are you sure you want to remove branch called <b>"{0}"</b>?)'.format(id || '@(master)'), ['"trash-o" @(Remove branch)', '@(Cancel)'], function() {
+			SETTER('approve/show', '@(Are you sure you want to remove branch called <b>"{0}"</b>?)'.format(id || '@(master)'), '"trash-o" @(Remove branch)', function() {
 				SETTER('loading/show');
 				AJAX('DELETE /api/branches/' + code.data.id, { name: id }, ASETTER('message/response', '@(Branch <b>"{0}"</b> has been removed successfully.)'.format(id || '@(master)'), function() {
 					SETTER('loading/hide', 1000);
@@ -60,7 +60,7 @@
 
 		exports.select = function(el) {
 			var id = el.parent().attrd('id');
-			SETTER('confirm/show2', '@(Are you sure you want to change a branch to <b>"{0}"</b>?)'.format(id || '@(master)'), ['"check-circle" @(Change branch) #4FAE2F', '@(Cancel)'], function() {
+			SETTER('approve/show', '@(Are you sure you want to change a branch to <b>"{0}"</b>?)'.format(id || '@(master)'), '"check-circle" @(Change branch) #4FAE2F', function() {
 				AJAX('POST /api/branches/' + code.data.id, { name: id }, ASETTER('notifybar/response', '@(Branch has been changed successfully to <b>"{0}"</b>.)'.format(id || '@(master)'), function() {
 					SETTER('loading/hide', 1000);
 					EXEC('code/refresh');

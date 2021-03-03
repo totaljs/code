@@ -24,7 +24,7 @@
 		};
 
 		exports.download = function(el) {
-			SETTER('confirm/show2', '@(Are you sure you want to download selected template?)', ['"cloud-download" @(Download)', '@(Cancel)'], function(index) {
+			SETTER('approve/show', '@(Are you sure you want to download selected template?)', '"cloud-download" @(Download)', function() {
 				SETTER('loading/show');
 				AJAX('POST /api/external/templates/' + code.data.id, { git: el.attrd('url') }, function() {
 					SETTER('loading/hide', 500);

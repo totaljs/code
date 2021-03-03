@@ -29,7 +29,7 @@
 		};
 
 		exports.download = function(el) {
-			SETTER('confirm/show2', '@(Are you sure you want to download selected module?)', ['"cloud-download" @(Download)', '@(Cancel)'], function(index) {
+			SETTER('approve/show', '@(Are you sure you want to download selected module?)', '"cloud-download" @(Download)', function() {
 				SETTER('loading/show');
 				AJAX('POST /api/external/modules/' + code.data.id, { url: el.attrd('url'), name: el.attrd('name') }, function() {
 					SETTER('loading/hide', 500);
