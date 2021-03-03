@@ -255,7 +255,7 @@ NEWSCHEMA('Files', function(schema) {
 		var builder = TABLE('changelog').one();
 		builder.fields('user,updated');
 		builder.where('projectid', $.id);
-		builder.where('path', $.query.path)
+		builder.where('path', $.query.path);
 		project.branch && builder.where('branch', project.branch);
 		builder.callback(function(err, response) {
 			if (response) {
@@ -312,7 +312,7 @@ NEWSCHEMA('Files', function(schema) {
 			builder.file('file', filename, buffer);
 			builder.exec($.callback);
 			MAIN.log($.user, 'files_review', project, filename);
-		}
+		};
 
 		if (project.isexternal) {
 			// do something
@@ -564,7 +564,9 @@ NEWSCHEMA('FilesRename', function(schema) {
 });
 
 NEWSCHEMA('FilesRemove', function(schema) {
+
 	schema.define('path', 'String', true);
+
 	schema.addWorkflow('exec', function($) {
 
 		var user = $.user;

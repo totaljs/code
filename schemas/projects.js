@@ -107,7 +107,7 @@ NEWSCHEMA('Projects', function(schema) {
 	schema.addWorkflow('translate', function($) {
 
 		var item = MAIN.projects.findItem('id', $.id);
-		var filename = item.isexternal ? $.query.path : Path.join(item.path, $.query.path);
+		var filename = item.isexternal ? $.query.path : Path.join(item.path, $.query.path);
 
 		MAIN.log($.user, 'files_translate', item, filename);
 
@@ -265,7 +265,7 @@ NEWSCHEMA('Projects', function(schema) {
 		var model = $.clean();
 		var users = [];
 
-		model.isexternal = (/(https|http)\:\/\//).test(model.path);
+		model.isexternal = (/(https|http):\/\//).test(model.path);
 
 		if (!model.isexternal)
 			model.path = U.path(model.path.replace(/\/\//g, '/').replace(/\\\\/g, '\\'));
