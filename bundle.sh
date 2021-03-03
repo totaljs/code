@@ -10,7 +10,7 @@ cp -a ../resources/ resources
 cp -a ../views/ views
 cp ../clone.sh clone.sh
 
-totaljs --bundle code.bundle
+total4 --bundle code.bundle
 cp code.bundle ../code.bundle
 
 cd ..

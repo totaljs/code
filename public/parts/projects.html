@@ -54,7 +54,7 @@
 		};
 
 		exports.autodiscover = function() {
-			SETTER('confirm/show2', '@(Are you sure you want to perform auto-discover of projects?)', ['"search-plus" @(Discover) #4285F4', '@(Cancel)'], function() {
+			SETTER('approve/show', '@(Are you sure you want to perform auto-discover of projects?)', '"search-plus" @(Discover) #4285F4', function() {
 				SETTER('loading/show');
 				AJAX('GET /api/projects/discover/', function() {
 					setTimeout(function() {
@@ -72,10 +72,10 @@
 			items.push({ value: 1, name: '@(Clear backups)', icon: 'trash-o' });
 			items.push({ value: 255, name: '@(Remove)', icon: 'times-circle red' });
 
-			SETTER('menu', 'show', 'left', el, items, function(item) {
+			SETTER('menu/show', 'left', el, items, function(item) {
 				switch (item.value) {
 					case 1:
-						SETTER('confirm/show2', '@(Are you sure you want to remove all backups for selected projects?)', ['"trash-o"@(Remove)', '@(Cancel)'], function() {
+						SETTER('approve/show', '@(Are you sure you want to remove all backups for selected projects?)', '"trash-o"@(Remove)', function() {
 							SETTER('loading/show');
 							projects.checked.wait(function(item, next) {
 								AJAX('DELETE /api/projects/{id}/backups/'.arg(item), next);
@@ -88,7 +88,7 @@
 						break;
 
 					case 255:
-						SETTER('confirm/show2', '@(Are you sure you want to remove selected projects?)', ['"trash-o"@(Remove)', '@(Cancel)'], function() {
+						SETTER('approve/show', '@(Are you sure you want to remove selected projects?)', '"trash-o"@(Remove)', function() {
 							SETTER('loading/show');
 							projects.checked.wait(function(item, next) {
 								AJAX('DELETE /api/projects/{id}/'.arg(item), next);

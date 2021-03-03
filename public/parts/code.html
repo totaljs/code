@@ -1719,8 +1719,8 @@
 			is && items.push({ value: 99, name: '<strong>@(Code review)</strong>', icon: 'check-circle green' });
 			is && items.push('-');
 			is && code.data.pathsync && items.push({ value: 6, name: '@(Save synchronized)', icon: 'sync green' });
-			common.electron && code.data.repository && items.push({ value: 7, name: '@(Download <strong>last changes</strong>)', icon: 'floppy-o' });
-			common.electron && code.data.repository && items.push({ value: 22, name: '@(Download source-code)', icon: 'floppy-o' });
+			common.electron && code.data.repository && items.push({ value: 7, name: '@(Download <strong>last changes locally</strong>)', icon: 'floppy-o' });
+			common.electron && code.data.repository && items.push({ value: 22, name: '@(Download <strong>source-code locally</strong>)', icon: 'floppy-o' });
 			items.push({ value: 13, name: common.showparts ? '@(Disable parts panel)' : '<strong>@(Enable parts panel)</strong>', icon: 'puzzle-piece' + (common.showparts ? '' : ' green') });
 			items.push({ value: 15, name: common.powermode ? '@(Disable power mode)' : '<strong>@(Enable power mode)</strong>', icon: 'flask' + (common.powermode ? '' : ' green') });
 			items.push({ value: 25, name: common.totalcombat ? '@(Disable total combat)' : '<strong>@(Enable total combat)</strong>', icon: 'fa fa-hand-rock' });
@@ -1731,7 +1731,7 @@
 			items.push({ value: 20, name: '@(Localize files)', icon: 'language' });
 
 			if (code.data.allowbundle && !code.data.isexternal)
-	 			user.sa && items.push({ value: 23, name: '@(Download source-code as .tar)', icon: 'download' });
+	 			user.sa && items.push({ value: 23, name: '@(Download source-code)', icon: 'download' });
 
 			items.push({ name: '@(Create Wiki)', icon: '!fa fa-book', value: 98 });
 
@@ -2090,7 +2090,7 @@
 						}, 500);
 						break;
 					case 255:
-						SETTER('confirm/show2', '@(Are you sure you want to remove <b>{0}</b>?)'.format(node.path), ['"trash-o" @(Remove)', '@(Cancel)'], function() {
+						SETTER('approve/show', '@(Are you sure you want to remove <b>{0}</b>?)'.format(node.path), '"trash-o" @(Remove)', function() {
 							var data = {};
 							data.path = node.path;
 							SETTER('loading/show');
@@ -2117,7 +2117,7 @@
 			var tab = code.open.findItem('path', path);
 			if (tab) {
 				if (tab.modified) {
-					SETTER('confirm/show2', '@(The content has been modified. <b>Do you want to <u>discard changes</u>?</b>)', ['"trash-o" @(Discard changes)', '@(Cancel)'], function() {
+					SETTER('approve/show', '@(The content has been modified. <b>Do you want to <u>discard changes</u>?</b>)', '"trash-o" @(Discard changes)', function() {
 						exports.closeforce(tab.path);
 					});
 				} else
@@ -2660,17 +2660,17 @@
 				SETTER('loading/show');
 				code.data.files.wait(function(item, next, index) {
 
-					SET('common.percentage', (index / response.length) * 100);
-					var filename = Path.join(electronpath, FUNC.getName(code.data.repository).replace(/\.git$/i, ''), item.path);
+					SET('common.percentage', (index / code.data.files.length) * 100);
+					var filename = Path.join(electronpath, FUNC.getName(code.data.repository).replace(/\.git$/i, ''), item);
 
-					SETTER('loading/show', ('<b style="font-size:18px">{0}%</b><br /><b>@(Saving:)</b> ' + item.path).format(common.percentage >> 0));
+					SETTER('loading/show', ('<b style="font-size:18px">{0}%</b><br /><b>@(Saving:)</b> ' + item).format(common.percentage >> 0));
 					FUNC.mkdir(Path.dirname(filename));
 
 					var resume = function() {
 						setTimeout(next, 300);
 					};
 
-					var url = location.protocol + '//' + location.hostname + (location.port ? ':' + location.port : '') + '/api/download/{id}/?path='.arg(code.data) + encodeURIComponent(item.path);
+					var url = location.protocol + '//' + location.hostname + (location.port ? ':' + location.port : '') + '/api/download/{id}/?path='.arg(code.data) + encodeURIComponent(item);
 					var res = function(res) {
 						if (res.statusCode === 200) {
 							res.on('error', resume);
@@ -3270,7 +3270,6 @@
 
 		exports.review = function(el) {
 
-
 			if (common.token === '1234567890') {
 				SETTER('message/warning', '@(You have invalid token for code review. More info: info@totaljs.com).');
 				return;
@@ -3281,7 +3280,7 @@
 				return;
 			}
 
-			SETTER('confirm/show2', '@(Are you sure you want to send this file for <b>Code Review</b>?)', ['"check-circle" @(Review code) #98BF61', '@(Cancel)'], function(index) {
+			SETTER('approve/show', '@(Are you sure you want to send this file for <b>Code Review</b>?)', '"check-circle" @(Review code) #98BF61', function() {
 				AJAX('GET /api/projects/{id}/review/?path='.arg(code.data) + encodeURIComponent(code.editor.path), FUNC.messageresponse('<b><i class="fa fa-check mr5 green"></i>@(DONE)</b><br />@(File has been sent for code review successfully.)'));
 			});
 		};

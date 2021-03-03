@@ -62,7 +62,7 @@
 			SETTER('menu', 'show', 'left', el, items, function(item) {
 				switch (item.value) {
 					case 1:
-						SETTER('confirm/show2', '@(Are you sure you want to remove all backups for selected snippets?)', ['"trash-o"@(Remove)', '@(Cancel)'], function() {
+						SETTER('approve/show', '@(Are you sure you want to remove all backups for selected snippets?)', '"trash-o"@(Remove)', function() {
 							SETTER('loading/show');
 							snippets.checked.wait(function(item, next) {
 								AJAX('DELETE /api/snippets/{id}/backups/'.arg(item), next);
@@ -75,7 +75,7 @@
 						break;
 
 					case 255:
-						SETTER('confirm/show2', '@(Are you sure you want to remove selected snippets?)', ['"trash-o"@(Remove)', '@(Cancel)'], function(index) {
+						SETTER('approve/show', '@(Are you sure you want to remove selected snippets?)', '"trash-o"@(Remove)', function() {
 							SETTER('loading/show');
 							snippets.checked.wait(function(item, next) {
 								AJAX('DELETE /api/snippets/{id}/'.arg(item), next);

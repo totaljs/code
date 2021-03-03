@@ -221,19 +221,13 @@ function files_download(id) {
 		return;
 	}
 
-	if (item.isexternal) {
-		self.status = 400;
-		self.invalid('error-external');
-		return;
-	}
-
 	var path = self.query.path || '';
 
 	if (MAIN.authorize(item, self.user, path)) {
 
 		if (item.isexternal) {
 
-			FUNC.external(project, 'download', path, null, function(err, response) {
+			FUNC.external_download(item, path, function(err, response) {
 
 				if (err) {
 					$.invalid(err);

@@ -315,8 +315,6 @@ NEWSCHEMA('Files', function(schema) {
 		};
 
 		if (project.isexternal) {
-			// do something
-
 			FUNC.external_download(project, $.query.path, function(err, response) {
 
 				if (err) {
@@ -618,7 +616,7 @@ NEWSCHEMA('FilesRemove', function(schema) {
 		// Removes parts
 		NOSQL(project.id + '_parts').remove().rule('doc.path.starstWith(arg.path)', { path: model.path });
 
-		var length = project.todo.length;
+		var length = project.todo ? project.todo.length : 0;
 		if (length) {
 			project.todo = project.todo.remove(item => item.path.substring(0, model.path.length) === model.path);
 			if (project.todo.length !== length)

@@ -391,7 +391,7 @@ NEWSCHEMA('Projects', function(schema) {
 		else
 			allowed = null;
 
-		var skip = '';
+		var skip = '.socket';
 
 		if (item.skiptmp)
 			skip += (skip ? '|' : '') + (IS_WINDOWS ? '\\\\tmp\\\\' : '\\/tmp\\/');

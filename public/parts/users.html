@@ -53,7 +53,7 @@
 		};
 
 		exports.execrefresh = function() {
-			SETTER('confirm/show2', '@(Are you sure you want to send refresh command?)', ['"refresh" Yes, refresh', 'Cancel'], function() {
+			SETTER('approve/show', '@(Are you sure you want to send refresh command?)', '"refresh" Yes, refresh', function() {
 				AJAX('GET /api/users/refresh/', NOOP);
 			});
 		};
@@ -87,7 +87,7 @@
 			SETTER('menu/show', 'left', el, items, function(item) {
 				switch (item.value) {
 					case 255:
-						SETTER('confirm/show2', '@(Are you sure you want to remove selected users?)', ['"trash-o"@(Remove)', '@(Cancel)'], function(index) {
+						SETTER('approve/show', '@(Are you sure you want to remove selected users?)', '"trash-o"@(Remove)', function() {
 							SETTER('loading/show');
 							users.checked.wait(function(item, next) {
 								AJAX('DELETE /api/users/{id}/'.arg(item), next);

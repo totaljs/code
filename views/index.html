@@ -33,6 +33,8 @@
 	<div data---="LAZY notifybar"></div>
 	<div data---="LAZY tooltip"></div>
 	<div data---="LAZY floatinginput"></div>
+	<div data---="LAZY approve"></div>
+	<div data---="LAZY confirm"></div>
 	<div data---="features__null__placeholder:@(What are you looking for?)"></div>
 	<div data---="faicons"></div>
 	<div data---="markdown"></div>
@@ -40,7 +42,6 @@
 	<div data---="directory__null__placeholder:@(Search)"></div>
 	<div data---="infopanel"></div>
 	<div data---="menu" class="hidden"></div>
-	<div data---="confirm"></div>
 	<div data---="shortcuts__null"></div>
 	<div data---="mainprogress__common.percentage"></div>
 	<div data---="LAZY message__null__button:@(OK);style:2"></div>
@@ -413,21 +414,14 @@
 							REDIRECT('/?id=' + value.projectid);
 							break;
 						case 'removeall':
-
-							SETTER('confirm', 'show', '@(Are you sure you want to clear the project?)', ['"trash-o" @(Remove)', '@(Cancel)'], function(index) {
-
-								if (index)
-									return;
-
-								SETTER('loading', 'show');
-								var allowed = { logs: 1, 'debug.js': 1, 'release.js': 1, 'debug.pid': 1 };
+							SETTER('approve/show', '@(Are you sure you want to clear the project?)', '"trash-o" @(Remove)', function() {
+								SETTER('loading/show');
+								var allowed = { logs: 1, 'debug.js': 1, 'release.js': 1, 'debug.pid': 1, 'superadmin.pid': 1, 'index.pid': 1 };
 								code.tree.wait(function(item, next) {
-
 									if (allowed[item.name]) {
 										next();
 										return;
 									}
-
 									var data = {};
 									data.path = item.path;
 									AJAX('POST /api/files/{id}/remove/'.arg(code.data), data, next);
