@@ -634,7 +634,7 @@
 			var tools = [];
 			var tmp;
 
-			if ((/\/scripts\/|\.sh$/g).test(code.current.path) || (code.data.servicemode && (code.current.ext === 'js' || code.current.ext === 'sh')))
+			if (!code.data.isexternal && (/\/scripts\/|\.sh$/g).test(code.current.path) || (code.data.servicemode && (code.current.ext === 'js' || code.current.ext === 'sh')))
 				items.push({ name: '@(Run script)', icon: 'play-circle red', value: 'run', classname: 'b', shortcut: (common.ismac ? 'CMD' : 'CTRL') + '+B' });
 
 			if (can) {
@@ -712,7 +712,7 @@
 				sub.push({ name: '@(Escape)', icon: 'chevron-right', value: 'escape' });
 				sub.push({ name: '@(Slug)', icon: 'chevron-right', value: 'slug' });
 				sub.push({ name: '@(HASH)', icon: 'chevron-right', value: 'HASH' });
-				sub.push({ name: '@(Translate)', icon: 'chevron-right', value: 'translate' });
+				sub.push({ name: '@(Localize)', icon: 'chevron-right', value: 'translate' });
 				sub.push({ name: '@(MD5)', icon: 'chevron-right', value: 'md5', server: true });
 				sub.push({ name: '@(SHA-1)', icon: 'chevron-right', value: 'sha1', server: true });
 				sub.push({ name: '@(SHA-256)', icon: 'chevron-right', value: 'sha256', server: true });
@@ -768,7 +768,10 @@
 			sub.push({ name: '@(Password)', icon: 'chevron-right', value: 'password' });
 			sub.push({ name: '@(URL / Hostname)', icon: 'chevron-right', value: 'url' });
 			sub.push({ name: '@(IP address - my)', icon: 'chevron-right', value: 'ip' });
-			sub.push({ name: '@(IP address - server)', icon: 'chevron-right', value: 'ipserver' });
+
+			if (!code.data.isexternal)
+				sub.push({ name: '@(IP address - server)', icon: 'chevron-right', value: 'ipserver' });
+
 			sub.push({ name: '@(Date / Time)', icon: 'chevron-right', value: 'date' });
 
 			sub.push('-');
@@ -1708,7 +1711,7 @@
 			is && items.push({ value: 90, name: '@(Auto-reloader (5 sec.))', icon: 'refresh green' });
 			is && items.push({ value: 2, name: '@(Find)', icon: 'search', command: 'find' });
 			// is && items.push({ value: 2, name: '@(Replace)', icon: 'search', command: 'replaceAll' });
-			is && items.push({ value: 11, name: '@(Translate)', icon: 'language' });
+			is && items.push({ value: 11, name: '@(Localize)', icon: 'language' });
 			is && items.push({ value: 3, name: '@(Convert to Tabs)', icon: 'align-right' });
 			is && common.electron && code.data.repository && items.push({ value: 5, name: '@(Save locally)', icon: 'floppy-o' });
 			is && items.push({ value: 4, name: '@(Restore from backup)', icon: 'history' });
@@ -1717,6 +1720,7 @@
 			is && items.push('-');
 			is && code.data.pathsync && items.push({ value: 6, name: '@(Save synchronized)', icon: 'sync green' });
 			common.electron && code.data.repository && items.push({ value: 7, name: '@(Download <strong>last changes</strong>)', icon: 'floppy-o' });
+			common.electron && code.data.repository && items.push({ value: 22, name: '@(Download source-code)', icon: 'floppy-o' });
 			items.push({ value: 13, name: common.showparts ? '@(Disable parts panel)' : '<strong>@(Enable parts panel)</strong>', icon: 'puzzle-piece' + (common.showparts ? '' : ' green') });
 			items.push({ value: 15, name: common.powermode ? '@(Disable power mode)' : '<strong>@(Enable power mode)</strong>', icon: 'flask' + (common.powermode ? '' : ' green') });
 			items.push({ value: 25, name: common.totalcombat ? '@(Disable total combat)' : '<strong>@(Enable total combat)</strong>', icon: 'fa fa-hand-rock' });
@@ -1724,12 +1728,14 @@
 			items.push({ value: 14, name: '@(Output panel)', icon: 'rss' });
 			items.push({ value: 9, name: '@(Show log file)', icon: 'bug red', shortcut: 'F10' });
 			items.push({ value: 16, name: '@(Clipboard)', icon: 'clipboard', shortcut: 'F11' });
-			items.push({ value: 20, name: '@(Translate application)', icon: 'language' });
+			items.push({ value: 20, name: '@(Localize files)', icon: 'language' });
 
- 			user.sa && items.push({ value: 23, name: '@(Download source-code)', icon: 'download' });
+			if (code.data.allowbundle && !code.data.isexternal)
+	 			user.sa && items.push({ value: 23, name: '@(Download source-code as .tar)', icon: 'download' });
+
 			items.push({ name: '@(Create Wiki)', icon: '!fa fa-book', value: 98 });
 
-			if (code.data.allowbundle) {
+			if (code.data.allowbundle && !code.data.isexternal) {
 				items.push('-');
 				items.push({ value: 19, name: '@(Download bundle locally)', icon: 'box', classname: 'b' });
 				code.data.pathsync && items.push({ value: 21, name: '@(Synchronize bundle)', icon: 'truck' });
@@ -1829,10 +1835,7 @@
 						exports.clearchanges();
 						break;
 					case 98:
-						AJAX('GET /api/projects/{id}/wiki/'.arg(code.data), function(response) {
-							SETTER('clipboard/copy', 'https://docs.totaljs.com/?url=' + location.origin + '/wiki/' + response.value + '/');
-							SETTER('notifybar/success', '@(Wiki has been created and copied into the clipboard)');
-						});
+						exports.makewiki();
 						break;
 					case 19:
 						location.href = '/api/projects/{id}/bundle/'.arg(code.data);
@@ -1852,6 +1855,9 @@
 							SETTER('loading/hide', 1000);
 							FUNC.success('@(Done, bundle has been synchronized.)');
 						});
+						break;
+					case 22:
+						exports.saveallfileslocally();
 						break;
 				}
 			}, -5, -5);
@@ -2641,6 +2647,59 @@
 				FUNC.warning('@(You don\'t have defined repository path.)');
 		};
 
+		exports.saveallfileslocally = function(nowarning) {
+
+			var electronpath = require('electron').ipcRenderer.sendSync('getPath', { url: location.protocol + '//' + location.hostname + (location.port ? ':' + location.port : '') });
+			if (electronpath) {
+
+				var Path = require('path');
+				var Https = require('https');
+				var Http = require('http');
+				var Fs = require('fs');
+
+				SETTER('loading/show');
+				code.data.files.wait(function(item, next, index) {
+
+					SET('common.percentage', (index / response.length) * 100);
+					var filename = Path.join(electronpath, FUNC.getName(code.data.repository).replace(/\.git$/i, ''), item.path);
+
+					SETTER('loading/show', ('<b style="font-size:18px">{0}%</b><br /><b>@(Saving:)</b> ' + item.path).format(common.percentage >> 0));
+					FUNC.mkdir(Path.dirname(filename));
+
+					var resume = function() {
+						setTimeout(next, 300);
+					};
+
+					var url = location.protocol + '//' + location.hostname + (location.port ? ':' + location.port : '') + '/api/download/{id}/?path='.arg(code.data) + encodeURIComponent(item.path);
+					var res = function(res) {
+						if (res.statusCode === 200) {
+							res.on('error', resume);
+							res.on('end', resume);
+							res.on('abort', resume);
+							res.pipe(Fs.createWriteStream(filename));
+						} else
+							resume();
+					};
+
+					url = require('url').parse(url);
+					url.headers = {};
+					url.headers['user-agent'] = navigator.userAgent;
+					url.headers.cookie = '@{config.cookie}=' + COOKIES.get('@{config.cookie}');
+
+					if (location.protocol === 'https:')
+						Https.get(url, res);
+					else
+						Http.get(url, res);
+
+				}, function() {
+					SET('common.percentage', 100);
+					SETTER('loading/hide');
+				});
+
+			} else if (!nowarning)
+				FUNC.warning('@(You don\'t have defined repository path.)');
+		};
+
 		exports.save = function(close, sync) {
 
 			if (!code.current || BLOCKED('code_saving', 1000))
@@ -3182,6 +3241,31 @@
 
 		exports.clipboard = function() {
 			TOGGLE('common.clipboard');
+		};
+
+		exports.makewiki = function() {
+			var body = [];
+			SETTER('loading/show');
+			code.data.files.wait(function(item, next) {
+				if ((/controllers|schemas/).test(item)) {
+					SETTER('loading/show', '@(Analyzing:) ' + item);
+					AJAX('GET /api/projects/{id}/edit/'.arg(code.data), { path: item }, function(response) {
+						body.push(response);
+						next();
+					});
+				} else
+					next();
+
+			}, function() {
+				body = FUNC.makedocs(body.join('\n\n'));
+				body = '# Wiki: __' + code.data.name + '__\n\n- URL address: <' + code.data.url + '>\n- Author: __' + user.name + '__\n- Updated: `' + NOW.format('yyyy-MM-dd HH:mm') + '`\n\n\n## __REST API__ endpoints\n\n' + body;
+				SETTER('loading/show', '@(Saving...)');
+				AJAX('POST /api/projects/{id}/wiki/'.arg(code.data), { body: body }, function(response) {
+					SETTER('clipboard/copy', 'https://docs.totaljs.com/?url=' + location.origin + '/wiki/' + response.value + '/');
+					SETTER('notifybar/success', '@(Wiki has been created and copied into the clipboard)');
+					SETTER('loading/hide');
+				});
+			});
 		};
 
 		exports.review = function(el) {

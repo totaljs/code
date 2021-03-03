@@ -16,6 +16,7 @@ NEWSCHEMA('Projects', function(schema) {
 	schema.define('support', 'String(200)');
 	schema.define('logfile', 'String(100)');
 	schema.define('url', 'String(100)');
+	schema.define('token', 'String(50)');
 	schema.define('icon', 'String(30)');
 	schema.define('users', '[Lower(30)]');
 	schema.define('backup', Boolean);
@@ -75,35 +76,6 @@ NEWSCHEMA('Projects', function(schema) {
 		});
 	});
 
-	schema.addWorkflow('wiki_make', function($) {
-
-		var item = MAIN.projects.findItem('id', $.id);
-		if (!item) {
-			$.invalid('error-project');
-			return;
-		}
-
-		var filename = Path.join(item.path);
-		MAIN.log($.user, 'wiki_make', item, filename);
-		WORKER2('docs', [item.path], function(err, response) {
-
-			if (err) {
-				$.invalid(err);
-				return;
-			}
-
-			var md = response.toString('utf8');
-			md = '# Wiki: __' + item.name + '__\n\n- URL address: <' + item.url + '>\n- Author: __' + $.user.name + '__\n- Updated: `' + NOW.format('yyyy-MM-dd HH:mm') + '`\n\n\n## __REST API__ endpoints\n\n' + md;
-			Fs.writeFile(PATH.databases('wiki_' + $.id + '.md'), md, NOOP);
-			$.success($.id);
-		});
-	});
-
-	schema.addWorkflow('wiki_read', function($) {
-		$.controller.file('~' + PATH.databases('wiki_' + $.id + '.md'));
-		$.cancel();
-	});
-
 	schema.addWorkflow('translate', function($) {
 
 		var item = MAIN.projects.findItem('id', $.id);
@@ -153,9 +125,11 @@ NEWSCHEMA('Projects', function(schema) {
 	});
 
 	schema.addWorkflow('localize', function($) {
+
 		var item = MAIN.projects.findItem('id', $.id);
 		MAIN.log($.user, 'files_localize', item, item.path);
-		U.ls(item.path, function(files) {
+
+		var process = function(files) {
 
 			var resource = {};
 			var texts = {};
@@ -163,14 +137,8 @@ NEWSCHEMA('Projects', function(schema) {
 			var file;
 			var key;
 
-			for (var i = 0, length = files.length; i < length; i++) {
-				var filename = files[i];
-				var ext = U.getExtension(filename);
+			var analyze = function(filename, content, ext) {
 
-				if (filename.indexOf('sitemap') === -1 && ext !== 'html' && ext !== 'js')
-					continue;
-
-				var content = Fs.readFileSync(filename).toString('utf8');
 				var command = Internal.findLocalization(content, 0);
 				while (command !== null) {
 
@@ -181,7 +149,7 @@ NEWSCHEMA('Projects', function(schema) {
 					}
 
 					key = 'T' + command.command.makeid();
-					file = filename.substring(item.path.length);
+					file = filename.substring(item.isexternal ? 1 : item.path.length);
 
 					texts[key] = command.command;
 
@@ -203,7 +171,7 @@ NEWSCHEMA('Projects', function(schema) {
 							var m = (tmp[j] + '');
 							m = m.substring(10, m.length - 2);
 							key = m;
-							file = filename.substring(item.path.length);
+							file = filename.substring(item.isexternal ? 1 : item.path.length);
 							texts[key] = m;
 							if (resource[key]) {
 								if (resource[key].indexOf(file) === -1)
@@ -221,7 +189,7 @@ NEWSCHEMA('Projects', function(schema) {
 							var m = (tmp[j] + '');
 							m = m.substring(m.indexOf('(') + 2, m.length - 1);
 							key = m;
-							file = filename.substring(item.path.length);
+							file = filename.substring(item.isexternal ? 1 : item.path.length);
 							texts[key] = m;
 							if (resource[key]) {
 								if (resource[key].indexOf(file) === -1)
@@ -232,27 +200,63 @@ NEWSCHEMA('Projects', function(schema) {
 						}
 					}
 				}
-			}
+			};
 
-			var keys = Object.keys(resource);
-			var builder = [];
-			var output = {};
+			files.wait(function(filename, next) {
 
-			for (var i = 0, length = keys.length; i < length; i++) {
-				if (!output[resource[keys[i]]])
-					output[resource[keys[i]]] = [];
-				output[resource[keys[i]]].push(keys[i].padRight(max + 5, ' ') + ': ' + texts[keys[i]]);
-			}
+				var ext = U.getExtension(filename);
 
-			keys = Object.keys(output);
-			for (var i = 0, length = keys.length; i < length; i++)
-				builder.push('\n// ' + keys[i] + '\n' + output[keys[i]].join('\n'));
+				if (filename.indexOf('sitemap') === -1 && ext !== 'html' && ext !== 'js') {
+					next();
+					return;
+				}
 
-			var data = '// Total.js localization file\n// Created by ' + $.user.name + ': ' + new Date().format('yyyy-MM-dd HH:mm') + '\n' + builder.join('\n');
-			Fs.writeFile(Path.join(item.path, 'localization.resource'), data, $.done());
+				if (item.isexternal) {
+					FUNC.external(item, 'load', filename, null, function(err, response) {
+						if (response)
+							analyze(filename, response, ext);
+						next();
+					});
+				} else {
+					Fs.readFile(filename, function(err, data) {
+						if (data)
+							analyze(filename, data.toString('utf8'), ext);
+						next();
+					});
+				}
 
-		}, (path, dir) => dir ? (path.endsWith('/node_modules') || path.endsWith('/tmp') || path.endsWith('/.git') || path.endsWith('/.src') || path.endsWith('/logs')) ? false : true : true);
+			}, function() {
 
+				var keys = Object.keys(resource);
+				var builder = [];
+				var output = {};
+
+				for (var i = 0, length = keys.length; i < length; i++) {
+					if (!output[resource[keys[i]]])
+						output[resource[keys[i]]] = [];
+					output[resource[keys[i]]].push(keys[i].padRight(max + 5, ' ') + ': ' + texts[keys[i]]);
+				}
+
+				keys = Object.keys(output);
+				for (var i = 0, length = keys.length; i < length; i++)
+					builder.push('\n// ' + keys[i] + '\n' + output[keys[i]].join('\n'));
+
+				var data = '// Total.js localization file\n// Created by ' + $.user.name + ': ' + new Date().format('yyyy-MM-dd HH:mm') + '\n' + builder.join('\n');
+
+				if (item.isexternal)
+					FUNC.external(item, 'save', '/localization.resource', data, $.done());
+				else
+					Fs.writeFile(Path.join(item.path, 'localization.resource'), data, $.done());
+			});
+
+		};
+
+		if (item.isexternal) {
+			FUNC.external(item, 'browse', item.path, JSON.stringify({ type: 'localization' }), function(err, response) {
+				process(response.files || EMPTYARRAY);
+			});
+		} else
+			U.ls(item.path, process, (path, dir) => dir ? (path.endsWith('/node_modules') || path.endsWith('/tmp') || path.endsWith('/.git') || path.endsWith('/.src') || path.endsWith('/logs')) ? false : true : true);
 	});
 
 	schema.setSave(function($) {

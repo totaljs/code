@@ -1,9 +1,9 @@
-<div data---="form__common.form__if:projectsform;icon:code-branch;width:700;reload:projectsform/reload;autofocus:1;submit:projectsform/submit" class="hidden">
+<div data---="largeform__common.form__if:projectsform;icon:code-branch;width:700;reload:projectsform/reload;autofocus:1;submit:projectsform/submit" class="hidden">
 	<div data-scope="projectsform">
 		<div class="padding">
 			<div class="row">
 				<div class="col-sm-6 m">
-					<div data---="input__?.path__required:true__'/www/www/'">@(Absolute path)</div>
+					<div data---="input__?.path__required:true__'/www/www/'">@(Absolute/External path)</div>
 					<div class="help">
 						<span class="link exec" data-exec="?/autocomplete"><i class="fa fa-search"></i>@(Browse)</span>
 					</div>
@@ -13,6 +13,12 @@
 					<div class="help"><span class="link exec" data-exec="?/autocomplete2"><i class="fa fa-search"></i>@(Browse)</span>. @(Additional path for e.g. production)</div>
 				</div>
 			</div>
+
+			<div data-bind="?.isexternal__show" class="bg-smoke padding m hidden">
+				<div data---="input__?.token__maxlength:50__''">@(Token)</div>
+				<div class="help">@(A security token for external path)</div>
+			</div>
+
 			<div class="row">
 				<div class="col-sm-6 m">
 					<div data---="input__?.name__required:true__''">@(Name)</div>
@@ -127,18 +133,28 @@
 		};
 
 		WATCH('?.path', function(path, value) {
+
 			if (value && value !== '/www/www/' && (/_|-/).test(value)) {
+
 				var index = value.lastIndexOf('/');
 				if (index === -1)
 					index = value.lastIndexOf('\\');
+
 				if (!projectsform.name)
 					SET('?.name', value.substring(index + 1));
+
 				if (!projectsform.url) {
 					var arr = value.substring(index + 1).replace(/_/g, '.').split('-');
 					arr.reverse();
 					SET('?.url', 'https://' + arr.join('.'));
 				}
+
+			} else if (value && (/^(https|http)\:\/\//).test(value)) {
+				var index = value.substring(8).indexOf('/');
+				SET('?.url', value.substring(0, index));
 			}
+
+			SET('?.isexternal', (/^(https|http)\:\/\//).test(value));
 		});
 
 	});

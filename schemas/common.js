@@ -23,6 +23,7 @@ NEWSCHEMA('Hosts', function(schema) {
 });
 
 NEWSCHEMA('Minify', function(schema) {
+
 	schema.define('body', String, true);
 	schema.define('type', ['js', 'css', 'html'], true);
 

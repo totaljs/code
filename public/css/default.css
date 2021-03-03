@@ -165,7 +165,7 @@ h3 i { margin-right: 5px; color: $color; }
 
 .bg-yellow { background-color: #FFFFD5; }
 .bg-smoke { background-color: #F8F8F8; }
-.td .bg-smoke { background-color: #1C1C1C; }
+.td .bg-smoke { background-color: #191919; }
 
 #content .alert { padding: 7px 15px 5px; position: absolute; left: 241px; right: 0; z-index: 26; border-radius: 0; border-top: 1px solid #dddbaf; bottom: 0; left: 0; }
 /*.codepanel #content .alert { right: 358px; }*/

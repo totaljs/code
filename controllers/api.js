@@ -43,10 +43,10 @@ exports.install = function() {
 	ROUTE('+GET     /api/projects/timespent/',                                timespent);
 	ROUTE('+GET     /api/projects/{id}/modify/',                           	  files_modify);
 	ROUTE('+GET     /api/projects/{id}/bundle/',                           	  makebundle, [10000]);
-	ROUTE('+GET     /api/projects/{id}/wiki/              *Projects           --> @wiki_make', [30000]);
+	ROUTE('+POST    /api/projects/{id}/wiki/              *Wiki               --> @save');
 	ROUTE('+GET     /api/projects/{id}/localize/          *Projects           --> @localize', [30000]);
 	ROUTE('+GET     /api/projects/discover/',                                 autodiscover);
-	ROUTE('GET      /wiki/{id}/                           *Projects           --> @wiki_read');
+	ROUTE('GET      /wiki/{id}/                           *Wiki               --> @read');
 
 	ROUTE('+POST    /api/database/pg/                     *DBCommand          --> @exec', [10000]);
 
@@ -218,6 +218,12 @@ function files_download(id) {
 	if (!item) {
 		self.status = 400;
 		self.invalid('error-project');
+		return;
+	}
+
+	if (item.isexternal) {
+		self.status = 400;
+		self.invalid('error-external');
 		return;
 	}
 

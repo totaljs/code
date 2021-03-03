@@ -139,17 +139,6 @@ FUNC.autodiscover = function(callback) {
 	});
 };
 
-FUNC.external_download = function(project, path, callback) {
-	var opt = {};
-	opt.custom = true;
-	opt.url = project.path;
-	opt.type = 'json';
-	opt.method = 'POST';
-	opt.body = JSON.stringify({ TYPE: 'download', path: path });
-	opt.callback = callback;
-	REQUEST(opt);
-};
-
 FUNC.external_path = function(project, path) {
 	var p = HASH(project.path, true).toString(36) + '_' + project.path.slug();
 	return path ? Path.join(p, path) : p;
@@ -162,6 +151,10 @@ FUNC.external = function(project, type, path, data, callback) {
 	opt.url = project.path;
 	opt.type = 'json';
 	opt.method = 'POST';
+
+	if (project.token)
+		opt.headers = { 'x-token': project.token };
+
 	opt.body = JSON.stringify({ TYPE: type, path: path, data: data instanceof Buffer ? data.toString('base64') : data });
 	opt.callback = function(err, response) {
 		var data = response.body;
@@ -169,6 +162,21 @@ FUNC.external = function(project, type, path, data, callback) {
 			data = data.parseJSON(true);
 		callback(err, data);
 	};
+	REQUEST(opt);
+};
+
+FUNC.external_download = function(project, path, callback) {
+	var opt = {};
+	opt.custom = true;
+	opt.url = project.path;
+	opt.type = 'json';
+	opt.method = 'POST';
+
+	if (project.token)
+		opt.headers = { 'x-token': project.token };
+
+	opt.body = JSON.stringify({ TYPE: 'download', path: path });
+	opt.callback = callback;
 	REQUEST(opt);
 };
 
