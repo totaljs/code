@@ -19,9 +19,14 @@
 	<script src="/js/cdn.min.js"></script>
 	<style type="text/css">
 		/*auto*/
+
+		:root {
+			--radius: 5px;
+		}
+
 		html,body { overflow: hidden; height: 100%; }
-		body { background-color: #F8F8F8; }
-		.panel { max-width: @{if R.signup}500@{else}320@{fi}px; width: 100%; margin: 100px auto 20px; background-color: white; border: 3px solid #E0E0E0; border-radius: 3px; transition: all 0.5s; transform: scale(1.5); }
+		body { background: linear-gradient(20deg,#E0E0E0,#A0A0A0); }
+		.panel { max-width: @{if R.signup}500@{else}320@{fi}px; width: 100%; margin-top: -100px; background-color: #FFF; transition: all 0.5s; transform: scale(1.5); border-radius: var(--radius); box-shadow: 0 5px 20px rgba(0,0,0,0.1); }
 		.padding { padding: 20px; }
 		.panelshow { transform: scale(1); }
 
@@ -33,10 +38,11 @@
 		.ui-input-label { margin-bottom: 3px; font-size: 12px; }
 		.ui-input-label i { margin-right: 4px; }
 		.ui-input-required .ui-input-label:before { content: '***'; color: red; margin-right: 3px; }
-		.ui-input-control { border: 1px solid #E0E0E0; border-radius: 3px; height: 32px; background-color: white; }
-		.ui-input-input { padding: 6px 2px 0 6px; position: relative; line-height: 20px; }
+		.ui-input-control { border: 2px solid #E0E0E0; border-radius: var(--radius); height: 32px; background-color: #FFF; }
+		.ui-input-input { padding: 4px 2px 0 6px; position: relative; line-height: 20px; }
 		.ui-input-placeholder { position: absolute; color: gray; margin: 0; user-select: none; cursor: text; width: 100%; text-align: left; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; }
-		.ui-input-control input { border: 0; outline: 0; background-color: white; width: 100%; padding: 0; margin: 0; line-height: 15px; font-size: 13px; color: black; font-family: Arial; }
+		.ui-input-control input { border: 0; outline: 0; background-color: #FFF; width: 100%; padding: 0; margin: 0; line-height: 16px; font-size: 13px; color: #000; font-family: Arial; }
+		.ui-input-control .ui-input-value { line-height: 19px; height: 18px; cursor: pointer; border-radius: var(--radius); outline: 0; }
 		.ui-input-control input::-ms-expand { display: none; }
 		.ui-input-icon-left { width: 32px; height: 30px; line-height: 32px; float: left; text-align: center; border-right: 1px solid #E0E0E0; }
 		.ui-input-icon-right { width: 32px; height: 30px; line-height: 32px; float: right; border-left: 1px solid #E0E0E0; text-align: center; }
@@ -45,6 +51,7 @@
 		.ui-input-ricon .ui-input-input { margin-right: 35px; }
 		.ui-input-licon .ui-input-input { margin-left: 32px; }
 		.ui-input-ricon .fa-times, .ui-input-licon .fa-times { color: red; }
+		.ui-input-value { text-overflow: ellipsis; white-space: nowrap; overflow: hidden; }
 		.ui-input-click { cursor: pointer; }
 		.ui-input-error { margin-top: 7px; font-size: 11px; color: red; }
 		.ui-input .right input, .ui-input .right .ui-input-placeholder { text-align: right; }
@@ -68,6 +75,11 @@
 		.ui-input-inner .ui-input-increment { padding: 8px 0 0; }
 		.ui-input-inner .ui-input-increment i { line-height: 10px; }
 		.ui-input-masked input { letter-spacing: 1px; font-family: Menlo,Consolas,monospace; }
+		.ui-input-monospace input { font-family: Menlo,Consolas,monospace; }
+		.ui-input-icon-custom { font-size: 11px; }
+		.ui-input-inner .ui-input-value { line-height: 13px; height: 14px; margin-top: 3px; font-size: 13px !important; }
+		.ui-input-type-icon .ui-input-value, .ui-input-type-emoji .ui-input-value { font-size: 15px; }
+		.ui-input-type-icon .ui-input-control, .ui-input-type-color .ui-input-control, .ui-input-type-color .ui-input-emoji { cursor: pointer; }
 
 		.ui-error { margin: 0 0 15px; padding: 0; list-style-type: none; padding: 10px 0; color: #BE3A48; font-family: Arial; font-size: 14px }
 		.ui-error .fa { width: 16px; }
@@ -75,76 +87,72 @@
 		.hidden { display: none; }
 		.m { margin-bottom: 15px; }
 
-		button { background-color: #4285F4; border: 0; color: white; cursor: pointer; outline: 0; width: 100%; border-radius: 3px; height: 40px; text-transform: uppercase; font-weight: bold; }
+		button { background-color: #4285F4; border: 0; color: white; cursor: pointer; outline: 0; width: 100%; border-radius: var(--radius); height: 40px; text-transform: uppercase; font-weight: bold; }
 		button:hover { box-shadow: 0 2px 5px rgba(0,0,0,0.1); opacity: 0.9; }
 		button:disabled { background-color: #F0F0F0; color: silver; cursor: not-allowed; box-shadow: none; opacity: 1; }
-		button .fa { margin-right: 5px; }
+		button i { margin-right: 7px; }
 		footer { font-size: 11px; text-align: center; color: #A0A0A0; margin: 20px 0 0 0; }
 		.logo { position: absolute; margin: -55px 0 0 -50px; width: 100px; left: 50%; }
 		.logo img { width: 100px; }
-		.alert { background-color: #fffad7; border-bottom: 1px solid #fffdbf; padding: 15px; border-radius: 3px; color: #988e56; font-size: 12px; }
+		.alert { background-color: #fffad7; border-bottom: 1px solid #fffdbf; padding: 15px; border-radius: var(--radius); color: #988e56; font-size: 12px; }
 
-		@media(max-width: 960px) {
-			.panel { margin-top: -100px; }
-		}
-
-		@media(max-width: 768px) {
-			.panel { margin: 20px; left: 0; position: relative; top: 0; width: auto; max-width: 1000px; }
-		}
+		.flex { display: flex; align-items: center; justify-content: center; height: 100%; }
 
 	</style>
 </head>
 <body>
 
-	<div class="panel">
-		<div class="logo"><img src="/img/icon.png" alt="Total.js Code Editor" /></div>
-		<div class="padding">
-			<br /><br />
-			@{if R.signup}
+	<div class="flex">
+		<div class="panel">
+			<div class="logo"><img src="/img/icon.png" alt="Total.js Code Editor" /></div>
+			<div class="padding">
+				<br /><br />
+				@{if R.signup}
 
-				<div class="alert m center"><i class="fa fa-user"></i> @(You will be the first developer in <b>Total.js Code Editor</b> on this server.)</div>
-				<div class="row">
-					<div class="col-md-6 m">
-						<div data---="input__form.id__required:true;placeholder:@(petersirka);type:lower;autofocus:1__''">@(Your ID)</div>
-						<div class="help">@(Keep lower-case and use A-Z chars only)</div>
+					<div class="alert m center"><i class="fa fa-user"></i> @(You will be the first developer in <b>Total.js Code Editor</b> on this server.)</div>
+					<div class="row">
+						<div class="col-md-6 m">
+							<div data---="input__form.id__required:true;placeholder:@(petersirka);type:lower;autofocus:1__''">@(Your ID)</div>
+							<div class="help">@(Keep lower-case and use A-Z chars only)</div>
+						</div>
+						<div class="col-md-6 m">
+							<div data---="input__form.name__required:true;placeholder:@(Peter Širka)__''">@(Full name)</div>
+						</div>
 					</div>
-					<div class="col-md-6 m">
-						<div data---="input__form.name__required:true;placeholder:@(Peter Širka)__''">@(Full name)</div>
+
+					<div class="row">
+						<div class="col-md-6 m">
+							<div data---="input__form.email__icon2:user;type:email;required:true;autofocus:true__'@'">@(E-mail address)</div>
+						</div>
+						<div class="col-md-6 m">
+							<div data---="input__form.password__icon2:lock;required:true;type:password">@(Password)</div>
+						</div>
 					</div>
-				</div>
+					<hr />
 
-				<div class="row">
-					<div class="col-md-6 m">
-						<div data---="input__form.email__icon2:user;type:email;required:true;autofocus:true__'@'">@(E-mail address)</div>
+					<div data---="error__form.response"></div>
+					<div data---="validation__form">
+						<button name="submit" disabled="disabled"><i class="fa fa-key"></i>@(Sign up)</button>
 					</div>
-					<div class="col-md-6 m">
-						<div data---="input__form.password__icon2:lock;required:true;type:password">@(Password)</div>
+
+				@{else}
+				<form action="/" onsubmit="return false" method="POST">
+					<div class="m" id="formemail" data---="input__form.email__icon2:user;type:email;autofocus:true;required:true;autofill:true">@(Login name)</div>
+					<div class="m" data---="input__form.password__icon2:lock;required:true;type:password;autofill:true">@(Password)</div>
+					<div data---="error__form.response"></div>
+					<div data---="validation__form">
+						<button name="submit" disabled="disabled"><i class="fa fa-lock"></i>@(Sign in)</button>
 					</div>
-				</div>
-				<hr />
+				</form>
+				@{fi}
 
-				<div data---="error__form.response"></div>
-				<div data---="validation__form">
-					<button name="submit" disabled="disabled"><i class="fa fa-key"></i>@(Sign up)</button>
-				</div>
+				<footer>
+					<div>All rights reserved &copy; 2021</div>
+					<a href="https://www.totaljs.com" target="_blank">www.totaljs.com</a>
+				</footer>
+			</div>
 
-			@{else}
-			<form action="/" onsubmit="return false" method="POST">
-				<div class="m" data---="input__form.email__icon2:user;type:email;required:true;autofill:true">@(Login name)</div>
-				<div class="m" data---="input__form.password__icon2:lock;required:true;type:password;autofill:true">@(Password)</div>
-				<div data---="error__form.response"></div>
-				<div data---="validation__form">
-					<button name="submit" disabled="disabled"><i class="fa fa-lock"></i>@(Login)</button>
-				</div>
-			</form>
-			@{fi}
-
-			<footer>
-				<div>All rights reserved &copy; 2021</div>
-				<a href="https://www.totaljs.com" target="_blank">www.totaljs.com</a>
-			</footer>
 		</div>
-
 	</div>
 
 	<script>
@@ -893,6 +901,9 @@
 
 		setTimeout(function() {
 			$('.panel').aclass('panelshow');
+			setTimeout(function() {
+				$('#formemail').find('input').focus();
+			}, 200);
 		}, 200);
 
 		$(document).on('keyup', 'input', function(e) {
