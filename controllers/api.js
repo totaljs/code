@@ -334,11 +334,32 @@ function custom_ip() {
 
 function custom_ipsever() {
 	var self = this;
+
+	if (self.query.projectid) {
+
+		var project = MAIN.projects.findItem('id', self.query.projectid);
+		if (!project) {
+			self.invalid('error-project');
+			return;
+		}
+
+		if (project.isexternal) {
+			FUNC.external(project, 'ip', null, null, function(err, response) {
+				if (err)
+					self.invalid(err);
+				else
+					self.plain(response);
+			});
+			return;
+		}
+	}
+
 	var opt = {};
 	opt.url = 'https://ipecho.net/plain';
 	opt.callback = function(err, response) {
 		self.plain(response.body || 'undefined');
 	};
+
 	REQUEST(opt);
 }
 

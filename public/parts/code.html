@@ -768,10 +768,7 @@
 			sub.push({ name: '@(Password)', icon: 'chevron-right', value: 'password' });
 			sub.push({ name: '@(URL / Hostname)', icon: 'chevron-right', value: 'url' });
 			sub.push({ name: '@(IP address - my)', icon: 'chevron-right', value: 'ip' });
-
-			if (!code.data.isexternal)
-				sub.push({ name: '@(IP address - server)', icon: 'chevron-right', value: 'ipserver' });
-
+			sub.push({ name: '@(IP address - server)', icon: 'chevron-right', value: 'ipserver' });
 			sub.push({ name: '@(Date / Time)', icon: 'chevron-right', value: 'date' });
 
 			sub.push('-');
@@ -1127,7 +1124,7 @@
 						case 'uid16':
 						case 'ip':
 						case 'ipserver':
-							AJAX('GET /api/common/{0}/'.format(value.value), function(response) {
+							AJAX('GET /api/common/{0}/?projectid={1}'.format(value.value, code.data.id), function(response) {
 								editor.replaceSelection(response);
 							});
 							break;
@@ -2755,7 +2752,7 @@
 				data.path = code.editor.path;
 				data.combo = isminified ? 0 : FIND('combo').summarize();
 				data.todo = isminified ? EMPTYARRAY : code.data.todocurrent && code.data.todocurrent.length ? code.data.todocurrent : null;
-				data.parts = isminified || code.editor.path.substring(0, 9) === '/scripts/' ? EMPTYARRAY : code.components;
+				data.parts = isminified || code.editor.path.substring(0, 9) === '/scripts/' || code.editor.path === '/modules/code.js' ? EMPTYARRAY : code.components;
 
 				// Update hashsum
 				code.data.hashsum = hashsum;

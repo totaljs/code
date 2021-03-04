@@ -180,6 +180,19 @@ FUNC.external_download = function(project, path, callback) {
 	REQUEST(opt);
 };
 
+FUNC.external_upload = function(project, path, url, callback) {
+	var opt = {};
+	opt.url = url;
+	opt.method = 'GET';
+	opt.callback = function(err, response) {
+		if (err)
+			callback(err);
+		else
+			FUNC.external(project, 'save', path, response.body, callback);
+	};
+	REQUEST(opt);
+};
+
 if (CONF.autodiscover) {
 
 	ON('service', function(counter) {

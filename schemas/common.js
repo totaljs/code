@@ -81,8 +81,13 @@ NEWSCHEMA('ExternalTemplate', function(schema) {
 	schema.setSave(function($) {
 
 		var project = MAIN.projects.findItem('id', $.id);
-		if (project == null) {
+		if (!project) {
 			$.invalid('error-project');
+			return;
+		}
+
+		if (!project.isexternal) {
+			$.invalid('error-external');
 			return;
 		}
 
@@ -119,7 +124,10 @@ NEWSCHEMA('ExternalBundle', function(schema) {
 		MAIN.changelog($.user, $.id, p);
 		MAIN.change('upload', $.user, project, p);
 
-		DOWNLOAD(model.url, Path.join(project.path, 'bundles', model.name), $.done());
+		if (project.isexternal)
+			FUNC.external_upload(project, Path.join('/bundles', model.name), model.url, $.done());
+		else
+			DOWNLOAD(model.url, Path.join(project.path, 'bundles', model.name), $.done());
 	});
 });
 
@@ -147,7 +155,10 @@ NEWSCHEMA('ExternalPackage', function(schema) {
 		MAIN.changelog($.user, $.id, p);
 		MAIN.change('upload', $.user, project, p);
 
-		DOWNLOAD(model.url, Path.join(project.path, 'packages', model.name), $.done());
+		if (project.isexternal)
+			FUNC.external_upload(project, Path.join('/packages', model.name), model.url, $.done());
+		else
+			DOWNLOAD(model.url, Path.join(project.path, 'packages', model.name), $.done());
 	});
 });
 
@@ -175,7 +186,10 @@ NEWSCHEMA('ExternalModule', function(schema) {
 		MAIN.changelog($.user, $.id, p);
 		MAIN.change('upload', $.user, project, p);
 
-		DOWNLOAD(model.url, Path.join(project.path, 'modules', model.name), $.done());
+		if (project.isexternal)
+			FUNC.external_upload(project, Path.join('/modules', model.name), model.url, $.done());
+		else
+			DOWNLOAD(model.url, Path.join(project.path, 'modules', model.name), $.done());
 	});
 });
 
@@ -203,7 +217,10 @@ NEWSCHEMA('ExternalSchema', function(schema) {
 		MAIN.changelog($.user, $.id, p);
 		MAIN.change('upload', $.user, project, p);
 
-		DOWNLOAD(model.url, Path.join(project.path, 'schemas', model.name), $.done());
+		if (project.isexternal)
+			FUNC.external_upload(project, Path.join('/schemas', model.name), model.url, $.done());
+		else
+			DOWNLOAD(model.url, Path.join(project.path, 'schemas', model.name), $.done());
 	});
 });
 
@@ -231,7 +248,10 @@ NEWSCHEMA('ExternalDefinition', function(schema) {
 		MAIN.changelog($.user, $.id, p);
 		MAIN.change('upload', $.user, project, p);
 
-		DOWNLOAD(model.url, Path.join(project.path, 'definitions', model.name), $.done());
+		if (project.isexternal)
+			FUNC.external_upload(project, Path.join('/definitions', model.name), model.url, $.done());
+		else
+			DOWNLOAD(model.url, Path.join(project.path, 'definitions', model.name), $.done());
 	});
 });
 
@@ -259,6 +279,9 @@ NEWSCHEMA('ExternalOperation', function(schema) {
 		MAIN.changelog($.user, $.id, p);
 		MAIN.change('upload', $.user, project, p);
 
-		DOWNLOAD(model.url, Path.join(project.path, 'operations', model.name), $.done());
+		if (project.isexternal)
+			FUNC.external_upload(project, Path.join('/operations', model.name), model.url, $.done());
+		else
+			DOWNLOAD(model.url, Path.join(project.path, 'operations', model.name), $.done());
 	});
 });

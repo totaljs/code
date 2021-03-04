@@ -1372,9 +1372,7 @@ COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 	var nesteditem = null;
 
 	Thelpers.treefilecolor = function(filename) {
-		if (filename.charAt(0) === '.' || REGBK.test(filename))
-			return ' ui-tree-hiddenfile';
-		return '';
+		return filename.charAt(0) === '.' || REGBK.test(filename) || filename === '/modules/code.js' ? ' ui-tree-hiddenfile' : '';
 	};
 
 	Thelpers.fileicon = function(filename) {
@@ -1486,7 +1484,7 @@ COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 		}
 	};
 
-	self.template = Tangular.compile('<div class="item{{ if children }} expand{{ fi }}{{ name | treefilecolor }}" data-index="{{ $pointer }}" title="{{ name }}"><i class="icon {{ if children }}fa fa-folder{{ if isopen }}-open {{ fi }}{{ if name === \'threads\' || name === \'builds\' }} special{{ fi }}{{ else }}{{ name | fileicon }}{{ fi }}"></i><span class="options"><i class="fa fa-ellipsis-h"></i></span><div>{{ name }}</div></div>');
+	self.template = Tangular.compile('<div class="item{{ if children }} expand{{ fi }}{{ path | treefilecolor }}" data-index="{{ $pointer }}" title="{{ name }}"><i class="icon {{ if children }}fa fa-folder{{ if isopen }}-open {{ fi }}{{ if name === \'threads\' || name === \'builds\' }} special{{ fi }}{{ else }}{{ name | fileicon }}{{ fi }}"></i><span class="options"><i class="fa fa-ellipsis-h"></i></span><div>{{ name }}</div></div>');
 	self.readonly();
 
 	self.resizescrollbar = function() {
@@ -1814,17 +1812,15 @@ COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 		items = {};
 
 		var extra = true;
-		if (value) {
+		if (value && !code.data.isexternal) {
 			for (var i = 0; i < value.length; i++) {
 				var key = value[i].name;
-				if (key === 'controllers' || key === 'bundles' || key === 'packages') {
+				if (key === 'controllers' || key === 'bundles' || key === 'packages' || key === 'modules') {
 					extra = false;
 					break;
 				}
 			}
-
-			if (extra)
-				builder.push('<div class="extrabutton"><i class="fa fa-cloud-download"></i>{0}</div>'.format(config.extralabel));
+			extra && builder.push('<div class="extrabutton"><i class="fa fa-cloud-download"></i>{0}</div>'.format(config.extralabel));
 		}
 
 		value && value.forEach(function(item) {
