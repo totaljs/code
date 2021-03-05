@@ -1,0 +1,11 @@
+<div data---="intro__common.form__if:NAME;next:@(Next);done:@(Done);remove:true" class="hidden">
+	<figure>
+		CONTENT
+	</figure>
+	<figure>
+		CONTENT
+	</figure>
+	<figure>
+		CONTENT
+	</figure>
+</div>
