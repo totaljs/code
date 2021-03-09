@@ -26,12 +26,12 @@
 		exports.download = function(el) {
 			SETTER('approve/show', '@(Are you sure you want to download selected template?)', '"cloud-download" @(Download)', function() {
 				SETTER('loading/show');
-				AJAX('POST /api/external/templates/' + code.data.id, { git: el.attrd('url') }, function() {
+				AJAX('POST /api/external/templates/' + code.data.id, { git: el.attrd('url') }, ASETTER('message/response', function() {
 					SETTER('loading/hide', 500);
 					EXEC('code/refresh');
 					NULL('common.form');
 					SETTER('notifybar/success', '@(Template has been downloaded succesfully.)');
-				});
+				}));
 			});
 		};
 	})
