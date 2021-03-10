@@ -1158,7 +1158,7 @@ COMPONENT('exec', function(self, config) {
 
 COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 
-	var REGBK = /(-|_)bk\.$/i;
+	var REGBK = /(-|_)bk\.\w+$/i;
 	var items = {};
 	var nestedkey = null;
 	var nesteditem = null;
