@@ -518,10 +518,6 @@ COMPONENT('editor', function(self, config) {
 		var REGVERSION = /version[":-='\s]+[a-z0-9."',\s]+/;
 		var REGJC = /data---=".*?(__|")/g;
 
-		var schemaoperation_replace = function(text) {
-			return text.charAt(0) === '(' ? '()' : ')';
-		};
-
 		editor.on('renderLine', function(cm, line, el) {
 			if (config.mode === 'totaljs' || config.mode === 'text/css') {
 				var arr = el.querySelectorAll('.cm-atom,.cm-builtin');

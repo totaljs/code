@@ -3,9 +3,9 @@
 $font     : Arial;
 $color    : #4285F4;
 
-.fa,.fab,.fad,.fal,.far,.fas { -webkit-transform:none !important; }
+.fa,.fab,.fad,.fal,.far,.fas { -webkit-transform: none !important; }
 
-html,body { margin: 0; padding: 0; overflow: hidden; }
+html, body { margin: 0; padding: 0; overflow: hidden; }
 
 ::selection { background: rgba(107, 113, 125, 0.46); }
 ::-moz-selection { background: rgba(107, 113, 125, 0.46); }
