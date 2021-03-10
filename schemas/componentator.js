@@ -15,6 +15,23 @@ NEWSCHEMA('Componentator', function(schema) {
 
 				var content = output.response;
 
+				if ($.query.ext === 'css' && $.query.darkmode !== 'true') {
+
+					var lines = content.split('\n');
+					var builder = [];
+
+					for (var i = 0; i < lines.length; i++) {
+						var line = lines[i];
+						if (line.indexOf('.ui-dark') === -1) {
+							if (!line && !builder[builder.length - 1])
+								continue;
+							builder.push(line);
+						}
+					}
+
+					content = builder.join('\n').trim();
+				}
+
 				if ($.query.minify === 'true') {
 					switch ($.query.ext) {
 						case 'html':

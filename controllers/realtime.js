@@ -42,6 +42,7 @@ function realtime() {
 		// {"TYPE":"edit"
 		// {"TYPE":"online"
 		// {"TYPE":"offline"
+		// {"TYPE":"refresh"
 		// {"TYPE":"x" -> spawn destroy
 		if (msg[9] === 'e') {
 			msg = msg.parseJSON();
@@ -60,7 +61,9 @@ function realtime() {
 			if (MAIN.spawns[msg.id]) {
 				MAIN.spawns[msg.id].kill(9);
 			}
-		} else
+		} else if (msg[9] === 'r')
+			self.send(msg);
+		else
 			self.send(msg, openidcomparer);
 	});
 }

@@ -15,7 +15,7 @@ $(W).on('message', function(e) {
 });
 
 ON('resize', function() {
-	SETTER('editor', 'resize');
+	SETTER('editor/resize');
 	clipboardresize();
 });
 

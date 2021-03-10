@@ -40,7 +40,7 @@
 	<div data---="clipboard"></div>
 	<div data---="directory__null__placeholder:@(Search)"></div>
 	<div data---="infopanel"></div>
-	<div data---="menu" class="hidden"></div>
+	<div data---="menu__null__style:2" class="hidden"></div>
 	<div data---="shortcuts__null"></div>
 	<div data---="mainprogress__common.percentage"></div>
 	<div data---="LAZY message__null__button:@(OK);style:2"></div>
@@ -242,6 +242,10 @@
 					else
 						W.chat = { current: (msg.owner !== user.id ? msg.user ? msg.owner : '' : '') || '' };
 					EXEC('code/chat', true);
+					break;
+				case 'refresh':
+					if (code.data && code.data.id === msg.id)
+						EXEC('code/load', msg.id, true);
 					break;
 				case 'blocked':
 					location.href = '/';
@@ -472,7 +476,7 @@
 					// go to line
 					setTimeout(function() {
 						var tmp = search.split(':').trim();
-						SETTER('editor', 'gotoline', (tmp[0] || '').parseInt(), (tmp[1] || '').parseInt());
+						SETTER('editor/gotoline', (tmp[0] || '').parseInt(), (tmp[1] || '').parseInt());
 					}, 500);
 					return;
 				} else if (search.toLowerCase().indexOf('hours') !== -1 && code.data && code.data.id) {

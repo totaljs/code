@@ -572,222 +572,18 @@ COMPONENT('editor', function(self, config) {
 
 			checksum = cache_diffs_checksum;
 
-			var todos = [];
-			var components = [];
 			var mode = editor.getMode().name;
-
 			if (mode === 'totaljs_server')
 				mode = 'javascript';
 
-			var is = null;
-			var name, type, oldschema, oldplugin, pluginvariable, oldtask, taskvariable, tmp;
-			var ispluginable = false;
-			var val = editor.getValue();
-			var version = '';
-			var version_file = '';
+			var output;
 
-			if (allowed_modes[mode]) {
-				var lines = val.split('\n');
-				for (var i = 0; i < lines.length; i++) {
+			if (allowed_modes[mode])
+				output = FUNC.parts_parser(editor.getValue(), mode);
 
-					var line = lines[i];
-					var m;
-
-					if (mode === 'markdown') {
-						if ((/^#{1,4}\s/).test(line))
-							components.push({ line: i, ch: 0, name: line.trim(), type: 'markdown' });
-						continue;
-					}
-
-					m = mode === 'todo' ? line.match(REGTODO2) : line.match(REGTODO);
-
-					if (m && !REGTODODONE.test(line))
-						todos.push({ line: i + 1, ch: m.index || 0, name: line.substring(m.index, 200).replace(REGTODOREPLACE, '').replace(REGTODOCLEAN, '').trim() });
-
-					if (line && mode !== 'css') {
-						m = line.match(REGVERSION);
-						if (m) {
-							version = m.toString().replace(/(version|\s|"|'|=|:)+/g, '').replace(/[^\d,.]+/g, '').replace(/(,|\.|-|"|')$/,'').trim().replace(/^[,.\-\s]+|[,.\-\s]+$/g, '');
-							if (version && (/\d/g).test(version)) {
-								version_file = version;
-								components.push({ line: i, ch: m.index || 0, name: version, type: 'version' });
-							}
-						}
-					}
-
-					if (mode === 'javascript' || mode === 'totaljs' || mode === 'html' || mode === 'htmlmixed' || mode === 'totaljs_server') {
-
-						if (is != null && line.substring(is, 3) === '});') {
-							components[components.length - 1].lineto = i;
-							is = null;
-						}
-
-						m = line.match(REGJC);
-						if (m) {
-							name = m[0].replace(/data---="|_{2,}|"/g, '').trim();
-							if (components.findIndex('name', name ) === -1)
-								components.push({ line: i, ch: m.index || 0, name: name, type: 'htmlcomponent' });
-						}
-
-						m = line.match(REGPART);
-						if (m) {
-							name = m[0].match(REGPARTCLEAN);
-							tmp = m[0].toLowerCase();
-
-							if (tmp.substring(0, 16) === 'component_extend') {
-								type = 'exten';
-							} else
-								type = tmp.substring(0, 5).trim();
-
-							if (name) {
-								name = name[0].replace(/'|"/g, '');
-								var beg = m.index || 0;
-								switch(type) {
-									case 'newsc':
-										oldschema = name;
-										break;
-									case 'newta':
-										oldtask = name;
-										taskvariable = m[0].substring(m[0].indexOf('(', 10) + 1, m[0].indexOf(')'));
-										break;
-									case 'plugi':
-										oldplugin = name;
-										ispluginable = tmp.substring(0, 10) === 'pluginable';
-										pluginvariable = m[0].substring(m[0].indexOf('(', ispluginable ? 20 : 10) + 1, m[0].indexOf(')'));
-										break;
-								}
-
-
-								if (type === 'watch' && oldplugin)
-									name = name.replace(/\?/g, oldplugin);
-
-								components.push({ line: i, ch: beg, name: name.trim(), type: type.substring(0, 3) === 'on(' ? 'event' : type === 'exten' ? 'extension' : type === 'compo' ? 'component' : type === 'newsc' ? 'schema' : type === 'confi' ? 'config' : type === 'newop' ? 'operation' : type === 'newta' ? 'task' : type === 'newco' ? 'command' : type === 'watch' ? 'watcher' : type === 'plugi' ? ispluginable ? 'pluginable' : 'plugin' : type === 'middl' ? 'middleware' : type === 'route' ? 'route' : 'undefined' });
-								is = beg;
-							}
-						}
-
-						m = line.match(REGHELPER);
-						if (m) {
-							var end = m[0].indexOf('=');
-							if (end === -1)
-								continue;
-							type = m[0].substring(0, 4);
-							name = m[0].substring(type === 'Thel' ? 9 : 5, end).trim();
-							if (name) {
-
-								if (type === 'Thel' || type === 'FUNC') {
-									var subm = line.match(REGFUNCTION);
-									if (!subm)
-										continue;
-									name = name.trim() + line.substring(line.indexOf('(', subm.index), line.indexOf(')', subm.index + 8) + 1);
-								}
-
-								var beg = m.index || 0;
-								components.push({ line: i, ch: beg, name: (type === 'Thel' ? 'Thelpers' : type) + '.' + name.trim(), type: type === 'Thel' ? 'helper' : type.toUpperCase() });
-							}
-						}
-
-						m = line.match(REGCONSOLE);
-						if (m) {
-							name = m[0].length > 20 ? (m[0].substring(0, 30) + '...') : m[0];
-							var tmpindex = line.indexOf('//');
-							if (tmpindex === -1 || tmpindex > m.index)
-								components.push({ line: i, ch: 0, name: name, type: 'console' });
-						}
-
-						if (oldschema) {
-							m = line.match(REGSCHEMAOP);
-							if (m) {
-								m = m[0].replace(REGSCHEMAOP_REPLACE, schemaoperation_replace);
-								components.push({ line: i, ch: 0, name: oldschema + m, type: 'schema' });
-							}
-							m = line.match(REGSCHEMAOP_DEFINE);
-							if (m) {
-								m = m[0].replace(REGSCHEMAOP_REPLACE, schemaoperation_replace);
-								components.push({ line: i, ch: 0, name: oldschema + m, type: 'schema' });
-							}
-						}
-
-						if (oldplugin) {
-							if (pluginvariable.indexOf('(') == -1) {
-								m = line.match(new RegExp(pluginvariable + '.*?(\\s)=(\\s)function\\(.*?\\)'));
-								if (m) {
-									m = m[0].replace(REGPLUGINOP_REPLACE, '');
-									m = m.substring(0, m.indexOf(')') + 1).trim().substring(pluginvariable.length);
-									components.push({ line: i, ch: 0, name: oldplugin + m, type: ispluginable ? 'pluginable' : 'plugin' });
-								}
-							}
-						}
-
-						if (oldtask) {
-							m = line.match(new RegExp(taskvariable + '\\(.*?,'));
-							if (m) {
-								m = m[0].match(REGTASKOP);
-								if (m) {
-									m = m[0].replace(/"|'/g, '');
-									components.push({ line: i, ch: 0, name: oldtask + '.' + m, type: 'task' });
-								}
-							}
-						}
-					}
-				}
-
-				for (var i = 0; i < components.length; i++) {
-					var com = components[i];
-
-					if (com.name.indexOf('.define(') !== -1) {
-						com.lineto = com.line;
-						continue;
-					}
-
-					var endWith = '';
-					var begWith = 0;
-
-					for (var j = com.line; j < (com.line + 6000); j++) {
-						var line = lines[j];
-						if (!line)
-							continue;
-						if (j === com.line) {
-							begWith = line.length - line.trim().length;
-							endWith = line.indexOf('=') === - 1 ? '});' : '};';
-						} else {
-
-							if (begWith) {
-								if (line.substring(begWith) === endWith) {
-									com.lineto = j;
-									break;
-								}
-							} else {
-								if (line === endWith) {
-									com.lineto = j;
-									break;
-								}
-							}
-
-							if (com.type === 'component') {
-								var c = line.substring(com.ch, com.ch + 1);
-								if (c === '}') {
-									com.lineto = j;
-									break;
-								}
-							} else if (com.type === 'schema') {
-								var c = line.substring(begWith, begWith + 1);
-								if (c === '}' && line.charAt(line.length - 1) === ';') {
-									tmp = line.indexOf('\'');
-									if (tmp !== -1)
-										com.filter = line.substring(tmp + 1, line.indexOf('\'', tmp + 2));
-									com.lineto = j;
-									break;
-								}
-							}
-						}
-					}
-				}
-			}
-
-			EXEC(config.components, components);
-			EXEC(config.todo, todos);
-			SET('code.fileversion', version_file);
+			EXEC(config.components, output ? output.components : []);
+			EXEC(config.todo, output ? output.todos : []);
+			SET('code.fileversion', output ? output.version : '');
 			setTimeout2(self.ID + 'colorpalette', self.refreshcolorpaletter, 1000);
 		};
 
@@ -4715,23 +4511,22 @@ COMPONENT('textbox', function(self, config) {
 	};
 });
 
-COMPONENT('menu', function(self) {
+COMPONENT('menu', function(self, config, cls) {
 
 	self.singleton();
 	self.readonly();
 	self.nocompile && self.nocompile();
 
-	var cls = 'ui-menu';
 	var cls2 = '.' + cls;
 
 	var is = false;
 	var issubmenu = false;
 	var isopen = false;
 	var events = {};
-	var ul, children, prevsub;
+	var ul, children, prevsub, parentclass;
 
 	self.make = function() {
-		self.aclass(cls + ' hidden');
+		self.aclass(cls + ' hidden ' + cls + '-style-' + (config.style || 1));
 		self.append('<div class="{0}-items"><ul></ul></div><div class="{0}-submenu hidden"><ul></ul></div>'.format(cls));
 		ul = self.find(cls2 + '-items').find('ul');
 		children = self.find(cls2 + '-submenu');
@@ -4741,11 +4536,8 @@ COMPONENT('menu', function(self) {
 			clearTimeout2(self.ID);
 
 			var el = $(this);
-			if (el.hclass(cls + '-divider')) {
-				e.preventDefault();
-				e.stopPropagation();
-			} else {
-
+			if (!el.hclass(cls + '-divider') && !el.hclass(cls + '-disabled')) {
+				self.opt.scope && M.scope(self.opt.scope);
 				var index = el.attrd('index').split('-');
 				if (index.length > 1) {
 					// submenu
@@ -4756,6 +4548,9 @@ COMPONENT('menu', function(self) {
 					self.hide();
 				}
 			}
+
+			e.preventDefault();
+			e.stopPropagation();
 		});
 
 		events.hide = function() {
@@ -4763,13 +4558,11 @@ COMPONENT('menu', function(self) {
 		};
 
 		self.event('scroll', events.hide);
-		self.on('reflow', events.hide);
-		self.on('scroll', events.hide);
-		self.on('resize', events.hide);
+		self.on('reflow + scroll + resize + resize2', events.hide);
 
 		events.click = function(e) {
 			if (is && !isopen && (!self.target || (self.target !== e.target && !self.target.contains(e.target))))
-				setTimeout2(self.ID, self.hide, 300);
+				setTimeout2(self.ID, self.hide, isMOBILE ? 700 : 300);
 		};
 
 		events.hidechildren = function() {
@@ -4828,17 +4621,15 @@ COMPONENT('menu', function(self) {
 
 	self.bindevents = function() {
 		events.is = true;
-		$(document).on('touchstart mouseenter mousedown', cls2 + '-children', events.children);
-		$(document).on('touchstart mousedown', events.click);
-		$(window).on('scroll', events.hide);
+		$(document).on('touchstart mouseenter mousedown', cls2 + '-children', events.children).on('touchstart mousedown', events.click);
+		$(W).on('scroll', events.hide);
 		self.element.on('mouseenter', 'li', events.hidechildren);
 	};
 
 	self.unbindevents = function() {
 		events.is = false;
-		$(document).off('touchstart mouseenter mousedown', cls2 + '-children', events.children);
-		$(document).off('touchstart mousedown', events.click);
-		$(window).off('scroll', events.hide);
+		$(document).off('touchstart mouseenter mousedown', cls2 + '-children', events.children).off('touchstart mousedown', events.click);
+		$(W).off('scroll', events.hide);
 		self.element.off('mouseenter', 'li', events.hidechildren);
 	};
 
@@ -4854,18 +4645,6 @@ COMPONENT('menu', function(self) {
 	self.makehtml = function(items, index) {
 		var builder = [];
 		var tmp;
-		var shortcutsize = 0;
-
-		for (var i = 0; i < items.length; i++) {
-			if (typeof(items[i]) !== 'string' && items[i].shortcut) {
-				var l = items[i].shortcut.length;
-				if (l > shortcutsize)
-					shortcutsize = l;
-			}
-		}
-
-		if (l)
-			l += 5;
 
 		for (var i = 0; i < items.length; i++) {
 			var item = items[i];
@@ -4884,9 +4663,9 @@ COMPONENT('menu', function(self) {
 			var icon = '';
 
 			if (item.icon)
-				icon = '<i class="{0}"></i>'.format(item.icon.charAt(0) === '!' ? item.icon.substring(1) : ('fa fa-' + item.icon));
+				icon = '<i class="{0}"></i>'.format(item.icon.charAt(0) === '!' ? item.icon.substring(1) : item.icon.indexOf('fa-') === -1 ? ('fa fa-' + item.icon) : item.icon);
 			else
-				cn = (cn ? ' ' : '') + cls + '-nofa';
+				cn = (cn ? (cn + ' ') : '') + cls + '-nofa';
 
 			tmp = '';
 
@@ -4895,7 +4674,13 @@ COMPONENT('menu', function(self) {
 				tmp += '<i class="fa fa-play pull-right"></i>';
 			}
 
-			tmp += '<div class="{0}-name">{1}{2}{3}</div>'.format(cls, icon, item.name + (l ? ''.padLeft(l, '&nbsp;') : ''), item.shortcut ? '<b>{0}</b>'.format(item.shortcut) : '');
+			if (item.selected)
+				cn += (cn ? ' ' : '') + cls + '-selected';
+
+			if (item.disabled)
+				cn += (cn ? ' ' : '') + cls + '-disabled';
+
+			tmp += '<div class="{0}-name">{1}{2}{3}</div>'.format(cls, icon, item.name, item.shortcut ? '<b>{0}</b>'.format(item.shortcut) : '');
 
 			if (item.note)
 				tmp += '<div class="ui-menu-note">{0}</div>'.format(item.note);
@@ -4929,6 +4714,17 @@ COMPONENT('menu', function(self) {
 
 		self.target = tmp;
 		self.opt = opt;
+		opt.scope = M.scope();
+
+		if (parentclass && opt.classname !== parentclass) {
+			self.rclass(parentclass);
+			parentclass = null;
+		}
+
+		if (opt.large)
+			self.aclass('ui-large');
+		else
+			self.rclass('ui-large');
 
 		isopen = false;
 		issubmenu = false;
@@ -4940,6 +4736,11 @@ COMPONENT('menu', function(self) {
 		clearTimeout2(self.ID);
 
 		ul.html(self.makehtml(opt.items));
+
+		if (!parentclass && opt.classname) {
+			self.aclass(opt.classname);
+			parentclass = opt.classname;
+		}
 
 		if (is) {
 			css.left = 0;
@@ -4977,11 +4778,29 @@ COMPONENT('menu', function(self) {
 			css.top = opt.y;
 		}
 
+		if (opt.position === 'bottom')
+			css.top += 10;
+		else
+			css.top -= 10;
+
 		if (opt.offsetX)
 			css.left += opt.offsetX;
 
 		if (opt.offsetY)
 			css.top += opt.offsetY;
+
+		var mw = w;
+		var mh = self.height();
+
+		if (css.left < 0)
+			css.left = 10;
+		else if ((mw + css.left) > WW)
+			css.left = (WW - mw) - 10;
+
+		if (css.top < 0)
+			css.top = 10;
+		else if ((mh + css.top) > WH)
+			css.top = (WH - mh) - 10;
 
 		self.element.css(css);
 	};

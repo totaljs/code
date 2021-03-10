@@ -209,7 +209,7 @@ h3 i { margin-right: 5px; color: $color; }
 .panelsearch { line-height: 28px; height: 28px; padding: 0 10px; border-bottom: 1px solid #E0E0E0; font-size: 11px; }
 .td .panelsearch { border-bottom-color: #404040; background-color: #303030; }
 
-.panelcheckbox { padding: 9px 10px 0; background-color: #F8F8F8; height: 36px; border-top: 1px solid #E0E0E0; }
+.panelcheckbox { padding: 9px 10px 0; background-color: #F8F8F8; height: 58px; border-top: 1px solid #E0E0E0; }
 .td .panelcheckbox { background-color: #282828; border-top-color: #404040; }
 
 .links { font-family: $font; }
@@ -519,10 +519,15 @@ header .tools .external { color: #a2a286; }
 .td span.cm-builtin { color: #66d9ef; }
 .td span.cm-string { color: #e6db74; }
 
-.cm-route-http { color: #b7845f; }
-.cm-route-socket { color: #b25fb7; }
-.cm-route-api { color: #a07a7a; }
-.cm-route-file { color: #70a2a5; }
+.cm-route-http { color: #ca5d0f; }
+.cm-route-socket { color: #a20aab; }
+.cm-route-api { color: #8e0663; }
+.cm-route-file { color: #208288; }
+
+.td .cm-route-http { color: #fbcd76; }
+.td .cm-route-api { color: #e4a0a0; }
+.td .cm-route-file { color: #87c8cc; }
+.td .cm-route-socket { color: #ce68d4; }
 
 .td span.cm-variable { color: #f8f8f2; }
 .td span.cm-variable-2 { color: #9effff; }
@@ -669,9 +674,18 @@ header .tools .external { color: #a2a286; }
 
 .partgroup { font-size: 14px; color: #000000; margin: 10px 0 2px; padding: 5px 10px; font-weight: bold; }
 .partgroup:first-child { margin-top: 0; }
-.part { padding: 5px 10px; color: gray; border-bottom: 1px solid #E0E0E0; font-size: 11px; cursor: pointer; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; }
+.part { padding: 5px 10px; color: gray; border-bottom: 1px solid #E0E0E0; font-size: 12px; cursor: pointer; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; }
+.part.imported { font-weight: bold; color: #000; }
+.td .part.imported { font-weight: bold; color: #FFF; }
 .part i { width: 18px; }
+.part b i { text-align: right; color: #8CC152; }
+.part b.add { text-decoration: underline; }
+.part b.add:hover { color: #000; }
+.part b.add:hover i { color: #000; }
+.td .part b.add:hover { color: #FFF; }
+.td .part b.add:hover i { color: #FFF; }
 .part b { color: #606060; float: right; font-family: Arial; }
+.part .add { float: right; }
 .part:hover { background-color: rgba(0,0,0,0.1); }
 .part span { color: #A0A0A0; }
 .td .part span { color: #666666; }

@@ -1977,3 +1977,303 @@ FUNC.livereloadconnect = function() {
 	};
 
 })();
+
+FUNC.jcomponent_update = function(name, type, content, body, meta) {
+
+	var comment_beg = (type === 'css' ? '/* Component: {0} */' : '// Component: {0}').format(name) + '\n';
+	var comment_end = (type === 'css' ? '/* End: {0} */' : '// End: {0}').format(name) + '\n';
+	var version = (type === 'css' ? '/* Version: {0} */' : '// Version: {0}').format(meta.version) + '\n';
+	var updated = (type === 'css' ? '/* Updated: {0} */' : '// Updated: {0}').format((meta.dateupdated || meta.datecreated).format('yyyy-MM-dd HH:mm')) + '\n';
+
+	var code = '\n\n' + comment_beg + version + updated + body + '\n' + comment_end;
+	content = content.trim();
+
+	var beg = content.indexOf(comment_beg);
+	if (beg === -1) {
+		content += code;
+		return content.trim();
+	}
+
+	var end = (content + '\n').indexOf(comment_end, beg + comment_beg.length);
+	return (content.substring(0, beg).trim() + code + content.substring(end + comment_end.length)).trim();
+};
+
+FUNC.parts_parser = function(val, mode) {
+
+	var REGTODO = /@todo/i;
+	var REGTODO2 = /^(\s)+-\s.*?/;
+	var REGTODOREPLACE = /^@todo(:)(\s)|(\s)+-(\s)/i;
+	var REGTODODONE = /@done|@canceled/i;
+	var REGTODOCLEAN = /-->|\*\//g;
+	var REGPART = /(COMPONENT|COMPONENT_EXTEND|EXTENSION|CONFIG|NEWSCHEMA|NEWCOMMAND|NEWOPERATION|NEWTASK|MIDDLEWARE|WATCH|ROUTE|(^|\s)ON|PLUGIN|PLUGINABLE)+\(.*?\)/g;
+	var REGPARTCLEAN = /('|").*?('|")/;
+	var REGHELPER = /(Thelpers|FUNC|REPO|MAIN)\.[a-z0-9A-Z_$]+(\s)+=/g;
+	var REGCONSOLE = /console\.\w+\(.*?\)/g;
+	var REGSCHEMAOP = /\.(setQuery|setSave|setInsert|setUpdate|setPatch|setRead|setGet|setRemove|addWorkflow|addTransform|addOperation|addHook)(Extension)?\(.*?\)/g;
+	var REGSCHEMAOP_DEFINE = /\.define\(.*?\);/g;
+	var REGSCHEMAOP_REPLACE = /(\(|,(\s))function.*?$/g;
+	var REGPLUGINOP_REPLACE = /(\s)+=(\s)+function/g;
+	var REGFUNCTION = /((\s)+=(\s)+function)/;
+	var REGTASKOP = /('|").*?('|")/g;
+	var REGVERSION = /version[":-='\s]+[a-z0-9."',\s]+/;
+	var REGJC = /data---=".*?(__|")/g;
+	var todos = [];
+	var components = [];
+
+	var is = null;
+	var name, type, oldschema, oldplugin, pluginvariable, oldtask, taskvariable, tmp;
+	var ispluginable = false;
+	var version = '';
+	var version_file = '';
+	var lines = val.split('\n');
+
+	for (var i = 0; i < lines.length; i++) {
+
+		var line = lines[i];
+		var m;
+
+		if (mode === 'markdown') {
+			if ((/^#{1,4}\s/).test(line))
+				components.push({ line: i, ch: 0, name: line.trim(), type: 'markdown' });
+			continue;
+		}
+
+		m = mode === 'todo' ? line.match(REGTODO2) : line.match(REGTODO);
+
+		if (m && !REGTODODONE.test(line))
+			todos.push({ line: i + 1, ch: m.index || 0, name: line.substring(m.index, 200).replace(REGTODOREPLACE, '').replace(REGTODOCLEAN, '').trim() });
+
+		if (line && mode !== 'css') {
+			m = line.match(REGVERSION);
+			if (m) {
+				version = m.toString().replace(/(version|\s|"|'|=|:)+/g, '').replace(/[^\d,.]+/g, '').replace(/(,|\.|-|"|')$/,'').trim().replace(/^[,.\-\s]+|[,.\-\s]+$/g, '');
+				if (version && (/\d/g).test(version)) {
+					version_file = version;
+					components.push({ line: i, ch: m.index || 0, name: version, type: 'version' });
+				}
+			}
+		}
+
+		if (mode === 'javascript' || mode === 'totaljs' || mode === 'html' || mode === 'htmlmixed' || mode === 'totaljs_server') {
+
+			if (is != null && line.substring(is, 3) === '});') {
+				components[components.length - 1].lineto = i;
+				is = null;
+			}
+
+			m = line.match(REGJC);
+			if (m) {
+				name = m[0].replace(/data---="|_{2,}|"/g, '').trim();
+				if (components.findIndex('name', name ) === -1)
+					components.push({ line: i, ch: m.index || 0, name: name, type: 'htmlcomponent' });
+			}
+
+			m = line.match(REGPART);
+			if (m) {
+				name = m[0].match(REGPARTCLEAN);
+				tmp = m[0].toLowerCase();
+
+				if (tmp.substring(0, 16) === 'component_extend') {
+					type = 'exten';
+				} else
+					type = tmp.substring(0, 5).trim();
+
+				if (name) {
+					name = name[0].replace(/'|"/g, '');
+					var beg = m.index || 0;
+					switch(type) {
+						case 'newsc':
+							oldschema = name;
+							break;
+						case 'newta':
+							oldtask = name;
+							taskvariable = m[0].substring(m[0].indexOf('(', 10) + 1, m[0].indexOf(')'));
+							break;
+						case 'plugi':
+							oldplugin = name;
+							ispluginable = tmp.substring(0, 10) === 'pluginable';
+							pluginvariable = m[0].substring(m[0].indexOf('(', ispluginable ? 20 : 10) + 1, m[0].indexOf(')'));
+							break;
+					}
+
+
+					if (type === 'watch' && oldplugin)
+						name = name.replace(/\?/g, oldplugin);
+
+					components.push({ line: i, ch: beg, name: name.trim(), type: type.substring(0, 3) === 'on(' ? 'event' : type === 'exten' ? 'extension' : type === 'compo' ? 'component' : type === 'newsc' ? 'schema' : type === 'confi' ? 'config' : type === 'newop' ? 'operation' : type === 'newta' ? 'task' : type === 'newco' ? 'command' : type === 'watch' ? 'watcher' : type === 'plugi' ? ispluginable ? 'pluginable' : 'plugin' : type === 'middl' ? 'middleware' : type === 'route' ? 'route' : 'undefined' });
+					is = beg;
+				}
+			}
+
+			m = line.match(REGHELPER);
+			if (m) {
+				var end = m[0].indexOf('=');
+				if (end === -1)
+					continue;
+				type = m[0].substring(0, 4);
+				name = m[0].substring(type === 'Thel' ? 9 : 5, end).trim();
+				if (name) {
+
+					if (type === 'Thel' || type === 'FUNC') {
+						var subm = line.match(REGFUNCTION);
+						if (!subm)
+							continue;
+						name = name.trim() + line.substring(line.indexOf('(', subm.index), line.indexOf(')', subm.index + 8) + 1);
+					}
+
+					var beg = m.index || 0;
+					components.push({ line: i, ch: beg, name: (type === 'Thel' ? 'Thelpers' : type) + '.' + name.trim(), type: type === 'Thel' ? 'helper' : type.toUpperCase() });
+				}
+			}
+
+			m = line.match(REGCONSOLE);
+			if (m) {
+				name = m[0].length > 20 ? (m[0].substring(0, 30) + '...') : m[0];
+				var tmpindex = line.indexOf('//');
+				if (tmpindex === -1 || tmpindex > m.index)
+					components.push({ line: i, ch: 0, name: name, type: 'console' });
+			}
+
+			if (oldschema) {
+				m = line.match(REGSCHEMAOP);
+				if (m) {
+					m = m[0].replace(REGSCHEMAOP_REPLACE, schemaoperation_replace);
+					components.push({ line: i, ch: 0, name: oldschema + m, type: 'schema' });
+				}
+				m = line.match(REGSCHEMAOP_DEFINE);
+				if (m) {
+					m = m[0].replace(REGSCHEMAOP_REPLACE, schemaoperation_replace);
+					components.push({ line: i, ch: 0, name: oldschema + m, type: 'schema' });
+				}
+			}
+
+			if (oldplugin) {
+				if (pluginvariable.indexOf('(') == -1) {
+					m = line.match(new RegExp(pluginvariable + '.*?(\\s)=(\\s)function\\(.*?\\)'));
+					if (m) {
+						m = m[0].replace(REGPLUGINOP_REPLACE, '');
+						m = m.substring(0, m.indexOf(')') + 1).trim().substring(pluginvariable.length);
+						components.push({ line: i, ch: 0, name: oldplugin + m, type: ispluginable ? 'pluginable' : 'plugin' });
+					}
+				}
+			}
+
+			if (oldtask) {
+				m = line.match(new RegExp(taskvariable + '\\(.*?,'));
+				if (m) {
+					m = m[0].match(REGTASKOP);
+					if (m) {
+						m = m[0].replace(/"|'/g, '');
+						components.push({ line: i, ch: 0, name: oldtask + '.' + m, type: 'task' });
+					}
+				}
+			}
+		}
+	}
+
+	for (var i = 0; i < components.length; i++) {
+		var com = components[i];
+
+		if (com.name.indexOf('.define(') !== -1) {
+			com.lineto = com.line;
+			continue;
+		}
+
+		var endWith = '';
+		var begWith = 0;
+
+		for (var j = com.line; j < (com.line + 6000); j++) {
+			var line = lines[j];
+			if (!line)
+				continue;
+			if (j === com.line) {
+				begWith = line.length - line.trim().length;
+				endWith = line.indexOf('=') === - 1 ? '});' : '};';
+			} else {
+
+				if (begWith) {
+					if (line.substring(begWith) === endWith) {
+						com.lineto = j;
+						break;
+					}
+				} else {
+					if (line === endWith) {
+						com.lineto = j;
+						break;
+					}
+				}
+
+				if (com.type === 'component') {
+					var c = line.substring(com.ch, com.ch + 1);
+					if (c === '}') {
+						com.lineto = j;
+						break;
+					}
+				} else if (com.type === 'schema') {
+					var c = line.substring(begWith, begWith + 1);
+					if (c === '}' && line.charAt(line.length - 1) === ';') {
+						tmp = line.indexOf('\'');
+						if (tmp !== -1)
+							com.filter = line.substring(tmp + 1, line.indexOf('\'', tmp + 2));
+						com.lineto = j;
+						break;
+					}
+				}
+			}
+		}
+	}
+
+	for (var i = 0; i < components.length; i++) {
+		var com = components[i];
+
+		if (com.name.indexOf('.define(') !== -1) {
+			com.lineto = com.line;
+			continue;
+		}
+
+		var endWith = '';
+		var begWith = 0;
+
+		for (var j = com.line; j < (com.line + 6000); j++) {
+			var line = lines[j];
+			if (!line)
+				continue;
+			if (j === com.line) {
+				begWith = line.length - line.trim().length;
+				endWith = line.indexOf('=') === - 1 ? '});' : '};';
+			} else {
+
+				if (begWith) {
+					if (line.substring(begWith) === endWith) {
+						com.lineto = j;
+						break;
+					}
+				} else {
+					if (line === endWith) {
+						com.lineto = j;
+						break;
+					}
+				}
+
+				if (com.type === 'component') {
+					var c = line.substring(com.ch, com.ch + 1);
+					if (c === '}') {
+						com.lineto = j;
+						break;
+					}
+				} else if (com.type === 'schema') {
+					var c = line.substring(begWith, begWith + 1);
+					if (c === '}' && line.charAt(line.length - 1) === ';') {
+						tmp = line.indexOf('\'');
+						if (tmp !== -1)
+							com.filter = line.substring(tmp + 1, line.indexOf('\'', tmp + 2));
+						com.lineto = j;
+						break;
+					}
+				}
+			}
+		}
+	}
+
+	return { todos: todos, components: components, version: version_file };
+};

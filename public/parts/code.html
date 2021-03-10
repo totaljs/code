@@ -2094,7 +2094,7 @@
 							SETTER('loading/show');
 							AJAX('POST /api/files/{id}/remove/'.arg(code.data), data, function() {
 								SETTER('loading/hide', 100);
-								FUNC.success('@(Removed successfully: <b>{0}</b>.)'.format(data.path));
+								FUNC.success('@(Removed successfully: <b>{0}</b>)'.format(data.path));
 								var el = exports.element.find('.tabs');
 								el = el.find('span[data-value="{0}"]'.format(data.path));
 								el.length && el.find('i').trigger('click');
@@ -2558,14 +2558,22 @@
 			REDIRECT('/?id=' + el.attrd('id'));
 		};
 
-		exports.savelocal = function(nowarning) {
+		exports.savelocal = function(nowarning, path, val) {
+
+			var ext = code.current ? code.current.ext : '';
+
+			if (typeof(path) !== 'string') {
+				path = code.editor.path;
+				val = editor.editor.getValue();
+			} else
+				ext = path.substring(path.lastIndexOf('.') + 1);
+
 			var electronpath = require('electron').ipcRenderer.sendSync('getPath', { url: location.protocol + '//' + location.hostname + (location.port ? ':' + location.port : '') });
 			if (electronpath) {
 				var Path = require('path');
-				var filename = Path.join(electronpath, FUNC.getName(code.data.repository).replace(/\.git$/i, ''), code.editor.path);
+				var filename = Path.join(electronpath, FUNC.getName(code.data.repository).replace(/\.git$/i, ''), path);
 				FUNC.mkdir(Path.dirname(filename));
-				var val = editor.editor.getValue();
-				require('fs').writeFile(filename, code.NOTRIM[code.current.ext] ? val : FUNC.rtrim(val), function(err) {
+				require('fs').writeFile(filename, code.NOTRIM[ext] ? val : FUNC.rtrim(val), function(err) {
 					if (err)
 						FUNC.warning(err.toString());
 					else
@@ -3094,7 +3102,7 @@
 			AJAX('POST /api/files/{id}/create/'.arg(code.data), data, function(response) {
 				SETTER('loading/hide', 500);
 				if (response.success)
-					exports.load(code.data.id, true);
+					SETTER('websocket/send', { TYPE: 'refresh', id: code.data.id });
 				else
 					FUNC.warning(response);
 			});
