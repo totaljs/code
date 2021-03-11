@@ -6288,33 +6288,34 @@ COMPONENT('search', 'class:hidden;delay:50;attribute:data-search', function(self
 	};
 });
 
-COMPONENT('viewbox', 'margin:0;scroll:true;delay:100;scrollbar:0;visibleY:1;height:100', function(self, config, cls) {
+COMPONENT('viewbox', 'margin:0;scroll:true;delay:100;scrollbar:0;visibleY:1;height:100;invisible:1', function(self, config, cls) {
 
 	var eld, elb;
 	var scrollbar;
 	var cls2 = '.' + cls;
 	var init = false;
+	var cache;
+	var scrolltoforce;
 
 	self.readonly();
 
 	self.init = function() {
-		var obj;
-		if (W.OP)
-			obj = W.OP;
-		else
-			obj = $(W);
 
 		var resize = function() {
 			for (var i = 0; i < M.components.length; i++) {
 				var com = M.components[i];
 				if (com.name === 'viewbox' && com.dom.offsetParent && com.$ready && !com.$removed)
-					com.resize();
+					com.resizeforce();
 			}
 		};
 
-		obj.on('resize', function() {
+		ON('resize2', function() {
 			setTimeout2('viewboxresize', resize, 200);
 		});
+	};
+
+	self.destroy = function() {
+		scrollbar && scrollbar.destroy();
 	};
 
 	self.configure = function(key, value, init) {
@@ -6352,16 +6353,16 @@ COMPONENT('viewbox', 'margin:0;scroll:true;delay:100;scrollbar:0;visibleY:1;heig
 	};
 
 	self.make = function() {
-		self.aclass('invisible');
-		config.scroll && MAIN.version > 17 && self.element.wrapInner('<div class="ui-viewbox-body"></div>');
-		self.element.prepend('<div class="ui-viewbox-disabled hidden"></div>');
+		config.invisible && self.aclass('invisible');
+		config.scroll && MAIN.version > 17 && self.element.wrapInner('<div class="' + cls + '-body"></div>');
+		self.element.prepend('<div class="' + cls + '-disabled hidden"></div>');
 		eld = self.find('> .{0}-disabled'.format(cls)).eq(0);
 		elb = self.find('> .{0}-body'.format(cls)).eq(0);
 		self.aclass('{0} {0}-hidden'.format(cls));
 		if (config.scroll) {
 			if (config.scrollbar) {
 				if (MAIN.version > 17) {
-					scrollbar = W.SCROLLBAR(self.find(cls2 + '-body'), { visibleY: config.visibleY, visibleX: config.visibleX, orientation: config.visibleX ? null : 'y', parent: self.element });
+					scrollbar = W.SCROLLBAR(self.find(cls2 + '-body'), { shadow: config.scrollbarshadow, visibleY: config.visibleY, visibleX: config.visibleX, orientation: config.visibleX ? null : 'y', parent: self.element });
 					self.scrolltop = scrollbar.scrollTop;
 					self.scrollbottom = scrollbar.scrollBottom;
 				} else
@@ -6380,20 +6381,42 @@ COMPONENT('viewbox', 'margin:0;scroll:true;delay:100;scrollbar:0;visibleY:1;heig
 
 	var css = {};
 
-	self.resize = function(scrolltop) {
+	self.resize = function() {
+		setTimeout2(self.ID, self.resizeforce, 200);
+	};
 
-		if (self.release())
-			return;
+	self.resizeforce = function() {
 
 		var el = self.parent(config.parent);
 		var h = el.height();
 		var w = el.width();
+
 		var width = WIDTH();
+		var mywidth = self.element.width();
+
+		var key = width + 'x' + mywidth + 'x' + w + 'x' + h;
+		if (cache === key) {
+			scrollbar && scrollbar.resize();
+			if (scrolltoforce) {
+				if (scrolltoforce ==='bottom')
+					self.scrollbottom(0);
+				else
+					self.scrolltop(0);
+				scrolltoforce = null;
+			}
+			return;
+		}
+
+		cache = key;
+
 		var margin = config.margin;
 		var responsivemargin = config['margin' + width];
 
 		if (responsivemargin != null)
 			margin = responsivemargin;
+
+		if (margin === 'auto')
+			margin = self.element.offset().top;
 
 		if (h === 0 || w === 0) {
 			self.$waiting && clearTimeout(self.$waiting);
@@ -6406,14 +6429,11 @@ COMPONENT('viewbox', 'margin:0;scroll:true;delay:100;scrollbar:0;visibleY:1;heig
 		if (config.minheight && h < config.minheight)
 			h = config.minheight;
 
-		if (isNaN(h))
-			return;
-
 		css.height = h;
-		css.width = self.element.width();
+		css.width = mywidth;
 		eld.css(css);
 
-		css.width = null;
+		css.width = '';
 		self.css(css);
 		elb.length && elb.css(css);
 		self.element.SETTER('*', 'resize');
@@ -6421,11 +6441,12 @@ COMPONENT('viewbox', 'margin:0;scroll:true;delay:100;scrollbar:0;visibleY:1;heig
 		self.hclass(c) && self.rclass(c, 100);
 		scrollbar && scrollbar.resize();
 
-		if (scrolltop) {
-			if (config.scrolltop)
-				self.scrolltop(0);
-			else if (config.scrollbottom)
+		if (scrolltoforce) {
+			if (scrolltoforce ==='bottom')
 				self.scrollbottom(0);
+			else
+				self.scrolltop(0);
+			scrolltoforce = null;
 		}
 
 		if (!init) {
@@ -6439,7 +6460,15 @@ COMPONENT('viewbox', 'margin:0;scroll:true;delay:100;scrollbar:0;visibleY:1;heig
 	};
 
 	self.setter = function() {
-		setTimeout(self.resize, config.delay, true);
+		scrolltoforce = config.scrollto || config.scrolltop;
+		if (scrolltoforce) {
+			if (scrolltoforce ==='bottom')
+				self.scrollbottom(0);
+			else
+				self.scrolltop(0);
+			scrolltoforce = null;
+		}
+		setTimeout(self.resize, config.delay, scrolltoforce);
 	};
 });
 
