@@ -679,7 +679,7 @@ header .tools .external { color: #a2a286; }
 .td .part.imported { font-weight: bold; color: #FFF; }
 .part i { width: 18px; }
 .part b { color: #606060; float: right; font-family: Arial; }
-.part b.add { float: left; width: 18px; height: 18px; border: 1px solid #D0D0D0; text-align: center; margin-right: 5px; border-radius: var(--radius); background: #FFF; }
+.part b.add { float: left; width: 16px; height: 16px; border: 1px solid #D0D0D0; text-align: center; margin: 1px 7px 0 0; border-radius: var(--radius); background: #FFF; }
 .part b.add i { width: auto; display: none; }
 .td .part b.add { border-color: #505050; background: #333; }
 .part.imported .add	i { display: inline-block; }
