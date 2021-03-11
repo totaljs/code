@@ -5,7 +5,7 @@
 <div data---="invisible" class="invisible">
 	<div data---="inputsearch__componentator.search__placeholder:@(Search);$binding:1;$delay:50"></div>
 	<div data---="viewbox__componentator.search__margin:136;parent:.ui-dockable-body;scrollbar:1">
-		<div data-bind="componentator.items__template:.part" data---="search__componentator.search__selector:div">
+		<div data-bind="componentator.items__template" data---="search__componentator.search__selector:div">
 			<script type="text/html">
 				{{ foreach m in value }}
 					<div class="part exec{{ m | componentator_imported }}" data-exec="componentator/append" data-search="{{ m }}"><i class="fa fa-drafting-compass"></i><b class="exec add" data-exec="componentator/add" data-prevent="true"><i class="fa fa-check"></i></b>{{ m }}</div>
