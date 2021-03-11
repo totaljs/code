@@ -678,13 +678,13 @@ header .tools .external { color: #a2a286; }
 .part.imported { font-weight: bold; color: #000; }
 .td .part.imported { font-weight: bold; color: #FFF; }
 .part i { width: 18px; }
-.part b i { text-align: right; color: #8CC152; }
-.part b.add { text-decoration: underline; }
-.part b.add:hover { color: #000; }
-.part b.add:hover i { color: #000; }
-.td .part b.add:hover { color: #FFF; }
-.td .part b.add:hover i { color: #FFF; }
 .part b { color: #606060; float: right; font-family: Arial; }
+.part b.add { float: left; width: 18px; height: 18px; border: 1px solid #D0D0D0; text-align: center; margin-right: 5px; border-radius: var(--radius); background: #FFF; }
+.part b.add i { width: auto; display: none; }
+.td .part b.add { border-color: #505050; background: #333; }
+.part.imported .add	i { display: inline-block; }
+.part.imported .add { background: $color; border-color: $color; color: #FFF; }
+.td .part.imported .add { background: $color; border-color: $color; color: #FFF; }
 .part .add { float: right; }
 .part:hover { background-color: rgba(0,0,0,0.1); }
 .part span { color: #A0A0A0; }

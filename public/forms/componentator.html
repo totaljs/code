@@ -8,7 +8,7 @@
 		<div data-bind="componentator.items__template:.part" data---="search__componentator.search__selector:div">
 			<script type="text/html">
 				{{ foreach m in value }}
-					<div class="part exec{{ m | componentator_imported }}" data-exec="componentator/append" data-search="{{ m }}"><i class="fa fa-drafting-compass"></i><b class="exec add" data-exec="componentator/add" data-prevent="true">@(import)<i class="fa fa-plus"></i></b>{{ m }}</div>
+					<div class="part exec{{ m | componentator_imported }}" data-exec="componentator/append" data-search="{{ m }}"><i class="fa fa-drafting-compass"></i><b class="exec add" data-exec="componentator/add" data-prevent="true"><i class="fa fa-check"></i></b>{{ m }}</div>
 				{{ end }}
 			</script>
 		</div>
@@ -30,7 +30,7 @@
 
 		exports.reload = function() {
 
-			if (componentator.darkmode == null)
+			if (!W.componentator || W.componentator.darkmode == null)
 				SET('?.darkmode', true);
 
 			SETTER('dockable/show', 'prop');
@@ -61,76 +61,116 @@
 
 		exports.add = function(el) {
 
-			var name = el.parent().attrd('search');
-			var tasks = [];
+			var parent = el.closest('.part');
+			var name = parent.attrd('search');
 			var isrefresh = false;
+			var isremove = false;
 			var meta;
 
-			SETTER('loading/show', '@(Importing "{0}")'.format(name));
+			WORKFLOW(function($) {
 
-			tasks.push(function(next) {
-				var cssindex = FUNC.treeindex(code.tree, '/public/css/ui.css');
-				if (cssindex == null) {
-					createfile('/public/css/ui.css', function(response) {
-						if (response.success) {
-							isrefresh = true;
-							next();
-						} else {
-							SETTER('loading/hide');
-							FUNC.warning(response);
-							next = tasks = null;
-						}
-					});
-				} else
-					next();
-			});
+				$.push('init', function($) {
 
-			tasks.push(function(next) {
-				var jsindex = FUNC.treeindex(code.tree, '/public/js/ui.js');
-				if (jsindex == null) {
-					createfile('/public/js/ui.js', function(response) {
-						if (response.success) {
-							isrefresh = true;
-							next();
-						} else {
-							SETTER('loading/hide');
-							FUNC.warning(response);
-							next = tasks = null;
-						}
-					});
-				} else
-					next();
-			});
+					if (!parent.hclass('imported')) {
+						SETTER('loading/show', '@(Importing "{0}")'.format(name));
+						$.next('check_js');
+						return;
+					}
 
-			tasks.push(function(next) {
-				if (isrefresh) {
-					isrefresh = false;
-					SETTER('websocket/send', { TYPE: 'refresh', id: code.data.id });
-				}
-				next();
-			});
+					var opt = {};
+					opt.is = false;
+					opt.element = el;
+					opt.items = [{ id: 'update', name: '@(Update)', icon: 'fa fa-sync' }, { id: 'remove', name: '@(Remove)', icon: 'fa fa-trash-o red' }];
+					opt.hide = function() {
+						if (!opt.is)
+							$.destroy();
+					};
 
-			tasks.push(function(next) {
-				// reads meta
-				var data = {};
-				data.ext = 'json';
-				data.name = name;
-				AJAX('GET /api/componentator/download/', data, function(response) {
-					meta = PARSE(response);
-					next();
+					opt.callback = function(item) {
+						opt.is = true;
+						isremove = item.id === 'remove';
+						SETTER('loading/show', '@(Importing "{0}")'.format(name));
+						$.next('check_js');
+					};
+
+					SETTER('menu/show', opt);
 				});
-			});
 
-			tasks.push(function(next) {
-				// imports JS
-				var path = '/public/js/ui.js';
-				var data = {};
-				data.ext = 'js';
-				data.minify = componentator.minify === true;
-				data.name = name;
-				AJAX('GET /api/componentator/download/', data, function(component) {
+				$.push('check_js', function($) {
+					var jsindex = FUNC.treeindex(code.tree, '/public/js/ui.js');
+					if (jsindex == null) {
+						createfile('/public/js/ui.js', function(response) {
+							if (response.success) {
+								isrefresh = true;
+								$.next('check_css');
+							} else {
+								SETTER('loading/hide');
+								FUNC.warning(response);
+								$.destroy();
+							}
+						});
+					} else
+						$.next('check_css');
+				});
+
+				$.push('check_css', function($) {
+					var cssindex = FUNC.treeindex(code.tree, '/public/css/ui.css');
+					if (cssindex == null) {
+						createfile('/public/css/ui.css', function(response) {
+							if (response.success) {
+								isrefresh = true;
+								$.next('meta');
+							} else {
+								SETTER('loading/hide');
+								FUNC.warning(response);
+								$.destroy();
+							}
+						});
+					} else
+						$.next('meta');
+				});
+
+				$.push('meta', function($) {
+
+					if (isrefresh) {
+						isrefresh = false;
+						SETTER('websocket/send', { TYPE: 'refresh', id: code.data.id });
+					}
+
+					// reads meta
+					var data = {};
+					data.ext = 'json';
+					data.name = name;
+					AJAX('GET /api/componentator/download/', data, function(response) {
+						meta = PARSE(response);
+						$.next('download_js');
+					});
+
+				});
+
+				$.push('download_js', function($) {
+
+					if (isremove) {
+						$.next('edit_js');
+						return;
+					}
+
+					var path = '/public/js/ui.js';
+					var data = {};
+					data.ext = 'js';
+					data.minify = componentator.minify === true;
+					data.name = name;
+					AJAX('GET /api/componentator/download/', data, function(component) {
+						$.response_js = component;
+						$.next('edit_js');
+					});
+
+				});
+
+				$.push('edit_js', function($) {
+					var path = '/public/js/ui.js';
 					AJAX('GET /api/projects/{id}/edit/'.arg(code.data), { path: path }, function(response) {
-						response = FUNC.jcomponent_update(name, 'js', response.trim(), component, meta);
+						response = FUNC.jcomponent_update(name, 'js', response.trim(), $.response_js || '', meta);
 						var data = {};
 						data.body = response;
 						data.path = path;
@@ -138,46 +178,52 @@
 						AJAX('POST /api/files/{id}/ REPEAT'.arg(code.data), data, ASETTER('message/response', function(response) {
 
 							var parts = code.componentsdb.findItem('path', data.path);
-							if (parts == null) {
+							if (parts) {
+								parts.items = data.parts;
+							} else {
 								parts = {};
 								parts.path = data.path;
 								parts.items = data.parts;
 								code.componentsdb.push(parts);
 								componentator_cache = parts;
-							} else
-								parts.items = data.parts;
+							}
 
-							var container = el.parent().parent();
-							container.find('.part[data-search="{0}"]'.format(name)).aclass('imported');
-
+							parent.tclass('imported', !isremove);
 							UPD('code.componentsdb');
 							SETTER('loading/hide', 500);
 							FUNC.wssend({ TYPE: 'save', connid: common.id, projectid: code.projectid, id: user.id, user: user.name });
 							common.electron && code.data.repository && user.localsave && EXEC('code/savelocal', true, data.path, data.body);
 							FUNC.livereload(data.path);
-							next();
+							$.next('download_css');
 						}));
 					});
 				});
-			});
 
-			tasks.push(function(next) {
-				// imports CSS
-				var path = '/public/css/ui.css';
-				var data = {};
-				data.ext = 'css';
-				data.minify = componentator.minify === true;
-				data.name = name;
-				data.darkmode = componentator.darkmode === true;
-				AJAX('GET /api/componentator/download/', data, function(component) {
+				$.push('download_css', function($) {
 
-					if (!component.trim()) {
-						next();
+					if (isremove) {
+						$.next('edit_css');
 						return;
 					}
 
+					// imports CSS
+					var path = '/public/css/ui.css';
+					var data = {};
+					data.ext = 'css';
+					data.minify = componentator.minify === true;
+					data.name = name;
+					data.darkmode = componentator.darkmode === true;
+					AJAX('GET /api/componentator/download/', data, function(component) {
+						$.response_css = component;
+						$.next('edit_css');
+					});
+
+				});
+
+				$.push('edit_css', function($) {
+					var path = '/public/css/ui.css';
 					AJAX('GET /api/projects/{id}/edit/'.arg(code.data), { path: path }, function(response) {
-						response = FUNC.jcomponent_update(name, 'css', response.trim(), component, meta);
+						response = FUNC.jcomponent_update(name, 'css', response.trim(), $.response_css || '', meta);
 						var data = {};
 						data.body = response;
 						data.path = path;
@@ -187,18 +233,22 @@
 							FUNC.wssend({ TYPE: 'save', connid: common.id, projectid: code.projectid, id: user.id, user: user.name });
 							common.electron && code.data.repository && user.localsave && EXEC('code/savelocal', true, data.path, data.body);
 							FUNC.livereload(data.path);
-							next();
+							$.next('done');
 						}));
 					});
 				});
-			});
 
-			tasks.async(function() {
-				var arr = ['welldone', 'impressive', 'excellent', 'brutality'];
-				var index = (Math.random() * arr.length) >> 0;
-				FUNC.totalcombat(arr[index]);
-				SETTER('notifybar/success', '@(Imported successfully: {0})'.format(name));
-				SETTER('loading/hide');
+				$.push('done', function($) {
+					var arr = ['welldone', 'impressive', 'excellent', 'brutality'];
+					var index = (Math.random() * arr.length) >> 0;
+					FUNC.totalcombat(arr[index]);
+					SETTER('notifybar/success', '@(Imported successfully: {0})'.format(name));
+					SETTER('loading/hide');
+					$.destroy();
+				});
+
+				$.next('init');
+
 			});
 		};
 

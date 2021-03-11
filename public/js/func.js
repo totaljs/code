@@ -1990,12 +1990,16 @@ FUNC.jcomponent_update = function(name, type, content, body, meta) {
 
 	var beg = content.indexOf(comment_beg);
 	if (beg === -1) {
+
+		if (!body)
+			return content.trim();
+
 		content += code;
 		return content.trim();
 	}
 
 	var end = (content + '\n').indexOf(comment_end, beg + comment_beg.length);
-	return (content.substring(0, beg).trim() + code + content.substring(end + comment_end.length)).trim();
+	return (content.substring(0, beg).trim() + (body ? code : '') + content.substring(end + comment_end.length)).trim();
 };
 
 (function() {
