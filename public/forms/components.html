@@ -147,9 +147,14 @@
 			index = val.indexOf('*');
 			if (index !== -1)
 				val = val.substring(0, index).trim();
+
+			index = val.indexOf(' ');
+			if (index !== -1)
+				val = '<strong class="monospace">' + val.substring(0, index) + '</strong> ' + val.substring(index + 1);
 		}
 
 		index = val.indexOf('(');
+
 		if (index === -1) {
 			var plus = '';
 

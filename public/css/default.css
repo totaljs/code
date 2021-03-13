@@ -675,6 +675,8 @@ header .tools .external { color: #a2a286; }
 .partgroup { font-size: 14px; color: #000000; margin: 10px 0 2px; padding: 5px 10px; font-weight: bold; }
 .partgroup:first-child { margin-top: 0; }
 .part { padding: 5px 10px; color: gray; border-bottom: 1px solid #E0E0E0; font-size: 12px; cursor: pointer; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; }
+.part strong { color: #ca5d0f; }
+.td .part strong { color: #fbcd76; }
 .part.imported { font-weight: bold; color: #000; }
 .td .part.imported { font-weight: bold; color: #FFF; }
 .part i { width: 18px; }
