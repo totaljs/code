@@ -143,6 +143,12 @@
 			return val;
 		}
 
+		if (item.type === 'route') {
+			index = val.indexOf('*');
+			if (index !== -1)
+				val = val.substring(0, index).trim();
+		}
+
 		index = val.indexOf('(');
 		if (index === -1) {
 			var plus = '';
