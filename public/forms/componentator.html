@@ -258,18 +258,42 @@
 			var allowed = { js: 1, html: 1, css: 1 };
 			var editor = FIND('editor').editor;
 			var cur = editor.getModeAt(editor.getCursor());
+			var name = el.attrd('search');
 
-			data.ext = FUNC.getext(cur.helperType || cur.name);
-			data.minify = componentator.minify === true;
-			data.darkmode = componentator.darkmode === true;
+			// reads meta
+			var data = {};
+			data.ext = 'json';
+			data.name = name;
 
-			if (!allowed[data.ext]) {
-				FUNC.warning('@(Snippet can\'t be inserted becasue this type of file is not supported.)');
-				return;
-			}
+			AJAX('GET /api/componentator/download/', data, function(meta) {
 
-			data.name = el.attrd('search');
-			AJAX('GET /api/componentator/download/', data, EXEC2('code/append'));
+				meta = PARSE(meta);
+
+				var data = {};
+				data.ext = FUNC.getext(cur.helperType || cur.name);
+				data.minify = componentator.minify === true;
+				data.darkmode = componentator.darkmode === true;
+
+				if (!allowed[data.ext]) {
+					FUNC.warning('@(Snippet can\'t be inserted becasue this type of file is not supported.)');
+					return;
+				}
+
+				data.name = name;
+				AJAX('GET /api/componentator/download/', data, function(response) {
+
+					if (data.ext !== 'html') {
+						var comment_beg = (data.ext === 'css' ? '/* Component: {0} */' : '// Component: {0}').format(name) + '\n';
+						var comment_end = (data.ext === 'css' ? '/* End: {0} */' : '// End: {0}').format(name) + '\n';
+						var version = (data.ext === 'css' ? '/* Version: {0} */' : '// Version: {0}').format(meta.version) + '\n';
+						var updated = (data.ext === 'css' ? '/* Updated: {0} */' : '// Updated: {0}').format((meta.dateupdated || meta.datecreated).format('yyyy-MM-dd HH:mm')) + '\n';
+						response = comment_beg + version + updated + response + '\n' + comment_end;
+					}
+
+					EXEC('code/append', response);
+				});
+			});
+
 		};
 	});
 
