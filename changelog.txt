@@ -5,6 +5,7 @@
 - added background importing of components from Componentator
 - added auto removing of dark-mode from Componentator
 - added Total combat mode
+- fixed shortcuts for commenting
 
 ========================= 1.5
 
