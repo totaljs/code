@@ -668,7 +668,7 @@
 				if (can)
 					tools.push({ name: '@(Parse keys)', icon: 'barcode', value: 'parsekeys' });
 
-				if ((code.current.ext === 'css' || code.current.ext === 'html') && (/\:(\s)?#|#\w{6}|color\:/).test(text))
+				if ((code.current.ext === 'css' || code.current.ext === 'html') && (/\:(\s)?#|#\w{6}|background|border|stroke|fill|color|rgba\:/).test(text))
 					items.push({ name: '@(Transform to Dark mode)', icon: 'tint', value: 'darkmode' });
 
 				if ((code.current.ext === 'css' || code.current.ext === 'html'))
