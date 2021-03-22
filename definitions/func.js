@@ -160,6 +160,10 @@ FUNC.external = function(project, type, path, data, callback) {
 		var data = response.body;
 		if (EXTERNAL_JSON[type])
 			data = data.parseJSON(true);
+
+		if (!err && response.status >= 400)
+			err = U.httpstatus(response.status);
+
 		callback(err, data);
 	};
 	REQUEST(opt);
