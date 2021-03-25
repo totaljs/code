@@ -633,8 +633,9 @@
 			var sub = [];
 			var tools = [];
 			var tmp;
+			var isscript = !code.data.isexternal && (/\/scripts\/|\.sh$/g).test(code.current.path) || (code.data.servicemode && (code.current.ext === 'js' || code.current.ext === 'sh'));
 
-			if (!code.data.isexternal && (/\/scripts\/|\.sh$/g).test(code.current.path) || (code.data.servicemode && (code.current.ext === 'js' || code.current.ext === 'sh')))
+			if (isscript && !text)
 				items.push({ name: '@(Run script)', icon: 'play-circle red', value: 'run', classname: 'b', shortcut: (common.ismac ? 'CMD' : 'CTRL') + '+B' });
 
 			if (can) {
@@ -657,6 +658,12 @@
 
 				if (text.indexOf('.define(\'') !== -1)
 					items.push({ name: '@(Copy as JSON)', icon: '!fa fa-code', value: 'copyasjson' });
+
+				if (text.indexOf('NEWSCHEMA(') !== -1) {
+					items.push('-');
+					items.push({ name: '@(Copy as <strong>API routes</strong>)', icon: 'copy', value: 'create_api' });
+					items.push({ name: '@(Copy as <strong>REST routes</strong>)', icon: 'copy', value: 'create_rest' });
+				}
 
 				items.push('-');
 
@@ -850,6 +857,11 @@
 					return;
 				}
 
+				if (value.value === 'create_api' || value.value === 'create_rest') {
+					SETTER('clipboard/copy', FUNC.createroutes(value.value === 'create_api', text));
+					return;
+				}
+
 				if (value.value === 'toggleruler') {
 					EDITOR.toggleruler();
 					return;
@@ -971,7 +983,7 @@
 				}
 
 				if (value.value === 'run') {
-					if ((/\/scripts\/|\.sh$/g).test(code.current.path) || (code.data.servicemode && (code.current.ext === 'js' || code.current.ext === 'sh')))
+					if (isscript)
 						FUNC.requestscriptspawn(code.data.id, code.current.path);
 					else
 						FUNC.request(text, editor.getValue());

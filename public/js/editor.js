@@ -1935,6 +1935,7 @@ SNIPPETS.push({ type: 'js', search: 'undefined', text: '<b>undefined</b>', code:
 SNIPPETS.push({ type: 'js', search: 'setImmediate', text: 'setImmediate', code: 'setImmediate()', ch: 13, priority: -1 });
 SNIPPETS.push({ type: 'js', search: 'EMPTYARRAY', text: 'EMPTYARRAY', code: 'EMPTYARRAY', ch: 11 });
 SNIPPETS.push({ type: 'js', search: 'EMPTYOBJECT', text: 'EMPTYOBJECT', code: 'EMPTYOBJECT', ch: 12 });
+SNIPPETS.push({ type: 'js', search: 'require dbms', text: '<b>require(\'DBMS\')</b>', code: 'require(\'dbms\').init(CONF.database, ERROR(\'DBMS\'));', ch: 1, priority: 1 });
 SNIPPETS.push({ search: 'openplatformid', text: 'openplatformid', code: 'openplatformid', ch: 15 });
 SNIPPETS.push({ search: 'encodeURIComponent', text: 'encodeURIComponent', code: 'encodeURIComponent', ch: 19 });
 SNIPPETS.push({ search: 'decodeURIComponent', text: 'decodeURIComponent', code: 'decodeURIComponent', ch: 19 });

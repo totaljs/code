@@ -82,6 +82,56 @@ var TIDYUPWHITE = new RegExp(String.fromCharCode(160), 'g');
 	};
 })();
 
+
+FUNC.createroutes = function(isapi, text) {
+
+	var tmp = text.match(/NEWSCHEMA\(('|").*?,/);
+	var name = tmp[0].substring(11, tmp[0].length - 2).replace(/'|"/g, '').trim();
+	var linker = (name.indexOf('/') === -1 ? name : name.split('/')[1]).toLowerCase();
+
+	var builder = [];
+
+	if (text.indexOf('.setQuery') !== -1) {
+		if (isapi)
+			builder.push('+API  /api/  -' + linker + '_query  *' + name + ' --> query');
+		else
+			builder.push('+GET  /api/' + linker + '  *' + name + ' --> query');
+	}
+
+	if (text.indexOf('.setRead') !== -1) {
+		if (isapi)
+			builder.push('+API  /api/  -' + linker + '_read/id  *' + name + ' --> read');
+		else
+			builder.push('+GET  /api/' + linker + '/{id}/  *' + name + ' --> read');
+	}
+
+	if (text.indexOf('.setInsert') !== -1) {
+		if (isapi)
+			builder.push('+API  /api/  +' + linker + '_insert  *' + name + ' --> insert');
+		else
+			builder.push('+POST  /api/' + linker + '/  *' + name + ' --> insert');
+	}
+
+	if (text.indexOf('.setUpdate') !== -1) {
+		if (isapi)
+			builder.push('+API  /api/  +' + linker + '_update/id  *' + name + ' --> update');
+		else
+			builder.push('+POST  /api/' + linker + '/{id}/  *' + name + ' --> update');
+	}
+
+	if (text.indexOf('.setRemove') !== -1) {
+		if (isapi)
+			builder.push('+API  /api/  -' + linker + '_remove/id  *' + name + ' --> remove');
+		else
+			builder.push('+DELETE  /api/' + linker + '/{id}/  *' + name + ' --> remove');
+	}
+
+	for (var i = 0; i < builder.length; i++)
+		builder[i] = 'ROUTE(\'' + builder[i] + '\');';
+
+	return FUNC.alignrouting(builder.join('\n'));
+};
+
 FUNC.cleanpath = function(val) {
 	return val.replace(/\/{2,}/g, '/');
 };
@@ -967,7 +1017,6 @@ FUNC.alignrouting = function(text) {
 				maxschema = data[3].length;
 
 		}
-
 
 		beg = line.indexOf(',');
 	}

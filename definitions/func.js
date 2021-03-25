@@ -1,6 +1,5 @@
 const Fs = require('fs');
 const Path = require('path');
-const Zlib = require('zlib');
 
 FUNC.makeignore = function(arr) {
 
