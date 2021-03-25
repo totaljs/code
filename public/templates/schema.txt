@@ -3,23 +3,39 @@ NEWSCHEMA('SCHEMA_NAME', function(schema) {
 	schema.define('name', 'String(50)', true);
 
 	schema.setQuery(function($) {
-		$.success();
+		DBMS().list('TABLE').autofill($, 'id:uid,dtcreated:date,dtupdated:date', null, 'dtcreated_desc', 100).where('isremoved=FALSE').callback($.callback);
 	});
 
 	schema.setRead(function($) {
-		$.success();
+		var id = $.id;
+		DBMS().read('TABLE').id(id).where('isremoved=FALSE').error(404).callback($.callback);
 	});
 
 	schema.setInsert(function($, model) {
-		$.success();
+		var id = UID();
+		model.id = id;
+		model.dtcreated = NOW;
+		DBMS().insert('TABLE', model).callback($.done(id));
 	});
 
 	schema.setUpdate(function($, model) {
-		$.success();
+		var id = $.id;
+		model.dtupdated = NOW;
+		DBMS().modify('TABLE', model).id(id).where('isremoved=FALSE').error(404).callback($.done(id));
+	});
+
+	schema.setPatch(function($, model) {
+		var id = $.id;
+		if ($.keys.length) {
+			model.dtupdated = NOW;
+			DBMS().modify('TABLE', model).id(id).where('isremoved=FALSE').error(404).callback($.done(id));
+		} else
+			$.success(id);
 	});
 
 	schema.setRemove(function($) {
-		$.success();
+		var id = $.id;
+		DBMS().modify('TABLE', { isremoved: true, dtupdated: NOW }).id(id).where('isremoved=FALSE').error(404).callback($.done(id));
 	});
 
 });
