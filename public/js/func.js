@@ -100,7 +100,7 @@ FUNC.createroutes = function(isapi, text) {
 
 	if (text.indexOf('.setRead') !== -1) {
 		if (isapi)
-			builder.push('+API  /api/  -' + linker + '_read/id  *' + name + ' --> read');
+			builder.push('+API  /api/  -' + linker + '_read/{id}  *' + name + ' --> read');
 		else
 			builder.push('+GET  /api/' + linker + '/{id}/  *' + name + ' --> read');
 	}
@@ -114,14 +114,14 @@ FUNC.createroutes = function(isapi, text) {
 
 	if (text.indexOf('.setUpdate') !== -1) {
 		if (isapi)
-			builder.push('+API  /api/  +' + linker + '_update/id  *' + name + ' --> update');
+			builder.push('+API  /api/  +' + linker + '_update/{id}  *' + name + ' --> update');
 		else
 			builder.push('+POST  /api/' + linker + '/{id}/  *' + name + ' --> update');
 	}
 
 	if (text.indexOf('.setRemove') !== -1) {
 		if (isapi)
-			builder.push('+API  /api/  -' + linker + '_remove/id  *' + name + ' --> remove');
+			builder.push('+API  /api/  -' + linker + '_remove/{id}  *' + name + ' --> remove');
 		else
 			builder.push('+DELETE  /api/' + linker + '/{id}/  *' + name + ' --> remove');
 	}
