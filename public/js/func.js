@@ -2048,7 +2048,7 @@ FUNC.jcomponent_update = function(name, type, content, body, meta) {
 	}
 
 	var end = (content + '\n').indexOf(comment_end, beg + comment_beg.length);
-	return (content.substring(0, beg).trim() + (body ? code : '') + content.substring(end + comment_end.length)).trim();
+	return (content.substring(0, beg).trim() + (body ? code : '\n') + content.substring(end + comment_end.length)).trim();
 };
 
 (function() {
