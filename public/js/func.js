@@ -2129,6 +2129,7 @@ FUNC.jcomponent_update = function(name, type, content, body, meta) {
 
 				m = line.match(REGPART);
 				if (m) {
+
 					name = m[0].match(REGPARTCLEAN);
 					tmp = m[0].toLowerCase();
 
@@ -2154,7 +2155,6 @@ FUNC.jcomponent_update = function(name, type, content, body, meta) {
 								pluginvariable = m[0].substring(m[0].indexOf('(', ispluginable ? 20 : 10) + 1, m[0].indexOf(')'));
 								break;
 						}
-
 
 						if (type === 'watch' && oldplugin)
 							name = name.replace(/\?/g, oldplugin);
@@ -2281,6 +2281,10 @@ FUNC.jcomponent_update = function(name, type, content, body, meta) {
 				}
 			}
 		}
+
+		components = components.remove(function(item) {
+			return item.name.indexOf('~PATH~') !== -1;
+		});
 
 		for (var i = 0; i < components.length; i++) {
 			var com = components[i];
