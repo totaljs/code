@@ -2196,9 +2196,6 @@
 			if (typeof(tab) === 'string')
 				tab = code.open.findItem('path', tab);
 
-			if (common.form === 'backups')
-				SET('common.form', '');
-
 			var prev = GET('code.editor.path');
 			if (prev && prev !== tab.path && editor) {
 				prev = code.open.findItem('path', prev);
@@ -2303,6 +2300,9 @@
 			SET('code.editor.name', tab.name);
 			code.editor.hash = HASH(tab.path);
 			code.projectid = HASH(code.data.id + '_' + tab.path);
+
+			if (common.form === 'backups')
+				EXEC('codebackups/refresh');
 
 			var reload = tab.reload;
 
