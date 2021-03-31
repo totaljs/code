@@ -513,24 +513,6 @@ COMPONENT('editor', function(self, config) {
 		var can = {};
 		can['+input'] = can['+delete'] = can.undo = can.redo = can.paste = can.cut = can.clear = true;
 
-		var REGTODO = /@todo/i;
-		var REGTODO2 = /^(\s)+-\s.*?/;
-		var REGTODOREPLACE = /^@todo(:)(\s)|(\s)+-(\s)/i;
-		var REGTODODONE = /@done|@canceled/i;
-		var REGTODOCLEAN = /-->|\*\//g;
-		var REGPART = /(COMPONENT|COMPONENT_EXTEND|EXTENSION|CONFIG|NEWSCHEMA|NEWCOMMAND|NEWOPERATION|NEWTASK|MIDDLEWARE|WATCH|ROUTE|(^|\s)ON|PLUGIN|PLUGINABLE)+\(.*?\)/g;
-		var REGPARTCLEAN = /('|").*?('|")/;
-		var REGHELPER = /(Thelpers|FUNC|REPO|MAIN)\.[a-z0-9A-Z_$]+(\s)+=/g;
-		var REGCONSOLE = /console\.\w+\(.*?\)/g;
-		var REGSCHEMAOP = /\.(setQuery|setSave|setInsert|setUpdate|setPatch|setRead|setGet|setRemove|addWorkflow|addTransform|addOperation|addHook)(Extension)?\(.*?\)/g;
-		var REGSCHEMAOP_DEFINE = /\.define\(.*?\);/g;
-		var REGSCHEMAOP_REPLACE = /(\(|,(\s))function.*?$/g;
-		var REGPLUGINOP_REPLACE = /(\s)+=(\s)+function/g;
-		var REGFUNCTION = /((\s)+=(\s)+function)/;
-		var REGTASKOP = /('|").*?('|")/g;
-		var REGVERSION = /version[":-='\s]+[a-z0-9."',\s]+/;
-		var REGJC = /data---=".*?(__|")/g;
-
 		editor.on('renderLine', function(cm, line, el) {
 			if (config.mode === 'totaljs' || config.mode === 'text/css') {
 				var arr = el.querySelectorAll('.cm-atom,.cm-builtin');
