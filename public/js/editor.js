@@ -1919,7 +1919,7 @@ SNIPPETS.push({ type: 'js', search: 'dbms DBMS read', text: '<b>DBMS().read(...)
 SNIPPETS.push({ type: 'js', search: 'dbms DBMS insert', text: '<b>DBMS().insert(...)</b>', code: 'DBMS().insert(\'\', model).callback($.done(id));', ch: 16, line: 0, priority: 1 });
 SNIPPETS.push({ type: 'js', search: 'dbms DBMS update', text: '<b>DBMS().update(...)</b>', code: 'DBMS().update(\'\', model).id(id).where(\'isremoved=FALSE\').error(404).callback($.done(id));', ch: 16, line: 0, priority: 1 });
 SNIPPETS.push({ type: 'js', search: 'dbms DBMS modify', text: '<b>DBMS().modify(...)</b>', code: 'DBMS().modify(\'\', model).id(id).where(\'isremoved=FALSE\').error(404).callback($.done(id));', ch: 16, line: 0, priority: 1 });
-SNIPPETS.push({ type: 'js', search: 'dbms DBMS remove', text: '<b>DBMS().remove(...)</b>', code: 'DBMS().remove(\'\').id(id).error(404).callback($.done($.id));', ch: 16, line: 0, priority: 1 });
+SNIPPETS.push({ type: 'js', search: 'dbms DBMS remove', text: '<b>DBMS().remove(...)</b>', code: 'DBMS().remove(\'\').id(id).error(404).callback($.done(id));', ch: 16, line: 0, priority: 1 });
 SNIPPETS.push({ type: 'js', search: 'TotalAPI', text: '<b>TotalAPI</b>', code: 'TotalAPI(\'\', { value: \'\' }, $);', ch: 10 });
 SNIPPETS.push({ type: 'js', search: 'MERGE', text: '<b>MERGE</b>', code: 'MERGE(\'\', \'\');', ch: 8 });
 SNIPPETS.push({ type: 'js', search: 'ROUTE', text: '<b>ROUTE</b>', code: 'ROUTE(\'\', \'\');', ch: 8 });
