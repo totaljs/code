@@ -1822,6 +1822,10 @@ SNIPPETS.push({ type: 'css', search: 'transparent', text: '<b>transparent</b>', 
 SNIPPETS.push({ type: 'css', search: 'float left', text: '<b>float: left</b>', code: 'float: left;', ch: 13 });
 SNIPPETS.push({ type: 'css', search: 'float right', text: '<b>float: right</b>', code: 'float: right;', ch: 14 });
 SNIPPETS.push({ type: 'css', search: 'float none', text: '<b>float: none</b>', code: 'float: none;', ch: 13 });
+SNIPPETS.push({ type: 'css', search: 'border-top-left-radius', text: 'border-top-left-radius', code: 'border-top-left-radius: ', ch: 24 });
+SNIPPETS.push({ type: 'css', search: 'border-top-right-radius', text: 'border-top-right-radius', code: 'border-top-right-radius: ', ch: 25 });
+SNIPPETS.push({ type: 'css', search: 'border-bottom-left-radius', text: 'border-bottom-left-radius', code: 'border-bottom-left-radius: ', ch: 27 });
+SNIPPETS.push({ type: 'css', search: 'border-bottom-right-radius', text: 'border-bottom-right-radius', code: 'border-bottom-right-radius: ', ch: 28 });
 SNIPPETS.push({ type: 'css', search: 'font-size', text: '<b>font-size</b>', code: 'font-size: ;', ch: 12 });
 SNIPPETS.push({ type: 'css', search: 'font-weight bold', text: '<b>font-weight: bold</b>', code: 'font-weight: bold;', ch: 19 });
 SNIPPETS.push({ type: 'css', search: 'font-style italic', text: '<b>font-style: italic</b>', code: 'font-style: italic;', ch: 21 });
