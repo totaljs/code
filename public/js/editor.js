@@ -1822,6 +1822,8 @@ SNIPPETS.push({ type: 'css', search: 'transparent', text: '<b>transparent</b>', 
 SNIPPETS.push({ type: 'css', search: 'float left', text: '<b>float: left</b>', code: 'float: left;', ch: 13 });
 SNIPPETS.push({ type: 'css', search: 'float right', text: '<b>float: right</b>', code: 'float: right;', ch: 14 });
 SNIPPETS.push({ type: 'css', search: 'float none', text: '<b>float: none</b>', code: 'float: none;', ch: 13 });
+SNIPPETS.push({ type: 'css', search: 'var radius', text: '<b>var(--radius)</b>', code: 'var(--radius)', ch: 14 });
+SNIPPETS.push({ type: 'css', search: 'var color', text: '<b>var(--color)</b>', code: 'var(--color)', ch: 13 });
 SNIPPETS.push({ type: 'css', search: 'border-top-left-radius', text: 'border-top-left-radius', code: 'border-top-left-radius: ', ch: 25 });
 SNIPPETS.push({ type: 'css', search: 'border-top-right-radius', text: 'border-top-right-radius', code: 'border-top-right-radius: ', ch: 26 });
 SNIPPETS.push({ type: 'css', search: 'border-bottom-left-radius', text: 'border-bottom-left-radius', code: 'border-bottom-left-radius: ', ch: 28 });
