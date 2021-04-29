@@ -275,7 +275,7 @@ WAIT('CodeMirror.defineMode', function() {
 				if (stream.match(/data-scope=/, true))
 					return 'variable-S';
 
-				if (stream.match(/data-released=/, true))
+				if (stream.match(/data-released=|~PATH~/, true))
 					return 'variable-R';
 
 				if (stream.match(/data-bind=/, true))
@@ -320,6 +320,9 @@ WAIT('CodeMirror.defineMode', function() {
 
 				if (stream.match(/@\(.*?\)/, true))
 					return 'variable-L';
+
+				if (stream.match(/~PATH~/, true))
+					return 'variable-R';
 
 				var m = stream.match(/(ROUTE|AJAX|AJAXCACHEREVIEW|AJAXCACHE)\(/, true);
 				if (m) {
@@ -1819,9 +1822,6 @@ SNIPPETS.push({ type: 'css', search: 'position fixed', text: '<b>fixed</b>', cod
 SNIPPETS.push({ type: 'css', search: 'position relative', text: '<b>relative</b>', code: 'position: relative;', ch: 20 });
 SNIPPETS.push({ type: 'css', search: 'border-radius', text: '<b>border-radius</b>', code: 'border-radius: ;', ch: 16 });
 SNIPPETS.push({ type: 'css', search: 'transparent', text: '<b>transparent</b>', code: 'transparent', ch: 12 });
-SNIPPETS.push({ type: 'css', search: 'float left', text: '<b>float: left</b>', code: 'float: left;', ch: 13 });
-SNIPPETS.push({ type: 'css', search: 'float right', text: '<b>float: right</b>', code: 'float: right;', ch: 14 });
-SNIPPETS.push({ type: 'css', search: 'float none', text: '<b>float: none</b>', code: 'float: none;', ch: 13 });
 SNIPPETS.push({ type: 'css', search: 'var radius', text: '<b>var(--radius)</b>', code: 'var(--radius)', ch: 14 });
 SNIPPETS.push({ type: 'css', search: 'var color', text: '<b>var(--color)</b>', code: 'var(--color)', ch: 13 });
 SNIPPETS.push({ type: 'css', search: 'border-top-left-radius', text: 'border-top-left-radius', code: 'border-top-left-radius: ', ch: 25 });
@@ -1844,6 +1844,9 @@ SNIPPETS.push({ type: 'css', search: 'text align center', text: '<b>text-align: 
 SNIPPETS.push({ type: 'css', search: 'text align right', text: '<b>text-align: right</b>', code: 'text-align: right;', ch: 19 });
 SNIPPETS.push({ type: 'css', search: 'text align left', text: '<b>text-align: left</b>', code: 'text-align: left;', ch: 18 });
 SNIPPETS.push({ type: 'css', search: 'text align justify', text: '<b>text-align: justify</b>', code: 'text-align: justify;', ch: 21 });
+SNIPPETS.push({ type: 'css', search: 'float left', text: '<b>float: left</b>', code: 'float: left;', ch: 13 });
+SNIPPETS.push({ type: 'css', search: 'float right', text: '<b>float: right</b>', code: 'float: right;', ch: 14 });
+SNIPPETS.push({ type: 'css', search: 'float none', text: '<b>float: none</b>', code: 'float: none;', ch: 13 });
 SNIPPETS.push({ type: 'css', search: 'text decoration none', text: '<b>text-decoration: none</b>', code: 'text-decoration: none;', ch: 23 });
 SNIPPETS.push({ type: 'css', search: 'text decoration underline', text: '<b>text-decoration: underline</b>', code: 'text-decoration: underline;', ch: 28 });
 SNIPPETS.push({ type: 'css', search: 'text decoration line through', text: '<b>text-decoration: line-through</b>', code: 'text-decoration: line-through;', ch: 31 });
@@ -1857,6 +1860,7 @@ SNIPPETS.push({ type: 'css', search: 'forwards', text: 'forwards', code: 'forwar
 SNIPPETS.push({ type: 'css', search: '!important', text: '<b>!important</b>', code: '!important;', ch: 12 });
 SNIPPETS.push({ type: 'css', search: 'radial gradient', text: '<b>radial</b>-gradient', code: 'background: radial-gradient(#F0F0F0,#D0D0D0);', ch: 29 });
 SNIPPETS.push({ type: 'css', search: 'media', text: 'Media', code: '@media(max-width: 768px) {\n\n}', ch: 30 });
+SNIPPETS.push({ type: 'html', search: '~PATH~', text: '<b>~PATH~</b>', code: '~PATH~', ch: 7 });
 SNIPPETS.push({ type: 'html', search: 'link css', text: '<b>Link CSS</b>', code: '<link rel="stylesheet" href="/css/.css" />', ch: 35 });
 SNIPPETS.push({ type: 'html', search: 'favicon', text: '<b>Favicon</b>', code: '<link rel="icon" href="" type="image/x-icon" />', ch: 24 });
 SNIPPETS.push({ type: 'html', search: 'style', text: '<b>Inline style</b>', code: 'style=""', ch: 8 });
@@ -1875,6 +1879,7 @@ SNIPPETS.push({ type: 'html', search: 'link spa min css', text: 'Link: <b>spa.mi
 SNIPPETS.push({ type: 'html', search: 'scri' + 'pt spa min js', text: ('Scr' + 'ipt: <b>spa.min@18.js</b>'), code: ('<scr' + 'ipt src="\/\/cdn.componentator.com/spa.min@18.js"></scr' + 'ipt>'), ch: 100 });
 SNIPPETS.push({ type: 'html', search: 'scri' + 'pt livereload', text: ('Scr' + 'ipt: <b>livereload.js</b>'), code: ('@{if DEBUG}<scr' + 'ipt src="\/\/cdn.componentator.com/livereload.js"></scr' + 'ipt>@{fi}'), ch: 100 });
 SNIPPETS.push({ type: 'html', search: 'scri' + 'pt openplatform min js', text: ('Scr' + 'ipt: <b>openplatform.min@4.js</b>'), code: ('<scr' + 'ipt src="\/\/cdn.componentator.com/openplatform.min@4.js"></scr' + 'ipt>'), ch: 100 });
+SNIPPETS.push({ type: 'js', search: '~PATH~', text: '<b>~PATH~</b>', code: '~PATH~', ch: 7 });
 SNIPPETS.push({ type: 'js', search: 'AUTH', text: '<b>AUTH</b>', code: 'AUTH(function($) {\n\t{0}$.success(USER_PROFILE);\n{0}});', ch: 30 });
 SNIPPETS.push({ type: 'js', search: 'PLUGIN', text: '<b>PLUGIN</b>', code: 'PLUGIN(\'{1}\', function(exports) {\n\n\t{0}exports.refresh = function() {\n\t{0}};\n\n{0}});', ch: 9 });
 SNIPPETS.push({ type: 'js', search: 'PLUGINABLE', text: '<b>PLUGINABLE</b>', code: 'PLUGINABLE(\'{1}\', function(exports) {\n\n\t{0}exports.create = function() {\n\t{0}};\n\n{0}}, function(next) {\n\n\t{0}next();\n\n{0}});', ch: 13 });
