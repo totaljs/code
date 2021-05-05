@@ -1222,7 +1222,7 @@ COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 			case 'sql':
 				return 'fa fa-database';
 			case 'json':
-				return 'fa fa-toolbox';
+				return filename === 'tms.json' ? 'fa fa-cog' : 'fa fa-toolbox';
 			case 'todo':
 				return 'fa fa-check';
 			case 'gif':
