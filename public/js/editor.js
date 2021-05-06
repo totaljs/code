@@ -1893,6 +1893,8 @@ SNIPPETS.push({ type: 'js', search: 'NEWCOMMAND', text: '<b>NEWCOMMAND</b>', cod
 SNIPPETS.push({ type: 'js', search: 'NEWJSONSCHEMA', text: '<b>NEWJSONSCHEMA</b>', code: 'NEWJSONSCHEMA(\'\', {});', ch: 16 });
 SNIPPETS.push({ type: 'js', search: 'NEWPUBLISH', text: '<b>NEWPUBLISH</b>', code: 'NEWPUBLISH(\'\', \'\');', ch: 13 });
 SNIPPETS.push({ type: 'js', search: 'NEWSUBSCRIBE', text: '<b>NEWSUBSCRIBE</b>', code: 'NEWSUBSCRIBE(\'\', \'\');', ch: 15 });
+SNIPPETS.push({ type: 'js', search: 'PUBLISH', text: '<b>PUBLISH</b>', code: 'PUBLISH(\'\', \'\');', ch: 10 });
+SNIPPETS.push({ type: 'js', search: 'SUBSCRIBE', text: '<b>SUBSCRIBE</b>', code: 'SUBSCRIBE(\'\', \'\');', ch: 12 });
 SNIPPETS.push({ type: 'js', search: 'for var', text: '<b>for in</b>', code: 'for (var i = 0; i < .length; i++)', ch: 21, priority: 10 });
 SNIPPETS.push({ type: 'js', search: 'foreach forEach', text: '<b>forEach</b>', code: 'forEach(function(item) {\n{0}});', ch: 30, priority: 1 });
 SNIPPETS.push({ type: 'js', search: '$.invalid', text: '<b>$.invalid()</b>', code: 'if (err) {\n\t{0}$.invalid(err);\n\t{0}return;\n{0}}', ch: 30 });
