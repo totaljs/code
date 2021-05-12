@@ -6324,7 +6324,7 @@ COMPONENT('viewbox', 'margin:0;scroll:true;delay:100;scrollbar:0;visibleY:1;heig
 			case 'marginsm':
 			case 'marginmd':
 			case 'marginlg':
-				!init && self.resize();
+				!init && self.resizeforce();
 				break;
 			case 'selector': // backward compatibility
 				config.parent = value;
@@ -6388,8 +6388,8 @@ COMPONENT('viewbox', 'margin:0;scroll:true;delay:100;scrollbar:0;visibleY:1;heig
 
 		var width = WIDTH();
 		var mywidth = self.element.width();
+		var key = width + 'x' + mywidth + 'x' + w + 'x' + h + 'x' + config.margin;
 
-		var key = width + 'x' + mywidth + 'x' + w + 'x' + h;
 		if (cache === key) {
 			scrollbar && scrollbar.resize();
 			if (scrolltoforce) {

@@ -225,12 +225,23 @@ function textarea_autosize(el) {
 	var tmp = el.scrollHeight;
 	if (tmp < 28)
 		tmp = 28;
+
+	var plus = 10;
+
+	if (tmp > 28)
+		el.parentNode.style.paddingBottom = '10px';
+	else {
+		plus -= 10;
+		el.parentNode.style.paddingBottom = '';
+	}
+
 	el.style.height = tmp + 'px';
+
 	if (tmp !== el.$inputheight) {
 		el.$inputheight = tmp;
 		var container = $(el.parentNode);
 		container.parent().FIND('viewbox', function(com) {
-			com.reconfigure({ margin: container.height() + 60 });
+			com.reconfigure('margin:' + (container.height() + 60 + plus));
 		});
 	}
 }

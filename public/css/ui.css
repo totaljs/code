@@ -825,6 +825,7 @@ li.ui-directory-current { background-color: rgba(0,0,0,0.02); font-weight: bold;
 .td .ui-tooltip-body { background:rgba(255,255,255,0.9); color: black; }
 .td .ui-tooltip-body::before { border-color: rgba(255,255,255,0.9) transparent transparent transparent; }
 
+.ui-windows { top: 0; margin-top: 49px; position: absolute; bottom: 0; right: 0; left: 0; }
 .ui-windows-item { position: absolute; border-radius: 2px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); background-color: white; z-index: 80; }
 .ui-windows-title { border: 1px solid #E0E0E0; border-radius: 2px 2px 0 0; height: 32px; }
 .ui-windows-control { float: right; width: 30px; text-align: center; border-left: 1px solid #E0E0E0; line-height: 30px; cursor: pointer; font-size: 13px; }

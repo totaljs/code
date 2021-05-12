@@ -16,7 +16,7 @@
 	<link rel="stylesheet" href="/css/spa.min.css" />
 	@{fi}
 	<script src="/js/cdn.min.js"></script>
-	@{import('meta', 'head', 'default.css', 'default.js', 'favicon.ico')}
+	@{import('meta', 'head', 'ui.css + default.css', 'editor.js + ui.js + func.js + default.js', 'favicon.ico')}
 </head>
 <body data---="exec" class="@{if (user.darkmode === 2 && (NOW.getHours()<=6 || NOW.getHours()>=18)) || (user.darkmode !== 0 && user.darkmode !== 2)}td @{fi}invisible" data-jc-class="invisible">
 
