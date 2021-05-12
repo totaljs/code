@@ -856,7 +856,7 @@ li.ui-directory-current { background-color: rgba(0,0,0,0.02); font-weight: bold;
 .ui-windows-resize-br { right: 0; bottom: 0; cursor: nwse-resize; }
 .ui-windows-block iframe, .ui-windows-block webview { pointer-events: none; }
 
-.electron.jc-mac .ui-windows-maximized .ui-windows-title span { margin-left: 60px; }
+.electron.jc-mac .ui-windows { margin-top: 77px; }
 
 .td .ui-windows-item { background-color: #202020; box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
 .td .ui-windows-title { border-color: #404040; }
