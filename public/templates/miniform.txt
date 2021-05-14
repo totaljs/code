@@ -1,4 +1,4 @@
-<div data---="miniform__common.form__if:NAME;icon:hashtag;autofocus:true;reload:?/reload;submit:?/submit;width:400" class="hidden" data-scope="NAME">
+<div data---="miniform__common.form__if:~PATH~;icon:hashtag;autofocus:true;reload:?/reload;submit:?/submit;width:400" class="hidden" data-scope="~PATH~">
 	<div class="padding">
 		YOUR CODE
 	</div>
@@ -10,7 +10,7 @@
 
 <script>
 
-	PLUGIN('NAME', function(exports) {
+	PLUGIN('~PATH~', function(exports) {
 
 		exports.reload = function(com) {
 			var model = GET('?');

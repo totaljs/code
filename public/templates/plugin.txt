@@ -1,4 +1,4 @@
-<div data-scope="NAME">
+<div data-scope="~PATH~">
 	<div class="padding">
 		YOUR CODE
 	</div>
@@ -6,7 +6,7 @@
 
 <script>
 
-	PLUGIN('NAME', function(exports) {
+	PLUGIN('~PATH~', function(exports) {
 
 		exports.reload = function() {
 			exports.refresh();

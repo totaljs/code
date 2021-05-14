@@ -1,4 +1,7 @@
-require('total.js').load('debug', function() {
+require('total4');
+
+// https://docs.totaljs.com/total4/407ff001jy51c/#49a0f001nk51c
+LOAD('definitions', function() {
 
 	// Project is loaded
 	// Here you can enter raw JS code
