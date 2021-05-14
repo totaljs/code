@@ -126,6 +126,21 @@ FUNC.createroutes = function(isapi, text) {
 			builder.push('+DELETE  /api/' + linker + '/{id}/  *' + name + ' --> remove');
 	}
 
+	var workflows = text.match(/\.addWorkflow\(.*?\)/g);
+	if (workflows) {
+
+		for (var i = 0; i < workflows.length; i++) {
+			var wn = workflows[i].match(/('|")[a-z0-9_]+('|")+/i);
+			if (wn) {
+				wn = wn[0].replace(/'|"/g, '');
+				if (isapi)
+					builder.push('+API  /api/  -' + linker + '_' + wn + '  *' + name + ' --> ' + wn);
+				else
+					builder.push('+DELETE  /api/' + linker + '/' + wn + '/  *' + name + ' --> ' + wn);
+			}
+		}
+	}
+
 	for (var i = 0; i < builder.length; i++)
 		builder[i] = 'ROUTE(\'' + builder[i] + '\');';
 
