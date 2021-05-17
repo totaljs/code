@@ -8,8 +8,10 @@ NEWSCHEMA('DBCommand', function(schema) {
 
 	var makeclient = function($) {
 
-		if (!Database)
+		if (!Database) {
 			Database = require('pg');
+			Database.types.setTypeParser(1700, val => val == null ? null : +val);
+		}
 
 		var model = $.model;
 		var index = model.connection.indexOf('hex ');
