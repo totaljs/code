@@ -909,8 +909,9 @@ WAIT('CodeMirror.defineMode', function() {
 	CodeMirror.defineExtension('showHint', function(options) {
 		options = parseOptions(this, this.getCursor('start'), options);
 		var selections = this.listSelections();
-		if (selections.length > 1)
-			return;
+
+		// if (selections.length > 1)
+		// 	return;
 
 		// By default, don't allow completion when something is selected.
 		// A hint function can have a `supportsSelection` property to
@@ -926,6 +927,7 @@ WAIT('CodeMirror.defineMode', function() {
 		}
 
 		this.state.completionActive && this.state.completionActive.close();
+		this.state.selections = selections;
 
 		var completion = this.state.completionActive = new Completion(this, options);
 		if (completion.options.hint) {
@@ -975,8 +977,26 @@ WAIT('CodeMirror.defineMode', function() {
 			var completion = data.list[i];
 			if (completion.hint)
 				completion.hint(this.cm, data, completion);
-			else
-				this.cm.replaceRange(getText(completion), completion.to || data.to, completion.from || data.from, 'complete');
+			else {
+				var txt = getText(completion);
+				var f = completion.from || data.from;
+				var t = completion.to || data.to;
+				var d = t.ch - f.ch;
+
+				if (this.cm.state.selections.length > 1) {
+					for (var sel of this.cm.state.selections) {
+						sel.anchor.ch -= d;
+						this.cm.replaceRange(txt, sel.anchor, { line: sel.anchor.line, ch: t.ch }, 'complete');
+						sel.anchor.ch += txt.length;
+						sel.head.ch += txt.length;
+					}
+
+					setTimeout(function(self) {
+						self.cm.setSelections(self.cm.state.selections);
+					}, 100, this);
+				} else
+					this.cm.replaceRange(getText(completion), completion.to || data.to, completion.from || data.from, 'complete');
+			}
 			CodeMirror.signal(data, 'pick', completion);
 			this.close(completion);
 		},

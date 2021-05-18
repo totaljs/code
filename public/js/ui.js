@@ -580,7 +580,7 @@ COMPONENT('editor', function(self, config) {
 
 		var snippets = {};
 		var cache_snip = {};
-		var snippetsoptions = { completeSingle: false, hint: function(cm) {
+		var snippetsoptions = { completeSingle: false, supportsSelection: true, hint: function(cm) {
 
 			if (snippets.text.length < 2 && snippets.text !== '#') {
 				cache_snip.list = EMPTYARRAY;
@@ -722,6 +722,7 @@ COMPONENT('editor', function(self, config) {
 			if (index !== -1) {
 				var text = line.substring(index, cur.ch);
 				if (text) {
+					console.log(text);
 					snippets.index = index;
 					snippets.text = text;
 					snippets.line = line;
@@ -1000,7 +1001,6 @@ COMPONENT('editor', function(self, config) {
 			return;
 
 		var words = line.match(REGAUTOCOMPLETE);
-
 		if (words) {
 
 			var unique = {};
@@ -1033,8 +1033,10 @@ COMPONENT('editor', function(self, config) {
 	self.rebuild_autocomplete = function(val) {
 		var words = val || editor.getValue();
 		var max = 100000;
+
 		if (words.length > max)
 			words = words.substring(0, max);
+
 		words = words.match(REGAUTOCOMPLETE);
 		if (words) {
 			autocomplete_unique = {};
