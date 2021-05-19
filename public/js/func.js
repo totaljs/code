@@ -1311,6 +1311,168 @@ FUNC.makejsonfromschema = function(val) {
 	return '{\n' + model.join('\n') + '\n}';
 };
 
+FUNC.makejsonschemafromschema = function(val) {
+
+	var lines = val.split('\n');
+
+	var obj = {};
+	var p = 'https://schemas.totaljs.com/';
+
+	if (p[p.length - 1] !== '/')
+		p += '/';
+
+	obj.$id = p + code.current.name.replace(/\.js$/, '') + '.json';
+	obj.$schema = 'https://json-schema.org/draft/2020-12/schema';
+	obj.required = [];
+	obj.type = 'object';
+	obj.properties = {};
+
+	var define = function(name, type, required) {
+
+		var meta = {};
+
+		if (type === Number)
+			meta.type = 'number';
+		else if (type === Boolean)
+			meta.type = 'boolean';
+		else if (type === String)
+			meta.type = 'string';
+		else if (type === Date)
+			meta.type = 'date';
+		else if (type === Object)
+			meta.type = 'object';
+		else if (type instanceof Array) {
+			// enum
+			meta.type = typeof(type[0]);
+			meta.isenum = true;
+			meta.values = type;
+		} else
+			meta.type = (type + '').toLowerCase();
+
+		meta.name = name;
+		meta.isrequired = required;
+		meta.isarray = meta.type.charAt(0) === '[';
+		meta.length = 0;
+
+		if (meta.isarray)
+			meta.type = meta.type.substring(1, meta.type.length - 1);
+
+		var index = meta.type.indexOf('(');
+		if (index !== -1) {
+			meta.length = +meta.type.substring(index + 1, meta.type.length - 1);
+			meta.type = meta.type.substring(0, index);
+		}
+
+		return meta;
+	};
+
+	var run = function(val) {
+		try {
+			return new Function('define', 'return ' + val)(define);
+		} catch (e) {}
+	};
+
+	for (var i = 0; i < lines.length; i++) {
+		var line = lines[i].trim();
+		var beg = line.indexOf('\'');
+		if (beg === -1)
+			continue;
+
+		var end = line.indexOf('\'', beg + 1);
+		if (end === -1)
+			continue;
+
+		beg = end + 3;
+		end = line.lastIndexOf(',');
+
+		if (end === -1 || end <= beg) {
+			end = line.indexOf(')');
+			if (end !== -1)
+				end++;
+		}
+
+		if (end === -1)
+			continue;
+
+		var val = line.match(/\.define\(.*?\);/);
+		if (!val)
+			continue;
+
+		val = val[0].substring(1);
+		var meta = run(val);
+		if (!meta)
+			continue;
+
+		var tmp;
+
+		switch (meta.type) {
+			case 'number':
+			case 'float':
+				tmp = {};
+				if (meta.isarray) {
+					tmp.type = 'array';
+					tmp.items = { type: 'number' };
+				} else {
+					tmp.type = 'number';
+					if (meta.isenum)
+						tmp.enum = meta.values;
+				}
+				break;
+			case 'string':
+			case 'name':
+			case 'uppercase':
+			case 'lowercase':
+			case 'capitalize':
+			case 'capitalize2':
+			case 'url':
+			case 'email':
+			case 'phone':
+			case 'zip':
+			case 'json':
+			case 'base64':
+			case 'uid':
+				tmp = {};
+				if (meta.isarray) {
+					tmp.type = 'array';
+					tmp.items = { type: 'string' };
+					if (meta.length)
+						tmp.items.maxLength = meta.length;
+				} else {
+					tmp.type = 'string';
+					if (meta.length)
+						tmp.maxLength = meta.length;
+					if (meta.isenum)
+						tmp.enum = meta.values;
+				}
+				break;
+			case 'boolean':
+				tmp = {};
+				if (meta.isarray) {
+					tmp.type = 'array';
+					tmp.items = { type: 'boolean' };
+				} else
+					tmp.type = 'boolean';
+				break;
+			case 'date':
+				tmp = {};
+				if (meta.isarray) {
+					tmp.type = 'array';
+					tmp.items = { type: 'date' };
+				} else
+					tmp.type = 'date';
+				break;
+		}
+
+		if (tmp) {
+			if (meta.isrequired)
+				obj.required.push(meta.name);
+			obj.properties[meta.name] = tmp;
+		}
+	}
+
+	return JSON.stringify(obj, null, '\t');
+};
+
 FUNC.parsekeys = function(value) {
 
 	var lines = value.split('\n');

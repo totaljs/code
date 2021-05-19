@@ -656,8 +656,10 @@
 				if (text.indexOf('<') !== -1)
 					items.push({ name: '@(Copy without tags)', icon: '!far fa-copy', value: 'copytext' });
 
-				if (text.indexOf('.define(\'') !== -1)
+				if (text.indexOf('.define(\'') !== -1) {
 					items.push({ name: '@(Copy as JSON)', icon: '!fa fa-code', value: 'copyasjson' });
+					items.push({ name: '@(Copy as JSON schema)', icon: '!far fa-object-group', value: 'copyasjsonschema' });
+				}
 
 				if (text.indexOf('NEWSCHEMA(') !== -1) {
 					items.push('-');
@@ -933,6 +935,11 @@
 
 				if (value.value === 'copyasjson') {
 					SETTER('clipboard/copy', FUNC.makejsonfromschema(text));
+					return;
+				}
+
+				if (value.value === 'copyasjsonschema') {
+					SETTER('clipboard/copy', FUNC.makejsonschemafromschema(text));
 					return;
 				}
 
