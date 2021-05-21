@@ -58,7 +58,7 @@ NEWSCHEMA('Branches', function(schema) {
 			return;
 		}
 
-		if (!project.isexternal) {
+		if (project.isexternal) {
 			$.invalid('error-external');
 			return;
 		}

@@ -722,7 +722,6 @@ COMPONENT('editor', function(self, config) {
 			if (index !== -1) {
 				var text = line.substring(index, cur.ch);
 				if (text) {
-					console.log(text);
 					snippets.index = index;
 					snippets.text = text;
 					snippets.line = line;
