@@ -659,6 +659,7 @@ function makebundle(id) {
 		data.push('/logs/*');
 		data.push('/bundles/*');
 		data.push('/debug.js');
+		data.push('/index.js');
 		data.push('/license.txt');
 		data.push('/LICENSE');
 		data.push('/localization.resource');
@@ -684,6 +685,7 @@ function makebundle(id) {
 		data.push('/*.socket');
 		data.push('/*.todo');
 		data.push('/*.sql');
+		data.push('/*.pid');
 		data.push('/*.bundle');
 
 		var ignore = FUNC.makeignore(data);
