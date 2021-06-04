@@ -687,6 +687,7 @@ function makebundle(id) {
 		data.push('/*.sql');
 		data.push('/*.pid');
 		data.push('/*.bundle');
+		data.push('/*.overloaded');
 
 		var ignore = FUNC.makeignore(data);
 		var filename = Path.join(project.path, 'app.bundle');
