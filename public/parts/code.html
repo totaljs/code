@@ -3061,6 +3061,9 @@
 					if (!files['.gitignore'])
 						opt.items.push({ name: '<strong>@(Create):</strong> /.gitignore', icon: '!far fa-file-text-o', value: '/.gitignore' });
 
+					if (!files['bundles.debug'])
+						opt.items.push({ name: '<strong>@(Create):</strong> /bundles.debug', icon: '!far fa-file-text-o', value: '/bundles.debug' });
+
 					if (!files.config)
 						opt.items.push({ name: '<strong>@(Create):</strong> /config', icon: '!far fa-file-text-o', value: '/config' });
 
