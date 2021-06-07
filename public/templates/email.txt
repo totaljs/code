@@ -10,7 +10,7 @@
 	<meta name="format-detection" content="email=no" />
 	<style type="text/css">
 		* { font-family: Arial; margin: 0; padding: 0; }
-		body { -webkit-text-size-adjust: none; height: 100%; background-color: #FFFFFF; }
+		body { -webkit-text-size-adjust: none; height: 100%; background-color: #FFF; }
 	</style>
 </head>
 <body style="margin:0;padding:0;background-color:#F6F6F6">
@@ -18,15 +18,15 @@
 		<table align="center" style="margin:0 auto;max-width:600px;font-size:16px;width:100%">
 			<tr>
 				<td>
-					<div style="background-color:#FFFFFF;padding:30px;border-radius:5px">
+					<div style="background-color:#FFF;padding:30px;border-radius:5px">
 						<div style="margin-bottom:20px"><a href="@{'%url'}"><img src="@{'%url'}/img/logo.png" alt="@{'%name'}" border="0" width="200" height="50" /></a></div>
-						<div style="color:#000000">
+						<div style="color:#000">
 
 							@{body}
 
 						</div>
 					</div>
-					<div style="font-size:12px;margin:0;padding:15px 0 10px 30px;color:#888888;line-height:16px">@(All rights reserved) &copy; 2020</div>
+					<div style="font-size:12px;margin:0;padding:15px 0 10px 30px;color:#888;line-height:16px">@(All rights reserved) &copy; 2020</div>
 				</td>
 			</tr>
 		</table>
