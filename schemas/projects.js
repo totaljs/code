@@ -271,8 +271,12 @@ NEWSCHEMA('Projects', function(schema) {
 
 		model.isexternal = (/(https|http):\/\//).test(model.path);
 
-		if (!model.isexternal)
-			model.path = U.path(model.path.replace(/\/\//g, '/').replace(/\\\\/g, '\\'));
+		if (!model.isexternal) {
+			model.path = U.path(
+				model.path.replace(/\/\//g, '/').replace(/\\\\/g, '\\'),
+				F.isWindows ? '\\' : '/'
+			);
+		}
 
 		for (var i = 0; i < model.users.length; i++) {
 			if (MAIN.users.findItem('id', model.users[i]))
