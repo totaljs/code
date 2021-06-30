@@ -31,6 +31,16 @@ NEWSCHEMA('Projects', function(schema) {
 	schema.define('resetchangelog', Boolean);
 	schema.define('allowlivereload', Boolean);
 
+	// TMS
+	schema.jsonschema_define('userid', 'String');
+	schema.jsonschema_define('username', 'String');
+	schema.jsonschema_define('ua', 'String');
+	schema.jsonschema_define('ip', 'String');
+	schema.jsonschema_define('dttms', 'String');
+	schema.jsonschema_define('projectname', 'String');
+	schema.jsonschema_define('projectid', 'String');
+	schema.jsonschema_define('projectpath', 'String');
+
 	schema.setGet(function($) {
 		var item = MAIN.projects.findItem('id', $.id);
 		if (item) {
@@ -48,6 +58,16 @@ NEWSCHEMA('Projects', function(schema) {
 		var filename = Path.join(item.path, $.query.path);
 
 		MAIN.log($.user, 'files_read', item, filename);
+
+		if (CONF.allow_tms) {
+			var publish = {};
+			publish.filename = filename;
+			publish.project = item.name;
+			publish.projectpath = item.path;
+			publish.projectid = $.id;
+			publish.name = publish.filename.split('/').slice(-1)[0];
+			PUBLISH('files-read', FUNC.tms($, publish));
+		}
 
 		if (item.isexternal) {
 			FUNC.external(item, 'load', $.query.path, null, $.callback);
@@ -300,12 +320,16 @@ NEWSCHEMA('Projects', function(schema) {
 
 				U.extend(item, model);
 				item.updated = NOW;
+
+				PUBLISH('projects-update', FUNC.tms($, model, item));
 			}
 		} else {
 			model.id = UID();
 			model.ownerid = $.user ? $.user.id : null;
 			model.created = NOW;
 			MAIN.projects.push(model);
+
+			PUBLISH('projects-create', FUNC.tms($, model));
 		}
 
 		MAIN.save(2);
@@ -475,6 +499,8 @@ NEWSCHEMA('Projects', function(schema) {
 
 		MAIN.log($.user, 'projects_remove', item, null);
 		NOSQL(id + '_parts').drop();
+
+		PUBLISH('projects-remove', FUNC.tms($, null, item));
 
 		$.success();
 	});
@@ -675,6 +701,7 @@ NEWSCHEMA('Projects', function(schema) {
 
 		var filename = project.logfile ? project.logfile : Path.join(project.path, name);
 		Fs.truncate(filename, NOOP);
+		PUBLISH('projects-debugclear', FUNC.tms($, null, project));
 		$.success();
 	});
 });

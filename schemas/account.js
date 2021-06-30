@@ -4,9 +4,16 @@ NEWSCHEMA('Accounts', function(schema) {
 	schema.define('phone', 'Phone');
 	schema.define('token', 'String(100)');
 	schema.define('appname', 'String(50)');
-	schema.define('darkmode', Number);
-	schema.define('localsave', Boolean);
+	schema.define('darkmode', 'Number');
+	schema.define('localsave', 'Boolean');
 	schema.define('password', 'String(30)');
+
+	// TMS
+	schema.jsonschema_define('username', 'String');
+	schema.jsonschema_define('userid', 'String');
+	schema.jsonschema_define('ip', 'String');
+	schema.jsonschema_define('ua', 'String');
+	schema.jsonschema_define('dttms', 'Date');
 
 	schema.setQuery(function($) {
 		var user = $.user;
@@ -44,6 +51,17 @@ NEWSCHEMA('Accounts', function(schema) {
 
 		if (model.password && model.password.substring(0, 3) !== '***')
 			user.password = model.password.sha256();
+
+		if (CONF.allow_tms) {
+			var publish = {};
+			publish.email = user.email;
+			publish.phone = user.phone;
+			publish.darkmode = user.darkmode;
+			publish.localsave = user.localsave;
+			publish.token = user.token;
+			publish.appname = user.appname;
+			PUBLISH('accounts-save', FUNC.tms($, publish));
+		}
 
 		MAIN.save(1);
 		$.success();

@@ -6,3 +6,5 @@ authkey  (generate)   : 10
 
 backup                : /www/tmp/backup/
 autodiscover          : /www/www/
+
+allow_tms             : false
