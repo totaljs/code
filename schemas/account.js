@@ -60,7 +60,7 @@ NEWSCHEMA('Accounts', function(schema) {
 			publish.localsave = user.localsave;
 			publish.token = user.token;
 			publish.appname = user.appname;
-			PUBLISH('accounts-save', FUNC.tms($, publish));
+			PUBLISH('accounts_save', FUNC.tms($, publish));
 		}
 
 		MAIN.save(1);
