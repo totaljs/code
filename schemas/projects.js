@@ -66,7 +66,7 @@ NEWSCHEMA('Projects', function(schema) {
 			publish.projectpath = item.path;
 			publish.projectid = $.id;
 			publish.name = publish.filename.split('/').slice(-1)[0];
-			PUBLISH('files-read', FUNC.tms($, publish));
+			PUBLISH('files_read', FUNC.tms($, publish));
 		}
 
 		if (item.isexternal) {
@@ -321,7 +321,7 @@ NEWSCHEMA('Projects', function(schema) {
 				U.extend(item, model);
 				item.updated = NOW;
 
-				PUBLISH('projects-update', FUNC.tms($, model, item));
+				PUBLISH('projects_update', FUNC.tms($, model, item));
 			}
 		} else {
 			model.id = UID();
@@ -329,7 +329,7 @@ NEWSCHEMA('Projects', function(schema) {
 			model.created = NOW;
 			MAIN.projects.push(model);
 
-			PUBLISH('projects-create', FUNC.tms($, model));
+			PUBLISH('projects_create', FUNC.tms($, model));
 		}
 
 		MAIN.save(2);
@@ -500,7 +500,7 @@ NEWSCHEMA('Projects', function(schema) {
 		MAIN.log($.user, 'projects_remove', item, null);
 		NOSQL(id + '_parts').drop();
 
-		PUBLISH('projects-remove', FUNC.tms($, null, item));
+		PUBLISH('projects_emove', FUNC.tms($, null, item));
 
 		$.success();
 	});
@@ -701,7 +701,7 @@ NEWSCHEMA('Projects', function(schema) {
 
 		var filename = project.logfile ? project.logfile : Path.join(project.path, name);
 		Fs.truncate(filename, NOOP);
-		PUBLISH('projects-debugclear', FUNC.tms($, null, project));
+		PUBLISH('projects_debugclear', FUNC.tms($, null, project));
 		$.success();
 	});
 });

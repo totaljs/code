@@ -241,7 +241,7 @@ function files_download(id) {
 
 				var ext = U.getExtension(path).toLowerCase();
 				MAIN.log(self.user, 'files_read', item, path);
-				PUBLISH('files-read', FUNC.tms(self, { path: path }, item));
+				PUBLISH('files_read', FUNC.tms(self, { path: path }, item));
 				self.stream(U.getContentType(ext), response.stream, self.query.preview ? null : U.getName(path));
 			});
 
@@ -262,7 +262,7 @@ function files_download(id) {
 			var meta = {};
 
 			MAIN.log(self.user, 'files_read', item, filename);
-			PUBLISH('files-read', FUNC.tms(self, { filename: filename, path: item.path }, item));
+			PUBLISH('files_read', FUNC.tms(self, { filename: filename, path: item.path }, item));
 
 			// Special
 			if (ext === 'file' || ext === 'nosql-binary') {
