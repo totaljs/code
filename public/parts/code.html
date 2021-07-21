@@ -1707,7 +1707,7 @@
 					if (space || (selection && selection.indexOf(' ') === -1))
 						icon = icon.replace(reg, '');
 
-					editor.replaceSelection(prev && prev !== ' ' && prev !== '"' && prev !== '\'' ? (' ' + icon) : icon);
+					editor.replaceSelection(prev && prev !== ' ' && prev !== ':' && prev !== '"' && prev !== '\'' ? (' ' + icon) : icon);
 				});
 			};
 
