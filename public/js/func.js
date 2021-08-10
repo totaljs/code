@@ -341,7 +341,8 @@ FUNC.sql2schema = function(text) {
 			}
 			type = type[0];
 			var val = line.split(' ');
-			var name = val[0].replace(/"/g, '');
+			var name = val[0].replace(/"|`/g, '');
+
 			switch (type) {
 				case 'text':
 					type = 'String';
@@ -367,6 +368,11 @@ FUNC.sql2schema = function(text) {
 					type = '\'json\'';
 					break;
 				case 'int':
+				case 'tinyint':
+					type = length === '1' ? 'Boolean' : 'Number';
+					break;
+				case 'mediumint':
+				case 'longint':
 				case 'double':
 				case 'float':
 					type = 'Number';

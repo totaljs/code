@@ -492,13 +492,13 @@
 
 		SETTER(true, 'shortcuts', 'register', 'F2', function(e) {
 			var n = 'components';
-			code.data && SET('common.form', common.form === n ? '' : n);
+			code.data && SET('common.form', n);
 		}, true);
 
 		SETTER(true, 'shortcuts', 'register', 'F3', function(e) {
 			var n = 'componentator';
 			// code.current && (/js|css|html/).test(code.current.ext) &&
-			code.data && SET('common.form', common.form === n ? '' : n);
+			code.data && SET('common.form', n);
 		}, true);
 
 		SETTER(true, 'shortcuts', 'register', 'cmd+shift+f,ctrl+shift+f', function(e) {
