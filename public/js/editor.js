@@ -1764,6 +1764,7 @@ SNIPPETS.push({ type: 'js', search: 'schema.setInsert setinsert', text: '<b>sche
 SNIPPETS.push({ type: 'js', search: 'schema.setUpdate setupdate', text: '<b>schema.setUpdate</b>', code: 'schema.setUpdate(function($, model) {\n\t{0}var id = $.id;\n\t{0}model.dtupdated = NOW;\n{0}});', ch: 1, line: 1, priority: 1 });
 SNIPPETS.push({ type: 'js', search: 'schema.setRemove setremove', text: '<b>schema.setRemove</b>', code: 'schema.setRemove(function($) {\n\t{0}var id = $.id;\n{0}});', ch: 1, line: 1, priority: 1 });
 SNIPPETS.push({ type: 'js', search: 'schema.setQuery setquery', text: '<b>schema.setQuery</b>', code: 'schema.setQuery(function($) {\n\t{0}\n{0}});', ch: 2, line: 1, priority: 1 });
+SNIPPETS.push({ type: 'js', search: 'schema.setList setquery', text: '<b>schema.setList</b>', code: 'schema.setList(function($) {\n\t{0}\n{0}});', ch: 2, line: 1, priority: 1 });
 SNIPPETS.push({ type: 'js', search: 'schema.setRead setread', text: '<b>schema.setRead</b>', code: 'schema.setRead(function($) {\n\t{0}var id = $.id;\n{0}});', ch: 1, line: 1, priority: 1 });
 SNIPPETS.push({ type: 'js', search: 'schema.setGet setget', text: '<b>schema.setGet</b>', code: 'schema.setGet(function($) {\n\t{0}var id = $.id;\n{0}});', ch: 1, line: 1, priority: 1 });
 SNIPPETS.push({ type: 'js', search: 'schema.setSaveExtension', text: '<b>schema.setSaveExtension</b>', code: 'schema.setSaveExtension(function($, data) {\n\t{0}\n{0}});', ch: 21, line: 1, priority: 1 });
@@ -1772,9 +1773,11 @@ SNIPPETS.push({ type: 'js', search: 'schema.setInsertExtension', text: '<b>schem
 SNIPPETS.push({ type: 'js', search: 'schema.setUpdateExtension', text: '<b>schema.setUpdateExtension</b>', code: 'schema.setUpdateExtension(function($, data) {\n\t{0}\n{0}});', ch: 2, line: 1, priority: 1 });
 SNIPPETS.push({ type: 'js', search: 'schema.setRemoveExtension', text: '<b>schema.setRemoveExtension</b>', code: 'schema.setRemoveExtension(function($, data) {\n\t{0}\n{0}});', ch: 2, line: 1, priority: 1 });
 SNIPPETS.push({ type: 'js', search: 'schema.setQueryExtension', text: '<b>schema.setQueryExtension</b>', code: 'schema.setQueryExtension(function($, data) {\n\t{0}\n{0}});', ch: 2, line: 1, priority: 1 });
+SNIPPETS.push({ type: 'js', search: 'schema.setListExtension', text: '<b>schema.setListExtension</b>', code: 'schema.setListExtension(function($, data) {\n\t{0}\n{0}});', ch: 2, line: 1, priority: 1 });
 SNIPPETS.push({ type: 'js', search: 'schema.setReadExtension', text: '<b>schema.setReadExtension</b>', code: 'schema.setReadExtension(function($, data) {\n\t{0}\n{0}});', ch: 2, line: 1, priority: 1 });
 SNIPPETS.push({ type: 'js', search: 'schema.setGetExtension', text: '<b>schema.setGetExtension</b>', code: 'schema.setGetExtension(function($, data) {\n\t{0}\n{0}});', ch: 2, line: 1, priority: 1 });
 SNIPPETS.push({ type: 'js', search: 'schema.middleware', text: '<b>schema.middleware</b>', code: 'schema.middleware(function($, next) {\n\t{0}\n{0}});', ch: 2, line: 1, priority: 1 });
+SNIPPETS.push({ type: 'js', search: 'schema.undefine', text: '<b>schema.undefine</b>', code: 'schema.undefine(\'\');', ch: 16, priority: 1 });
 SNIPPETS.push({ type: 'js', search: 'dbms DBMS list', text: '<b>DBMS().list(...).autoquery()</b>', code: 'DBMS().list(\'\').autoquery($.query, \'id:uid,name:string,dtcreated:date,dtupdated:date\', \'dtcreated_desc\', 100).where(\'isremoved=FALSE\').callback($.callback);', ch: 14, line: 0, priority: 1 });
 SNIPPETS.push({ type: 'js', search: 'dbms DBMS list', text: '<b>DBMS().list(...).autofill()</b>', code: 'DBMS().list(\'\').autofill($, \'id:uid,dtcreated:date,dtupdated:date\', null, \'dtcreated_desc\', 100).where(\'isremoved=FALSE\').callback($.callback);', ch: 14, line: 0, priority: 1 });
 SNIPPETS.push({ type: 'js', search: 'dbms DBMS find', text: '<b>DBMS().find(...)</b>', code: 'DBMS().find(\'\').where(\'isremoved=FALSE\').callback($.callback);', ch: 14, line: 0, priority: 1 });
