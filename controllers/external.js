@@ -25,12 +25,12 @@ function external(id) {
 
 		var project = MAIN.projects.findItem('path', id);
 		if (!project || !project.isexternal || !project.islocal) {
-			client.close(4001);
+			client.close(4004);
 			return;
 		}
 
 		if (MAIN.external[project.id]) {
-			client.close(4001);
+			client.close(4009);
 			return;
 		}
 
@@ -49,7 +49,7 @@ function external(id) {
 			client.send(msg);
 		};
 
-		client.send({ TYPE: 'init', version: MAIN.version, name: CONF.name });
+		client.send({ TYPE: 'init', version: MAIN.version, name: CONF.name , project: project.name });
 	});
 
 	self.on('close', function(client) {
