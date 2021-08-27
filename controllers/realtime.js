@@ -3,7 +3,7 @@ const MSG_ONLINE = { TYPE: 'online' };
 const MSG_OFFLINE = { TYPE: 'offline' };
 
 exports.install = function() {
-	ROUTE('+SOCKET /', realtime, ['text'], 1024);
+	ROUTE('+SOCKET /internal/', realtime, ['text'], 1024);
 };
 
 function realtime() {

@@ -12,3 +12,4 @@ error-blocked-ip       : Your IP has been blocked.
 error-review-token     : You don't have valid access token for code review.
 error-branches-current : You can't remove current branch.
 error-external         : Not supported for external projects.
+offline                : Offline

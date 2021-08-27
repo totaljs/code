@@ -1,12 +1,13 @@
 const Path = require('path');
 const Fs = require('fs');
 
-MAIN.version = '1.6.0';
+MAIN.version = '1.7.0';
 
 // Projects
 MAIN.projects = [];
 MAIN.projectsonline = {};
 MAIN.spawns = {};
+MAIN.external = {};
 
 // Users
 MAIN.users = [];

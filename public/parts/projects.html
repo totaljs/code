@@ -10,7 +10,7 @@
 	<div data---="datagrid__projects.grid__dblclick:projects/edit;checked:projects/checked;highlight:true;margin:20;cluster:false">
 		<script type="text/plain">
 			[
-				{ name: 'name', text: '@(Name)', class: 'b', width: 300, template: '{{ if notfound }}<span class="badge badge-small badge-red mr5">@(not found)</span>{{ fi }}{{ name }}' },
+				{ name: 'name', text: '@(Name)', class: 'b', width: 300, template: '{{ if notfound }}<span class="badge badge-small badge-red mr5">{{ if notfound === \'offline\' }}@(offline){{ else }}@(not found){{ fi }}</span>{{ fi }}{{ name }}' },
 				{ name: 'url', text: '@(URL)', width: 250 },
 				{ name: 'path', text: '@(Path)', width: 250 },
 				{ name: 'users', text: '@(Users)', template: '{{ foreach m in users }}<span class="badge badge-small" style="background:{{ m | color }}">{{ m }}</span>{{ end }}', width: 250 },
