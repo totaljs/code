@@ -3,7 +3,7 @@
 		<div class="padding">
 			<div class="row">
 				<div class="col-sm-6 m">
-					<div data---="input__?.path__required:true__'/www/www/'">@(Absolute/External path)</div>
+					<div data---="input__?.path__required:true__'/www/www/'">@(Path)</div>
 					<div class="help">
 						<span class="link exec" data-exec="?/autocomplete"><i class="fa fa-search"></i>@(Browse)</span>
 					</div>
@@ -149,12 +149,12 @@
 					SET('?.url', 'https://' + arr.join('.'));
 				}
 
-			} else if (value && (/^(https|http)\:\/\//).test(value)) {
+			} else if (value && (/^external\:\/\//).test(value)) {
 				var index = value.substring(8).indexOf('/');
 				SET('?.url', value.substring(0, index));
 			}
 
-			SET('?.isexternal', (/^(https|http)\:\/\//).test(value));
+			SET('?.isexternal', (/^(external)\:\/\//).test(value));
 		});
 
 	});

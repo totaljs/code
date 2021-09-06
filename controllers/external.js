@@ -1,7 +1,7 @@
 const Stream = require('stream');
 
 exports.install = function() {
-	ROUTE('SOCKET /', external, 1024 * 5);
+	ROUTE('SOCKET /', external, 1024 * 10); // Max. 10 MB
 };
 
 function external(id) {
@@ -20,11 +20,11 @@ function external(id) {
 
 		var id = client.query.id;
 
-		if (id && id.substring(0, 8) !== 'local://')
-			id = 'local://' + id;
+		if (id && id.substring(0, 11) !== 'external://')
+			id = 'external://' + id;
 
 		var project = MAIN.projects.findItem('path', id);
-		if (!project || !project.isexternal || !project.islocal) {
+		if (!project || !project.isexternal) {
 			client.close(4004);
 			return;
 		}

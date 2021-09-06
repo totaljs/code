@@ -289,11 +289,7 @@ NEWSCHEMA('Projects', function(schema) {
 		var model = $.clean();
 		var users = [];
 
-		model.isexternal = (/(https|http):\/\//).test(model.path);
-		model.islocal = (/local:\/\//).test(model.path);
-
-		if (model.islocal)
-			model.isexternal = true;
+		model.isexternal = (/external:\/\//).test(model.path);
 
 		if (!model.isexternal)
 			model.path = U.path(model.path.replace(/\/\//g, '/').replace(/\\\\/g, '\\'));
@@ -356,7 +352,6 @@ NEWSCHEMA('Projects', function(schema) {
 			data.created = item.created;
 			data.id = item.id;
 			data.isexternal = item.isexternal;
-			data.islocal = item.islocal;
 			data.users = item.users;
 
 			if ($.user.sa) {

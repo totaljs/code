@@ -146,78 +146,31 @@ FUNC.external_path = function(project, path) {
 var EXTERNAL_JSON = { browse: 1, info: 1, save: 1, remove: 1, create: 1, logclear: 1, modify: 1, ping: 1 };
 
 FUNC.external = function(project, type, path, data, callback) {
-
 	var body = { TYPE: type, path: path, data: data instanceof Buffer ? data.toString('base64') : data };
-
-	if (project.islocal) {
-		var socket = MAIN.external[project.id];
-		if (socket) {
-			if (type === 'save') {
-				F.Zlib.deflate(Buffer.from(body.data, 'utf8'), function(err, buffer) {
-					if (buffer) {
-						body.data = buffer.toString('base64');
-						socket.sendcode(body, callback, EXTERNAL_JSON[type] || 2);
-					} else
-						callback(err, { status: 400 });
-				});
-			} else
-				socket.sendcode(body, callback, EXTERNAL_JSON[type] || (type === 'log' ? 4 : 2));
-		} else {
-			callback('offline', { status: 400 });
-		}
-		return;
+	var socket = MAIN.external[project.id];
+	if (socket) {
+		if (type === 'save') {
+			F.Zlib.deflate(Buffer.from(body.data, 'utf8'), function(err, buffer) {
+				if (buffer) {
+					body.data = buffer.toString('base64');
+					socket.sendcode(body, callback, EXTERNAL_JSON[type] || 2);
+				} else
+					callback(err, { status: 400 });
+			});
+		} else
+			socket.sendcode(body, callback, EXTERNAL_JSON[type] || (type === 'log' ? 4 : 2));
+	} else {
+		callback('offline', { status: 400 });
 	}
-
-	var opt = {};
-	opt.url = project.path;
-	opt.type = 'json';
-	opt.method = 'POST';
-
-	if (project.token)
-		opt.headers = { 'x-token': project.token };
-
-	opt.body = JSON.stringify(body);
-	opt.callback = function(err, response) {
-
-		var data = response.body;
-
-		if (EXTERNAL_JSON[type])
-			data = data.parseJSON(true);
-
-		if (!err && response.status >= 400)
-			err = U.httpstatus(response.status);
-
-		callback(err, data);
-	};
-	REQUEST(opt);
 };
 
 FUNC.external_download = function(project, path, callback) {
-
 	var body = { TYPE: 'download', path: path };
-
-	if (project.islocal) {
-		var socket = MAIN.external[project.id];
-		if (socket) {
-			socket.sendcode(body, callback, 3);
-		} else {
-			callback('offline', { status: 400 });
-		}
-		return;
-	}
-
-	var opt = {};
-	opt.custom = true;
-	opt.url = project.path;
-	opt.type = 'json';
-	opt.method = 'POST';
-
-	if (project.token)
-		opt.headers = { 'x-token': project.token };
-
-	opt.body = JSON.stringify(body);
-	opt.callback = callback;
-	REQUEST(opt);
+	var socket = MAIN.external[project.id];
+	if (socket)
+		socket.sendcode(body, callback, 3);
+	else
+		callback('offline', { status: 400 });
 };
 
 FUNC.external_upload = function(project, path, url, callback) {
