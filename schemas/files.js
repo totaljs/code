@@ -530,8 +530,8 @@ NEWSCHEMA('FilesRename', function(schema) {
 				is && MAIN.save(2);
 			}
 
-			MAIN.changelog(user, $.id, $.model.oldpath, true);
-			MAIN.changelog(user, $.id, $.model.newpath);
+			MAIN.changelog(user, $.id, oldpath, true);
+			MAIN.changelog(user, $.id, newpath);
 			FUNC.external(project, 'rename', '', JSON.stringify({ oldpath: oldpath, newpath: newpath }), $.done());
 			return;
 		}
@@ -539,7 +539,7 @@ NEWSCHEMA('FilesRename', function(schema) {
 		FUNC.mkdir(Path.dirname(model.newpath), function() {
 
 			MAIN.log($.user, 'files_rename', project, model.oldpath, model.newpath);
-			MAIN.change('rename', $.user, project, model.oldpath + ' --> ' + model.newpath);
+			MAIN.change('rename', $.user, project, oldpath + ' --> ' + newpath);
 			NOSQL($.id + '_parts').modify({ '=path': 'doc.path.replace(\'{0}\', \'{1}\')'.format(oldpath, newpath) }).rule('doc.path.starstWith(arg.path)', { path: oldpath });
 
 			var length = project.todo ? project.todo.length : 0;
@@ -555,8 +555,8 @@ NEWSCHEMA('FilesRename', function(schema) {
 				is && MAIN.save(2);
 			}
 
-			MAIN.changelog(user, $.id, $.model.oldpath, true);
-			MAIN.changelog(user, $.id, $.model.newpath);
+			MAIN.changelog(user, $.id, oldpath, true);
+			MAIN.changelog(user, $.id, newpath);
 
 			PUBLISH('files_rename', FUNC.tms($, { oldpath: oldpath, newpath: newpath }, project));
 
