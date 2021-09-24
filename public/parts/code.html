@@ -2597,7 +2597,7 @@
 			if (electronpath) {
 				var Path = require('path');
 				var filename = Path.join(electronpath, code.data.repository.replace(/\.git$/i, ''), path);
-m				FUNC.mkdir(Path.dirname(filename));
+				FUNC.mkdir(Path.dirname(filename));
 				require('fs').writeFile(filename, code.NOTRIM[ext] ? val : FUNC.rtrim(val), function(err) {
 					if (err)
 						FUNC.warning(err.toString());
@@ -2990,6 +2990,9 @@ m				FUNC.mkdir(Path.dirname(filename));
 					if (!directory.jsonschemas)
 						opt.items.push({ name: '<strong>@(Create):</strong> /jsonschemas', icon: '!far fa-folder', value: '/jsonschemas/' });
 
+					if (!directory.middleware)
+						opt.items.push({ name: '<strong>@(Create):</strong> /middleware', icon: '!far fa-folder', value: '/middleware/' });
+
 					if (!directory.models)
 						opt.items.push({ name: '<strong>@(Create):</strong> /models', icon: '!far fa-folder', value: '/models/' });
 
@@ -3004,6 +3007,9 @@ m				FUNC.mkdir(Path.dirname(filename));
 
 					if (!directory.plugins)
 						opt.items.push({ name: '<strong>@(Create):</strong> /plugins', icon: '!far fa-folder', value: '/plugins/' });
+
+					if (!directory.private)
+						opt.items.push({ name: '<strong>@(Create):</strong> /private', icon: '!far fa-folder', value: '/private/' });
 
 					if (!directory.public)
 						opt.items.push({ name: '<strong>@(Create):</strong> /public', icon: '!far fa-folder', value: '/public/' });
