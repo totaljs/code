@@ -238,6 +238,9 @@ header .tools .selected { background-color: #F0F0F0; }
 header .tools .external { color: #a2a286; }
 .electron-header-border .tools a { height: 48px; }
 
+.jc-safari .tools { border-top: 1px solid #E0E0E0; }
+.td .jc-safari .tools { border-top-color: #404040; }
+
 .panel { background-color: white; border-radius: 3px; border: 1px solid #E0E0E0; }
 .panel > label { display: block; padding: 15px 20px; border-bottom: 1px solid #E0E0E0; font-size: 14px; font-weight: bold; }
 .panel > label i { margin-right: 5px; }
