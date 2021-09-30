@@ -1714,6 +1714,7 @@ SNIPPETS.push({ type: 'html', search: 'style', text: '<b>Inline style</b>', code
 SNIPPETS.push({ type: 'html', search: 'style', text: '<b>Style</b>', code: '{0}<style></style>', ch: 8 });
 SNIPPETS.push({ type: 'html', search: 'script', text: '<b>Script: JavaScript</b>', code: '<script></script>', ch: 9 });
 SNIPPETS.push({ type: 'html', search: 'script', text: '<b>Script: HTML</b>', code: '<script type="text/html"></script>', ch: 26 });
+SNIPPETS.push({ type: 'html', search: 'script', text: '<b>Script: JSON</b>', code: '<script type="applicatio/json"></script>', ch: 32 });
 SNIPPETS.push({ type: 'html', search: 'script', text: '<b>Script: Text</b>', code: '<script type="text/plain"></script>', ch: 27 });
 SNIPPETS.push({ type: 'html', search: 'fa', text: '<b>Font-Awesome Icon</b>', code: '<i class="fa fa-"></i>', ch: 17 });
 SNIPPETS.push({ type: 'html', search: 'jc', text: '<b>Component</b>', code: '<div data-jc="__"></div>', ch: 15 });
@@ -1744,6 +1745,7 @@ SNIPPETS.push({ type: 'js', search: 'NEWPUBLISH', text: '<b>NEWPUBLISH</b>', cod
 SNIPPETS.push({ type: 'js', search: 'NEWCALL', text: '<b>NEWCALL</b>', code: 'NEWCALL(\'\', \'\');', ch: 10 });
 SNIPPETS.push({ type: 'js', search: 'NEWSUBSCRIBE', text: '<b>NEWSUBSCRIBE</b>', code: 'NEWSUBSCRIBE(\'\', function(data) {\n\t{0}\n{0}});', ch: 15 });
 SNIPPETS.push({ type: 'js', search: 'NEWMIDDLEWARE', text: '<b>NEWMIDDLEWARE</b>', code: 'NEWMIDDLEWARE(\'\', function($) {\n\t{0}$.next();\n{0}});', ch: 16 });
+SNIPPETS.push({ type: 'js', search: 'MIDDLEWARE', text: '<b>MIDDLEWARE (UI)</b>', code: 'MIDDLEWARE(\'\', function(next) {\n\tnext();\n{0}});', ch: 13 });
 SNIPPETS.push({ type: 'js', search: 'USE', text: '<b>USE</b>', code: 'USE(\'\', \'*\', \'dynamic\');', ch: 6 });
 SNIPPETS.push({ type: 'js', search: 'for var', text: '<b>for in</b>', code: 'for (var i = 0; i < .length; i++)', ch: 21, priority: 10 });
 SNIPPETS.push({ type: 'js', search: 'foreach forEach', text: '<b>forEach</b>', code: 'forEach(function(item) {\n{0}});', ch: 30, priority: 1 });
