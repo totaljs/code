@@ -79,7 +79,7 @@ exports.install = function() {
 	ROUTE('+GET    /api/common/ip/',                                          custom_ip);
 	ROUTE('+GET    /api/common/ipserver/',                                    custom_ipsever);
 	ROUTE('+POST   /api/common/encrypt/                   *Encoder            --> @exec');
-	ROUTE('+GET    /api/componentator/download/           *Componentator      --> @download');
+	ROUTE('+GET    /api/componentator/download/           *Componentator      --> @download', [20000]);
 	ROUTE('+POST   /api/common/ping/                      *Hosts              --> @ping', [10000]);
 	ROUTE('+POST   /api/common/resolve/                   *Hosts              --> @resolve', [10000]);
 
