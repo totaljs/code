@@ -1,0 +1,43 @@
+// Meta information
+exports.name = 'My extension';
+exports.author = 'Peter Sirka';
+exports.icon = 'fa fa-plug';
+exports.color = '#4285F4';
+exports.summary = 'This script registers a new route /hello-world/';
+
+// Optional
+exports.install = function(next) {
+
+	// @next {Function([err])}
+
+	// Here you can perform some steps, this method is executed only once
+	// when the extension is registered
+
+	// !!!!!!!!!!
+	// IMPORTANT:
+	// !!!!!!!!!!
+
+	next();
+
+	// Or failed result:
+	// next('Faild to install');
+};
+
+// Optional
+exports.uninstall = function() {
+
+	// This delegate is executed when the extension is uninstalling or reinstalling
+
+};
+
+exports.make = function() {
+
+	// Installation is done
+	// Here you can extend the application
+
+
+	ROUTE('/hello/', function() {
+		this.plain('Hello world!');
+	});
+
+};
