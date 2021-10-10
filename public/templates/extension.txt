@@ -1,10 +1,12 @@
 // Meta information
+// exports.id = 'myextension'; // optional
 exports.name = 'My extension';
 exports.author = 'Peter Sirka';
 exports.icon = 'fa fa-plug';
 exports.color = '#4285F4';
 exports.version = '1.0.0';
 exports.summary = 'This script registers a new route /hello-world/';
+// exports.readme = `Markdown`; // optional
 
 // Optional
 exports.install = function(next) {
