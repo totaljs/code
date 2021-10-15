@@ -1237,6 +1237,8 @@ COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 				return 'fa fa-plug';
 			case 'js':
 				return 'fab fa-js';
+			case 'ts':
+				return 'fab fa-js blue';
 			case 'config':
 			case 'config-debug':
 			case 'config-release':
