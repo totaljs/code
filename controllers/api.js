@@ -653,7 +653,12 @@ function makebundle(id) {
 		}
 	}
 
-	var makebundle = function(err, data) {
+	if (self.xhr && !project.pathsync) {
+		self.invalid('@(The project does not have a defined synchronization path)');
+		return;
+	}
+
+	var makebundlefile = function(err, data) {
 		data = (data ? data.toString('utf8') : '').split('\n');
 		data.push('/.git/*');
 		data.push('/.src/*');
@@ -721,10 +726,15 @@ function makebundle(id) {
 	};
 
 	Fs.readFile(Path.join(project.path, path), function(err, data) {
-		if (err)
-			Fs.readFile(Path.join(project.path, '/.bundlesignore'), makebundle);
-		else
-			makebundle(err, data);
+		if (err) {
+			Fs.readFile(Path.join(project.path, '/.bundlesignore'), function(err, a) {
+				Fs.readFile(Path.join(project.path, '/.bundleignore'), function(err, b) {
+					var buffer = a && b ? Buffer.concat(a, b) : a || b;
+					makebundlefile(err, buffer);
+				});
+			});
+		} else
+			makebundlefile(err, data);
 	});
 }
 
