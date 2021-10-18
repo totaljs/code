@@ -726,14 +726,9 @@ function makebundle(id) {
 	};
 
 	Fs.readFile(Path.join(project.path, path), function(err, data) {
-		if (err) {
-			Fs.readFile(Path.join(project.path, '/.bundlesignore'), function(err, a) {
-				Fs.readFile(Path.join(project.path, '/.bundleignore'), function(err, b) {
-					var buffer = a && b ? Buffer.concat(a, b) : a || b;
-					makebundlefile(err, buffer);
-				});
-			});
-		} else
+		if (err)
+			Fs.readFile(Path.join(project.path, '/.bundlesignore'), makebundlefile);
+		else
 			makebundlefile(err, data);
 	});
 }
