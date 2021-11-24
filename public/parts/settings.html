@@ -45,7 +45,7 @@
 <script>
 	PLUGIN('settings', function(exports) {
 		exports.reload = function() {
-			SETR('settings', {});
+			SET('settings @reset', {});
 			AJAX('GET /api/accounts/', function(response) {
 				// Backward compatibility
 				if (response.darkmode === true)
@@ -64,7 +64,7 @@
 		});
 
 		exports.submit = function() {
-			var data = CLONE(GETR('settings'));
+			var data = CLONE(GET('settings @reset'));
 			AJAX('POST /api/accounts/', data, function(response) {
 				if (response.success) {
 

@@ -43,7 +43,7 @@
 
 		exports.edit = function(row) {
 			row && AJAX('GET /api/snippets/{id}/'.arg(row), function(response) {
-				SETR('snippetsform', response);
+				SET('snippetsform @reset', response);
 				SET('common.form', 'snippetsform');
 			});
 		};

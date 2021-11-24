@@ -2335,7 +2335,7 @@
 			}
 
 			if (tab.doc) {
-				SETR('code.editor.body', tab.body, 'skip');
+				SET('code.editor.body @reset', tab.body, 'skip');
 				editor.paste(tab.doc);
 			} else {
 
@@ -2345,7 +2345,7 @@
 					editor.editor.replaceRange(tab.body, { ch: 0, line: 0 }, { ch: 0, line: editor.editor.doc.lineCount() + 1 });
 					tab.reload = false;
 				} else {
-					SETR('code.editor.body', tab.body, 2);
+					SET('code.editor.body @reset', tab.body, 2);
 					editor.paste(editor.copy(false));
 				}
 

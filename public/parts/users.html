@@ -73,7 +73,7 @@
 
 		exports.edit = function(row) {
 			row && AJAX('GET /api/users/{id}/'.arg(row), function(response) {
-				SETR('usersform', response);
+				SET('usersform @reset', response);
 				SET('common.form', 'usersform');
 			});
 		};
@@ -104,7 +104,7 @@
 
 		exports.export = function() {
 			AJAX('GET /api/users/export/', function(data) {
-				SETR('usersformexport.data', ENCRYPT(data, 'totaljscode'));
+				SET('usersformexport.data @reset', ENCRYPT(data, 'totaljscode'));
 				SET('common.form', 'usersformexport');
 			});
 		};

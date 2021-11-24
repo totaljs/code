@@ -45,7 +45,7 @@
 		};
 
 		exports.submit = function() {
-			var data = CLONE(GETR('snippetsform'));
+			var data = CLONE(GET('snippetsform @reset'));
 			data.response = undefined;
 			AJAX('POST /api/snippets/', data, function(response) {
 				if (response.success) {

@@ -44,7 +44,7 @@
 
 		exports.edit = function(row) {
 			row && AJAX('GET /api/projects/{id}/'.arg(row), function(response) {
-				SETR('projectsform', response);
+				SET('projectsform @reset', response);
 				SET('common.form', 'projectsform');
 			});
 		};

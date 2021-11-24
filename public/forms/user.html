@@ -53,7 +53,7 @@
 		};
 
 		exports.submit = function() {
-			var data = CLONE(GETR('?'));
+			var data = CLONE(GET('? @reset'));
 			AJAX('POST /api/users/', data, function(response) {
 				if (response.success) {
 					SET('common.form', '');

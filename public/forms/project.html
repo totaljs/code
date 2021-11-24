@@ -106,7 +106,7 @@
 		};
 
 		exports.submit = function() {
-			var data = CLONE(GETR('projectsform'));
+			var data = CLONE(GET('projectsform @reset'));
 			AJAX('POST /api/projects/', data, function(response) {
 				if (response.success) {
 
