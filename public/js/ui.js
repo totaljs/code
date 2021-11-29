@@ -8106,9 +8106,8 @@ FUNC.messageresponse = function(success, callback) {
 	};
 };
 
-COMPONENT('emoji', 'categories:128342,128578,128161,127944,128008,128690,128172,127828,127937;height:295;history:49;empty:No emoji match your search;emptyemoji:128557;speed:500;footer:Choose skin tone;toneemoji:9995', function(self, config) {
+COMPONENT('emoji', 'categories:128342,128578,128161,127944,128008,128690,128172,127828,127937;height:295;history:49;empty:No emoji match your search;emptyemoji:128557;speed:500;footer:Choose skin tone;toneemoji:9995;search:Search', function(self, config, cls) {
 
-	var cls = 'ui-emoji';
 	var cls2 = '.' + cls;
 	var template = '<span data-id="{2}" {3}>{0}{1}</span>';
 	var tone = ['', '&#127995;', '&#127996;', '&#127997;', '&#127998;', '&#127999;'];
@@ -8120,6 +8119,17 @@ COMPONENT('emoji', 'categories:128342,128578,128161,127944,128008,128690,128172,
 	var is = false;
 	var page = 0;
 	var events = {};
+
+	var cacheset = function(value) {
+		if (W.PREF)
+			W.PREF.set(self.name, value);
+		else
+			CACHE(self.name, value, '1 month');
+	};
+
+	var cacheget = function() {
+		return (W.PREF ? W.PREF.get(self.name) : CACHE(self.name)) || {};
+	};
 
 	self.singleton();
 	self.readonly();
@@ -8142,15 +8152,16 @@ COMPONENT('emoji', 'categories:128342,128578,128161,127944,128008,128690,128172,
 		self.find(cls2 + '-search-input').val('');
 		self.find('.clearsearch').rclass2('fa-').aclass('fa-search');
 		self.find(cls2 + '-nav span').rclass('active');
-		self.find(cls2 + '-nav span[data-type="' + page +'"]').tclass('active');
-		self.find(cls2 + '-content').html(allemoticons[page]).scrollTop(0);
-		$('.noscrollbar').noscrollbar();
+		self.find(cls2 	+ '-nav span[data-type="' + page +'"]').tclass('active');
+		self.find(cls2 + '-content').html(allemoticons[page]);
+		self.scrollbar.scrollTop(0);
+		self.scrollbar.resize();
 	};
 
 	self.redraw = function() {
-		self.html('<div class="{12}"><div class="{12}-header"><div class="{12}-nav"><span data-type="0">{0}</span><span data-type="1">{1}</span><span data-type="2">{2}</span><span data-type="3">{3}</span><span data-type="4">{4}</span><span data-type="5">{5}</span><span data-type="6">{6}</span><span data-type="7">{7}</span><span data-type="8">{8}</span></div><div class="{12}-search"><span><i class="fa fa-search clearsearch"></i></span><div><input type="text" placeholder="Search" class="{12}-search-input"></div></div></div><div class="{12}-content noscrollbar" style="height:{9}px;"></div><div class="{12}-footer"><div class="{12}-footer-text">{10}</div><span data-type="0">&#{11};</span><span data-type="1">&#{11};&#127995;</span><span data-type="2">&#{11};&#127996;</span><span data-type="3">&#{11};&#127997;</span><span data-type="4">&#{11};&#127998;</span><span data-type="5">&#{11};&#127999;</span></div></div>'.format(categories[0], categories[1], categories[2], categories[3], categories[4], categories[5], categories[6], categories[7], categories[8], config.height, config.footer, config.toneemoji, cls));
+		self.html('<div class="{12}"><div class="{12}-header"><div class="{12}-nav"><span data-type="0">{0}</span><span data-type="1">{1}</span><span data-type="2">{2}</span><span data-type="3">{3}</span><span data-type="4">{4}</span><span data-type="5">{5}</span><span data-type="6">{6}</span><span data-type="7">{7}</span><span data-type="8">{8}</span></div><div class="{12}-search"><span><i class="fa fa-search clearsearch"></i></span><div><input type="text" placeholder="{13}" class="{12}-search-input"></div></div></div><div class="{12}-scrollbar" style="height:{9}px"><div class="{12}-content"></div></div><div class="{12}-footer"><div class="{12}-footer-text">{10}</div><span data-type="0">&#{11};</span><span data-type="1">&#{11};&#127995;</span><span data-type="2">&#{11};&#127996;</span><span data-type="3">&#{11};&#127997;</span><span data-type="4">&#{11};&#127998;</span><span data-type="5">&#{11};&#127999;</span></div></div>'.format(categories[0], categories[1], categories[2], categories[3], categories[4], categories[5], categories[6], categories[7], categories[8], config.height, config.footer, config.toneemoji, cls, config.search));
+		self.scrollbar = SCROLLBAR(self.find(cls2 + '-scrollbar'), { visibleY: 1 });
 		self.renderemoji();
-		self.find('.noscrollbar').noscrollbar();
 	};
 
 	self.redrawhistory = function() {
@@ -8175,22 +8186,22 @@ COMPONENT('emoji', 'categories:128342,128578,128161,127944,128008,128690,128172,
 		return parsed;
 	};
 
-	self.renderemoji = function(){
+	self.renderemoji = function() {
+
 		var html = '';
 		var code;
 
 		html = '<div class="{0}-tab0"><div class="{0}-content-title" id="history">Frequently used</div>'.format(cls);
-		for (var i = 0, len = history.length; i < len; i++) {
+		for (var i = 0; i < history.length; i++)
 			html += template.format(self.parseemoji(history[i].id), '', history[i].id);
-		}
 		html += '</div>';
 		allemoticons[0] = html;
 
-		for (var i = 0, len = W.emoticonsdb.length; i < len; i++) {
+		for (var i = 0; i < W.emoticonsdb.length; i++) {
 			html = '';
 			var emoticon = W.emoticonsdb[i];
 			html += '<div class="{0}-tab{2}"><div class="{0}-content-title" id="{1}">{1}</div>'.format(cls, emoticon.name, i + 1);
-			for (var item = 0, len2 = emoticon.emojis.length; item < len2; item++) {
+			for (var item = 0; item < emoticon.emojis.length; item++) {
 				var emoji = emoticon.emojis[item];
 				var editable = emoji.fitzpatrick || false;
 				code = emoji.code_decimal.replace(/&#/g, '').replace(/;/g, '-').slice(0, -1);
@@ -8230,7 +8241,7 @@ COMPONENT('emoji', 'categories:128342,128578,128161,127944,128008,128690,128172,
 		if (html === '')
 			html = '<div class="{0}-empty"><div>&#{1};</div>{2}</div>'.format(cls, config.emptyemoji, config.empty);
 
-		self.find(cls2 + '-content').html(html)[0].scrollTop = 0;
+		self.scrollbar.scrollTop(0);
 	};
 
 	self.make = function() {
@@ -8260,7 +8271,7 @@ COMPONENT('emoji', 'categories:128342,128578,128161,127944,128008,128690,128172,
 			var t = $(this);
 			var editable = t.attrd('editable') || 0;
 			var icon = '{0}{1}'.format(t.data('id'), editable ? toneclear[toneselected] : '');
-			var saved = CACHE(self.name) || {};
+			var saved = cacheget();
 
 			if (saved.history == null)
 				saved.history = [];
@@ -8274,21 +8285,22 @@ COMPONENT('emoji', 'categories:128342,128578,128161,127944,128008,128690,128172,
 				saved.history.push({ id: icon, count: 1 });
 			}
 
-			CACHE(self.name, saved, '1 month');
+			cacheset(saved);
 
 			var num = icon.split('-').trim().map(function(c) {
 				return +c;
 			});
 
+			self.opt.scope && M.scope(self.opt.scope);
 			self.opt.callback(String.fromCodePoint.apply(null, num));
 			self.hide();
 		});
 
 		self.event('click', cls2 + '-footer span', function() {
-			var saved = CACHE(self.name) || {};
+			var saved = cacheget();
 			toneselected = $(this).attrd('type');
 			saved.tone = toneselected;
-			CACHE(self.name, saved, '1 month');
+			cacheset(saved);
 			self.renderemoji();
 		});
 
@@ -8303,7 +8315,11 @@ COMPONENT('emoji', 'categories:128342,128578,128161,127944,128008,128690,128172,
 			self.hide();
 		};
 
-		self.on('reflow + scroll + resize', self.hide);
+		self.on('reflow + resize + resize2', self.hide);
+		self.on('scroll', function(e) {
+			if (e && e[0] !== self.scrollbar.area[0])
+				self.hide();
+		});
 	};
 
 	self.bindevents = function() {
@@ -8328,6 +8344,9 @@ COMPONENT('emoji', 'categories:128342,128578,128161,127944,128008,128690,128172,
 			self.hide();
 			return;
 		}
+
+		if (M.scope)
+			opt.scope = M.scope();
 
 		self.target = tmp;
 		self.opt = opt;
@@ -8370,7 +8389,7 @@ COMPONENT('emoji', 'categories:128342,128578,128161,127944,128008,128690,128172,
 		if (opt.offsetY)
 			css.top += opt.offsetY;
 
-		var saved = CACHE(self.name) || {};
+		var saved = cacheget();
 
 		if (saved.tone != null)
 			toneselected = saved.tone;
@@ -8425,7 +8444,7 @@ COMPONENT('emoji', 'categories:128342,128578,128161,127944,128008,128690,128172,
 	};
 
 }, [function(next) {
-	AJAX('GET /emoji.json', function(response) {
+	AJAX('GET https://cdn.componentator.com/j-emoji.json', function(response) {
 
 		W.emoticonsdb = response;
 		W.emoticons_search = [];
