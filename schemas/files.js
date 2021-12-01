@@ -671,7 +671,7 @@ NEWSCHEMA('FilesUpload', function(schema) {
 						if (err)
 							next();
 						else
-							FUNC.external(project, 'upload', model.path + file.filename, data, next);
+							FUNC.external(project, 'save', model.path + file.filename, data, next);
 					});
 				} else
 					file.move(filename, next);

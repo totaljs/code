@@ -230,7 +230,7 @@ function files_download(id) {
 			FUNC.external_download(item, path, function(err, response) {
 
 				if (err) {
-					$.invalid(err);
+					self.invalid(err);
 					return;
 				}
 

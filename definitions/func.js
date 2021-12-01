@@ -146,19 +146,21 @@ FUNC.external_path = function(project, path) {
 var EXTERNAL_JSON = { browse: 1, info: 1, save: 1, remove: 1, create: 1, logclear: 1, modify: 1, ping: 1 };
 
 FUNC.external = function(project, type, path, data, callback) {
-	var body = { TYPE: type, path: path, data: data instanceof Buffer ? data.toString('base64') : data };
+	var body = { TYPE: type, path: path };
 	var socket = MAIN.external[project.id];
 	if (socket) {
-		if (type === 'save') {
-			F.Zlib.deflate(Buffer.from(body.data, 'utf8'), function(err, buffer) {
+		if (type === 'save' || type === 'upload') {
+			F.Zlib.deflate(data instanceof Buffer ? data : Buffer.from(data, 'utf8'), function(err, buffer) {
 				if (buffer) {
 					body.data = buffer.toString('base64');
 					socket.sendcode(body, callback, EXTERNAL_JSON[type] || 2);
 				} else
 					callback(err, { status: 400 });
 			});
-		} else
+		} else {
+			body.data = data instanceof Buffer ? data.toString('base64') : data;
 			socket.sendcode(body, callback, EXTERNAL_JSON[type] || (type === 'log' ? 4 : 2));
+		}
 	} else {
 		callback('offline', { status: 400 });
 	}
