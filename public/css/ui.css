@@ -109,23 +109,23 @@ div.CodeMirror span.CodeMirror-matchingbracket { border-bottom: 2px solid blue; 
 .ui-tree .node:last-child > .item { border-bottom: 0; }
 /*.td .ui-tree .item-ddhere { background-color: #404040 !important; }*/
 .ui-tree .children1 { background-position: 12px 0; }
-.ui-tree .children2 { background-position: 24px 0; }
-.ui-tree .children3 { background-position: 36px 0; }
-.ui-tree .children4 { background-position: 48px 0; }
-.ui-tree .children5 { background-position: 60px 0; }
-.ui-tree .children6 { background-position: 72px 0; }
-.ui-tree .children7 { background-position: 84px 0; }
-.ui-tree .children8 { background-position: 96px 0; }
-.ui-tree .children9 { background-position: 108px 0; }
-.ui-tree .children1 .item { padding-left: 24px; }
-.ui-tree .children2 .item { padding-left: 36px; }
-.ui-tree .children3 .item { padding-left: 48px; }
-.ui-tree .children4 .item { padding-left: 60px; }
-.ui-tree .children5 .item { padding-left: 72px; }
-.ui-tree .children6 .item { padding-left: 84px; }
-.ui-tree .children7 .item { padding-left: 96px; }
-.ui-tree .children8 .item { padding-left: 108px; }
-.ui-tree .children9 .item { padding-left: 153px; }
+.ui-tree .children2 { background-position: 32px 0; }
+.ui-tree .children3 { background-position: 52px 0; }
+.ui-tree .children4 { background-position: 72px 0; }
+.ui-tree .children5 { background-position: 92px 0; }
+.ui-tree .children6 { background-position: 112px 0; }
+.ui-tree .children7 { background-position: 132px 0; }
+.ui-tree .children8 { background-position: 152px 0; }
+.ui-tree .children9 { background-position: 172px 0; }
+.ui-tree .children1 .item { padding-left: 32px; }
+.ui-tree .children2 .item { padding-left: 52px; }
+.ui-tree .children3 .item { padding-left: 72px; }
+.ui-tree .children4 .item { padding-left: 92px; }
+.ui-tree .children5 .item { padding-left: 112px; }
+.ui-tree .children6 .item { padding-left: 132px; }
+.ui-tree .children7 .item { padding-left: 152px; }
+.ui-tree .children8 .item { padding-left: 172px; }
+.ui-tree .children9 .item { padding-left: 192px; }
 .ui-tree input { padding: 0 2px; margin: 0; outline: 0; border: 0; line-height: 0; color: black; height: 12px; background-color: transparent; }
 .td .ui-tree .extrabutton { border-bottom: 1px solid #303030; background-color: #181818; color: #888888; }
 .td .ui-tree .extrabutton:hover { background-color: #282828; }
