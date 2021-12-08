@@ -107,7 +107,6 @@ COMPONENT('editor', function(self, config) {
 	};
 
 	self.getter = null;
-	self.bindvisible();
 	self.nocompile && self.nocompile();
 
 	self.clearmarkers = function() {
@@ -1716,7 +1715,6 @@ COMPONENT('part', 'hide:true', function(self, config) {
 });
 
 COMPONENT('selected', 'class:selected;selector:a', function(self, config) {
-	self.bindvisible();
 	self.readonly();
 	self.setter = function(value) {
 		var cls = config.class;
@@ -2021,7 +2019,6 @@ COMPONENT('datagrid', 'checkbox:true;colwidth:150;rowheight:28;clusterize:true;l
 	};
 
 	self.readonly();
-	self.bindvisible();
 	self.nocompile();
 
 	var reconfig = function() {
@@ -7110,7 +7107,6 @@ COMPONENT('input', 'maxlength:200;dirkey:name;dirvalue:id;increment:1;autovalue:
 	var input, placeholder, dirsource, binded, customvalidator, mask, isdirvisible = false, nobindcamouflage = false, focused = false;
 
 	self.nocompile();
-	self.bindvisible(20);
 
 	self.init = function() {
 		Thelpers.ui_input_icon = function(val) {
