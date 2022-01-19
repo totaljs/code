@@ -3294,7 +3294,7 @@
 			var body = [];
 			SETTER('loading/show');
 			code.data.files.wait(function(item, next) {
-				if ((/controllers|schemas/).test(item)) {
+				if ((/controllers|schemas|extensions|plugins\/[a-z0-9_-]+\.html/).test(item)) {
 					SETTER('loading/show', '@(Analyzing:) ' + item);
 					AJAX('GET /api/projects/{id}/edit/'.arg(code.data), { path: item }, function(response) {
 						body.push(response);

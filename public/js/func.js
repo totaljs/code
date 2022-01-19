@@ -2010,6 +2010,13 @@ FUNC.livereloadconnect = function() {
 				continue;
 			}
 
+			if (line.indexOf('setList(') !== -1) {
+				var tmp = findscope(i, lines);
+				schema.list = analyze(tmp.body);
+				i = tmp.end;
+				continue;
+			}
+
 			if (line.indexOf('setRead(') !== -1) {
 				var tmp = findscope(i, lines);
 				schema.read = analyze(tmp.body);
