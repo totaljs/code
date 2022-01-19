@@ -10,6 +10,7 @@
 	<div data---="datagrid__projects.grid__dblclick:projects/edit;checked:projects/checked;highlight:true;margin:20;cluster:false">
 		<script type="text/plain">
 			[
+				'{{ if hidden }} silver{{ fi }}',
 				{ name: 'name', text: '@(Name)', class: 'b', width: 300, template: '{{ if notfound }}<span class="badge badge-small badge-red mr5">{{ if notfound === \'offline\' }}@(offline){{ else }}@(not found){{ fi }}</span>{{ fi }}{{ name }}' },
 				{ name: 'url', text: '@(URL)', width: 250 },
 				{ name: 'path', text: '@(Path)', width: 250 },
@@ -38,7 +39,7 @@
 		};
 
 		exports.reload = function() {
-			setTimeout(EXEC2('#resize'), 100);
+			setTimeout(AEXEC('#resize'), 100);
 			exports.refresh();
 		};
 

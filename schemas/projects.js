@@ -30,6 +30,7 @@ NEWSCHEMA('Projects', function(schema) {
 	schema.define('resettime', Boolean);
 	schema.define('resetchangelog', Boolean);
 	schema.define('allowlivereload', Boolean);
+	schema.define('hidden', Boolean);
 
 	// TMS
 	schema.jsonschema_define('userid', 'String');
@@ -342,8 +343,11 @@ NEWSCHEMA('Projects', function(schema) {
 		for (var i = 0; i < MAIN.projects.length; i++) {
 
 			var item = MAIN.projects[i];
-			var data = {};
 
+			if (!$.query.check && item.hidden)
+				continue;
+
+			var data = {};
 			data.name = item.name;
 			data.url = item.url;
 			data.owner = item.ownerid === $.user.id;
@@ -353,6 +357,7 @@ NEWSCHEMA('Projects', function(schema) {
 			data.id = item.id;
 			data.isexternal = item.isexternal;
 			data.users = item.users;
+			data.hidden = item.hidden;
 
 			if ($.user.sa) {
 				data.path = item.path;

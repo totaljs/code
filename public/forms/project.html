@@ -1,11 +1,11 @@
-<div data---="largeform__common.form__if:projectsform;icon:code-branch;width:700;reload:projectsform/reload;autofocus:1;submit:projectsform/submit" class="hidden">
+<div data---="largeform__common.form__if:projectsform;icon:code-branch;width:660;reload:projectsform/reload;autofocus:1;submit:projectsform/submit" class="hidden">
 	<div data-scope="projectsform">
 		<div class="padding">
 			<div class="row">
 				<div class="col-sm-6 m">
 					<div data---="input__?.path__required:true__'/www/www/'">@(Path)</div>
 					<div class="help">
-						<span class="link exec" data-exec="?/autocomplete"><i class="fa fa-search"></i>@(Browse)</span>
+						<span class="link exec" data-exec="?/autocomplete"><i class="fa fa-search"></i>@(Browse server)</span>. @(The path for external projects must be in the form:) <b>external://@(projectname)</b>
 					</div>
 				</div>
 				<div class="col-sm-6 m">
@@ -14,10 +14,15 @@
 				</div>
 			</div>
 
+			<div data-bind="?.isexternal__show" class="bg-smoke padding m hidden fs12">
+				<i class="fa fa-question-circle mr5"></i><a href="https://github.com/totaljs/framework4/blob/master/helpers/index.js#L19" target="_blank" class="gray">@(How to enable editing source code for the external Total.js project?)</a>
+			</div>
+
+			<!--
 			<div data-bind="?.isexternal__show" class="bg-smoke padding m hidden">
 				<div data---="input__?.token__maxlength:50__''">@(Token)</div>
-				<div class="help">@(A security token for external path)</div>
-			</div>
+				<div class="help"><span class="link exec" data-exec="?/securitytoken"><i class="fa fa-key"></i>@(Generate)</span>. @(A security token for the external project)</div>
+			</div>-->
 
 			<div class="row">
 				<div class="col-sm-6 m">
@@ -46,16 +51,18 @@
 					<div class="help">@(A default log file is <code>current_app_dir/logs/debug.log</code>)</div>
 				</div>
 			</div>
-
+			<hr class="nmt" />
+			<div data---="checkbox__?.hidden__null__false" class="b">@(Hide project)</div>
+			<hr />
 			<div data---="checkbox__?.backup__null__true">@(Backup all modified files)</div>
 			<div data---="checkbox__?.skiptmp__null__true">@(Skip <b>tmp</b> directory)</div>
 			<div data---="checkbox__?.skipsrc__null__true">@(Skip <b>.src</b> directory)</div>
 			<div data---="checkbox__?.skipnm__null__true">@(Skip <b>node_modules</b> directory)</div>
 			<div data---="checkbox__?.allowbundle__null__true">@(Allow bundle making)</div>
 			<hr />
-			<div data---="checkbox__?.allowscripts__null__true">@(Allow scripts)</div>
+			<div data---="checkbox__?.servicemode__null__true">@(Enable a service mode)</div>
 			<div data---="checkbox__?.allowlivereload__null__false">@(Allow live reload)</div>
-			<div data---="checkbox__?.servicemode__null__false">@(Enable a service mode)</div>
+			<div data---="checkbox__?.allowscripts__null__false">@(Allow scripts)</div>
 		</div>
 		<hr class="nmt nmb" />
 		<div class="padding">
@@ -87,7 +94,7 @@
 		exports.autocomplete = function(el) {
 			projectsform.path && AJAX('GET /api/common/directories/', { path: projectsform.path }, function(response) {
 				SETTER('suggestion/show', 'left', el, response, function(value) {
-					SET2('projectsform.path', value.path);
+					SET('projectsform.path @change', value.path);
 				}, 0, 5);
 			});
 		};
@@ -103,6 +110,10 @@
 		exports.reload = function(com) {
 			AJAX('GET /api/users/', '%projectsformusers');
 			com.reconfigure({ title: GET('projectsform.id') ? '@(Edit project)' : '@(New project)' });
+		};
+
+		exports.securitytoken = function() {
+			SET('?.token', GUID(25));
 		};
 
 		exports.submit = function() {
