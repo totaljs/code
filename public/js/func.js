@@ -2266,11 +2266,12 @@ FUNC.jcomponent_update = function(name, type, content, body, meta) {
 		var REGTASKOP = /('|").*?('|")/g;
 		var REGVERSION = /version[":-='\s]+[a-z0-9."',\s]+/;
 		var REGJC = /data---=".*?(__|")/g;
+		var REGFILE = /<file name.*?>/g;
 		var todos = [];
 		var components = [];
 
 		var is = null;
-		var name, type, oldschema, oldplugin, pluginvariable, oldtask, taskvariable, tmp;
+		var name, type, oldschema, oldplugin, pluginvariable, oldtask, taskvariable, tmp, index;
 		var ispluginable = false;
 		var version = '';
 		var version_file = '';
@@ -2304,6 +2305,25 @@ FUNC.jcomponent_update = function(name, type, content, body, meta) {
 			}
 
 			if (mode === 'javascript' || mode === 'totaljs' || mode === 'html' || mode === 'htmlmixed' || mode === 'totaljs_server') {
+
+				if (line.indexOf('</file>') !== -1) {
+					for (var j = components.length - 1; j > -1; j--) {
+						var tmp = components[j];
+						if (tmp.type === 'inlinefile') {
+							tmp.lineto = i;
+							break;
+						}
+					}
+				}
+
+				m = line.match(REGFILE);
+				if (m) {
+					index = m.index;
+					m = m.toString();
+					tmp = m.indexOf('"');
+					components.push({ line: i, ch: index, name: m.substring(tmp + 1, m.indexOf('"', tmp + 2)), type: 'inlinefile' });
+					continue;
+				}
 
 				if (is != null && line.substring(is, 3) === '});') {
 					components[components.length - 1].lineto = i;

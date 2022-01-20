@@ -82,6 +82,8 @@ Thelpers.particon = function(type) {
 			return 'fa fa-font';
 		case 'operation':
 			return 'fa fa-plug';
+		case 'inlinefile':
+			return 'far fa-copy';
 		case 'version':
 			return 'fa fa-superscript';
 		default:
