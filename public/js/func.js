@@ -2551,4 +2551,89 @@ FUNC.jcomponent_update = function(name, type, content, body, meta) {
 		return { todos: todos, components: components, version: version_file };
 	};
 
+	FUNC.indent = function(count, val) {
+
+		var lines = val.split('\n');
+		var str = '';
+		var total = Math.abs(count);
+
+		for (var i = 0; i < total; i++)
+			str += '\t';
+
+		for (var i = 0; i < lines.length; i++) {
+			if (count > 0 && lines[i])
+				lines[i] = str + lines[i];
+			else if (lines[i].substring(0, total) === str)
+				lines[i] = lines[i].substring(total);
+		}
+
+		return lines.join('\n');
+	};
+
+	FUNC.plugin_compress = function(path, callback) {
+
+		var files = [];
+		var core = [];
+
+		code.data.files.wait(function(item, next) {
+			if (item.substring(0, path.length) === path && (/.(js|html)/)) {
+				EXEC('code/readfile', item, function(response) {
+					var name = FUNC.getName(item);
+					if (name === 'index.js' || (item.lastIndexOf('.js') !== -1 && (/\/(definitions|schemas|controllers)\//).test(item)))
+						core.push(FUNC.indent(1, response));
+					else
+						files.push('<file name="{0}">\n{1}\n</file>'.format(name, FUNC.indent(1, response)));
+					next();
+				});
+			} else
+				next();
+
+		}, function() {
+			var str = ('<scri' + 'pt total>\n\n{0}\n\n</scr' + 'ipt>\n\n{1}').format(core.join('\n'), files.join('\n'));
+			EXEC('code/savefile', (path + '.html').replace(/\/.html/, '.html'), str, function() {
+				EXEC('code/removefile', path, callback);
+			});
+		});
+	};
+
+	FUNC.plugin_extract = function(path, callback) {
+
+		EXEC('code/readfile', path, function(response) {
+
+			var index = response.indexOf('<scri' + 'pt total>');
+			var be = FUNC.indent(-1, response.substring(index + 14, response.indexOf('</scri' + 'pt>', index + 20))).trim();
+			var files = [];
+
+			while (true) {
+				index = response.indexOf('<file');
+				if (index === -1)
+					break;
+				var header = response.substring(index, response.indexOf('>', index + 6));
+				var beg = index + header.length + 2;
+				index = response.indexOf('</file>', beg + 7);
+				if (index === -1)
+					break;
+				var meta = { name: '', body: FUNC.indent(-1, response.substring(beg, index)).trim() };
+				response = response.substring(index + 7);
+				index = header.indexOf('"');
+				if (index === -1)
+					break;
+				meta.name = header.substring(index + 1, header.lastIndexOf('"'));
+				files.push(meta);
+			}
+
+			var newpath = path.replace(/\.html$/, '');
+
+			EXEC('code/savefile', newpath + '/index.js', be, function() {
+				files.wait(function(item, next) {
+					EXEC('code/savefile', newpath + '/public/' + item.name, item.body, next);
+				}, function() {
+					EXEC('code/removefile', path, callback);
+				});
+			});
+
+		});
+
+	};
+
 })();

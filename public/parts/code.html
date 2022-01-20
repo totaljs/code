@@ -1992,6 +1992,17 @@
 					items.push({ makefile: true, name: '@(Create:) default.resource', icon: 'file-text-o' });
 			}
 
+			var tmp = node.path.split('/').trim();
+			if (tmp[0] === 'plugins' && tmp[1] && !tmp[2]) {
+				if (tmp[1].lastIndexOf('.html') === -1) {
+					// directory
+					items.push({ value: 'plugin_compress', name: '@(Convert to <strong>{0}</strong>)'.format(tmp[1] + '.html'), icon: 'plug' });
+				} else {
+					// file
+					items.push({ value: 'plugin_extract', name: '@(Expose plugin)', icon: 'plug' });
+				}
+			}
+
 			if (items.length)
 				items.push('-');
 
@@ -2054,6 +2065,10 @@
 				}
 
 				switch (item.value) {
+					case 'plugin_compress':
+					case 'plugin_extract':
+						FUNC[item.value](node.path, exports.refresh);
+						break;
 					case 'filter':
 						SETTER('tree/shownested', node.path);
 						break;
@@ -2859,6 +2874,51 @@
 				}));
 
 			}, 300);
+		};
+
+		exports.readfile = function(path, callback) {
+			AJAX('GET /api/projects/{id}/edit/'.arg(code.data), { path: path }, callback);
+		};
+
+		exports.savefile = function(path, body, callback) {
+
+			var data = {};
+			data.diff = [];
+			data.changes = [];
+			data.path = path;
+			data.combo = 0;
+			data.body = body;
+			data.todo = EMPTYARRAY;
+			data.parts = EMPTYARRAY;
+
+			exports.cache_rem(data.path);
+			exports.element.find('section.tabs').find('span[data-value="{0}"]'.format(data.path)).rclass('modified');
+			SETTER('loading/show');
+			AJAX('POST /api/files/{id}/ REPEAT'.arg(code.data), data, ASETTER('message/response', function(response) {
+				SETTER('loading/hide', 500);
+				FUNC.wssend({ TYPE: 'save', connid: common.id, projectid: code.projectid, id: user.id, user: user.name });
+				common.electron && code.data.repository && user.localsave && exports.savelocal();
+				FUNC.livereload(data.path);
+				callback && callback();
+			}));
+		};
+
+		exports.removefile = function(path, callback) {
+
+			var data = {};
+			data.path = path;
+			SETTER('loading/show');
+			AJAX('POST /api/files/{id}/remove/'.arg(code.data), data, function() {
+				SETTER('loading/hide', 100);
+				var el = exports.element.find('.tabs');
+				el = el.find('span[data-value="{0}"]'.format(data.path));
+				el.length && el.find('i').trigger('click');
+				SET('code.tree', FUNC.treeremove(code.tree, data.path));
+				code.data.files = code.data.files.remove(data.path);
+				common.electron && code.data.repository && user.localsave && FUNC.unlinkpath(require('path').join(FUNC.getName(code.data.repository.replace(/\.git$/i, '')), data.path));
+				callback && callback();
+			});
+
 		};
 
 		exports.savetabs = function() {
