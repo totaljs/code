@@ -548,7 +548,7 @@ header .tools .external { color: #a2a286; }
 .td .CodeMirror-matchingbracket { text-decoration: underline; color: white !important }
 .td .CodeMirror-gutters { background-color: #252525 !important; }
 
-.td span.cm-variable-T { background-color: rgba(104,178,91,.3); color: #9ed58c; }
+.td span.cm-variable-T { color: #61afef; background-color: rgba(97,175,239,0.1); }
 .td span.cm-variable-API { color: #61afef; background-color: rgba(97,175,239,0.1); }
 .td span.cm-variable-L { color: #56b6c2; background-color: rgba(86,182,194,0.1); }
 .td span.cm-variable-A { color: #c678dd; background-color: rgba(198,120,221,0.1); }
