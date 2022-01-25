@@ -1,4 +1,4 @@
-<div data---="largeform__common.form__if:~PATH~;icon:hashtag;autofocus:true;reload:?/reload;scrollbar:1;submit:?/submit;width:800" class="hidden" data-scope="~PATH~">
+<div data---="box__common.form__if:~PATH~;icon:hashtag;autofocus:true;reload:?/reload;scrollbar:1;submit:?/submit;width:800" class="hidden" data-scope="~PATH~">
 	<div class="padding">
 		YOUR CODE
 	</div>
