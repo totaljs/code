@@ -2582,7 +2582,7 @@ FUNC.jcomponent_update = function(name, type, content, body, meta) {
 					if (name === 'index.js' || (item.lastIndexOf('.js') !== -1 && (/\/(definitions|schemas|controllers)\//).test(item)))
 						core.push(FUNC.indent(1, response));
 					else
-						files.push('<file name="{0}">\n{1}\n</file>'.format(name, FUNC.indent(1, response)));
+						files.push('<file name="{0}">\n{1}\n</file>\n'.format(name, FUNC.indent(1, response)));
 					next();
 				});
 			} else
