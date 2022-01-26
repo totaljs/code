@@ -375,6 +375,7 @@ NEWSCHEMA('Files', function(schema) {
 			if (err) {
 				$.invalid(err);
 			} else {
+				$.controller.nocache();
 				$.controller.file('~' + arg[0], filename, null, () => Fs.unlink(arg[0], NOOP));
 				$.cancel();
 			}

@@ -221,6 +221,8 @@ function files_download(id) {
 		return;
 	}
 
+	self.nocache();
+
 	var path = self.query.path || '';
 
 	if (MAIN.authorize(item, self.user, path)) {
