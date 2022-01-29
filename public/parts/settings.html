@@ -2,14 +2,21 @@
 	<br />
 	<br />
 	<div class="row">
-		<div class="col-md-4 col-md-offset-4">
+		<div class="col-md-6 col-md-offset-3">
 			<div class="panel">
 				<label><i class="fa fa-cog"></i>@(Settings)</label>
 				<div data-scope="settings">
 
 					<div class="body">
-						<div data---="textbox__?.email__required:true;type:email" class="m">@(Email address)</div>
-						<div data---="textbox__?.phone__type:phone" class="m">@(Phone number)</div>
+
+						<div class="row">
+							<div class="col-md-6 m">
+								<div data---="textbox__?.email__required:true;type:email">@(Email address)</div>
+							</div>
+							<div class="col-md-6 m">
+								<div data---="textbox__?.phone__type:phone">@(Phone number)</div>
+							</div>
+						</div>
 
 						<div data---="radiobutton__?.darkmode__items:@(Light mode)|0,@(Dark mode)|1,@(Day/Night)|2;type:number;inline:1__0"></div>
 						<hr class="nmt" />
@@ -22,11 +29,19 @@
 						</div>
 					</div>
 
-					<div data-bind="user.sa__show" class="hidden m bg-smoke body">
+					<div data-bind="user.sa__show" class="hidden m bg-smoke body npb">
 						<div data---="input__?.token__maxlength:100;camouflage:•;icon:check-circle green;placeholder:@(Enter a token)">@(Token for chat and code review)</div>
 						<div class="help m"><i class="far fa-life-ring"></i>@(Total.js Team offers a professional code review. You can obtain a token on) <a href="https://platform.totaljs.com?open=api" target="_blank">https://platform.totaljs.com</a></div>
-						<div data---="input__?.appname__maxlength:40;required:1">@(Code name)</div>
-						<div class="help"><i class="fa fa-desktop"></i>@(Code name will be displayed in the title)</div>
+						<div class="row">
+							<div class="col-md-6 m">
+								<div data---="input__?.appname__maxlength:40;required:1">@(Code name)</div>
+								<div class="help"><i class="fa fa-desktop"></i>@(Code name will be displayed in the title)</div>
+							</div>
+							<div class="col-md-6 m">
+								<div data---="input__?.superadmin__maxlength:200">@(URL address to SuperAdmin)</div>
+								<div class="help"><i class="fa fa-globe"></i>@(The link will be available in the UI)</div>
+							</div>
+						</div>
 					</div>
 
 					<div class="body npt">

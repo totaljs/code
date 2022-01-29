@@ -4,6 +4,7 @@ NEWSCHEMA('Accounts', function(schema) {
 	schema.define('phone', 'Phone');
 	schema.define('token', 'String(100)');
 	schema.define('appname', 'String(50)');
+	schema.define('superadmin', 'String(200)');
 	schema.define('darkmode', 'Number');
 	schema.define('localsave', 'Boolean');
 	schema.define('password', 'String(30)');
@@ -26,8 +27,10 @@ NEWSCHEMA('Accounts', function(schema) {
 		data.password = '*******';
 		data.token = user.sa ? PREF.token : '';
 
-		if (user.sa)
+		if (user.sa) {
 			data.appname = CONF.name;
+			data.superadmin = PREF.superadmin;
+		}
 
 		$.callback(data);
 	});
@@ -47,6 +50,7 @@ NEWSCHEMA('Accounts', function(schema) {
 			CONF.name = model.appname;
 			PREF.set('name', model.appname);
 			PREF.set('token', model.token);
+			PREF.set('superadmin', model.superadmin);
 		}
 
 		if (model.password && model.password.substring(0, 3) !== '***')
