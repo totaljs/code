@@ -120,9 +120,9 @@ hr { border-color: #E0E0E0; }
 .logo i { margin-right: 10px; }
 
 .windowtitlebar { -webkit-app-region: drag; display: none; text-align: right; font-size: 9px; line-height: 22px; padding-right: 8px; }
-.electron .windowtitlebar { height: 28px; border-bottom: 1px solid #E0E0E0; user-select: none; display: block; color: gray; line-height: 28px; }
+.electron .windowtitlebar { height: 28px; border-bottom: 1px solid #E0E0E0; user-select: none; display: block; color: #000; line-height: 28px; font-size: 12px; font-weight: bold; }
 .electron .collaborators { top: 28px; }
-.td .windowtitlebar { border-bottom-color: #303030; }
+.td .windowtitlebar { border-bottom-color: #303030; color: #FFF; }
 
 header { height: 50px; background-color: linear-gradient(white,#F0F0F0); border-bottom: 1px solid #E0E0E0; -webkit-app-region: drag; user-select: none; }
 header > button { display: none; position: absolute; right: 0; top: 0; width: 50px; height: 49px; border: 0; color: white; background-color: #e93223; font-size: 24px; user-select: none; }
