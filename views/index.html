@@ -66,9 +66,7 @@
 			<a href="https://www.totaljs.com/contact/" target="_blank" title="@(Total.js Platform)"><i class="far fa-envelope"></i></a>
 			<a href="@{#}/snippets/" title="@(Snippets)" class="R" data-if="snippets"><i class="far fa-clone"></i></a>
 			-->
-			@{if PREF.superadmin}
-			<a href="@{PREF.superadmin}" title="SuperAdmin" target="_blank" class="external"><i class="fa fa-th"></i></a>
-			@{fi}
+			@{if PREF.superadmin}<a href="@{PREF.superadmin}" title="SuperAdmin" target="_blank" class="external"><i class="fa fa-th"></i></a>@{fi}
 			@{fi}
 			<a href="@{#}/settings/" title="@(My settings)" class="R" data-if="settings"><i class="fa fa-cog"></i></a>
 			<a href="@{#}/logout/" title="@(Sign out)" class="red2"><i class="fa fa-sign-out"></i></a>
