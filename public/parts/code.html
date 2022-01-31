@@ -1749,6 +1749,7 @@
 			items.push({ value: 9, name: '@(Show log file)', icon: 'bug red', shortcut: 'F10' });
 			items.push({ value: 16, name: '@(Clipboard)', icon: 'clipboard', shortcut: 'F11' });
 			items.push({ value: 20, name: '@(Localize files)', icon: 'language' });
+			items.push({ value: 97, name: '@(Reset windows)', icon: 'window-restore' });
 
 			if (code.data.allowbundle && !code.data.isexternal)
 	 			user.sa && items.push({ value: 23, name: '@(Download source-code)', icon: 'download' });
@@ -1765,6 +1766,24 @@
 				switch (item.value) {
 					case 1:
 						FUNC.editor_reload();
+						break;
+					case 97:
+
+						for (var key in PREF) {
+							if (key.substring(0, 4) === 'win_')
+								PREF.set(key);
+						}
+
+						var win = FIND('windows');
+						var counter = 0;
+
+						for (var item of windows) {
+							var tmp = win.finditem(item.id);
+							var minus = (counter++) * 50;
+							tmp.setoffset(WW - (550 + minus), WH - (400 + minus));
+							tmp.setsize(500, 250);
+						}
+
 						break;
 					case 90:
 
