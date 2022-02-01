@@ -1740,7 +1740,7 @@ SNIPPETS.push({ type: 'js', search: 'MACRO', text: '<b>MACRO</b>', code: 'MACRO(
 SNIPPETS.push({ type: 'js', search: 'CONFIG', text: '<b>CONFIG</b>', code: 'CONFIG(\'\', \'\');', ch: 9 });
 SNIPPETS.push({ type: 'js', search: 'PUBLISH', text: '<b>PUBLISH</b>', code: 'PUBLISH(\'\', model);', ch: 10 });
 SNIPPETS.push({ type: 'js', search: 'SUBSCRIBE', text: '<b>SUBSCRIBE</b>', code: 'SUBSCRIBE(\'\', model, true);', ch: 12 });
-SNIPPETS.push({ type: 'js', search: 'NEWMACRO', text: '<b>NEWMACRO</b>', code: 'NEWMACRO(\'{1}\');', ch: 12 });
+SNIPPETS.push({ type: 'js', search: 'NEWMACRO', text: '<b>NEWMACRO</b>', code: 'NEWMACRO(\'{1}\');', ch: 11 });
 SNIPPETS.push({ type: 'js', search: 'NEWSCHEMA', text: '<b>NEWSCHEMA</b>', code: 'NEWSCHEMA(\'{1}\', function(schema) {\n\t{0}schema.define(\'key\', String, true);\n{0}});', ch: 12 });
 SNIPPETS.push({ type: 'js', search: 'NEWOPERATION', text: '<b>NEWOPERATION</b>', code: 'NEWOPERATION(\'\', async function($, value) {\n\t{0}\n{0}});', ch: 15 });
 SNIPPETS.push({ type: 'js', search: 'NEWTASK', text: '<b>NEWTASK</b>', code: 'NEWTASK(\'{1}\', function(push) {\n\n\t{0}push(\'TASK_NAME_1\', function($, value) {\n\t\t{0}$.next(\'TASK_NAME_2\');\n\t{0}});\n\n\t{0}push(\'TASK_NAME_2\', function($, value) {\n\t\t{0}$.end();\n\t{0}});\n\n{0}});', ch: 10 });
