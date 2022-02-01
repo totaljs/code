@@ -13,6 +13,7 @@ NEWSCHEMA('Wiki', function(schema) {
 	});
 
 	schema.setRead(function($) {
+		$.controller.nocache();
 		$.controller.file('~' + PATH.databases('wiki_' + $.id + '.md'));
 		$.cancel();
 	});

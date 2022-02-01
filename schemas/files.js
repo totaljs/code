@@ -367,7 +367,7 @@ NEWSCHEMA('Files', function(schema) {
 		}
 
 		var arg = [];
-		var filename = project.name.slug() + (project.branch ? ('_' + project.branch) : '') + '.tar.gz';
+		var filename = project.name.slug() + (project.branch ? ('_' + project.branch) : '') + '_' + Date.now().toString(36) + '.tar.gz';
 		arg.push(PATH.temp(filename));
 		arg.push(project.path);
 
