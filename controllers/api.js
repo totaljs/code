@@ -535,7 +535,7 @@ function makerequestscript(id) {
 
 		self.success();
 
-		MAIN.spawns[id] = meta.child = Spawn((ext === 'sh' ? 'bash' : 'node'), [Path.join(project.path, self.query.path)], { detached: true, cwd: project.path });
+		MAIN.spawns[id] = meta.child = Spawn((ext === 'sh' ? 'bash' : 'node'), [Path.join(project.path, self.query.path)], { detached: false, cwd: project.path });
 		meta.child.on('close', function() {
 			delete MAIN.spawns[id];
 			MAIN.send({ TYPE: 'spawn', id: id, body: '\n--END--\n' + (Date.now() - beg) + ' ms' }, user);
