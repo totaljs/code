@@ -20,6 +20,12 @@ function realtime() {
 
 	self.on('close', function(client) {
 
+		for (var key in MAIN.spawns) {
+			var spawn = MAIN.spawns[key];
+			if (spawn.$user === client.user)
+				spawn.kill(9);
+		}
+
 		client.code.ts = 0;
 		client.code.fileid && refresh_collaborators(self, client);
 
@@ -58,9 +64,8 @@ function realtime() {
 			self.send(msg);
 		else if (msg[9] === 'x') {
 			msg = msg.parseJSON();
-			if (MAIN.spawns[msg.id]) {
+			if (MAIN.spawns[msg.id])
 				MAIN.spawns[msg.id].kill(9);
-			}
 		} else if (msg[9] === 'r')
 			self.send(msg);
 		else
