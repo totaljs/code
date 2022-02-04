@@ -774,6 +774,7 @@
 			sub.push({ name: '@(UID)', icon: 'chevron-right', value: 'uid' });
 			sub.push({ name: '@(UID16)', icon: 'chevron-right', value: 'uid16' });
 			sub.push({ name: '@(GUID)', icon: 'chevron-right', value: 'guid' });
+			sub.push({ name: '@(Token)', icon: 'chevron-right', value: 'token' });
 			sub.push({ name: '@(Password)', icon: 'chevron-right', value: 'password' });
 			sub.push({ name: '@(URL / Hostname)', icon: 'chevron-right', value: 'url' });
 			sub.push({ name: '@(IP address - my)', icon: 'chevron-right', value: 'ip' });
@@ -809,6 +810,7 @@
 					sub.push({ name: '@(Task)', icon: 'code', value: 'template', id: 'task' });
 					sub.push({ name: '@(Extension)', icon: 'code', value: 'template', id: 'extension' });
 					sub.push({ name: '@(Start script)', icon: 'code', value: 'template', id: 'index' });
+					sub.push({ name: '@(Test script)', icon: 'code', value: 'template', id: 'test' });
 				} else if (code.current.ext === 'json') {
 					sub.push({ name: '@(openplatform.json)', icon: 'code', value: 'template', id: 'openplatform' });
 					sub.push({ name: '@(package.json)', icon: 'code', value: 'template', id: 'package' });
@@ -1160,6 +1162,15 @@
 							var pwd = GUID(15);
 							for (var i = 0; i < pwd.length; i++) {
 								if (i % 2 === 0)
+									pwd = pwd.substring(0, i) + pwd.substring(i, i + 1).toUpperCase() + pwd.substring(i + 1);
+							}
+							editor.replaceSelection(pwd);
+							break;
+						case 'token':
+							var pwd = GUID(35);
+							var tmp = (Math.random() * 3 >> 0) + 2;
+							for (var i = 0; i < pwd.length; i++) {
+								if (i && i % tmp === 0)
 									pwd = pwd.substring(0, i) + pwd.substring(i, i + 1).toUpperCase() + pwd.substring(i + 1);
 							}
 							editor.replaceSelection(pwd);

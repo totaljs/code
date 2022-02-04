@@ -1,0 +1,44 @@
+require('total4');
+
+TESTER(async function(group, start) {
+
+	group('Users', async function(test, cleanup) {
+
+		cleanup(async function(err) {
+			if (err) {
+				// Something is wrong
+			} else {
+				// Tests have been completed in this group
+			}
+			// Cleaning ...
+		});
+
+		test('Create', async function(next) {
+
+			// next(TRUE_or_ERROR) stops testing
+			next();
+
+		});
+
+		test('Update', async function(next) {
+
+			// next(TRUE_or_ERROR) stops testing
+			next();
+
+		});
+
+		test('Remove', async function(next) {
+
+			// next(TRUE_or_ERROR) stops testing
+			next();
+
+		});
+
+	});
+
+	// Starts all tests in defined groups
+	// await LOAD([], '../');
+	// require('querybuilderpg').init('default', CONF.database, 0, ERROR('QueryBuilder'));
+
+	start();
+});
