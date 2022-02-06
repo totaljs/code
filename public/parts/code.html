@@ -251,6 +251,26 @@
 			PUSH('windows', obj);
 		};
 
+		exports.showselected = function() {
+			var editor = EDITOR.editor;
+			var obj = {};
+			obj.id = 'selected_' + GUID(10);
+			obj.offset = { x: 600, y: 300, width: 450, height: 300, minwidth: 200, minheight: 200 };
+			obj.cachekey = 'selected';
+			obj.title = '<i class="fa fa-font"></i>@(Selected text: <b>{0}</b>)'.format(code.current.name);
+
+			var el = document.createElement('PRE');
+			var cur = editor.getModeAt(editor.getCursor());
+			var t = cur.helperType || cur.name;
+			if (t === 'json')
+				t = 'application/ld+json';
+
+			CodeMirror.runMode(FUNC.strim(editor.getSelections().join('\n')).replace(/\t/g, '    '), t, el);
+			obj.html = '<div style="height:100%;overflow:auto;padding:0 15px" class="noscrollbar"><div class=""><pre class="cm-s-default" style="overflow:hidden">' + el.innerHTML + '</pre></div></div>';
+			obj.actions = { minimize: false, maximize: false, move: true, resize: true, close: true, autosave: false };
+			PUSH('windows', obj);
+		};
+
 		exports.statusmeta = function(value, path, el) {
 			var bytes = FUNC.bytelength(value);
 			var size = Thelpers.filesize(bytes);
@@ -646,6 +666,8 @@
 				if ((/api/).test(code.current.ext))
 					items.push({ name: '@(Run)', icon: 'play-circle red', value: 'run', classname: 'b', shortcut: (common.ismac ? 'CMD' : 'CTRL') + '+B' });
 
+				items.push({ name: '@(Show selected)', icon: '!far fa-window', value: 'showselected' });
+
 				items.push({ name: '@(Copy)', icon: '!far fa-copy', command: 'copy' });
 				items.push({ name: '@(Copy with syntax)', icon: 'print', value: 'copysyntax' });
 				items.push({ name: '@(Copy as Markdown)', icon: '!fab fa-markdown', value: 'copymarkdown' });
@@ -850,6 +872,11 @@
 					setTimeout(function() {
 						document.execCommand(value.command, true);
 					}, 100);
+					return;
+				}
+
+				if (value.value === 'showselected') {
+					EXEC('code/showselected');
 					return;
 				}
 
