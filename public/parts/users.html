@@ -10,7 +10,7 @@
 		<button data-bind="users.checked__disabled:!value || !value.length" class="exec" data-exec="users/options" disabled><i class="fa fa-check-circle"></i>@(Selected)</button>
 	</div>
 
-	<div data---="datagrid__users.grid__dblclick:users/edit;checked:users/checked;highlight:true;margin:20;cluster:false">
+	<div data---="datagrid__users.grid__click:users/edit;checked:users/checked;highlight:true;margin:20;cluster:false">
 		<script type="text/plain">
 			[
 				{ name: 'id', text: '@(ID)', template: '{{ if online }}<i class="fa fa-circle green fs11 mr5" title="@(Online)"></i>{{ fi }}{{ if blocked }}<span class="badge badge-small badge-red">@(blocked)</span>{{ fi }}{{ id }}', width: 120 },
