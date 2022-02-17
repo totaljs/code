@@ -716,7 +716,7 @@ function makebundle(id) {
 						Fs.rename(filename, Path.join(project.pathsync, 'bundles/app.bundle'), self.done());
 					});
 				} else
-					self.file('~' + filename, 'app_' + Date.now().toString(36) + '.bundle', null, () => Fs.unlink(filename, NOOP));
+					self.file('~' + filename, 'app.bundle', null, () => Fs.unlink(filename, NOOP));
 			}
 		}, function(path, is) {
 
