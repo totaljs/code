@@ -1931,8 +1931,8 @@ CodeMirror.defineExtension('centerLine', function(line) {
 				var start = error.character - 1;
 				// var end = start + 1;
 				if (error.evidence) {
-					var index = error.evidence.substring(start).search(/.\b/);
 					/*
+					var index = error.evidence.substring(start).search(/.\b/);
 					if (index > -1)
 						end += index;
 					*/

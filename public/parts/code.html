@@ -654,6 +654,8 @@
 			var tools = [];
 			var tmp;
 			var isscript = !code.data.isexternal && (/\/scripts\/|\.sh$/g).test(code.current.path) || (code.data.servicemode && (code.current.ext === 'js' || code.current.ext === 'sh'));
+			var mode = editor.getModeAt(editor.getCursor());
+			mode = mode.helperType || mode.name;
 
 			if (isscript && !text)
 				items.push({ name: '@(Run script)', icon: 'play-circle red', value: 'run', classname: 'b', shortcut: (common.ismac ? 'CMD' : 'CTRL') + '+B' });
@@ -672,7 +674,7 @@
 				items.push({ name: '@(Copy with syntax)', icon: 'print', value: 'copysyntax' });
 				items.push({ name: '@(Copy as Markdown)', icon: '!fab fa-markdown', value: 'copymarkdown' });
 
-				if (code.current.ext === 'css' || code.current.ext === 'js' || code.current.ext === 'html' || code.current.ext === 'sh')
+				if (mode === 'css' || mode === 'html' || mode === 'js' || code.current.ext === 'css' || code.current.ext === 'js' || code.current.ext === 'html' || code.current.ext === 'sh')
 					items.push({ name: '@(Copy as Image)', icon: 'fa fa-image', value: 'copycarbon' });
 
 				if (text.indexOf('<') !== -1)
@@ -699,10 +701,10 @@
 				if (can)
 					tools.push({ name: '@(Parse keys)', icon: 'barcode', value: 'parsekeys' });
 
-				if ((code.current.ext === 'css' || code.current.ext === 'html') && (/\:(\s)?#|#\w{6}|background|border|stroke|fill|color|rgba\:/).test(text))
+				if ((mode === 'css' || code.current.ext === 'css' || code.current.ext === 'html') && (/\:(\s)?#|#\w{6}|background|border|stroke|fill|color|rgba\:/).test(text))
 					items.push({ name: '@(Transform to Dark mode)', icon: 'tint', value: 'darkmode' });
 
-				if ((code.current.ext === 'css' || code.current.ext === 'html'))
+				if ((mode === 'css' || code.current.ext === 'css' || code.current.ext === 'html'))
 					items.push({ name: '@(Transform to Responsive)', icon: 'tablet', value: 'responsive' });
 
 				if ((/(#)?[A-F0-9]{6}/i).test(text) && text.indexOf('\n') === -1)
@@ -711,7 +713,7 @@
 				if (((/\d+,(\s)?\d+,(\s)?\d+/i)).test(text))
 					items.push({ name: '@(Convert to HEX)', icon: 'palette', value: 'rgba2hex' });
 
-				if ((/css/).test(code.current.ext)) {
+				if (mode === 'css' || (/css/).test(code.current.ext)) {
 					items.push({ name: '@(Sort CSS properties)', icon: 'sort-alpha-down', value: 'sortcss' });
 					items.push({ name: '@(Clean CSS)', icon: 'broom', value: 'cleancss' });
 				}
