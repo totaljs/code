@@ -1,3 +1,3 @@
 #!/bin/sh
 
-tar -czvf $1 -C $2 .
+tar -czf $1 -C $2 .

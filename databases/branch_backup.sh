@@ -2,7 +2,7 @@
 
 echo "$2/logs/debug.log"
 
-tar --exclude="$2logs" -cvf $1 $2
+tar --exclude="$2logs" -cf $1 $2
 
 if [ -f "$3" ]; then
 	tar --append --file $1 $3
