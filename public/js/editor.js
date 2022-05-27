@@ -1726,8 +1726,8 @@ SNIPPETS.push({ type: 'html', search: 'br', text: '<b>&lt;br /&gt;</b>', code: '
 SNIPPETS.push({ type: 'html', search: 'scope', text: '<b>data-scope</b>', code: '<div data-scope=""></div>', ch: 18 });
 SNIPPETS.push({ type: 'html', search: 'data-bind', text: '<b>data-bind</b>', code: '<div data-bind="__"></div>', ch: 17 });
 SNIPPETS.push({ type: 'html', search: 'data-import', text: '<b>data-import</b>', code: '<div data-import="__"></div>', ch: 19 });
-SNIPPETS.push({ type: 'html', search: 'link spa min css', text: 'Link: <b>spa.min@18.css</b>', code: '<link href="\/\/cdn.componentator.com/spa.min@18.css" rel="stylesheet" />', ch: 100 });
-SNIPPETS.push({ type: 'html', search: 'scri' + 'pt spa min js', text: ('Scr' + 'ipt: <b>spa.min@18.js</b>'), code: ('<scr' + 'ipt src="\/\/cdn.componentator.com/spa.min@18.js"></scr' + 'ipt>'), ch: 100 });
+SNIPPETS.push({ type: 'html', search: 'link spa min css', text: 'Link: <b>spa.min@19.css</b>', code: '<link href="\/\/cdn.componentator.com/spa.min@19.css" rel="stylesheet" />', ch: 100 });
+SNIPPETS.push({ type: 'html', search: 'scri' + 'pt spa min js', text: ('Scr' + 'ipt: <b>spa.min@19.js</b>'), code: ('<scr' + 'ipt src="\/\/cdn.componentator.com/spa.min@19.js"></scr' + 'ipt>'), ch: 100 });
 SNIPPETS.push({ type: 'html', search: 'scri' + 'pt livereload', text: ('Scr' + 'ipt: <b>livereload.js</b>'), code: ('@{if DEBUG}<scr' + 'ipt src="\/\/cdn.componentator.com/livereload.js"></scr' + 'ipt>@{fi}'), ch: 100 });
 SNIPPETS.push({ type: 'html', search: 'scri' + 'pt openplatform min js', text: ('Scr' + 'ipt: <b>openplatform.min@4.js</b>'), code: ('<scr' + 'ipt src="\/\/cdn.componentator.com/openplatform.min@4.js"></scr' + 'ipt>'), ch: 100 });
 SNIPPETS.push({ type: 'js', search: '~PATH~', text: '<b>~PATH~</b>', code: '~PATH~', ch: 7 });
