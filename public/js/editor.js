@@ -278,7 +278,7 @@ WAIT('CodeMirror.defineMode', function() {
 				if (stream.match(/<(\/)?file.*?>/, true))
 					return 'variable-E';
 
-				if (stream.match(/data-released=|~PATH~|~ID~|--[\w=\s]+--/, true))
+				if (stream.match(/data-released=|~PATH~|~CDN~|~ID~|--[\w=\s]+--/, true))
 					return 'variable-R';
 
 				if (stream.match(/data-bind=/, true))
