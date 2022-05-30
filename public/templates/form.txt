@@ -13,7 +13,7 @@
 	PLUGIN('~PATH~', function(exports) {
 
 		exports.reload = function(com) {
-			var model = GET('?');
+			var model = exports.model;
 			var id = model ? model.id : null;
 			com.reconfigure({ title: id ? '@(Update)' : '@(Create)' });
 		};
