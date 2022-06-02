@@ -22,7 +22,7 @@
 					<div data---="input__?.position__null__'Developer'">@(Position)</div>
 				</div>
 				<div class="col-sm-6 m">
-					<div data---="input__?.password__required:true__GUID()">@(Password)</div>
+					<div data---="input__?.password__required:true__GUID(12)">@(Password)</div>
 					<div class="help"><span class="exec link" data-exec="usersform/generate">@(Generate password)</span></div>
 				</div>
 			</div>
@@ -49,7 +49,7 @@
 		};
 
 		exports.generate = function() {
-			SET('?.password', GUID());
+			SET('?.password', GUID(12));
 		};
 
 		exports.submit = function() {
