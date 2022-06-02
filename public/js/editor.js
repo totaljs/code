@@ -1732,7 +1732,7 @@ SNIPPETS.push({ type: 'html', search: 'scri' + 'pt livereload', text: ('Scr' + '
 SNIPPETS.push({ type: 'html', search: 'scri' + 'pt openplatform min js', text: ('Scr' + 'ipt: <b>openplatform.min@4.js</b>'), code: ('<scr' + 'ipt src="\/\/cdn.componentator.com/openplatform.min@4.js"></scr' + 'ipt>'), ch: 100 });
 SNIPPETS.push({ type: 'js', search: '~PATH~', text: '<b>~PATH~</b>', code: '~PATH~', ch: 7 });
 SNIPPETS.push({ type: 'js', search: 'AUTH', text: '<b>AUTH</b>', code: 'AUTH(function($) {\n\t{0}$.success(USER_PROFILE);\n{0}});', ch: 30 });
-SNIPPETS.push({ type: 'js', search: 'PLUGIN', text: '<b>PLUGIN</b>', code: 'PLUGIN(\'{1}\', function(exports) {\n\n\t{0}exports.refresh = function() {\n\t{0}};\n\n{0}});', ch: 9 });
+SNIPPETS.push({ type: 'js', search: 'PLUGIN', text: '<b>PLUGIN</b>', code: 'PLUGIN(\'~PATH~\', function(exports) {\n\n\t{0}exports.refresh = function() {\n\t{0}};\n\n{0}});', ch: 9 });
 SNIPPETS.push({ type: 'js', search: 'PLUGINABLE', text: '<b>PLUGINABLE</b>', code: 'PLUGINABLE(\'{1}\', function(exports) {\n\n\t{0}exports.create = function() {\n\t{0}};\n\n{0}}, function(next) {\n\n\t{0}next();\n\n{0}});', ch: 13 });
 SNIPPETS.push({ type: 'js', search: 'COMPONENT', text: '<b>COMPONENT</b>', code: 'COMPONENT(\'\', \'\', function(self, config, cls) {\n\t{0}\n{0}});', ch: 12 });
 SNIPPETS.push({ type: 'js', search: 'EXTENSION', text: '<b>EXTENSION</b>', code: 'EXTENSION(\'\', \'\', function(self, config, cls) {\n\t{0}\n{0}});', ch: 12 });
