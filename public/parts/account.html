@@ -1,0 +1,92 @@
+<div data---="viewbox__common.page__parent:window;margin:50;centered:1;scrollbar:1" class="invisible">
+	<div class="panel" style="max-width:420px;width:100%;margin:0 auto;text-align:left">
+		<label><i class="fa fa-user-circle"></i>@(My account)</label>
+		<div data-scope="myaccount">
+
+			<div class="body">
+
+				<div data---="input__?.email__required:true;type:email" class="m">@(Email address)</div>
+				<div data---="input__?.phone__type:phone" class="m">@(Phone number)</div>
+
+				<div data---="choose__?.darkmode__type:number;selector:.item__0" class="iconmenu">
+
+					<div class="item" data-id="0">
+						<i class="fa fa-sun"></i>
+						<span>@(Light mode)</span>
+					</div>
+					<div class="item" data-id="1">
+						<i class="fa fa-moon"></i>
+						<span>@(Dark mode)</span>
+					</div>
+					<div class="item" data-id="2">
+						<i class="fas fa-adjust"></i>
+						<span>@(Day/Night)</span>
+					</div>
+
+				</div>
+				<div class="clearfix">&nbsp;</div>
+
+				<div data---="input__?.localsave__type:checkbox">@(Always local storing files in Electron version)</div>
+				<div data---="input__?.ispassword__type:checkbox" class="b">@(Change password)</div>
+
+				<div bind="?.ispassword__show" class="hidden" style="margin-top:15px">
+					<hr />
+					<div data---="input__?.password__camouflage:•;required:true">@(New password)</div>
+				</div>
+			</div>
+
+			<div class="body npt">
+				<div data---="error__?.response"></div>
+				<div data---="validation__?">
+					<button name="submit" class="button b exec" data-exec="?/submit" disabled="disabled"><i class="fa fa-floppy-o"></i>@(Save)</button>
+				</div>
+			</div>
+
+		</div>
+	</div>
+</div>
+
+<script>
+	PLUGIN('myaccount', function(exports) {
+
+		exports.reload = function() {
+			SET('? @reset', {});
+			AJAX('GET /api/accounts/', function(response) {
+
+				// Backward compatibility
+				if (response.darkmode === true)
+					response.darkmode = 1;
+				else if (response.darkmode === false)
+					response.darkmode = 0;
+				SET('?', response);
+			});
+		};
+
+		WATCH('?.ispassword', function(path, value) {
+			if (value) {
+				SET('?.password', '');
+				FIND('.myaccount.password').find('input').focus();
+			}
+		});
+
+		exports.submit = function() {
+			var data = CLONE(exports.form);
+			AJAX('POST /api/accounts/', data, function(response) {
+				if (response.success) {
+					if (user.sa)
+						common.token = data.token;
+					SETTER('notifybar/show', '@(Account has been updated successfully.)');
+					user.darkmode = data.darkmode;
+					user.email = data.email;
+					user.localsave = data.localsave;
+					user.autodarkmode = data.autodarkmode;
+					SET('common.superadmin', data.superadmin);
+					$('body').tclass('td', user.darkmode === 1);
+					SET('code.data.review', !!data.token);
+					FUNC.autodarkmode();
+ 				}
+ 				SET('?.response', response);
+			});
+		};
+	});
+</script>

@@ -82,6 +82,7 @@ exports.install = function() {
 	ROUTE('+GET    /api/componentator/download/           *Componentator      --> @download', [20000]);
 	ROUTE('+POST   /api/common/ping/                      *Hosts              --> @ping', [10000]);
 	ROUTE('+POST   /api/common/resolve/                   *Hosts              --> @resolve', [10000]);
+	ROUTE('+GET    /api/common/download/                  *Download           --> @download', [10000]);
 
 	ROUTE('+POST   /api/request/',                                            makerequest, [20000]);
 	ROUTE('+GET    /api/request/{id}/',                                       makerequestscript, [20000]);

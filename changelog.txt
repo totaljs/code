@@ -1,3 +1,10 @@
+========================= 1.8
+
+- improved UI
+- added `Download to clipboard` context menu item
+- fixed rendering of directory/file list
+- added `Pin project` feature
+
 ========================= 1.6
 
 - improved syntax-highlighter

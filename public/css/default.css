@@ -7,6 +7,10 @@ $color    : #4285F4;
 
 html, body { margin: 0; padding: 0; overflow: hidden; }
 
+:root {
+	--radius: 4px;
+}
+
 ::selection { background: rgba(107, 113, 125, 0.46); }
 ::-moz-selection { background: rgba(107, 113, 125, 0.46); }
 
@@ -20,6 +24,7 @@ html, body { margin: 0; padding: 0; overflow: hidden; }
 .version { position: absolute; font-size: 9px; z-index: 1; left: 210px; top: 55px; }
 .electron .version { top: 77px; }
 .yellow { color: #d7cd17 !important; }
+.orange { color: #FCC67A; }
 .gray { color: gray; }
 .mt2 { margin-top: 2px; }
 .ml5 { margin-left: 5px; }
@@ -885,3 +890,14 @@ header .tools .external { color: #a2a286; }
 .searchcurrentfile { height: 36px; border-top: 1px solid #E0E0E0; line-height: 35px; color: gray; font-size: 12px; padding: 0 10px; }
 .searchcurrentfile i { color: $color; margin-right: 5px; }
 .td .searchcurrentfile { border-top-color: #404040; }
+
+.iconmenu { height: 54px; text-align: center; }
+.iconmenu i { font-size: 20px; display: block; padding: 8px 0 0; }
+.iconmenu span { font-size: 11px; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding: 3px 5px 0; color: #777; }
+.iconmenu > div.selected { background-color: rgba(0,0,0,0.07); }
+.iconmenu > div { height: 54px; width: 75px; border: 1px solid #E0E0E0; border-left-width: 0; float: left; cursor: pointer; }
+.iconmenu > div:first-child { border-left-width: 1px; border-top-left-radius: var(--radius); border-bottom-left-radius: var(--radius); }
+.iconmenu > div:last-child { border-top-right-radius: var(--radius); border-bottom-right-radius: var(--radius); }
+
+.td .iconmenu > div.selected { background-color: rgba(255,255,255,0.1); }
+.td .iconmenu > div { border-color: #404040; }

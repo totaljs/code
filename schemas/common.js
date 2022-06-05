@@ -22,6 +22,31 @@ NEWSCHEMA('Hosts', function(schema) {
 
 });
 
+NEWSCHEMA('Download', function(schema) {
+
+	schema.addWorkflow('download', function($) {
+
+		var opt = {};
+		opt.method = 'GET';
+		opt.url = $.query.url;
+
+		if (!opt.url) {
+			$.invalid('@(Invalid URL address)');
+			return;
+		}
+
+		opt.callback = function(err, response) {
+			if (err)
+				$.invalid(err);
+			else
+				$.success(response.body);
+		};
+
+		REQUEST(opt);
+	});
+
+});
+
 NEWSCHEMA('Minify', function(schema) {
 
 	schema.define('body', String, true);

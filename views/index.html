@@ -53,11 +53,13 @@
 	<header>
 		<button class="exec" data-exec="mainmenu"><i class="fa fa-navicon"></i></button>
 		<!--<span class="version hidden" data-bind="common.page__show:value==='code'">v@{MAIN.version}</span>-->
-		<div class="tools" data-jc="selected__common.page__selector:a.R">
+		<div class="tools" data---="selected__common.page__selector:a.R">
+
 			<a href="@{#}/" title="@(Code)" class="R" data-if="code"><i class="fa fa-laptop-code"></i></a>
 			<a href="javascript:void(0)" data-exec="code/chat" title="@(Chat)" class="exec"><i class="far fa-comments"></i></a>
 			<a href="javascript:void(0)" data-exec="code/messenger" title="@(Support)" class="external exec"><i class="far fa-life-ring"></i></a>
 			<a href="#" data-bind="code.data.documentation__show__href" title="@(Documentation)" target="_blank" class="external hidden"><i class="fa fa-book-open"></i></a>
+
 			@{if user.sa}
 			<a href="@{#}/projects/" title="@(Projects)" class="R" data-if="projects"><i class="fa fa-code-branch"></i></a>
 			<a href="@{#}/users/" title="@(Users)" class="R" data-if="users"><i class="fa fa-users"></i></a>
@@ -67,8 +69,10 @@
 			<a href="@{#}/snippets/" title="@(Snippets)" class="R" data-if="snippets"><i class="far fa-clone"></i></a>
 			-->
 			<a href="#" data-bind="common.superadmin__show__href" target="_blank" class="external hidden"><i class="fa fa-th"></i></a>
+			<a href="@{#}/settings/" title="@(Settings)" class="R" data-if="settings"><i class="fa fa-cog"></i></a>
 			@{fi}
-			<a href="@{#}/settings/" title="@(My settings)" class="R" data-if="settings"><i class="fa fa-cog"></i></a>
+
+			<a href="@{#}/account/" title="@(My account)" class="R" data-if="myaccount"><i class="fas fa-user-circle"></i></a>
 			<a href="@{#}/logout/" title="@(Sign out)" class="red2"><i class="fa fa-sign-out"></i></a>
 		</div>
 	</header>
@@ -77,6 +81,7 @@
 	<div data---="part__common.page__if:snippets;url:/parts/snippets.html;reload:snippets/reload;cleaner:10"></div>
 	<div data---="part__common.page__if:projects;url:/parts/projects.html;reload:projects/reload;cleaner:10"></div>
 	<div data---="part__common.page__if:users;url:/parts/users.html;reload:users/reload;cleaner:10"></div>
+	<div data---="part__common.page__if:myaccount;url:/parts/account.html;reload:myaccount/reload;cleaner:10"></div>
 	<div data---="part__common.page__if:settings;url:/parts/settings.html;reload:settings/reload;cleaner:10"></div>
 	<div data---="part__common.page__if:timespent;url:/parts/timespent.html;reload:timespent/reload;cleaner:10"></div>
 	<div data---="websocket__null__url:/internal/"></div>
@@ -176,6 +181,12 @@
 			SET('common.form', '');
 			SET('common.debug', false);
 			SET('common.page', 'settings');
+		});
+
+		ROUTE('/account/', function() {
+			SET('common.form', '');
+			SET('common.debug', false);
+			SET('common.page', 'myaccount');
 		});
 
 		ROUTE('/users/', function() {

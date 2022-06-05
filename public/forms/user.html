@@ -1,4 +1,4 @@
-<div data---="form__common.form__if:usersform;icon:robot;width:700;reload:usersform/reload;autofocus:1;submit:usersform/submit" class="hidden">
+<div data---="form__common.form__if:usersform;icon:robot;width:650;reload:usersform/reload;autofocus:1;submit:usersform/submit" class="hidden">
 	<div data-scope="usersform">
 		<div class="padding">
 			<div class="row">
@@ -19,20 +19,38 @@
 			</div>
 			<div class="row">
 				<div class="col-sm-6 m">
-					<div data---="input__?.position__null__'Developer'">@(Position)</div>
-				</div>
-				<div class="col-sm-6 m">
 					<div data---="input__?.password__required:true__GUID(12)">@(Password)</div>
 					<div class="help"><span class="exec link" data-exec="usersform/generate">@(Generate password)</span></div>
 				</div>
+				<div class="col-sm-6 m">
+					<div data---="input__?.position__null__'Developer'">@(Position)</div>
+				</div>
 			</div>
-			<hr class="nmt" style="margin-bottom:10px" />
-			<div data---="radiobutton__?.darkmode__items:@(Light mode)|0,@(Dark mode)|1,@(Day/Night)|2;type:number;inline:1__0"></div>
+
 			<hr class="nmt" />
-			<div data---="checkbox__?.sa__null__false" class="b">@(User is administrator)</div>
-			<div data---="checkbox__?.blocked__null__false">@(User is blocked)</div>
-			<div data---="checkbox__?.dbviewer__null__false">@(Allow to open DB viewer)</div>
-			<div data---="checkbox__?.localsave__null__true">@(Enable local storing of files)</div>
+
+			<div data---="choose__?.darkmode__type:number;selector:.item__0" class="iconmenu">
+
+				<div class="item" data-id="0">
+					<i class="fa fa-sun"></i>
+					<span>@(Light mode)</span>
+				</div>
+				<div class="item" data-id="1">
+					<i class="fa fa-moon"></i>
+					<span>@(Dark mode)</span>
+				</div>
+				<div class="item" data-id="2">
+					<i class="fas fa-adjust"></i>
+					<span>@(Day/Night)</span>
+				</div>
+
+			</div>
+			<div class="clearfix">&nbsp;</div>
+
+			<div data---="input__?.sa__type:checkbox__false" class="b">@(User is administrator)</div>
+			<div data---="input__?.blocked__type:checkbox__false">@(User is blocked)</div>
+			<div data---="input__?.dbviewer__type:checkbox__false">@(Allow to open DB viewer)</div>
+			<div data---="input__?.localsave__type:checkbox__true">@(Enable local storing of files)</div>
 		</div>
 	</div>
 	<nav data---="validation__usersform">

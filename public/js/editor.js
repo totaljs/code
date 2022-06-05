@@ -142,6 +142,8 @@
 		CodeMirror.on(self.node, 'DOMMouseScroll', onWheel);
 	}
 
+	var delayreflow = null;
+
 	Bar.prototype.setPos = function(pos, force) {
 		var t = this;
 		if (pos < 0)
@@ -150,6 +152,14 @@
 			pos = t.total - t.screen;
 		if (!force && pos == t.pos)
 			return false;
+
+		if (!delayreflow) {
+			EMIT('reflow');
+			delayreflow = setTimeout(function() {
+				delayreflow = null;
+			}, 1500);
+		}
+
 		t.pos = pos;
 		t.inner.style[t.orientation == 'horizontal' ? 'left' : 'top'] = (pos * (t.size / t.total)) + 'px';
 		return true;
@@ -1719,6 +1729,7 @@ SNIPPETS.push({ type: 'html', search: 'script', text: '<b>Script: JavaScript</b>
 SNIPPETS.push({ type: 'html', search: 'script', text: '<b>Script: HTML</b>', code: '<script type="text/html"></script>', ch: 26 });
 SNIPPETS.push({ type: 'html', search: 'script', text: '<b>Script: JSON</b>', code: '<script type="applicatio/json"></script>', ch: 32 });
 SNIPPETS.push({ type: 'html', search: 'script', text: '<b>Script: Text</b>', code: '<script type="text/plain"></script>', ch: 27 });
+SNIPPETS.push({ type: 'html', search: 'script', text: '<b>Script: Componentator</b>', code: '<script src="https://componentator.com/download?id="></script>', ch: 52 });
 SNIPPETS.push({ type: 'html', search: 'fa', text: '<b>Font-Awesome Icon</b>', code: '<i class="fa fa-"></i>', ch: 17 });
 SNIPPETS.push({ type: 'html', search: 'jc', text: '<b>Component</b>', code: '<div data-jc="__"></div>', ch: 15 });
 SNIPPETS.push({ type: 'html', search: '--', text: '<b>Component</b>', code: '<div data---="__"></div>', ch: 15 });

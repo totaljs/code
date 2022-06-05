@@ -157,9 +157,9 @@
 			<li data-value="components" title="@(Used parts)"><i class="fa fa-puzzle-piece"></i></li>
 			<li data-value="componentator" title="@(UI components)"><i class="fa fa-drafting-compass"></i></li>
 			<li data-value="output" title="@(Output panel)"><i class="fa fa-rss"></i></li>
+			<li data-value="search" title="@(Search)"><i class="fa fa-search"></i></li>
 			<li data-value="changes" title="@(Last changes)"><i class="fa fa-history"></i></li>
 			<li data-value="backups" title="@(Backups)"><i class="fa fa-archive"></i></li>
-			<li data-value="search" title="@(Search)"><i class="fa fa-search"></i></li>
 			<li data-value="timespentform" title="@(Time spent)"><i class="far fa-clock-o"></i></li>
 		</ul>
 	</div>
@@ -596,7 +596,7 @@
 
 			AJAX('GET /api/projects/', function(response) {
 
-				response.quicksort('name');
+				response.quicksort('pinned_desc,name_asc');
 				SET('code.projects', response);
 
 				var index = 0;
@@ -679,6 +679,9 @@
 
 				if (text.indexOf('<') !== -1)
 					items.push({ name: '@(Copy without tags)', icon: '!far fa-copy', value: 'copytext' });
+
+				if (can && (/http(s)\:\/\/[^\s]+/).test(text))
+					items.push({ name: '@(Download to clipboard)', icon: 'cloud-download', value: 'downloadclipboard' });
 
 				if (text.indexOf('.define(\'') !== -1) {
 					items.push({ name: '@(Copy as JSON)', icon: '!fa fa-code', value: 'copyasjson' });
@@ -884,6 +887,14 @@
 
 				if (value.value === 'dbviewer') {
 					EXEC('code/database', text.trim());
+					return;
+				}
+
+				if (value.value === 'downloadclipboard') {
+					AJAX('GET /api/common/download/?url=' + encodeURIComponent(text.trim()), ASETTER('message/response', function(response) {
+						SETTER('notifybar/success', '@(The response has been copied into the clipboard successfully)');
+						SETTER('clipboard/copy', response.value);
+					}));
 					return;
 				}
 
@@ -1353,6 +1364,9 @@
 			AJAX('POST /api/files/{id}/rename/'.arg(code.data), data, function(response) {
 				SETTER('loading/hide', 500);
 				exports.closetab(data.oldpath);
+				var el = $('.ui-tree').find('.item[data-index="{0}"]'.format(item.$pointer));
+				el.find('.icon').rclass2('fa').aclass(Thelpers.fileicon(val));
+				el.attr('title', val);
 				common.electron && code.data.repository && exports.local(function(dir) {
 					var Path = require('path');
 					dir && require('fs').rename(Path.join(dir, code.data.repository, data.oldpath), Path.join(dir, code.data.repository, data.newpath), NOOP);
@@ -2610,7 +2624,7 @@
 
 			for (var i = 0; i < opt.items.length; i++) {
 				var item = opt.items[i];
-				item.template = '<i class="fa fa-code-branch"></i>{{ if online }}<span>{{ online }}</span>{{ fi }}{{ name }}';
+				item.template = '<i class="{0}"></i>{{ if online }}<span>{{ online }}</span>{{ fi }}{{ name }}'.format(item.pinned ? 'fa fa-thumbtack orange' : 'fa fa-code-branch');
 				item.classname = code.data && code.data.id === item.id ? 'ui-directory-current' : '';
 			}
 

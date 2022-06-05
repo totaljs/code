@@ -1,100 +1,48 @@
-<div class="container">
-	<br />
-	<br />
-	<div class="row">
-		<div class="col-md-6 col-md-offset-3">
-			<div class="panel">
-				<label><i class="fa fa-cog"></i>@(Settings)</label>
-				<div data-scope="settings">
+<div data---="viewbox__common.page__parent:window;margin:50;centered:1;scrollbar:1" class="invisible">
+	<div class="panel" style="max-width:400px;width:100%;margin:0 auto;text-align:left">
+		<label><i class="fa fa-cog"></i>@(Settings)</label>
+		<div data-scope="settings">
 
-					<div class="body">
-
-						<div class="row">
-							<div class="col-md-6 m">
-								<div data---="textbox__?.email__required:true;type:email">@(Email address)</div>
-							</div>
-							<div class="col-md-6 m">
-								<div data---="textbox__?.phone__type:phone">@(Phone number)</div>
-							</div>
-						</div>
-
-						<div data---="radiobutton__?.darkmode__items:@(Light mode)|0,@(Dark mode)|1,@(Day/Night)|2;type:number;inline:1__0"></div>
-						<hr class="nmt" />
-
-						<div data---="checkbox__?.localsave">@(Always local storing files in Electron version)</div>
-						<div data---="checkbox__?.ispassword" class="b">@(Change password)</div>
-
-						<div bind="?.ispassword__show" class="hidden mt10">
-							<div data---="input__?.password__camouflage:•;required:true">@(New password)</div>
-						</div>
-					</div>
-
-					<div data-bind="user.sa__show" class="hidden m bg-smoke body npb">
-						<div data---="input__?.token__maxlength:100;camouflage:•;icon:check-circle green;placeholder:@(Enter a token)">@(Token for chat and code review)</div>
-						<div class="help m"><i class="far fa-life-ring"></i>@(Total.js Team offers a professional code review. You can obtain a token on) <a href="https://platform.totaljs.com?open=api" target="_blank">https://platform.totaljs.com</a></div>
-						<div class="row">
-							<div class="col-md-6 m">
-								<div data---="input__?.appname__maxlength:40;required:1">@(Code name)</div>
-								<div class="help"><i class="fa fa-desktop"></i>@(Code name will be displayed in the title)</div>
-							</div>
-							<div class="col-md-6 m">
-								<div data---="input__?.superadmin__maxlength:200">@(URL address to SuperAdmin)</div>
-								<div class="help"><i class="fa fa-globe"></i>@(The link will be available in the UI)</div>
-							</div>
-						</div>
-					</div>
-
-					<div class="body npt">
-						<div data---="error__?.response"></div>
-						<div data---="validation__?">
-							<button name="submit" class="button b exec" data-exec="?/submit" disabled="disabled"><i class="fa fa-floppy-o"></i>@(Save)</button>
-						</div>
-					</div>
-
+			<div class="m body npb">
+				<div data---="input__?.name__maxlength:40;required:1">@(Code name)</div>
+				<div class="help"><i class="fa fa-desktop"></i>@(Code name will be displayed in the title)</div>
+				<br />
+				<div data---="input__?.superadmin__maxlength:200">@(URL address to SuperAdmin)</div>
+				<div class="help"><i class="fa fa-globe"></i>@(The link will be available in the UI)</div>
+				<hr />
+				<div data---="input__?.token__maxlength:100;camouflage:•;icon:check-circle green;placeholder:@(Enter a token)">@(Token for chat and code review)</div>
+				<div class="help m"><i class="far fa-life-ring"></i>@(Total.js Team offers a professional code review. You can obtain a token on) <a href="https://platform.totaljs.com?open=api" target="_blank">https://platform.totaljs.com</a></div>
+			</div>
+			<hr class="nmt nmb" />
+			<div class="body">
+				<div data---="error__?.response"></div>
+				<div data---="validation__?">
+					<button name="submit" class="button b exec" data-exec="?/submit" disabled="disabled"><i class="fa fa-floppy-o"></i>@(Save)</button>
 				</div>
 			</div>
 		</div>
 	</div>
+	<br />
+	<br />
 </div>
 
 <script>
 	PLUGIN('settings', function(exports) {
 		exports.reload = function() {
-			SET('settings @reset', {});
-			AJAX('GET /api/accounts/', function(response) {
-				// Backward compatibility
-				if (response.darkmode === true)
-					response.darkmode = 1;
-				else if (response.darkmode === false)
-					response.darkmode = 0;
-				SET('settings', response);
-			});
+			AJAX('GET /api/settings/', 'settings @reset');
 		};
-
-		WATCH('?.ispassword', function(path, value) {
-			if (value) {
-				SET('?.password', '');
-				FIND('.settings.password').find('input').focus();
-			}
-		});
 
 		exports.submit = function() {
 			var data = CLONE(GET('settings @reset'));
-			AJAX('POST /api/accounts/', data, function(response) {
+			AJAX('POST /api/settings/', data, function(response) {
 				if (response.success) {
 
 					if (user.sa)
 						common.token = data.token;
 
-					SETTER('notifybar/show', '@(Account has been updated successfully.)');
-					user.darkmode = data.darkmode;
-					user.email = data.email;
-					user.localsave = data.localsave;
-					user.autodarkmode = data.autodarkmode;
+					SETTER('notifybar/show', '@(Settings have been updated successfully.)');
 					SET('common.superadmin', data.superadmin);
-					$('body').tclass('td', user.darkmode === 1);
 					SET('code.data.review', !!data.token);
-					FUNC.autodarkmode();
  				}
  				SET('settings.response', response);
 			});

@@ -2245,7 +2245,7 @@ FUNC.jcomponent_update = function(name, type, content, body, meta) {
 		var REGPLUGINOP_REPLACE = /(\s)+=(\s)+function/g;
 		var REGFUNCTION = /((\s)+=(\s)+function)/;
 		var REGTASKOP = /('|").*?('|")/g;
-		var REGVERSION = /version[":-='\s]+[a-z0-9."',\s]+/;
+		var REGVERSION = /version[":-='\s]+[a-z0-9."',\s]+/i;
 		var REGJC = /data---=".*?(__|")/g;
 		var REGFILE = /<file name.*?>/g;
 		var todos = [];

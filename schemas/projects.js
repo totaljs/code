@@ -23,6 +23,7 @@ NEWSCHEMA('Projects', function(schema) {
 	schema.define('skipsrc', Boolean);
 	schema.define('skiptmp', Boolean);
 	schema.define('skipnm', Boolean);
+	schema.define('pinned', Boolean);
 	schema.define('allowbundle', Boolean);
 	schema.define('allowscripts', Boolean);
 	schema.define('servicemode', Boolean);
@@ -358,6 +359,7 @@ NEWSCHEMA('Projects', function(schema) {
 			data.isexternal = item.isexternal;
 			data.users = item.users;
 			data.hidden = item.hidden;
+			data.pinned = item.pinned == true;
 
 			if ($.user.sa) {
 				data.path = item.path;
@@ -366,7 +368,7 @@ NEWSCHEMA('Projects', function(schema) {
 				items.push(data);
 		}
 
-		items.quicksort('created', true);
+		items.quicksort('pinned_desc,created_desc');
 
 		if ($.query.check) {
 			items.wait(function(item, next) {

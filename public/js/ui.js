@@ -688,6 +688,7 @@ COMPONENT('editor', function(self, config) {
 		};
 
 		editor.on('cursorActivity', function() {
+			EMIT('reflow');
 			if (editor.state.linerruler)
 				self.toggleruler(true);
 			cursorfn(editor);
@@ -1159,6 +1160,10 @@ COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 	var nesteditem = null;
 
 	Thelpers.treefilecolor = function(filename) {
+
+		if (filename === '/node_modules/')
+			return ' ui-tree-special';
+
 		return filename.charAt(0) === '.' || REGBK.test(filename) || filename === '/modules/code.js' ? ' ui-tree-hiddenfile' : '';
 	};
 
@@ -6283,7 +6288,7 @@ COMPONENT('search', 'class:hidden;delay:50;attribute:data-search', function(self
 	};
 });
 
-COMPONENT('viewbox', 'margin:0;scroll:true;delay:100;scrollbar:0;visibleY:1;height:100;invisible:1', function(self, config, cls) {
+COMPONENT('viewbox', 'margin:0;scroll:true;delay:100;initdelay:250;scrollbar:1;visibleY:1;height:100;invisible:1', function(self, config, cls) {
 
 	var eld, elb;
 	var scrollbar;
@@ -6348,25 +6353,37 @@ COMPONENT('viewbox', 'margin:0;scroll:true;delay:100;scrollbar:0;visibleY:1;heig
 	};
 
 	self.make = function() {
+
+		var centered = '';
+
+		if (config.centered)
+			centered = '<div class="{0}-centered-table"><div class="{0}-centered-cell"></div></div>'.format(cls);
+
 		config.invisible && self.aclass('invisible');
-		config.scroll && MAIN.version > 17 && self.element.wrapInner('<div class="' + cls + '-body"></div>');
+		config.scroll && MAIN.version > 17 && self.element.wrapInner('<div class="' + cls + '-body">' + centered + '</div>');
+
 		self.element.prepend('<div class="' + cls + '-disabled hidden"></div>');
 		eld = self.find('> .{0}-disabled'.format(cls)).eq(0);
 		elb = self.find('> .{0}-body'.format(cls)).eq(0);
+
 		self.aclass('{0} {0}-hidden'.format(cls));
+
 		if (config.scroll) {
 			if (config.scrollbar) {
 				if (MAIN.version > 17) {
 					scrollbar = W.SCROLLBAR(self.find(cls2 + '-body'), { shadow: config.scrollbarshadow, visibleY: config.visibleY, visibleX: config.visibleX, orientation: config.visibleX ? null : 'y', parent: self.element });
+					self.scrollbar = scrollbar;
 					self.scrolltop = scrollbar.scrollTop;
 					self.scrollbottom = scrollbar.scrollBottom;
 				} else
 					self.aclass(cls + '-scroll');
 			} else {
 				self.aclass(cls + '-scroll');
-				self.find(cls2 + '-body').aclass('noscrollbar');
+				if (M.version < 19)
+					self.find(cls2 + '-body').aclass('noscrollbar');
 			}
 		}
+
 		self.resize();
 	};
 
@@ -6388,8 +6405,8 @@ COMPONENT('viewbox', 'margin:0;scroll:true;delay:100;scrollbar:0;visibleY:1;heig
 
 		var width = WIDTH();
 		var mywidth = self.element.width();
-		var key = width + 'x' + mywidth + 'x' + w + 'x' + h + 'x' + config.margin;
 
+		var key = width + 'x' + mywidth + 'x' + w + 'x' + h + 'x' + config.margin;
 		if (cache === key) {
 			scrollbar && scrollbar.resize();
 			if (scrolltoforce) {
@@ -6424,6 +6441,9 @@ COMPONENT('viewbox', 'margin:0;scroll:true;delay:100;scrollbar:0;visibleY:1;heig
 		if (config.minheight && h < config.minheight)
 			h = config.minheight;
 
+		if (config.centered)
+			elb.find(cls2 + '-centered-table').css('min-height', h);
+
 		css.height = h;
 		css.width = mywidth;
 		eld.css(css);
@@ -6445,7 +6465,7 @@ COMPONENT('viewbox', 'margin:0;scroll:true;delay:100;scrollbar:0;visibleY:1;heig
 		}
 
 		if (!init) {
-			self.rclass('invisible', 250);
+			self.rclass('invisible', config.initdelay);
 			init = true;
 		}
 	};
@@ -7100,19 +7120,18 @@ COMPONENT('directory', 'minwidth:200', function(self, config, cls) {
 	};
 });
 
-COMPONENT('input', 'maxlength:200;dirkey:name;dirvalue:id;increment:1;autovalue:name;direxclude:false;forcevalidation:1;searchalign:1;after:\\:', function(self, config) {
+COMPONENT('input', 'maxlength:200;dirkey:name;dirvalue:id;increment:1;autovalue:name;direxclude:false;checkicon:fa fa-check;forcevalidation:1;searchalign:1;height:80;after:\\:', function(self, config, cls) {
 
-	var cls = 'ui-input';
 	var cls2 = '.' + cls;
-	var input, placeholder, dirsource, binded, customvalidator, mask, isdirvisible = false, nobindcamouflage = false, focused = false;
+	var input, placeholder, dirsource, binded, customvalidator, mask, rawvalue, isdirvisible = false, nobindcamouflage = false, focused = false;
 
 	self.nocompile();
 
 	self.init = function() {
 		Thelpers.ui_input_icon = function(val) {
-			return val.charAt(0) === '!' ? ('<span class="ui-input-icon-custom">' + val.substring(1) + '</span>') : ('<i class="fa fa-' + val + '"></i>');
+			return val.charAt(0) === '!' || val.indexOf(' ') !== -1 ? ('<span class="ui-input-icon-custom">' + (val.charAt(0) === '!' ? val.substring(1) : ('<i class="' + val) + '"></i>') + '</span>') : ('<i class="fa fa-' + val + '"></i>');
 		};
-		W.ui_input_template = Tangular.compile(('{{ if label }}<div class="{0}-label">{{ if icon }}<i class="fa fa-{{ icon }}"></i>{{ fi }}{{ label | raw }}{{ after | raw }}</div>{{ fi }}<div class="{0}-control{{ if licon }} {0}-licon{{ fi }}{{ if ricon || (type === \'number\' && increment) }} {0}-ricon{{ fi }}">{{ if ricon || (type === \'number\' && increment) }}<div class="{0}-icon-right{{ if type === \'number\' && increment }} {0}-increment{{ else if riconclick || type === \'date\' || type === \'time\' || (type === \'search\' && searchalign === 1) || type === \'password\' }} {0}-click{{ fi }}">{{ if type === \'number\' }}<i class="fa fa-caret-up"></i><i class="fa fa-caret-down"></i>{{ else }}{{ ricon | ui_input_icon }}{{ fi }}</div>{{ fi }}{{ if licon }}<div class="{0}-icon-left{{ if liconclick || (type === \'search\' && searchalign !== 1) }} {0}-click{{ fi }}">{{ licon | ui_input_icon }}</div>{{ fi }}<div class="{0}-input{{ if align === 1 || align === \'center\' }} center{{ else if align === 2 || align === \'right\' }} right{{ fi }}">{{ if placeholder && !innerlabel }}<div class="{0}-placeholder">{{ placeholder }}</div>{{ fi }}<input type="{{ if !dirsource && type === \'password\' }}password{{ else }}text{{ fi }}"{{ if autofill }} name="{{ PATH }}"{{ else }} name="input' + Date.now() + '" autocomplete="new-password"{{ fi }}{{ if dirsource }} readonly{{ else }} data-jc-bind=""{{ fi }}{{ if maxlength > 0}} maxlength="{{ maxlength }}"{{ fi }}{{ if autofocus }} autofocus{{ fi }} /></div></div>{{ if error }}<div class="{0}-error hidden"><i class="fa fa-warning"></i> {{ error }}</div>{{ fi }}').format(cls));
+		W.ui_input_template = Tangular.compile(('{{ if label }}<div class="{0}-label">{{ if icon }}<i class="{{ icon }}"></i>{{ fi }}{{ label | raw }}{{ after | raw }}</div>{{ fi }}<div class="{0}-control{{ if licon }} {0}-licon{{ fi }}{{ if ricon || (type === \'number\' && increment) }} {0}-ricon{{ fi }}">{{ if ricon || (type === \'number\' && increment) }}<div class="{0}-icon-right{{ if type === \'number\' && increment && !ricon }} {0}-increment{{ else if riconclick || type === \'date\' || type === \'time\' || (type === \'search\' && searchalign === 1) || type === \'password\' }} {0}-click{{ fi }}">{{ if type === \'number\' && !ricon }}<i class="fa fa-caret-up"></i><i class="fa fa-caret-down"></i>{{ else }}{{ ricon | ui_input_icon }}{{ fi }}</div>{{ fi }}{{ if licon }}<div class="{0}-icon-left{{ if liconclick || (type === \'search\' && searchalign !== 1) }} {0}-click{{ fi }}">{{ licon | ui_input_icon }}</div>{{ fi }}<div class="{0}-input{{ if align === 1 || align === \'center\' }} center{{ else if align === 2 || align === \'right\' }} right{{ fi }}">{{ if placeholder && !innerlabel }}<div class="{0}-placeholder">{{ placeholder }}</div>{{ fi }}{{ if dirsource || type === \'icon\' || type === \'emoji\' || type === \'color\' }}<div class="{0}-value" tabindex="0"></div>{{ else }}{{ if type === \'multiline\' }}<textarea data-jc-bind="" style="height:{{ height }}px"></textarea>{{ else }}<input type="{{ if type === \'password\' }}password{{ else }}text{{ fi }}"{{ if autofill }} autocomplete="on" name="{{ NAME }}"{{ else }} name="input' + Date.now() + '" autocomplete="new-password"{{ fi }} data-jc-bind=""{{ if maxlength > 0}} maxlength="{{ maxlength }}"{{ fi }}{{ if autofocus }} autofocus{{ fi }} />{{ fi }}{{ fi }}</div></div>{{ if error }}<div class="{0}-error hidden"><i class="fa fa-warning"></i> {{ error }}</div>{{ fi }}').format(cls));
 	};
 
 	self.make = function() {
@@ -7123,7 +7142,17 @@ COMPONENT('input', 'maxlength:200;dirkey:name;dirvalue:id;increment:1;autovalue:
 		if (isMOBILE && config.autofocus)
 			config.autofocus = false;
 
-		config.PATH = self.path.replace(/\./g, '_');
+		if (config.placeholder == 0)
+			config.placeholder = '0';
+
+		if (config.autofill) {
+			if (typeof(config.autofill) === 'string') {
+				config.NAME = config.autofill;
+			} else {
+				var index = self.path.lastIndexOf('.');
+				config.NAME = index === -1 ? self.path : self.path.substring(index + 1);
+			}
+		}
 
 		self.aclass(cls + ' invisible');
 		self.rclass('invisible', 100);
@@ -7136,15 +7165,38 @@ COMPONENT('input', 'maxlength:200;dirkey:name;dirvalue:id;increment:1;autovalue:
 				self.check();
 		});
 
-		self.event('focus', 'input', function() {
+		self.event('click', cls2 + '-checkbox', function() {
 
-			if (config.disabled)
-				return $(this).blur();
+			if (config.disabled) {
+				$(this).blur();
+				return;
+			}
+
+			self.change(true);
+			var val = self.get();
+
+			if (val === 1)
+				val = 0;
+			else if (val === 0)
+				val = 1;
+			else if (val === true)
+				val = false;
+			else
+				val = true;
+			self.set(val, 2);
+		});
+
+		self.event('focus', 'input,' + cls2 + '-value', function() {
+
+			if (config.disabled) {
+				$(this).blur();
+				return;
+			}
 
 			focused = true;
 			self.camouflage(false);
 			self.aclass(cls + '-focused');
-			config.autocomplete && EXEC(self.makepath(config.autocomplete), self, input.parent());
+			config.autocomplete && self.EXEC(config.autocomplete, self, input.parent());
 			if (config.autosource) {
 				var opt = {};
 				opt.element = self.element;
@@ -7152,7 +7204,7 @@ COMPONENT('input', 'maxlength:200;dirkey:name;dirvalue:id;increment:1;autovalue:
 				opt.callback = function(value) {
 					var val = typeof(value) === 'string' ? value : value[config.autovalue];
 					if (config.autoexec) {
-						EXEC(self.makepath(config.autoexec), value, function(val) {
+						self.EXEC(config.autoexec, value, function(val) {
 							self.set(val, 2);
 							self.change();
 							self.bindvalue();
@@ -7171,15 +7223,22 @@ COMPONENT('input', 'maxlength:200;dirkey:name;dirvalue:id;increment:1;autovalue:
 			} else if (config.dirsource && (config.autofocus != false && config.autofocus != 0)) {
 				if (!isdirvisible)
 					self.find(cls2 + '-control').trigger('click');
+			} else if (config.type === 'date' || config.type === 'time') {
+				setTimeout(function() {
+					self.element.find(cls2 + '-icon-right').trigger('click');
+				}, 300);
 			}
 		});
 
 		self.event('paste', 'input', function(e) {
+
 			if (config.mask) {
 				var val = (e.originalEvent.clipboardData || window.clipboardData).getData('text');
 				self.set(val.replace(/\s|\t/g, ''));
 				e.preventDefault();
 			}
+
+			self.check();
 		});
 
 		self.event('keydown', 'input', function(e) {
@@ -7293,7 +7352,7 @@ COMPONENT('input', 'maxlength:200;dirkey:name;dirvalue:id;increment:1;autovalue:
 
 		});
 
-		self.event('blur', 'input', function() {
+		self.event('blur', 'input,' + cls2 + '-value', function() {
 			focused = false;
 			self.camouflage(true);
 			self.rclass(cls + '-focused');
@@ -7301,7 +7360,51 @@ COMPONENT('input', 'maxlength:200;dirkey:name;dirvalue:id;increment:1;autovalue:
 
 		self.event('click', cls2 + '-control', function() {
 
-			if (!config.dirsource || config.disabled || isdirvisible)
+			if (config.disabled || isdirvisible)
+				return;
+
+			if (config.type === 'icon') {
+				opt = {};
+				opt.element = self.element;
+				opt.value = self.get();
+				opt.empty = true;
+				opt.callback = function(val) {
+					self.change(true);
+					self.set(val, 2);
+					self.check();
+					rawvalue[0].focus();
+				};
+				SETTER('faicons', 'show', opt);
+				return;
+			} else if (config.type === 'color') {
+				opt = {};
+				opt.element = self.element;
+				opt.value = self.get();
+				opt.empty = true;
+				opt.callback = function(al) {
+					self.change(true);
+					self.set(al, 2);
+					self.check();
+					rawvalue[0].focus();
+				};
+				SETTER('colorpicker', 'show', opt);
+				return;
+			} else if (config.type === 'emoji') {
+				opt = {};
+				opt.element = self.element;
+				opt.value = self.get();
+				opt.empty = true;
+				opt.callback = function(al) {
+					self.change(true);
+					self.set(al, 2);
+					self.check();
+					rawvalue[0].focus();
+				};
+				SETTER('emoji', 'show', opt);
+				return;
+			}
+
+			if (!config.dirsource)
 				return;
 
 			isdirvisible = true;
@@ -7311,31 +7414,46 @@ COMPONENT('input', 'maxlength:200;dirkey:name;dirvalue:id;increment:1;autovalue:
 
 			var opt = {};
 			opt.element = self.find(cls2 + '-control');
-			opt.items = dirsource;
+			opt.items = dirsource || GET(self.makepath(config.dirsource));
 			opt.offsetY = -1 + (config.diroffsety || 0);
 			opt.offsetX = 0 + (config.diroffsetx || 0);
 			opt.placeholder = config.dirplaceholder;
-			opt.render = config.dirrender ? GET(config.dirrender) : null;
+			opt.render = config.dirrender ? GET(self.makepath(config.dirrender)) : null;
 			opt.custom = !!config.dircustom;
 			opt.offsetWidth = 2;
 			opt.minwidth = config.dirminwidth || 200;
 			opt.maxwidth = config.dirmaxwidth;
 			opt.key = config.dirkey || config.key;
 			opt.empty = config.dirempty;
-
-			if (config.dirsearch === false)
-				opt.search = false;
+			opt.checkbox = !!config.multiple;
 
 			var val = self.get();
-			opt.selected = val;
 
-			if (config.direxclude === false) {
+			if (config.multiple) {
+				for (var i = 0; i < opt.items.length; i++) {
+					var item = opt.items[i];
+					if (val instanceof Array) {
+						item.selectedts = val.indexOf(item[config.dirvalue || config.value]);
+						item.selected = item.selectedts !== -1;
+					} else
+						item.selected = false;
+				}
+			} else
+				opt.selected = val;
+
+			if (config.dirraw)
+				opt.raw = true;
+
+			if (config.dirsearch != null)
+				opt.search = config.dirsearch;
+
+			if (dirsource && config.direxclude == false && !config.multiple) {
 				for (var i = 0; i < dirsource.length; i++) {
 					var item = dirsource[i];
 					if (item)
 						item.selected = typeof(item) === 'object' && item[config.dirvalue] === val;
 				}
-			} else {
+			} else if (config.direxclude) {
 				opt.exclude = function(item) {
 					return item ? item[config.dirvalue] === val : false;
 				};
@@ -7344,33 +7462,56 @@ COMPONENT('input', 'maxlength:200;dirkey:name;dirvalue:id;increment:1;autovalue:
 			opt.callback = function(item, el, custom) {
 
 				// empty
-				if (item == null) {
-					input.val('');
-					self.set(null, 2);
+				if (item == null || (config.multiple && !item.length)) {
+					rawvalue.html('');
+					self.set(config.multiple ? [] : null, 2);
 					self.change();
 					self.check();
 					return;
 				}
 
+				if (config.multiple) {
+
+					var arr = [];
+
+					for (var i = 0; i < item.length; i++) {
+						var m = item[i];
+						arr.push(m[config.dirvalue || config.value]);
+					}
+
+					self.set(arr, 2);
+					self.change(true);
+					// self.bindvalue();
+					return;
+				}
+
 				var val = custom || typeof(item) === 'string' ? item : item[config.dirvalue || config.value];
 				if (custom && typeof(config.dircustom) === 'string') {
-					var fn = GET(config.dircustom);
+					var fn = GET(self.makepath(config.dircustom));
 					fn(val, function(val) {
 						self.set(val, 2);
-						self.change();
+						self.change(true);
 						self.bindvalue();
 					});
 				} else if (custom) {
 					if (val) {
 						self.set(val, 2);
-						self.change();
-						self.bindvalue();
+						self.change(true);
+						if (dirsource)
+							self.bindvalue();
+						else
+							input.val(val);
 					}
 				} else {
 					self.set(val, 2);
-					self.change();
-					self.bindvalue();
+					self.change(true);
+					if (dirsource)
+						self.bindvalue();
+					else
+						input.val(val);
 				}
+
+				rawvalue[0].focus();
 			};
 
 			SETTER('directory', 'show', opt);
@@ -7382,8 +7523,12 @@ COMPONENT('input', 'maxlength:200;dirkey:name;dirvalue:id;increment:1;autovalue:
 					e.preventDefault();
 					e.stopPropagation();
 					self.find(cls2 + '-control').trigger('click');
-				} else if (!config.camouflage || $(e.target).hclass(cls + '-placeholder'))
-					input.focus();
+				} else if (!config.camouflage || $(e.target).hclass(cls + '-placeholder')) {
+					if (input.length) {
+						input[0].focus();
+					} else
+						rawvalue[0].focus();
+				}
 			}
 		});
 
@@ -7406,36 +7551,40 @@ COMPONENT('input', 'maxlength:200;dirkey:name;dirvalue:id;increment:1;autovalue:
 					opt = {};
 					opt.element = self.element;
 					opt.value = self.get();
-					opt.callback = function(date) {
+					opt.callback = function(val) {
 						self.change(true);
-						self.set(date);
+						self.set(val);
 					};
 					SETTER('datepicker', 'show', opt);
 				} else if (config.type === 'time') {
 					opt = {};
 					opt.element = self.element;
 					opt.value = self.get();
-					opt.callback = function(date) {
+					opt.callback = function(val) {
 						self.change(true);
-						self.set(date);
+						self.set(val);
 					};
 					SETTER('timepicker', 'show', opt);
 				} else if (config.type === 'search')
 					self.set('');
 				else if (config.type === 'password')
 					self.password();
-				else if (config.type === 'number') {
-					var n = $(e.target).hclass('fa-caret-up') ? 1 : -1;
-					self.change(true);
-					self.inc(config.increment * n);
+				else if (config.type === 'number' || config.type === 'number2') {
+					var tmp = $(e.target);
+					if (tmp.attr('class').indexOf('fa-') !== -1) {
+						var n = tmp.hclass('fa-caret-up') ? 1 : -1;
+						self.change(true);
+						var val = self.preparevalue((self.get() || 0) + (config.increment * n));
+						self.set(val, 2);
+					}
 				}
 				return;
 			}
 
 			if (left && config.liconclick)
-				EXEC(self.makepath(config.liconclick), self, el);
+				self.EXEC(config.liconclick, self, el);
 			else if (config.riconclick)
-				EXEC(self.makepath(config.riconclick), self, el);
+				self.EXEC(config.riconclick, self, el);
 			else if (left && config.type === 'search')
 				self.set('');
 
@@ -7448,12 +7597,13 @@ COMPONENT('input', 'maxlength:200;dirkey:name;dirvalue:id;increment:1;autovalue:
 				var t = input[0];
 				var arr = t.value.split('');
 				for (var i = 0; i < arr.length; i++)
-					arr[i] = typeof(config.camouflage) === 'string' ? config.camouflage : '*';
+					arr[i] = typeof(config.camouflage) === 'string' ? config.camouflage : '•';
 				nobindcamouflage = true;
 				t.value = arr.join('');
 			} else {
 				nobindcamouflage = true;
-				input[0].value = self.get();
+				var val = self.get();
+				input[0].value = val == null ? '' : val;
 			}
 			self.tclass(cls + '-camouflaged', is);
 		}
@@ -7476,14 +7626,20 @@ COMPONENT('input', 'maxlength:200;dirkey:name;dirvalue:id;increment:1;autovalue:
 		if ((!config.required || config.disabled) && !self.forcedvalidation())
 			return true;
 
+		if (config.disabled)
+			return true;
+
 		if (config.dirsource)
 			return !!value;
 
 		if (customvalidator)
 			return customvalidator(value);
 
-		if (self.type === 'date')
+		if (config.type === 'date')
 			return value instanceof Date && !isNaN(value.getTime());
+
+		if (config.type === 'checkbox')
+			return value === true || value === 1;
 
 		if (value == null)
 			value = '';
@@ -7496,15 +7652,20 @@ COMPONENT('input', 'maxlength:200;dirkey:name;dirvalue:id;increment:1;autovalue:
 		if (config.minlength && value.length < config.minlength)
 			return false;
 
-		switch (self.type) {
+		switch (config.type) {
 			case 'email':
 				return value.isEmail();
 			case 'phone':
 				return value.isPhone();
 			case 'url':
 				return value.isURL();
+			case 'zip':
+				return (/^\d{5}(?:[-\s]\d{4})?$/).test(value);
 			case 'currency':
 			case 'number':
+			case 'number2':
+				if (config.type === 'number2' && (value == null || value == ''))
+					return false;
 				value = value.parseFloat();
 				if ((config.minvalue != null && value < config.minvalue) || (config.maxvalue != null && value > config.maxvalue))
 					return false;
@@ -7527,6 +7688,17 @@ COMPONENT('input', 'maxlength:200;dirkey:name;dirvalue:id;increment:1;autovalue:
 		self.find(cls2 + '-icon-right').find('i').tclass(config.ricon, visible).tclass('fa-eye-slash', !visible);
 	};
 
+	self.preparevalue = function(value) {
+		if (config.type === 'number' && (config.type !== 'number2' || value) && (config.minvalue != null || config.maxvalue != null)) {
+			var tmp = typeof(value) === 'string' ? +value.replace(',', '.') : value;
+			if (config.minvalue > tmp)
+				value = config.minvalue;
+			if (config.maxvalue < tmp)
+				value = config.maxvalue;
+		}
+		return value;
+	};
+
 	self.getterin = self.getter;
 	self.getter = function(value, realtime, nobind) {
 
@@ -7541,7 +7713,8 @@ COMPONENT('input', 'maxlength:200;dirkey:name;dirvalue:id;increment:1;autovalue:
 			}
 			value = val.join('');
 		}
-		self.getterin(value, realtime, nobind);
+
+		self.getterin(self.preparevalue(value), realtime, nobind);
 	};
 
 	self.setterin = self.setter;
@@ -7550,15 +7723,13 @@ COMPONENT('input', 'maxlength:200;dirkey:name;dirvalue:id;increment:1;autovalue:
 
 		if (config.mask) {
 			if (value) {
+
 				if (config.masktidy) {
 					var index = 0;
 					var val = [];
 					for (var i = 0; i < config.mask.length; i++) {
 						var c = config.mask.charAt(i);
-						if (c === '_')
-							val.push(value.charAt(index++) || '_');
-						else
-							val.push(c);
+						val.push(c === '_' ? (value.charAt(index++) || '_') : c);
 					}
 					value = val.join('');
 				}
@@ -7575,14 +7746,14 @@ COMPONENT('input', 'maxlength:200;dirkey:name;dirvalue:id;increment:1;autovalue:
 					}
 					value = arr.join('');
 				}
+
 			} else
 				value = config.mask;
 		}
 
 		self.setterin(value, path, type);
 		self.bindvalue();
-
-		config.camouflage && !focused && setTimeout(self.camouflage, 1, true);
+		config.camouflage && !focused && setTimeout(self.camouflage, type === 'show' ? 2000 : 1, true);
 
 		if (config.type === 'password')
 			self.password(true);
@@ -7590,7 +7761,12 @@ COMPONENT('input', 'maxlength:200;dirkey:name;dirvalue:id;increment:1;autovalue:
 
 	self.check = function() {
 
-		var is = !!input[0].value;
+		var is = false;
+
+		if (config.dirsource)
+			is = !!rawvalue.text();
+		else
+			is = input && input.length ? !!input[0].value : !!self.get();
 
 		if (binded === is)
 			return;
@@ -7604,10 +7780,13 @@ COMPONENT('input', 'maxlength:200;dirkey:name;dirvalue:id;increment:1;autovalue:
 	};
 
 	self.bindvalue = function() {
+
+		var value = self.get();
+
 		if (dirsource) {
 
-			var value = self.get();
 			var item;
+			var text = [];
 
 			for (var i = 0; i < dirsource.length; i++) {
 				item = dirsource[i];
@@ -7615,6 +7794,11 @@ COMPONENT('input', 'maxlength:200;dirkey:name;dirvalue:id;increment:1;autovalue:
 					if (item === value)
 						break;
 					item = null;
+				} else if (config.multiple) {
+					var v = item[config.dirvalue || config.value];
+					var index = value instanceof Array ? value.indexOf(v) : -1;
+					if (index !== -1)
+						text.push({ index: index, value: item[config.dirkey || config.key] });
 				} else if (item[config.dirvalue || config.value] === value) {
 					item = item[config.dirkey || config.key];
 					break;
@@ -7622,11 +7806,52 @@ COMPONENT('input', 'maxlength:200;dirkey:name;dirvalue:id;increment:1;autovalue:
 					item = null;
 			}
 
-			if (value && item == null && config.dircustom)
+			if (config.multiple) {
+
+				text.quicksort('index');
+				for (var i = 0; i < text.length; i++)
+					text[i] = text[i].value;
+
+				item = text.join(', ');
+			} else if (value && item == null && config.dircustom)
 				item = value;
 
-			input.val(item || '');
+			if (config.dirraw)
+				rawvalue.html(item || '');
+			else
+				rawvalue.text(item || '');
+
+		} else if (config.dirsource) {
+			if (config.dirdetail) {
+				self.EXEC(config.dirdetail, value, function(val) {
+					if (config.dirraw)
+						rawvalue.html(val || '');
+					else
+						rawvalue.text(val || '');
+					self.check();
+				});
+				return;
+			} else if (config.dirraw)
+				rawvalue.html(value || '');
+			else
+				rawvalue.text(value || '');
+		} else {
+			switch (config.type) {
+				case 'color':
+					rawvalue.css('background-color', value || '');
+					break;
+				case 'icon':
+					rawvalue.html('<i class="{0}"></i>'.format(value || ''));
+					break;
+				case 'emoji':
+					rawvalue.html(value);
+					break;
+				case 'checkbox':
+					self.tclass(cls + '-checked', value === true || value === 1);
+					break;
+			}
 		}
+
 		self.check();
 	};
 
@@ -7637,6 +7862,10 @@ COMPONENT('input', 'maxlength:200;dirkey:name;dirvalue:id;increment:1;autovalue:
 				config.ricon = 'angle-down';
 			else if (config.type === 'date') {
 				config.ricon = 'calendar';
+				if (!config.align && !config.innerlabel)
+					config.align = 1;
+			} else if (config.type === 'icon' || config.type === 'color' || config.type === 'emoji') {
+				config.ricon = 'angle-down';
 				if (!config.align && !config.innerlabel)
 					config.align = 1;
 			} else if (config.type === 'time') {
@@ -7650,44 +7879,86 @@ COMPONENT('input', 'maxlength:200;dirkey:name;dirvalue:id;increment:1;autovalue:
 					config.licon = 'search';
 			else if (config.type === 'password')
 				config.ricon = 'eye';
-			else if (config.type === 'number') {
+			else if (config.type === 'number' || config.type === 'number2') {
 				if (!config.align && !config.innerlabel)
 					config.align = 1;
 			}
 		}
 
 		self.tclass(cls + '-masked', !!config.mask);
-		self.html(W.ui_input_template(config));
-		input = self.find('input');
-		placeholder = self.find(cls2 + '-placeholder');
+		self.rclass2(cls + '-type-');
+
+		if (config.type)
+			self.aclass(cls + '-type-' + config.type);
+
+
+		var html;
+		var is = false;
+
+		if (config.type === 'checkbox') {
+			html = '<div class="{0}-checkbox"><span><i class="{checkicon}"></i></span><label>{label}</label></div>'.format(cls).arg(config);
+		} else {
+			is = true;
+			var opt = CLONE(config);
+			if (opt.type === 'number2')
+				opt.type = 'number';
+			html = W.ui_input_template(opt);
+		}
+
+		self.html(html);
+
+		if (is) {
+			input = self.find('input,textarea');
+			rawvalue = self.find(cls2 + '-value');
+			placeholder = self.find(cls2 + '-placeholder');
+		} else
+			input = rawvalue = placeholder = null;
 	};
 
 	self.configure = function(key, value) {
 		switch (key) {
+			case 'icon':
+				if (value && value.indexOf(' ') === -1)
+					config.icon = 'fa fa-' + value;
+				break;
 			case 'dirsource':
-				self.datasource(value, function(path, value) {
-					dirsource = value;
+				if (config.dirajax || value.indexOf('/') !== -1) {
+					dirsource = null;
 					self.bindvalue();
-				});
+				} else {
+					if (value.indexOf(',') !== -1) {
+						dirsource = self.parsesource(value);
+						self.bindvalue();
+					} else {
+						self.datasource(value, function(path, value) {
+							dirsource = value;
+							self.bindvalue();
+						});
+					}
+				}
 				self.tclass(cls + '-dropdown', !!value);
+				input.prop('readonly', !!config.disabled || !!config.dirsource);
 				break;
 			case 'disabled':
-				self.tclass('ui-disabled', value == true);
-				input.prop('readonly', value === true);
+				self.tclass('ui-disabled', !!value);
+				input && input.prop('readonly', !!value || !!config.dirsource);
 				self.reset();
 				break;
 			case 'required':
-				self.tclass(cls + '-required', value == true);
+				self.tclass(cls + '-required', !!value);
 				self.reset();
 				break;
 			case 'type':
 				self.type = value;
 				break;
 			case 'validate':
-				customvalidator = value ? (/\(|=|>|<|\+|-|\)/).test(value) ? FN('value=>' + value) : (function(path) { return function(value) { return GET(path)(value); }; })(value) : null;
+				customvalidator = value ? (/\(|=|>|<|\+|-|\)/).test(value) ? FN('value=>' + value) : (function(path) { path = self.makepath(path); return function(value) { return GET(path)(value); }; })(value) : null;
 				break;
 			case 'innerlabel':
-				self.tclass(cls + '-inner', value);
+				self.tclass(cls + '-inner', !!value);
+				break;
+			case 'monospace':
+				self.tclass(cls + '-monospace', !!value);
 				break;
 			case 'maskregexp':
 				if (value) {
@@ -7712,15 +7983,21 @@ COMPONENT('input', 'maxlength:200;dirkey:name;dirvalue:id;increment:1;autovalue:
 		if (value) {
 			switch (config.type) {
 				case 'lower':
-					return value.toString().toLowerCase();
+					return (value + '').toLowerCase();
 				case 'upper':
-					return value.toString().toUpperCase();
+					return (value + '').toUpperCase();
+				case 'phone':
+					return (value + '').replace(/\s/g, '');
+				case 'email':
+					return (value + '').toLowerCase();
 				case 'date':
-					return value.format(config.format || 'yyyy-MM-dd');
+					return value.format(config.format || DEF.dateformat || 'yyyy-MM-dd');
 				case 'time':
 					return value.format(config.format || 'HH:mm');
 				case 'number':
 					return config.format ? value.format(config.format) : value;
+				case 'number2':
+					return value == null ? '' : config.format ? value.format(config.format) : value;
 			}
 		}
 
@@ -7739,35 +8016,66 @@ COMPONENT('input', 'maxlength:200;dirkey:name;dirvalue:id;increment:1;autovalue:
 						tmp = '';
 					return value + (tmp ? (' ' + tmp) : '');
 				case 'lower':
+				case 'email':
 					value = value.toLowerCase();
 					break;
 				case 'upper':
 					value = value.toUpperCase();
 					break;
+				case 'phone':
+					value = value.replace(/\s/g, '');
+					break;
+				case 'number2':
+					if (value) {
+						var type = typeof(value);
+						if (type === 'string' && (/^[\-0-9\.\,]+$/).test(value))
+							value = value.parseFloat();
+						else if (type !== 'number')
+							value = null;
+					} else
+						value = null;
+					break;
 				case 'time':
 					tmp = value.split(':');
 					var dt = self.get();
-					if (dt == null)
-						dt = new Date();
-					dt.setHours(+(tmp[0] || '0'));
-					dt.setMinutes(+(tmp[1] || '0'));
-					dt.setSeconds(+(tmp[2] || '0'));
-					value = dt;
+					value = dt ? new Date(dt.getTime()) : new Date();
+					value.setHours((tmp[0] || '0').parseInt());
+					value.setMinutes((tmp[1] || '0').parseInt());
+					value.setSeconds((tmp[2] || '0').parseInt());
+					break;
+			}
+		} else {
+			switch (config.type) {
+				case 'number':
+					value = 0;
+					break;
+				case 'number2':
+				case 'date':
+					value = null;
 					break;
 			}
 		}
+
 		return value ? config.spaces === false ? value.replace(/\s/g, '') : value : value;
 	});
 
-	self.state = function(type) {
-		if (!type)
-			return;
-		var invalid = config.required ? self.isInvalid() : self.forcedvalidation() ? self.isInvalid() : false;
-		if (invalid === self.$oldstate)
-			return;
-		self.$oldstate = invalid;
-		self.tclass(cls + '-invalid', invalid);
-		config.error && self.find(cls2 + '-error').tclass('hidden', !invalid);
+	self.state = function(type, what) {
+		if (type) {
+
+			if (type === 1 && what === 4) {
+				self.rclass(cls + '-ok ' + cls + '-invalid');
+				self.$oldstate = null;
+				return;
+			}
+
+			var invalid = config.required ? self.isInvalid() : self.forcedvalidation() ? self.isInvalid() : false;
+			if (invalid !== self.$oldstate) {
+				self.$oldstate = invalid;
+				self.tclass(cls + '-invalid', invalid);
+				self.tclass(cls + '-ok', !invalid);
+				config.error && self.find(cls2 + '-error').tclass('hidden', !invalid);
+			}
+		}
 	};
 
 	self.forcedvalidation = function() {
@@ -7775,13 +8083,108 @@ COMPONENT('input', 'maxlength:200;dirkey:name;dirvalue:id;increment:1;autovalue:
 		if (!config.forcevalidation)
 			return false;
 
+		if (config.type === 'number' || config.type === 'number2')
+			return false;
+
 		var val = self.get();
 
-		if (self.type === 'number')
-			return true;
+		if (config.type === 'checkbox')
+			return val === true || val === 1;
 
-		return (self.type === 'phone' || self.type === 'email') && (val != null && (typeof(val) === 'string' && val.length !== 0));
+		return (config.type === 'phone' || config.type === 'email') && (val != null && (typeof(val) === 'string' && val.length !== 0));
 	};
+
+});
+
+COMPONENT('choose', 'limit:1;attr:id;key:id;selector:.selection;event:click;class:selected;type:string;uncheck:false', function(self, config, cls) {
+
+	var convert = function(val) {
+		switch (config.type) {
+			case 'number':
+				return val ? val.parseInt() : null;
+			default:
+				return val;
+		}
+	};
+
+	self.getter = null;
+	self.validate = function(value, init) {
+		if (init || config.disabled || !config.required)
+			return true;
+		return config.limit === 1 ? value != null : value && value.length > 0;
+	};
+
+	self.make = function() {
+
+		self.aclass(cls);
+
+		self.event(config.event, config.selector, function(e) {
+			e.preventDefault();
+			e.stopPropagation();
+			self.toggle($(this));
+		});
+
+	};
+
+	self.toggle = function(id) {
+
+		if (config.disabled)
+			return;
+
+		id = convert(ATTRD(id, config.attr));
+
+		var model = self.get();
+		if (model == null) {
+			self.rewrite(model);
+			self.set(config.limit === 1 ? id : [id]);
+		} else {
+			if (config.limit === 1) {
+				if (model === id) {
+					if (config.uncheck)
+						self.set(null);
+				} else
+					self.set(id);
+			} else {
+				var index = model.indexOf(id);
+				if (index === -1) {
+					if (config.limit <= model.length)
+						model.pop();
+					model.push(id);
+				} else
+					model.splice(index, 1);
+				self.update(true);
+			}
+		}
+		self.change(true);
+	};
+
+	self.recalc = function() {
+		var arr = self.find(config.selector);
+		var model = self.get();
+		for (var i = 0; i < arr.length; i++) {
+			var el = $(arr[i]);
+			var is = false;
+			if (config.limit === 1)
+				is = model == null ? false : model === convert(el.attrd(config.attr));
+			else
+				is = model && model instanceof Array && model.length ? model.indexOf(el.attrd(config.attr)) !== -1 : false;
+			el.tclass(config.class, is);
+		}
+	};
+
+	var datasource = function() {
+		self.update();
+	};
+
+	self.configure = function(key, value) {
+		if (key === 'datasource')
+			self.datasource(value, datasource);
+	};
+
+	self.setter = function() {
+		setTimeout2(self.ID, self.recalc, 10);
+	};
+
 });
 
 COMPONENT('codemirror', 'linenumbers:false;required:false;trim:true;tabs:true', function(self, config) {

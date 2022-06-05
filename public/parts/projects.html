@@ -11,7 +11,7 @@
 		<script type="text/plain">
 			[
 				'{{ if hidden }} silver{{ fi }}',
-				{ name: 'name', text: '@(Name)', class: 'b', width: 300, template: '{{ if notfound }}<span class="badge badge-small badge-red mr5">{{ if notfound === \'offline\' }}@(offline){{ else }}@(not found){{ fi }}</span>{{ fi }}{{ name }}' },
+				{ name: 'name', text: '@(Name)', class: 'b', width: 300, template: '{{ if notfound }}<span class="badge badge-small badge-red mr5">{{ if notfound === \'offline\' }}@(offline){{ else }}@(not found){{ fi }}</span>{{ fi }}{{ if pinned }}<i class="fa fa-thumbtack mr5 orange"></i>{{ fi }}{{ name }}' },
 				{ name: 'url', text: '@(URL)', width: 250 },
 				{ name: 'path', text: '@(Path)', width: 250 },
 				{ name: 'users', text: '@(Users)', template: '{{ foreach m in users }}<span class="badge badge-small" style="background:{{ m | color }}">{{ m }}</span>{{ end }}', width: 250 },
