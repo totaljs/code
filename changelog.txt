@@ -4,6 +4,7 @@
 - added `Download to clipboard` context menu item
 - fixed rendering of directory/file list
 - added `Pin project` feature
+- extended auto-complete list
 
 ========================= 1.6
 

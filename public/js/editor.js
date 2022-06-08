@@ -1675,6 +1675,10 @@ SNIPPETS.push({ type: 'css', search: '@media xs mobile', text: '<b>media: XS</b>
 SNIPPETS.push({ type: 'css', search: '@media sm mobile', text: '<b>media: SM</b>', code: '@media (max-width:991px) and (min-width:768px) {\n\t{0}\n}', ch: 47 });
 SNIPPETS.push({ type: 'css', search: '@media md mobile', text: '<b>media: MD</b>', code: '@media (max-width:1199px) and (min-width:992px) {\n\t{0}\n}', ch: 48 });
 SNIPPETS.push({ type: 'css', search: '@media lg mobile', text: '<b>media: LG</b>', code: '@media (min-width:1200px) {\n\t{0}\n}', ch: 26 });
+SNIPPETS.push({ type: 'css', search: 'flex align items', text: 'align-items', code: 'align-items: ;', ch: 14 });
+SNIPPETS.push({ type: 'css', search: 'flex direction', text: 'flex-direction', code: 'flex-direction: ;', ch: 17 });
+SNIPPETS.push({ type: 'css', search: 'flex wrap', text: 'flex-wrap', code: 'flex-wrap: ;', ch: 12 });
+SNIPPETS.push({ type: 'css', search: 'flex gap', text: 'gap', code: 'gap: ;', ch: 6 });
 SNIPPETS.push({ type: 'css', search: 'line height', text: '<b>line-height</b>', code: 'line-height: px;', ch: 14 });
 SNIPPETS.push({ type: 'css', search: 'position relative inline block', text: 'display: <b>inline-block</b>', code: 'position: relative; display: inline-block;', ch: 43 });
 SNIPPETS.push({ type: 'css', search: 'position absolute', text: '<b>absolute</b>', code: 'position: absolute;', ch: 20 });
