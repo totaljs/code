@@ -1750,7 +1750,8 @@ SNIPPETS.push({ type: 'js', search: 'AUTH', text: '<b>AUTH</b>', code: 'AUTH(fun
 SNIPPETS.push({ type: 'js', search: 'PLUGIN', text: '<b>PLUGIN</b>', code: 'PLUGIN(\'~PATH~\', function(exports) {\n\n\t{0}exports.refresh = function() {\n\t{0}};\n\n{0}});', ch: 9 });
 SNIPPETS.push({ type: 'js', search: 'PLUGINABLE', text: '<b>PLUGINABLE</b>', code: 'PLUGINABLE(\'{1}\', function(exports) {\n\n\t{0}exports.create = function() {\n\t{0}};\n\n{0}}, function(next) {\n\n\t{0}next();\n\n{0}});', ch: 13 });
 SNIPPETS.push({ type: 'js', search: 'COMPONENT', text: '<b>COMPONENT</b>', code: 'COMPONENT(\'\', \'\', function(self, config, cls) {\n\t{0}\n{0}});', ch: 12 });
-SNIPPETS.push({ type: 'js', search: 'EXTENSION', text: '<b>EXTENSION</b>', code: 'EXTENSION(\'\', \'\', function(self, config, cls) {\n\t{0}\n{0}});', ch: 12 });
+SNIPPETS.push({ type: 'js', search: 'EXTENSION component', text: 'EXTENSION: <b>Component</b>', code: 'EXTENSION(\'\', \'\', function(self, config, cls) {\n\t{0}\n{0}});', ch: 12 });
+SNIPPETS.push({ type: 'js', search: 'EXTENSION plugin', text: 'EXTENSION: <b>Plugin</b>', code: 'EXTENSION(\'@ \', function(exports) {\n\t{0}\n{0}});', ch: 14 });
 SNIPPETS.push({ type: 'js', search: 'MACRO', text: '<b>MACRO</b>', code: 'MACRO(\'\', function(self, element, cls) {\n\t{0}\n{0}});', ch: 8 });
 SNIPPETS.push({ type: 'js', search: 'CONFIG', text: '<b>CONFIG</b>', code: 'CONFIG(\'\', \'\');', ch: 9 });
 SNIPPETS.push({ type: 'js', search: 'PUBLISH', text: '<b>PUBLISH</b>', code: 'PUBLISH(\'\', model);', ch: 10 });
