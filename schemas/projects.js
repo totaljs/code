@@ -260,15 +260,19 @@ NEWSCHEMA('Projects', function(schema) {
 				}
 
 				keys = Object.keys(output);
-				for (var i = 0, length = keys.length; i < length; i++)
-					builder.push('\n// ' + keys[i] + '\n' + output[keys[i]].join('\n'));
+				for (var i = 0, length = keys.length; i < length; i++) {
+					if ($.query.files)
+						builder.push('\n// ' + keys[i] + '\n' + output[keys[i]].join('\n'));
+					else
+						builder.push(output[keys[i]].join('\n'));
+				}
 
-				var data = '// Total.js localization file\n// Created by ' + $.user.name + ': ' + new Date().format('yyyy-MM-dd HH:mm') + '\n' + builder.join('\n');
+				$.success(builder.join('\n'));
 
-				if (item.isexternal)
-					FUNC.external(item, 'save', '/localization.resource', data, $.done());
-				else
-					Fs.writeFile(Path.join(item.path, 'localization.resource'), data, $.done());
+				// if (item.isexternal)
+				// 	FUNC.external(item, 'save', '/localization.resource', data, $.done());
+				// else
+				// 	Fs.writeFile(Path.join(item.path, 'localization.resource'), data, $.done());
 			});
 
 		};

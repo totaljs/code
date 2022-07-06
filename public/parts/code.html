@@ -341,10 +341,10 @@
 
 		exports.localize = function() {
 			SETTER('loading/show');
-			AJAX('GET /api/projects/{id}/localize/'.arg(code.data), function() {
-				EXEC('code/refresh', function() {
-					exports.element.SETTER('tree/selectpath', '/localization.resource');
-				});
+			AJAX('GET /api/projects/{id}/localize/'.arg(code.data), function(response) {
+				SET('resourcesdiff.b', response.value);
+				EXEC('code/resourcediff', 'show');
+				SETTER('loading/hide', 500);
 			});
 		};
 
@@ -1794,8 +1794,7 @@
 			is && items.push({ value: 90, name: '@(Auto-reloader (5 sec.))', icon: 'refresh green' });
 			is && items.push({ value: 2, name: '@(Find)', icon: 'search', command: 'find' });
 			// is && items.push({ value: 2, name: '@(Replace)', icon: 'search', command: 'replaceAll' });
-			is && items.push({ value: 11, name: '@(Localize)', icon: 'language' });
-			is && items.push({ value: 96, name: '@(Diff resource tool)', icon: 'language' });
+			is && items.push({ value: 11, name: '@(Localize current file)', icon: 'language' });
 			is && items.push({ value: 3, name: '@(Convert to Tabs)', icon: 'align-right' });
 			is && common.electron && code.data.repository && items.push({ value: 5, name: '@(Save locally)', icon: 'floppy-o' });
 			is && items.push({ value: 4, name: '@(Restore from backup)', icon: 'history' });
@@ -1812,6 +1811,7 @@
 			items.push({ value: 9, name: '@(Show log file)', icon: 'bug red', shortcut: 'F10' });
 			items.push({ value: 16, name: '@(Clipboard)', icon: 'clipboard', shortcut: 'F11' });
 			items.push({ value: 20, name: '@(Localize files)', icon: 'language' });
+			items.push({ value: 96, name: '@(Diff resource tool)', icon: 'language' });
 			items.push({ value: 97, name: '@(Reset windows)', icon: 'window-restore' });
 
 			if (code.data.allowbundle && !code.data.isexternal)
@@ -1981,9 +1981,7 @@
 			AJAX('GET /api/projects/{id}/translate/'.arg(code.data), { path: code.current.path }, function(response) {
 				if (typeof(response) === 'string') {
 					if (response) {
-						setTimeout(function() {
-							SETTER('clipboard/copy', response);
-						}, 1000);
+						setTimeout(ASETTER('clipboard/copy', response), 1000);
 						FUNC.success('@(Localized dictionary has been copied into the clipboard.)');
 					} else
 						FUNC.warning('@(This file doesn\'t contain any localization markup.)');
