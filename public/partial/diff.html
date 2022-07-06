@@ -1,0 +1,138 @@
+<style>
+	.td .resourcesdiff td { color: #FFF; }
+	.resourcesdiff pre { margin: 0; padding: 0; overflow: hidden; }
+</style>
+
+<div>
+	<div data-scope="resourcesdiff" class="resourcesdiff">
+		<div data---="viewbox__null__parent:auto;scrollbar:1">
+			<div class="padding bg-smoke">
+				<div class="grid-2">
+					<div>
+						<div data---="input__?.a__type:multiline;height:150;monospace:1;required:1;placeholder:@(Put the resource content)"><b>@(Resource A)</b></div>
+						<div class="help">
+							<span class="link exec pull-right gray" data-exec="?/push" data-id="a"><i class="fa fa-copy"></i>@(Push to the editor)</span>
+							<span class="link exec" data-exec="?/load" data-id="a"><i class="fa fa-copy"></i>@(Load from the editor)</span>
+						</div>
+					</div>
+					<div>
+						<div data---="input__?.b__type:multiline;height:150;monospace:1;required:1;placeholder:@(Put the resource content)">@(Resource B)</div>
+						<div class="help">
+							<span class="link exec" data-exec="?/load" data-id="b"><i class="fa fa-copy"></i>@(Load from the editor)</span>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="padding hidden" data-bind="?.response__show">
+				<div data-bind="!?.response__template__show">
+					<script type="text/html">
+
+						{{ if !value.add.length && !value.rem.length }}
+							<div class="center padding"><i class="fa fa-check-circle green mr5"></i>@(No differences in resources)</div>
+						{{ fi }}
+
+						{{ if value.add.length }}
+						<div style="margin-bottom:10px"><span class="exec pull-right link fs11 mt3" data-exec="?/insertall"><i class="fas fa-magic mr5"></i>@(Apply all to Resource A)</span><i class="fa fa-plus mr5"></i><b>@(Insert to A):</b></div>
+						<table class="table table-small" style="table-layout:fixed">
+							<tbody>
+							{{ foreach m in value.add }}
+								{{ if m }}
+								<tr style="background-color:#9FFF5F32">
+									<td{{ if m.substring(0, 2) === '//' }} class="gray"{{ fi }}><div class="hellip"><pre><code>{{ m }}</code></pre></div></td>
+									<td style="width:80px" class="right"><span class="link exec fs11" data-exec="?/copy"><i class="fa fa-copy mr5"></i>@(Copy)</span></td>
+								</tr>
+								{{ fi }}
+							{{ end }}
+							</tbody>
+						</table>
+						{{ fi }}
+
+						{{ if value.rem.length }}
+						<div style="margin-bottom:10px"><span class="exec pull-right link fs11 mt3" data-exec="?/removeall"><i class="fas fa-magic mr5"></i>@(Apply all to Resource A)</span><i class="fa fa-plus mr5"></i><b>@(Remove from A):</b></div>
+						<table class="table table-small" style="table-layout:fixed">
+							<tbody>
+							{{ foreach m in value.rem }}
+								{{ if m }}
+								<tr style="background-color:#FF5F5F32">
+									<td{{ if m.substring(0, 2) === '//' }} class="gray"{{ fi }}><div class="hellip"><pre><code>{{ m }}</code></pre></div></td>
+									<td style="width:80px" class="right"><span class="link exec fs11" data-exec="?/copy"><i class="fa fa-copy mr5"></i>@(Copy)</span></td>
+								</tr>
+								{{ fi }}
+							{{ end }}
+							</tbody>
+						</table>
+						{{ fi }}
+					</script>
+				</div>
+			</div>
+		</div>
+
+	</div>
+</div>
+
+<script>
+	PLUGIN('resourcesdiff', function(exports) {
+
+		exports.copy = function(el) {
+			var tr = el.closest('tr');
+			var div = tr.find('td:first-child').find('code');
+			div.css('text-decoration', 'line-through');
+			SETTER('clipboard/copy', div.text());
+		};
+
+		exports.load = function(el) {
+			var id = el.attrd('id');
+			var val = EDITOR.editor.getValue();
+			SET('?.' + id, val);
+		};
+
+		exports.push = function() {
+			var model = exports.model;
+			if (code.current)
+				EDITOR.restore(model.a);
+		};
+
+		exports.insertall = function() {
+
+			var model = exports.model;
+			var a = model.a;
+			var response = model.response.add.join('\n').parseConfigTotal();
+
+			a += '\n' + model.response.add.join('\n');
+			a = FUNC.resources_clean(a, true);
+
+			SET('?.a', a);
+			SETTER('notifybar/success', '(All changes applied in the input: <b>Resource A</b>)');
+		};
+
+		exports.removeall = function() {
+
+			var model = exports.model;
+			var a = model.a;
+			var response = model.response.rem.join('\n').parseConfigTotal();
+
+			a = FUNC.resources_parse(a, function(key, val) {
+				return response[key] ? '' : val;
+			});
+
+			SET('?.a', a);
+			SETTER('notifybar/success', '(All changes applied in the input: <b>Resource A</b>)');
+		};
+
+		WATCH('?', function(path, value, type) {
+
+			if (type === 'skip')
+				return;
+
+			var a = value.a || '';
+			var b = value.b || '';
+
+			if (a && b) {
+				var output = FUNC.resources_diff(b, a);
+				SET('?.response', output, 'skip');
+			}
+
+		});
+
+	});
+</script>

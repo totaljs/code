@@ -324,6 +324,181 @@ FUNC.formathtml = function(body) {
 	return builder.join('').replace(/\t{1,}\n/g, '\n').trim();
 };
 
+FUNC.resources_clean = function(content, noremovecomments) {
+	var lines = content.split('\n');
+	var output = [];
+	var max = 0;
+
+	for (var i = 0, length = lines.length; i < length; i++) {
+		var line = lines[i];
+		if (!line || line[0] === '#' || line.startsWith('//'))
+			continue;
+
+		var index = line.indexOf(' :');
+		if (index === -1) {
+			index = line.indexOf('\t:');
+			if (index === -1)
+				continue;
+		}
+
+		max = Math.max(max, index);
+	}
+
+	for (var i = 0, length = lines.length; i < length; i++) {
+		var line = lines[i];
+
+		if (!line || line[0] === '#' || line.startsWith('//')) {
+			if (noremovecomments)
+				output.push(line);
+			continue;
+		}
+
+		var index = line.indexOf(' :');
+		if (index === -1) {
+			index = line.indexOf('\t:');
+			if (index === -1) {
+				output.push(line);
+				continue;
+			}
+		}
+
+		var key = line.substring(0, index).trim();
+		output.push(key.padRight(max, ' ') + ' : ' + line.substring(index + 2).trim());
+	}
+
+	return output.join('\n');
+};
+
+FUNC.resources_parse = function(ba, prepare) {
+
+	var arr = ba.split('\n');
+	var output = [];
+
+	for (var i = 0, length = arr.length; i < length; i++) {
+
+		var line = arr[i];
+		if (!line || line[0] === '#' || line.startsWith('//')) {
+			output.push(line);
+			continue;
+		}
+
+		var index = line.indexOf(' :');
+		if (index === -1) {
+			index = line.indexOf('\t:');
+			if (index === -1) {
+				output.push(line);
+				continue;
+			}
+		}
+
+		var key = line.substring(0, index).trim();
+		var val = prepare(key, line.substring(index + 2).trim());
+		if (val)
+			output.push(key.padRight(index) + ' : ' + val);
+	}
+
+	return output.join('\n');
+};
+
+FUNC.resources_diff = function(ba, bb) {
+
+	var ca = ba.parseConfigTotal();
+	var cb = bb.parseConfigTotal();
+	var ka = Object.keys(ca);
+	var kb = Object.keys(cb);
+
+	ba = ba.split('\n');
+	bb = bb.split('\n');
+
+	var output = {};
+	var items = [];
+	var padding = 0;
+
+	for (var i = 0, length = ba.length; i < length; i++) {
+		if (ba[i].indexOf(ka[0]) !== -1) {
+			padding = ba[i].indexOf(':');
+			break;
+		}
+	}
+
+	if (padding <= 0)
+		padding = 17;
+
+	function find_comment(arr, id) {
+		var comment = '';
+		for (var i = 0, length = arr.length; i < length; i++) {
+			if (arr[i].indexOf(id) !== -1)
+				return comment;
+			var line = arr[i];
+			if (line[0] !== '/' && line[1] !== '/')
+				continue;
+			comment = line;
+		}
+		return '';
+	}
+
+	var comment = '';
+	var prev = '';
+
+	for (var i = 0, length = ka.length; i < length; i++) {
+		var key = ka[i];
+
+		if (cb[key] !== undefined)
+			continue;
+
+		comment = find_comment(ba, key);
+
+		if (comment) {
+			if (items[items.length - 1] !== '')
+				items.push('');
+			items.push(comment);
+		}
+
+		var empty = comment === prev;
+
+		prev = comment;
+		items.push(key.padRight(padding) + ': ' + ca[key]);
+
+		if (!empty)
+			items.push('');
+
+		// add++;
+	}
+
+	output.add = items;
+	items = [];
+
+	for (var i = 0, length = kb.length; i < length; i++) {
+		var key = kb[i];
+
+		if (ca[key] !== undefined)
+			continue;
+
+		comment = find_comment(bb, key);
+
+		if (comment) {
+			if (items[items.length - 1] !== '')
+				items.push('');
+			items.push(comment);
+		}
+		else if (prev !== '')
+			items.push('');
+
+		var empty = comment === prev;
+
+		prev = comment;
+		items.push(key.padRight(padding) + ': ' + cb[key]);
+
+		if (!empty)
+			items.push('');
+
+		// rem++;
+	}
+
+	output.rem = items;
+	return output;
+};
+
 FUNC.sql2schema = function(text) {
 	var arr = text.split('\n');
 	var reg = /_varchar|varchar|int|json|double|float|timestamp|bool|text/;
@@ -2618,3 +2793,86 @@ FUNC.jcomponent_update = function(name, type, content, body, meta) {
 	};
 
 })();
+
+String.prototype.parseConfigTotal = function() {
+
+	var arr = this.split('\n');
+	var length = arr.length;
+	var subtype;
+	var name;
+	var index;
+	var value;
+	var obj = {};
+
+	for (var i = 0; i < length; i++) {
+
+		var str = arr[i];
+		if (!str || str[0] === '#' || str.substring(0, 2) === '//')
+			continue;
+
+		index = str.indexOf(':');
+		if (index === -1) {
+			index = str.indexOf('\t:');
+			if (index === -1)
+				continue;
+		}
+
+		name = str.substring(0, index).trim();
+		value = str.substring(index + 2).trim();
+
+		index = name.indexOf('(');
+		if (index !== -1) {
+			subtype = name.substring(index + 1, name.indexOf(')')).trim().toLowerCase();
+			name = name.substring(0, index).trim();
+		} else
+			subtype = '';
+
+		switch (subtype) {
+			case 'string':
+				obj[name] = value;
+				break;
+			case 'number':
+			case 'float':
+			case 'double':
+			case 'currency':
+				obj[name] = value.isNumber(true) ? value.parseFloat() : value.parseInt();
+				break;
+			case 'boolean':
+			case 'bool':
+				obj[name] = (/true|on|1|enabled/i).test(value);
+				break;
+			case 'config':
+				obj[name] = CONF[value];
+				break;
+			case 'eval':
+			case 'object':
+			case 'array':
+				try {
+					obj[name] = new Function('return ' + value)();
+				} catch (e) {
+					throw new Error('A value of "{0}" can\'t be converted to "{1}": '.format(name, subtype) + e.toString());
+				}
+				break;
+			case 'json':
+				obj[name] = value.parseJSON(true);
+				break;
+			case 'env':
+			case 'environment':
+				obj[name] = process.env[value];
+				break;
+			case 'date':
+			case 'time':
+			case 'datetime':
+				obj[name] = value.parseDate();
+				break;
+			case 'random':
+				obj[name] = GUID((value || '0').parseInt() || 10);
+				break;
+			default:
+				obj[name] = value;
+				break;
+		}
+	}
+
+	return obj;
+};

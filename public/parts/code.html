@@ -366,6 +366,23 @@
 			PUSH('windows', obj);
 		};
 
+		exports.resourcediff = function(show) {
+
+			if (windows.findItem('id', 'diff')) {
+				SETTER('windows/' + (show ? 'show' : 'toggle'), 'diff');
+				return;
+			}
+
+			var obj = {};
+			obj.id = 'diff';
+			obj.hidden = false;
+			obj.offset = { x: ((WW / 2) - 350) >> 0, y: ((WH / 2) - 150) >> 0, width: 700, height: 300, minwidth: 300, minheight: 150 };
+			obj.title = '<i class="fa fa-code-branch"></i> @(Diff resource)';
+			obj.html = '<div data-import="url:/partial/diff.html"></div>';
+			obj.actions = { minimize: true, maximize: true, move: true, resize: true, autosave: true, hide: true };
+			PUSH('windows', obj);
+		};
+
 		exports.chat = function(show) {
 
 			if (windows.findItem('id', 'chat')) {
@@ -662,6 +679,9 @@
 
 			if (can) {
 
+				if (code.current.ext === 'resource')
+					items.push({ name: '@(Clean content)', icon: 'broom', value: 'resourceclean', classname: 'b' });
+
 				if ((user.sa || user.dbviewer) && (/hex\s\w+|base64\s\w+|postgresql\:|postgre\:|postgres\:|psql\:|pg\:/i).test(text))
 					items.push({ name: '@(Open DB viewer)', icon: 'database', value: 'dbviewer', classname: 'b' });
 
@@ -882,6 +902,11 @@
 
 				if (value.value === 'showselected') {
 					EXEC('code/showselected');
+					return;
+				}
+
+				if (value.value === 'resourceclean') {
+					editor.replaceSelection(FUNC.resources_clean(text.trim()));
 					return;
 				}
 
@@ -1770,6 +1795,7 @@
 			is && items.push({ value: 2, name: '@(Find)', icon: 'search', command: 'find' });
 			// is && items.push({ value: 2, name: '@(Replace)', icon: 'search', command: 'replaceAll' });
 			is && items.push({ value: 11, name: '@(Localize)', icon: 'language' });
+			is && items.push({ value: 96, name: '@(Diff resource tool)', icon: 'language' });
 			is && items.push({ value: 3, name: '@(Convert to Tabs)', icon: 'align-right' });
 			is && common.electron && code.data.repository && items.push({ value: 5, name: '@(Save locally)', icon: 'floppy-o' });
 			is && items.push({ value: 4, name: '@(Restore from backup)', icon: 'history' });
@@ -1804,6 +1830,9 @@
 					case 1:
 						FUNC.editor_reload();
 						break;
+					case 96:
+						EXEC('code/resourcediff');
+						break;
 					case 97:
 
 						for (var key in PREF) {
@@ -1822,6 +1851,7 @@
 						}
 
 						break;
+
 					case 90:
 
 						if (code.autorefresh) {
