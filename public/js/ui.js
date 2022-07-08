@@ -1155,6 +1155,7 @@ COMPONENT('exec', function(self, config) {
 COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 
 	var REGBK = /(-|_)bk\.\w+$/i;
+	var REGENV = /(-|_)(debug|release)\.\w+$/i;
 	var items = {};
 	var nestedkey = null;
 	var nesteditem = null;
@@ -1164,7 +1165,7 @@ COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 		if (filename === '/node_modules/')
 			return ' ui-tree-special';
 
-		return filename.charAt(0) === '.' || REGBK.test(filename) || filename === '/modules/code.js' ? ' ui-tree-hiddenfile' : '';
+		return filename.charAt(0) === '.' || REGBK.test(filename) || filename === '/modules/code.js' ? ' ui-tree-hiddenfile' : REGENV.test(filename) ? ' ui-tree-envfile' : '';
 	};
 
 	Thelpers.fileicon = function(filename) {

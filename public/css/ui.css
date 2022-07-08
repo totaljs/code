@@ -151,6 +151,9 @@ div.CodeMirror span.CodeMirror-matchingbracket { border-bottom: 2px solid blue; 
 .ui-tree-special { color: #999 !important; }
 .ui-tree-hiddenfile { color: #B0B0B0 !important; }
 .ui-tree-hiddenfile div:after { content: '!'; color: red; margin-left: 5px; font-weight: bold; font-size: 14px; }
+.ui-tree-envfile { color: #547882 !important; }
+.ui-tree-envfile div:after { content: '*'; color: #59CFEC; margin-left: 5px; font-weight: bold; font-size: 14px; }
+
 .td .ui-tree-hiddenfile { color: #555555 !important; }
 .td .ui-tree-special { color: #6F6F6F !important; }
 .td .ui-tree .fa-js, .td .tabs nav .fa-js { color: #cd8029; }
