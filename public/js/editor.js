@@ -1733,7 +1733,7 @@ SNIPPETS.push({ type: 'html', search: 'script', text: '<b>Script: JavaScript</b>
 SNIPPETS.push({ type: 'html', search: 'script', text: '<b>Script: HTML</b>', code: '<script type="text/html"></script>', ch: 26 });
 SNIPPETS.push({ type: 'html', search: 'script', text: '<b>Script: JSON</b>', code: '<script type="applicatio/json"></script>', ch: 32 });
 SNIPPETS.push({ type: 'html', search: 'script', text: '<b>Script: Text</b>', code: '<script type="text/plain"></script>', ch: 27 });
-SNIPPETS.push({ type: 'html', search: 'script', text: '<b>Script: Componentator</b>', code: '<script src="https://componentator.com/download?id="></script>', ch: 52 });
+SNIPPETS.push({ type: 'html', search: 'script', text: '<b>Script: Componentator</b>', code: '<script src="https://componentator.com/download.js?id="></script>', ch: 55 });
 SNIPPETS.push({ type: 'html', search: 'fa', text: '<b>Font-Awesome Icon</b>', code: '<i class="fa fa-"></i>', ch: 17 });
 SNIPPETS.push({ type: 'html', search: 'jc', text: '<b>Component</b>', code: '<div data-jc="__"></div>', ch: 15 });
 SNIPPETS.push({ type: 'html', search: '--', text: '<b>Component</b>', code: '<div data---="__"></div>', ch: 15 });
