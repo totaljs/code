@@ -1388,6 +1388,9 @@
 				return;
 			}
 
+			var c = val.charAt(0);
+			var refresh = c === '/' || (c === '.' && val.indexOf('/') !== -1);
+
 			SETTER('loading/show');
 			AJAX('POST /api/files/{id}/rename/'.arg(code.data), data, function(response) {
 				SETTER('loading/hide', 500);
@@ -1399,6 +1402,7 @@
 					var Path = require('path');
 					dir && require('fs').rename(Path.join(dir, code.data.repository, data.oldpath), Path.join(dir, code.data.repository, data.newpath), NOOP);
 				});
+				refresh && exports.refresh();
 				setTimeout(callback, 300, response.success);
 			});
 		};
@@ -1995,6 +1999,10 @@
 		exports.options = function(node, el) {
 
 			var items = [];
+			var ext = node.name;
+			var index = ext.lastIndexOf('.');
+
+			ext = index !== -1 ? ext.substring(index + 1).toLowerCase() : '';
 
 			if (node.name === 'bundles')
 				items.push({ value: 'bundles', name: '@(Download bundles)', icon: 'cloud-download', classname: 'b' });
@@ -2114,6 +2122,10 @@
 			} else {
 				items.push({ value: 'download', name: '@(Download file)', icon: 'cloud-download', classname: 'b' });
 				items.push({ value: 'metainfo', name: '@(Read info)', icon: 'info-circle' });
+
+				if (ext === 'gz' || ext === 'zip')
+					items.push({ value: 'unpack', name: '@(Unpack)', icon: 'fa fa-box-open' });
+
 				items.push('-');
 			}
 
@@ -2146,6 +2158,11 @@
 				}
 
 				switch (item.value) {
+					case 'unpack':
+						AJAX('POST /api/files/{id}/unpack/'.arg(code.data), { filename: node.path }, ASETTER('message/response', function() {
+							exports.refresh();
+						}));
+						break;
 					case 'plugin_compress':
 					case 'plugin_extract':
 						FUNC[item.value](node.path, exports.refresh);

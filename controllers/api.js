@@ -17,6 +17,7 @@ exports.install = function() {
 	ROUTE('+POST    /api/files/{id}/rename/                *FilesRename       --> @exec');
 	ROUTE('+POST    /api/files/{id}/remove/                *FilesRemove       --> @exec');
 	ROUTE('+POST    /api/files/{id}/create/                *FilesCreate       --> @exec');
+	ROUTE('+POST    /api/files/{id}/unpack/                *FilesUnpack       --> @exec');
 
 	// Projects
 	ROUTE('+GET     /api/projects/{id}/changelog/          *Files             --> @changelog');

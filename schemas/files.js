@@ -471,6 +471,53 @@ NEWSCHEMA('Files', function(schema) {
 
 });
 
+NEWSCHEMA('FilesUnpack', function(schema) {
+
+	schema.define('filename', 'String', true);
+
+	schema.addWorkflow('exec', function($) {
+
+		var user = $.user;
+		var model = $.clean();
+		var project = MAIN.projects.findItem('id', $.id);
+
+		if (project == null) {
+			$.invalid('error-project');
+			return;
+		}
+
+		if (!user.sa) {
+			if (project.users.indexOf(user.id) === -1) {
+				$.invalid('error-permissions');
+				return;
+			}
+
+			if (!MAIN.authorize(project, $.user, model.filename)) {
+				$.invalid('error-permissions');
+				return;
+			}
+		}
+
+		var ext = U.getExtension(model.filename).toLowerCase();
+
+		if (ext !== 'gz' && ext !== 'zip') {
+			$.invalid('@(Supported file types are ".tar.gz" and ".zip")');
+			return;
+		}
+
+
+		if (project.isexternal) {
+			$.invalid('@(Not supported for external projects)');
+		} else {
+			MAIN.log($.user, 'files_unpack', project, model.filename);
+			var filename = Path.join(project.path, model.filename);
+			var cmd = ext === 'gz' ? 'tar -xf' : 'unzip -o';
+			Exec(cmd + ' ' + filename, { shell: '/bin/sh', cwd: Path.dirname(filename) }, $.done());
+		}
+	});
+
+});
+
 NEWSCHEMA('FilesRename', function(schema) {
 
 	schema.define('oldpath', 'String', true);
