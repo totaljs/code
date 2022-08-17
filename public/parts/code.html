@@ -700,7 +700,7 @@
 				if (text.indexOf('<') !== -1)
 					items.push({ name: '@(Copy without tags)', icon: '!far fa-copy', value: 'copytext' });
 
-				if (can && (/http(s)\:\/\/[^\s]+/).test(text))
+				if (can && (/^(http(s)?:)?\/\/[^\s]+/).test(text))
 					items.push({ name: '@(Download to clipboard)', icon: 'cloud-download', value: 'downloadclipboard' });
 
 				if (text.indexOf('.define(\'') !== -1) {
@@ -916,7 +916,10 @@
 				}
 
 				if (value.value === 'downloadclipboard') {
-					AJAX('GET /api/common/download/?url=' + encodeURIComponent(text.trim()), ASETTER('message/response', function(response) {
+					text = text.trim();
+					if (text.substring(0, 1).toLowerCase() !== 'h')
+						text = 'https:' + text;
+					AJAX('GET /api/common/download/?url=' + encodeURIComponent(text), ASETTER('message/response', function(response) {
 						SETTER('notifybar/success', '@(The response has been copied into the clipboard successfully)');
 						SETTER('clipboard/copy', response.value);
 					}));
