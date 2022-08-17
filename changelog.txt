@@ -7,6 +7,7 @@
 - extended auto-complete list
 - added `Unpack` file functionality for `.tar.gz` and `.zip` files
 - fixed prerendering of file tree after rename
+- improved auto-dark mode
 
 ========================= 1.6
 

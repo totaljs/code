@@ -21,7 +21,7 @@
 	<script src="/js/cdn.min.js"></script>
 	@{import('meta', 'head', 'ui.css + default.css', 'editor.js + ui.js + func.js + default.js', 'favicon.ico')}
 </head>
-<body data---="exec" class="@{if (user.darkmode === 2 && (NOW.getHours()<=6 || NOW.getHours()>=18)) || (user.darkmode !== 0 && user.darkmode !== 2)}td @{fi}invisible codebody" data-jc-class="invisible">
+<body data---="exec" class="@{if (user.darkmode !== 0 && user.darkmode !== 2)}td @{fi}invisible codebody">
 
 	<div class="bbfooter"></div>
 	<div data---="loading" class="ui-loading"><div></div></div>
@@ -639,10 +639,14 @@
 		};
 
 		FUNC.autodarkmode = function() {
+
 			var h = NOW.getHours();
+
+			var body = $('body');
+
 			if (user.darkmode === 2) {
-				var dark = h <= 6 || h >= 18;
-				var body = $('body');
+				var match = W.matchMedia('(prefers-color-scheme: dark)');
+				var dark = match.matches;
 				var is = body.hclass('td');
 				if (dark) {
 					if (!is)
@@ -652,6 +656,8 @@
 						body.rclass('td ui-dark');
 				}
 			}
+
+			body.hclass('invisible') && body.rclass('invisible');
 		};
 
 		ON('knockknock', function(counter) {
@@ -686,6 +692,8 @@
 		$(W).on('click keypress', function (e) {
 			common.idletime = 0;
 		});
+
+		FUNC.autodarkmode();
 
 	</script>
 
