@@ -856,7 +856,6 @@
 					sub.push({ name: '@(Operation)', icon: 'code', value: 'template', id: 'operation' });
 					sub.push({ name: '@(Task)', icon: 'code', value: 'template', id: 'task' });
 					sub.push({ name: '@(Extension)', icon: 'code', value: 'template', id: 'extension' });
-					sub.push({ name: '@(Transition)', icon: 'code', value: 'template', id: 'transition' });
 					sub.push({ name: '@(Start script)', icon: 'code', value: 'template', id: 'index' });
 					sub.push({ name: '@(Test script)', icon: 'code', value: 'template', id: 'test' });
 				} else if (code.current.ext === 'json') {
@@ -3186,9 +3185,6 @@
 
 					if (!directory.tasks)
 						opt.items.push({ name: '<strong>@(Create):</strong> /tasks', icon: '!far fa-folder', value: '/tasks/' });
-
-					if (!directory.transitions)
-						opt.items.push({ name: '<strong>@(Create):</strong> /transitions', icon: '!far fa-folder', value: '/transitions/' });
 
 					/*
 					if (!directory.themes)
