@@ -6,6 +6,7 @@ exports.npm = [];
 exports.actions = {};
 exports.actions.send = {
 	name: 'Send SMS',
+	summary: 'Lorem ipsum dolor sit amet',
 	icon: 'fa fa-phone',
 	input: '*phone:String, *message:String',
 	output: 'success:Boolean',
@@ -13,8 +14,6 @@ exports.actions.send = {
 	// query: 'sort:String, fields:String',
 	exec: function($) {
 
-		$.callback({ success: true });
-		// $.caller = TRANSITION;
 		// $.config
 		// $.action
 		// $.params
@@ -23,7 +22,8 @@ exports.actions.send = {
 		// $.user
 		// $.controller
 		// $.invalid(err);
-		// $.output('name', data);
+
+		$.callback({ success: true });
 	}
 };
 
