@@ -1,0 +1,32 @@
+exports.name = 'your_transition_name';
+exports.config = {};
+exports.readme = '';
+exports.npm = [];
+
+exports.actions = {};
+exports.actions.send = {
+	name: 'Send SMS',
+	icon: 'fa fa-phone',
+	input: '*phone:String, *message:String',
+	output: 'success:Boolean',
+	exec: function($) {
+
+		$.callback({ success: true });
+		// $.caller = TRANSITION;
+		// $.config
+		// $.action
+		// $.data or $.model
+		// $.user
+		// $.controller
+		// $.invalid(err);
+		// $.output('name', data);
+	}
+};
+
+/*
+exports.install = function() {
+};
+
+exports.uninstall = function() {
+};
+*/
