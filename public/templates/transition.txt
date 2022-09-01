@@ -9,13 +9,17 @@ exports.actions.send = {
 	icon: 'fa fa-phone',
 	input: '*phone:String, *message:String',
 	output: 'success:Boolean',
+	// params: 'userid:String',
+	// query: 'sort:String, fields:String',
 	exec: function($) {
 
 		$.callback({ success: true });
 		// $.caller = TRANSITION;
 		// $.config
 		// $.action
-		// $.data or $.model
+		// $.params
+		// $.query
+		// $.data or $.model or $.value
 		// $.user
 		// $.controller
 		// $.invalid(err);
