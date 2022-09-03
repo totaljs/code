@@ -82,7 +82,6 @@ var TIDYUPWHITE = new RegExp(String.fromCharCode(160), 'g');
 	};
 })();
 
-
 FUNC.createroutes = function(isapi, text) {
 
 	var tmp = text.match(/NEWSCHEMA\(('|").*?,/);
@@ -2415,6 +2414,7 @@ FUNC.jcomponent_update = function(name, type, content, body, meta) {
 		var REGHELPER = /(Thelpers|FUNC|REPO|MAIN)\.[a-z0-9A-Z_$]+(\s)+=/g;
 		var REGCONSOLE = /console\.\w+\(.*?\)/g;
 		var REGSCHEMAOP = /\.(setQuery|setSave|setInsert|setUpdate|setPatch|setRead|setGet|setRemove|addWorkflow|addTransform|addOperation|addHook)(Extension)?\(.*?\)/g;
+		var REGSCHEMAOP_ACTION = /\.action\(.*?{/g;
 		var REGSCHEMAOP_DEFINE = /\.define\(.*?\);/g;
 		var REGSCHEMAOP_REPLACE = /(\(|,(\s))function.*?$/g;
 		var REGPLUGINOP_REPLACE = /(\s)+=(\s)+function/g;
@@ -2568,6 +2568,11 @@ FUNC.jcomponent_update = function(name, type, content, body, meta) {
 					m = line.match(REGSCHEMAOP_DEFINE);
 					if (m) {
 						m = m[0].replace(REGSCHEMAOP_REPLACE, schemaoperation_replace);
+						components.push({ line: i, ch: 0, name: oldschema + m, type: 'schema' });
+					}
+					m = line.match(REGSCHEMAOP_ACTION);
+					if (m) {
+						m = m[0].replace(/,(\s)?{/, ')');
 						components.push({ line: i, ch: 0, name: oldschema + m, type: 'schema' });
 					}
 				}
