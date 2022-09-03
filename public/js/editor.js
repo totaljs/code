@@ -1783,6 +1783,7 @@ SNIPPETS.push({ type: 'js', search: 'callback function', text: '<b>function($) {
 SNIPPETS.push({ type: 'js', search: 'Object.keys', text: '<b>Object.keys</b>', code: 'Object.keys()', ch: 13, priority: 1 });
 SNIPPETS.push({ type: 'js', search: 'schema.define', text: '<b>schema.define</b>', code: 'schema.define(\'\', String, true);', ch: 16, priority: 1 });
 SNIPPETS.push({ type: 'js', search: 'schema.required', text: '<b>schema.required</b>', code: 'schema.required(\'\', model => model.age > 33);', ch: 18, priority: 1 });
+SNIPPETS.push({ type: 'js', search: 'schema.action', text: '<b>schema.action</b>', code: 'schema.action(\'\', {\n\t{0}name: \'\',\n\t{0}input: \'\',\n\t{0}query: \'\',\n\t{0}params: \'\',\n\t{0}output: \'success:Boolean\',\n\t{0}action: async function($, model) {\n\t{0}\n\t{0}}\n\t});', ch: 16, priority: 1 });
 SNIPPETS.push({ type: 'js', search: 'schema.addWorkflow', text: '<b>schema.addWorkflow</b>', code: 'schema.addWorkflow(\'\', function($, model) {\n\t{0}var id = $.id;\n{0}});', ch: 21, priority: 1 });
 SNIPPETS.push({ type: 'js', search: 'schema.addWorkflowExtension', text: '<b>schema.addWorkflowExtension</b>', code: 'schema.addWorkflowExtension(\'\', function($, data) {\n\t{0}\n{0}});', ch: 21, priority: 1 });
 SNIPPETS.push({ type: 'js', search: 'schema.addTask', text: '<b>schema.addTask</b>', code: 'schema.addTask(\'\', \'\');', ch: 17, priority: 1 });
@@ -1807,6 +1808,7 @@ SNIPPETS.push({ type: 'js', search: 'schema.setReadExtension', text: '<b>schema.
 SNIPPETS.push({ type: 'js', search: 'schema.setGetExtension', text: '<b>schema.setGetExtension</b>', code: 'schema.setGetExtension(async function($, data) {\n\t{0}\n{0}});', ch: 2, line: 1, priority: 1 });
 SNIPPETS.push({ type: 'js', search: 'schema.middleware', text: '<b>schema.middleware</b>', code: 'schema.middleware(async function($, next) {\n\t{0}\n{0}});', ch: 2, line: 1, priority: 1 });
 SNIPPETS.push({ type: 'js', search: 'schema.undefine', text: '<b>schema.undefine</b>', code: 'schema.undefine(\'\');', ch: 16, priority: 1 });
+SNIPPETS.push({ type: 'js', search: 'CALL', text: '<b>CALL</b>', code: 'CALL(\' --> exec\').params({}).query({}).promise($);', ch: 7, priority: 1 });
 SNIPPETS.push({ type: 'js', search: 'dbms DBMS list', text: '<b>DBMS().list(...).autoquery()</b>', code: 'DBMS().list(\'\').autoquery($.query, \'id:uid,name:string,dtcreated:date,dtupdated:date\', \'dtcreated_desc\', 100).where(\'isremoved=FALSE\').callback($.callback);', ch: 14, line: 0, priority: 1 });
 SNIPPETS.push({ type: 'js', search: 'dbms DBMS list', text: '<b>DBMS().list(...).autofill()</b>', code: 'DBMS().list(\'\').autofill($, \'id:uid,dtcreated:date,dtupdated:date\', null, \'dtcreated_desc\', 100).where(\'isremoved=FALSE\').callback($.callback);', ch: 14, line: 0, priority: 1 });
 SNIPPETS.push({ type: 'js', search: 'dbms DBMS find', text: '<b>DBMS().find(...)</b>', code: 'DBMS().find(\'\').where(\'isremoved=FALSE\').callback($.callback);', ch: 14, line: 0, priority: 1 });
