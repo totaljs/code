@@ -436,7 +436,7 @@ NEWSCHEMA('Files', function(schema) {
 						output.push({ line: lineindex + 1, ch: index, name: line.substring(beg).max(50, '...').trim() });
 					}
 
-				}));
+				}, stream));
 
 				stream.on('end', () => $.callback(output));
 			});
@@ -451,9 +451,7 @@ NEWSCHEMA('Files', function(schema) {
 		});
 
 		stream.on('data', customstreamer(function(line, lineindex) {
-
 			var index = line.toLowerCase().indexOf(q);
-
 			if (output.length > 20)
 				return;
 
@@ -463,8 +461,7 @@ NEWSCHEMA('Files', function(schema) {
 					beg = 0;
 				output.push({ line: lineindex + 1, ch: index, name: line.substring(beg).max(50, '...').trim() });
 			}
-
-		}));
+		}, stream));
 
 		stream.on('end', () => $.callback(output));
 	});
@@ -849,7 +846,7 @@ function customstreamer(callback, stream, done) {
 
 	stream && stream.on('end', function() {
 		callback(buffer.toString('utf8'), indexer);
-		done();
+		done && done();
 	});
 
 	return fn;
