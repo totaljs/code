@@ -7,8 +7,8 @@ NEWSCHEMA('Hosts', function(schema) {
 	schema.define('host', 'String(50)', true);
 
 	schema.addWorkflow('ping', function($) {
-		var host = $.model.host.replace(/'|"|\n/g, '');
-		Exec('ping -c 3 {0}'.format(host), $.done(true));
+		var host = $.model.host.replace(/\"|\n/g, '');
+		Exec('ping -c 3 "{0}"'.format(host), $.done(true));
 	});
 
 	schema.addWorkflow('resolve', function($) {
