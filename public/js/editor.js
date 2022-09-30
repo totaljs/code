@@ -1758,10 +1758,10 @@ SNIPPETS.push({ type: 'js', search: 'PUBLISH', text: '<b>PUBLISH</b>', code: 'PU
 SNIPPETS.push({ type: 'js', search: 'SUBSCRIBE', text: '<b>SUBSCRIBE</b>', code: 'SUBSCRIBE(\'\', model, true);', ch: 12 });
 SNIPPETS.push({ type: 'js', search: 'CALL', text: '<b>CALL</b>', code: 'CALL(\' --> exec\').params({}).query({}).promise($);', ch: 7, priority: 1 });
 SNIPPETS.push({ type: 'js', search: 'API', text: '<b>API</b>', code: 'API(\'\', \'schema\', {}).controller($).promise($);', ch: 6, priority: 1 });
-SNIPPETS.push({ type: 'js', search: 'NEWAPI', text: '<b>NEWAPI</b>', code: 'NEWAPI(\'\', function(opt, next) {\n\t{0}RESTBuilder.API(\'https://yourtotalapp.com/api/\', opt.schema, opt.data).strict().callback(next);\n{0}});', ch: 9 });
 SNIPPETS.push({ type: 'js', search: 'NEWSCHEMA', text: '<b>NEWSCHEMA</b>', code: 'NEWSCHEMA(\'{1}\', function(schema) {\n\t{0}schema.define(\'key\', String, true);\n{0}});', ch: 12 });
 SNIPPETS.push({ type: 'js', search: 'NEWOPERATION', text: '<b>NEWOPERATION</b>', code: 'NEWOPERATION(\'\', async function($, value) {\n\t{0}\n{0}});', ch: 15 });
 SNIPPETS.push({ type: 'js', search: 'NEWTASK', text: '<b>NEWTASK</b>', code: 'NEWTASK(\'{1}\', function(push) {\n\n\t{0}push(\'TASK_NAME_1\', function($, value) {\n\t\t{0}$.next(\'TASK_NAME_2\');\n\t{0}});\n\n\t{0}push(\'TASK_NAME_2\', function($, value) {\n\t\t{0}$.end();\n\t{0}});\n\n{0}});', ch: 10 });
+SNIPPETS.push({ type: 'js', search: 'NEWAPI', text: '<b>NEWAPI</b>', code: 'NEWAPI(\'\', function(opt, next) {\n\t{0}RESTBuilder.API(\'https://yourtotalapp.com/api/\', opt.schema, opt.data).strict().callback(next);\n{0}});', ch: 9 });
 SNIPPETS.push({ type: 'js', search: 'NEWCOMMAND', text: '<b>NEWCOMMAND</b>', code: 'NEWCOMMAND(\'\', function() {\n\t{0}\n{0}});', ch: 13 });
 SNIPPETS.push({ type: 'js', search: 'NEWJSONSCHEMA', text: '<b>NEWJSONSCHEMA</b>', code: 'NEWJSONSCHEMA(\'\', {});', ch: 16 });
 SNIPPETS.push({ type: 'js', search: 'NEWPUBLISH', text: '<b>NEWPUBLISH</b>', code: 'NEWPUBLISH(\'\', \'\');', ch: 13 });
