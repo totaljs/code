@@ -92,7 +92,18 @@ FUNC.autodiscover = function(callback) {
 				var arr = model.name.replace(/_/g, '.').split('-');
 				arr.reverse();
 
-				model.url = 'https://' + arr.join('.');
+				var tmp = arr.join('.');
+				var path = '';
+
+				tmp = tmp.replace(/\w+\.\./, function(text) {
+					path = '/' + text.substring(0, text.length - 2) + '/';
+					return '';
+				});
+
+				if (path)
+					model.name = model.name.replace(/--/, '/') + '/';
+
+				model.url = 'https://' + tmp + path;
 				model.permissions = '';
 				model.documentation = 'https://docs.totaljs.com';
 				model.support = 'https://platform.totaljs.com';
