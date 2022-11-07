@@ -297,6 +297,12 @@
 				if (icon) {
 					iconel.rclass('hidden').html('<i class="{0}"></i>'.format(icon[0]));
 					iconis = true;
+				} else {
+					icon = text.match(/ti?\sti-[a-z0-9\-]+|fa-[a-z0-9\-]+\sti/);
+					if (icon) {
+						iconel.rclass('hidden').html('<i class="{0}"></i>'.format(icon[0]));
+						iconis = true;
+					}
 				}
 			}
 
