@@ -10958,7 +10958,7 @@ COMPONENT('faicons', 'search:Search;scrollbarshadow:0', function(self, config, c
 
 		empty && builder.push(template.format('', ''));
 
-		AJAX('GET https://cdn.componentator.com/icons.json', function(response) {
+		AJAX('GET https://cdn.componentator.com/icons-db.html', function(response) {
 			for (var icon of response)
 				builder.push(template.format(icon.toSearch(), 'ti ti-' + icon));
 
