@@ -6,7 +6,7 @@
 	font-style: normal;
 	font-weight: normal;
 	font-display: auto;
-	src: url('../webfonts/menlo.woff2') format('woff2'), url('../webfonts/menlo.woff') format('woff'), url('../webfonts/menlo.ttf') format('truetype');
+	src: url('../fonts/menlo.woff2') format('woff2'), url('../fonts/menlo.woff') format('woff'), url('../fonts/menlo.ttf') format('truetype');
 }
 
 button { outline: 0; }
