@@ -282,7 +282,7 @@ WAIT('CodeMirror.defineMode', function() {
 				if (stream.match(/\{\{.*?\}\}/, true))
 					return 'variable-A';
 
-				if (stream.match(/data-scope=/, true))
+				if (stream.match(/data-(scope|plugin)=/, true))
 					return 'variable-S';
 
 				if (stream.match(/<(\/)?file.*?>/, true))
@@ -1739,6 +1739,7 @@ SNIPPETS.push({ type: 'html', search: 'jc', text: '<b>Component</b>', code: '<di
 SNIPPETS.push({ type: 'html', search: '--', text: '<b>Component</b>', code: '<div data---="__"></div>', ch: 15 });
 SNIPPETS.push({ type: 'html', search: 'br', text: '<b>&lt;br /&gt;</b>', code: '<br />', ch: 7 });
 SNIPPETS.push({ type: 'html', search: 'scope', text: '<b>data-scope</b>', code: '<div data-scope=""></div>', ch: 18 });
+SNIPPETS.push({ type: 'html', search: 'plugin', text: '<b>data-plugin</b>', code: '<div data-plugin=""></div>', ch: 18 });
 SNIPPETS.push({ type: 'html', search: 'data-bind', text: '<b>data-bind</b>', code: '<div data-bind="__"></div>', ch: 17 });
 SNIPPETS.push({ type: 'html', search: 'data-import', text: '<b>data-import</b>', code: '<div data-import="__"></div>', ch: 19 });
 SNIPPETS.push({ type: 'html', search: 'link spa min css', text: 'Link: <b>spa.min@19.css</b>', code: '<link href="\/\/cdn.componentator.com/spa.min@19.css" rel="stylesheet" />', ch: 100 });
