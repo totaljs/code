@@ -10942,7 +10942,7 @@ COMPONENT('faicons', 'search:Search;scrollbarshadow:0', function(self, config, c
 	self.nocompile();
 
 	self.redraw = function() {
-		self.html('<div class="{0}"><div class="{0}-header"><div class="{0}-search"><span><i class="fa fa-search clearsearch"></i></span><div><input type="text" placeholder="{1}" class="{0}-search-input"></div></div></div><div class="{0}-scrollbar"><div class="{0}-content"></div></div></div>'.format(cls, config.search));
+		self.html('<div class="{0}"><div class="{0}-header"><div class="{0}-search"><span><i class="ti ti-search clearsearch"></i></span><div><input type="text" placeholder="{1}" class="{0}-search-input"></div></div></div><div class="{0}-scrollbar"><div class="{0}-content"></div></div></div>'.format(cls, config.search));
 		container = self.find(cls2 + '-content');
 		self.scrollbar = SCROLLBAR(self.find(cls2 + '-scrollbar'), { visibleY: 1, shadow: config.scrollbarshadow });
 	};
@@ -10958,7 +10958,7 @@ COMPONENT('faicons', 'search:Search;scrollbarshadow:0', function(self, config, c
 
 		empty && builder.push(template.format('', ''));
 
-		AJAX('GET https://cdn.componentator.com/icons-db.html', function(response) {
+		AJAX('GET /icons-db.html', function(response) {
 
 			response = response.split(',');
 
@@ -10977,16 +10977,16 @@ COMPONENT('faicons', 'search:Search;scrollbarshadow:0', function(self, config, c
 	self.search = function(value) {
 
 		var search = self.find('.clearsearch');
-		search.rclass2('fa-');
+		search.rclass2('ti-');
 
 		if (!value.length) {
-			search.aclass('fa-search');
+			search.aclass('ti-search');
 			container.find('.hidden').rclass('hidden');
 			return;
 		}
 
 		value = value.toSearch();
-		search.aclass('fa-times');
+		search.aclass('ti-times');
 		self.scrollbar.scrollTop(0);
 		var icons = container.find('span');
 		for (var i = 0; i < icons.length; i++) {
