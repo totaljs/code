@@ -282,6 +282,18 @@ WAIT('CodeMirror.defineMode', function() {
 				if (stream.match(/\{\{.*?\}\}/, true))
 					return 'variable-A';
 
+				if (stream.match(/<(\/)?ui-component.*?>/, true))
+					return 'variable-J';
+
+				if (stream.match(/<(\/)?ui-plugin.*?>/, true))
+					return 'variable-S';
+
+				if (stream.match(/<(\/)?ui-bind.*?>/, true))
+					return 'variable-B';
+
+				if (stream.match(/<(\/)?ui-import.*?>/, true))
+					return 'variable-E';
+
 				if (stream.match(/data-(scope|plugin)=/, true))
 					return 'variable-S';
 
@@ -1735,13 +1747,14 @@ SNIPPETS.push({ type: 'html', search: 'script', text: '<b>Script: JSON</b>', cod
 SNIPPETS.push({ type: 'html', search: 'script', text: '<b>Script: Text</b>', code: '<script type="text/plain"></script>', ch: 27 });
 SNIPPETS.push({ type: 'html', search: 'script', text: '<b>Script: Componentator</b>', code: '<script src="https://componentator.com/download.js?id="></script>', ch: 55 });
 SNIPPETS.push({ type: 'html', search: 'fa', text: '<b>Font-Awesome Icon</b>', code: '<i class="fa fa-"></i>', ch: 17 });
-SNIPPETS.push({ type: 'html', search: 'jc', text: '<b>Component</b>', code: '<div data-jc="__"></div>', ch: 15 });
+SNIPPETS.push({ type: 'html', search: 'ti', text: '<b>Total.js Icon</b>', code: '<i class="ti ti-"></i>', ch: 17 });
 SNIPPETS.push({ type: 'html', search: '--', text: '<b>Component</b>', code: '<div data---="__"></div>', ch: 15 });
+SNIPPETS.push({ type: 'html', search: 'component', text: '<b>ui-component</b>', code: '<ui-component name="" path="" config=""></ui-component>', ch: 21 });
 SNIPPETS.push({ type: 'html', search: 'br', text: '<b>&lt;br /&gt;</b>', code: '<br />', ch: 7 });
 SNIPPETS.push({ type: 'html', search: 'scope', text: '<b>data-scope</b>', code: '<div data-scope=""></div>', ch: 18 });
-SNIPPETS.push({ type: 'html', search: 'plugin', text: '<b>data-plugin</b>', code: '<div data-plugin=""></div>', ch: 18 });
-SNIPPETS.push({ type: 'html', search: 'data-bind', text: '<b>data-bind</b>', code: '<div data-bind="__"></div>', ch: 17 });
-SNIPPETS.push({ type: 'html', search: 'data-import', text: '<b>data-import</b>', code: '<div data-import="__"></div>', ch: 19 });
+SNIPPETS.push({ type: 'html', search: 'plugin', text: '<b>ui-plugin</b>', code: '<ui-plugin path=""></ui-plugin>', ch: 18 });
+SNIPPETS.push({ type: 'html', search: 'bind', text: '<b>ui-bind</b>', code: '<ui-bind path="" config=""></ui-bind>', ch: 16 });
+SNIPPETS.push({ type: 'html', search: 'import', text: '<b>ui-import</b>', code: '<ui-import config="url:"></ui-import>', ch: 24 });
 SNIPPETS.push({ type: 'html', search: 'link spa min css', text: 'Link: <b>spa.min@19.css</b>', code: '<link href="\/\/cdn.componentator.com/spa.min@19.css" rel="stylesheet" />', ch: 100 });
 SNIPPETS.push({ type: 'html', search: 'scri' + 'pt spa min js', text: ('Scr' + 'ipt: <b>spa.min@19.js</b>'), code: ('<scr' + 'ipt src="\/\/cdn.componentator.com/spa.min@19.js"></scr' + 'ipt>'), ch: 100 });
 SNIPPETS.push({ type: 'html', search: 'scri' + 'pt livereload', text: ('Scr' + 'ipt: <b>livereload.js</b>'), code: ('@{if DEBUG}<scr' + 'ipt src="\/\/cdn.componentator.com/livereload.js"></scr' + 'ipt>@{fi}'), ch: 100 });
