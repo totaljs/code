@@ -282,18 +282,6 @@ WAIT('CodeMirror.defineMode', function() {
 				if (stream.match(/\{\{.*?\}\}/, true))
 					return 'variable-A';
 
-				if (stream.match(/<(\/)?ui-component.*?>/, true))
-					return 'variable-J';
-
-				if (stream.match(/<(\/)?ui-plugin.*?>/, true))
-					return 'variable-S';
-
-				if (stream.match(/<(\/)?ui-bind.*?>/, true))
-					return 'variable-B';
-
-				if (stream.match(/<(\/)?ui-import.*?>/, true))
-					return 'variable-E';
-
 				if (stream.match(/data-(scope|plugin)=/, true))
 					return 'variable-S';
 

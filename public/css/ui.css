@@ -34,6 +34,17 @@ button { outline: 0; }
 .CodeMirror-hints { z-index: 30; }
 .CodeMirror-search-label { font-family: Arial; font-size: 12px; float: left; width: 70px; text-align: right; }
 .CodeMirror-search-field { font-size: 12px; width: 100%; margin: 0 0 0 80px; padding: 0; display: block; }
+
+.cm-s-default .cm-ui-component { background-color: rgba(0,152,189,.2); color: #0098BD; font-weight: bold; border-radius: var(--radius); }
+.cm-s-default .cm-ui-plugin { background-color: rgba(216,111,203,.2); color: #c953ce; font-weight: bold; border-radius: var(--radius); }
+.cm-s-default .cm-ui-import { background-color: rgba(119,192,179,.2); color: #58a195; font-weight: bold; border-radius: var(--radius); }
+.cm-s-default .cm-ui-bind { background-color: rgb(191,210,255,.35); color: #2183e8; font-weight: bold; border-radius: var(--radius); }
+
+.td .cm-s-default .cm-ui-plugin { background-color: rgba(255,59,231,.15); color: #f546fd; }
+.td .cm-s-default .cm-ui-component { background-color: rgba(73,111,51,.35); color: #90ff2f; }
+.td .cm-s-default .cm-ui-bind { background-color: rgb(102,96,32,.35); color: #c5d084; }
+.td .cm-s-default .cm-ui-import { background-color: rgba(89,122,109,.2); color: #59a589; }
+
 .cm-variable-T { background-color: rgba(104,178,91,.3); color: black; }
 .cm-variable-L { background-color: rgba(104,178,191,.3); color: black; }
 .cm-variable-A { background-color: rgba(191,61,162,.3); color: black; }
