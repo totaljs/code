@@ -1,12 +1,12 @@
-<div data-scope="~PATH~">
+<ui-plugin path="~PATH~">
 	<div class="padding">
 		YOUR CODE
 	</div>
-</div>
+</ui-plugin>
 
 <script>
 
-	PLUGIN('~PATH~', function(exports) {
+	PLUGIN(function(exports) {
 
 		exports.reload = function() {
 			exports.refresh();
