@@ -1,4 +1,4 @@
-<div data---="intro__common.form__if:~PATH~;next:@(Next);done:@(Done);remove:true" class="hidden">
+<ui-component name="intro" path="common.form" config="if:~PATH~;next:@(Next);done:@(Done);remove:true" class="hidden">
 	<figure>
 		CONTENT
 	</figure>
@@ -8,4 +8,4 @@
 	<figure>
 		CONTENT
 	</figure>
-</div>
+</ui-component>

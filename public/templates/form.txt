@@ -1,16 +1,18 @@
-<div data---="form__common.form__if:~PATH~;icon:hashtag;autofocus:true;reload:?/reload;scrollbar:1;submit:?/submit;width:500" class="hidden" data-scope="~PATH~">
+<ui-component name="form" path="common.form" config="if:~PATH~;icon:hashtag;autofocus:true;reload:?/reload;scrollbar:1;submit:?/submit;width:500" class="hidden" plugin="~PATH~">
 	<div class="padding">
 		YOUR CODE
 	</div>
-	<nav data---="validate__?">
-		<button name="submit" disabled><i class="fa fa-check-circle"></i>@(SUBMIT)</button>
-		<button name="cancel">@(Cancel)</button>
+	<nav>
+		<ui-component name="validate" path="?">
+			<button name="submit" disabled><i class="ti ti-check-circle"></i>@(SUBMIT)</button>
+			<button name="cancel">@(Cancel)</button>
+		</ui-component>
 	</nav>
-</div>
+</ui-component>
 
 <script>
 
-	PLUGIN('~PATH~', function(exports) {
+	PLUGIN(function(exports) {
 
 		exports.reload = function(com) {
 			var model = exports.model;

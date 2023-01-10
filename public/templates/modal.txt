@@ -1,32 +1,32 @@
-<div data---="modal__common.form__if:~PATH~;reload:?/reload;submit:?/submit;width:540;icon:pencil;autofocus:1;scrollbar:1" class="hidden">
+<ui-component name="modal" path="common.form" config="if:~PATH~;reload:?/reload;submit:?/submit;width:540;icon:pencil;autofocus:1;scrollbar:1" class="hidden">
 
 	<div>
-		<span class="link cancel"><i class="fa fa-times"></i></span>
+		<span class="link cancel"><i class="ti ti-times"></i></span>
 		<label></label>
 	</div>
 
 	<div>
-		<div data-scope="~PATH~">
+		<ui-plugin path="~PATH~">
 
 			<div class="padding">
 				YOUR CODE
 			</div>
 
-		</div>
+		</ui-plugin>
 	</div>
 
 	<div>
 		<span class="link cancel">@(Cancel)</span>
-		<span data---="validate__NAME">
-			<button name="submit" disabled="disabled"><i class="fa fa-floppy-o"></i>@(SUBMIT)</button>
-		</span>
+		<ui-component name="validate" path="NAME">
+			<button name="submit" disabled="disabled"><i class="ti ti-save"></i>@(SUBMIT)</button>
+		</ui-component>
 	</div>
 
-</div>
+</ui-component>
 
 <script>
 
-	PLUGIN('~PATH~', function(exports) {
+	PLUGIN(function(exports) {
 
 		exports.reload = function(com) {
 			var model = exports.model;

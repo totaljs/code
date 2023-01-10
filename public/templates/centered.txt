@@ -1,14 +1,14 @@
-<div data---="centered__common.form__if:~PATH~;autofocus:true;reload:?/reload;scrollbar:1" class="hidden" data-scope="~PATH~">
+<ui-component name="centered" path="common.form" config="if:~PATH~;autofocus:true;reload:?/reload;scrollbar:1" class="hidden" plugin="~PATH~">
 	<div style="width:300px;margin:0 auto">
 		<div class="padding">
 			CENTERED
 		</div>
 	</div>
-</div>
+</ui-component>
 
 <script>
 
-	PLUGIN('~PATH~', function(exports) {
+	PLUGIN(function(exports) {
 
 		exports.reload = function(com) {
 
