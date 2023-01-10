@@ -1,22 +1,10 @@
 {
 	"name": "NAME",
-	"description": "DESCRIPTION",
-	"version": "1.0.0",
-	"icon": "book",
+	"icon": "ti ti-rocket",
+	"color": "#4285F4",
 	"url": "@URL",
-	"author": "Total Avengers",
-	"email": "info@totalavengers.com",
-	"roles": ["admin"],
-	"width": 1024,
-	"height": 768,
-	"resize": true,
-	"mobilemenu": false,
-	"allownotifications": true,
-	"allowreadmeta": true,
-	"allowreadprofile": 1,
-	"allowreadusers": 1,
-	"allowreadapps": 0,
-	"serververify": true,
-	"responsive": true,
-	"origin": ["IP_ADDRESS_OR_REMOVE"]
+	"permissions": [
+		{ name: 'Read permission', value: 'read' },
+		{ name: 'Write permission', value: 'write' }
+	]
 }

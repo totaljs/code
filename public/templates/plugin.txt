@@ -1,4 +1,4 @@
-<ui-plugin path="~PATH~">
+<ui-plugin>
 	<div class="padding">
 		YOUR CODE
 	</div>
