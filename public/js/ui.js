@@ -10996,34 +10996,6 @@ COMPONENT('faicons', 'search:Search;scrollbarshadow:0', function(self, config, c
 			}
 		}
 
-		var txt = ' fa-';
-
-		if (ispro) {
-			var tmp = [];
-			for (var i = 0; i < iconspro.length; i++) {
-				var icon = iconspro[i];
-				if (icon.charAt(1) === ' ') {
-					tmp.push('fa' + icon.replace(' ', txt));
-				} else {
-					tmp.push('fas fa-' + icon.replace(' ', txt));
-					tmp.push('far fa-' + icon.replace(' ', txt));
-					tmp.push('fal fa-' + icon.replace(' ', txt));
-					tmp.push('fad fa-' + icon.replace(' ', txt));
-				}
-			}
-			iconspro = tmp;
-			icons = null;
-		} else {
-			iconspro = null;
-			for (var i = 0; i < icons.length; i++) {
-				var icon = icons[i];
-				if (icon.charAt(1) === ' ')
-					icons[i] = 'fa' + icon.replace(' ', txt);
-				else
-					icons[i] = 'fa fa-' + icons[i];
-			}
-		}
-
 		self.aclass(cls + '-container hidden');
 
 		self.event('keydown', 'input', function() {
