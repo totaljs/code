@@ -1,65 +1,85 @@
 NEWSCHEMA('SCHEMA_NAME', function(schema) {
 
-	schema.define('name', 'String(50)', true);
+	schema.action('list', {
+		name: 'List',
+		action: function($) {
 
-	schema.setQuery(function($) {
+			// if (UNAUTHORIZED($))
+			// 	return;
 
-		// if (UNAUTHORIZED($))
-		// 	return;
-
-		DBMS().list('TABLE').autofill($, 'id:uid,dtcreated:date,dtupdated:date', null, 'dtcreated_desc', 100).where('isremoved=FALSE').callback($.callback);
+			DB().list('TABLE').autoquery($.query, 'id:uid,dtcreated:date,dtupdated:date', null, 'dtcreated_desc', 100).where('isremoved=FALSE').callback($.callback);
+		}
 	});
 
-	schema.setRead(function($) {
+	schema.action('read', {
+		name: 'Read',
+		params: '*id:UID',
+		action: async function($) {
 
-		// if (UNAUTHORIZED($))
-		// 	return;
+			// if (UNAUTHORIZED($))
+			// 	return;
 
-		var id = $.id;
-		DBMS().read('TABLE').id(id).where('isremoved=FALSE').error(404).callback($.callback);
+			var params = $.params;
+			var db = DB();
+			var item = await db.read('TABLE').fields('id,name,dtcreated').id(params.id).where('isremoved=FALSE').error(404).promise($);
+
+			$.callback(item);
+
+		}
 	});
 
-	schema.setInsert(function($, model) {
+	schema.action('create', {
+		name: 'Create',
+		action: async function($, model) {
 
-		// if (UNAUTHORIZED($))
-		// 	return;
+			// if (UNAUTHORIZED($))
+			// 	return;
 
-		var id = UID();
-		model.id = id;
-		model.dtcreated = NOW;
-		DBMS().insert('TABLE', model).callback($.done(id));
+			var id = UID();
+			model.id = id;
+			model.dtcreated = NOW;
+
+			var db = DB();
+			await db.insert('TABLE', model).promise($);
+
+			$.success(model.id);
+
+		}
 	});
 
-	schema.setUpdate(function($, model) {
+	schema.action('update', {
+		name: 'Update',
+		params: '*id:UID',
+		action: async function($, model) {
 
-		// if (UNAUTHORIZED($))
-		// 	return;
+			// if (UNAUTHORIZED($))
+			// 	return;
 
-		var id = $.id;
-		model.dtupdated = NOW;
-		DBMS().modify('TABLE', model).id(id).where('isremoved=FALSE').error(404).callback($.done(id));
-	});
-
-	schema.setPatch(function($, model) {
-
-		// if (UNAUTHORIZED($))
-		// 	return;
-
-		var id = $.id;
-		if ($.keys.length) {
+			var params = $.params;
 			model.dtupdated = NOW;
-			DBMS().modify('TABLE', model).id(id).where('isremoved=FALSE').error(404).callback($.done(id));
-		} else
-			$.success(id);
+
+			var db = DB();
+			await db.modify('TABLE', model).id(params.id).where('isremoved=FALSE').error(404).promise($);
+
+			$.success(params.id);
+		}
 	});
 
-	schema.setRemove(function($) {
+	schema.action('update', {
+		name: 'Update',
+		params: '*id:UID',
+		action: async function($, model) {
 
-		// if (UNAUTHORIZED($))
-		// 	return;
+			// if (UNAUTHORIZED($))
+			// 	return;
 
-		var id = $.id;
-		DBMS().modify('TABLE', { isremoved: true, dtupdated: NOW }).id(id).where('isremoved=FALSE').error(404).callback($.done(id));
+			var params = $.params;
+
+			var db = DB();
+			await db.modify('TABLE', { isremoved: true, dtupdated: NOW }).id(params.id).where('isremoved=FALSE').error(404).promise($);
+
+			$.success(params.id);
+		}
 	});
 
 });
