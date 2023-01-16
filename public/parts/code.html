@@ -2024,25 +2024,23 @@
 
 				if (!node.children.findItem('name', 'auth.js'))
 					items.push({ makefile: true, name: '@(Create:) auth.js', icon: 'file-text-o' });
-				if (!node.children.findItem('name', 'commands.js'))
-					items.push({ makefile: true, name: '@(Create:) commands.js', icon: 'file-text-o' });
+				if (!node.children.findItem('name', 'init.js'))
+					items.push({ makefile: true, name: '@(Create:) init.js', icon: 'file-text-o' });
 				if (!node.children.findItem('name', 'db.js'))
 					items.push({ makefile: true, name: '@(Create:) db.js', icon: 'file-text-o' });
 				if (!node.children.findItem('name', 'func.js'))
 					items.push({ makefile: true, name: '@(Create:) func.js', icon: 'file-text-o' });
 				if (!node.children.findItem('name', 'main.js'))
 					items.push({ makefile: true, name: '@(Create:) main.js', icon: 'file-text-o' });
-				if (!node.children.findItem('name', 'merge.js'))
-					items.push({ makefile: true, name: '@(Create:) merge.js', icon: 'file-text-o' });
 				if (!node.children.findItem('name', 'service.js'))
 					items.push({ makefile: true, name: '@(Create:) service.js', icon: 'file-text-o' });
 			}
 
 			if (node.name === 'controllers') {
-				if (!node.children.findItem('name', 'api.js'))
-					items.push({ makefile: true, name: '@(Create:) api.js', icon: 'file-text-o' });
 				if (!node.children.findItem('name', 'default.js'))
 					items.push({ makefile: true, name: '@(Create:) default.js', icon: 'file-text-o' });
+				if (!node.children.findItem('name', 'api.js'))
+					items.push({ makefile: true, name: '@(Create:) api.js', icon: 'file-text-o' });
 			}
 
 			if (node.name === 'css') {
