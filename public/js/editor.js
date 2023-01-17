@@ -1745,6 +1745,7 @@ SNIPPETS.push({ type: 'html', search: 'data ui import', text: '<b>ui-import</b>'
 SNIPPETS.push({ type: 'html', search: 'link spa min css', text: 'Link: <b>spa.min@19.css</b>', code: '<link href="\/\/cdn.componentator.com/spa.min@19.css" rel="stylesheet" />', ch: 100 });
 SNIPPETS.push({ type: 'html', search: 'scri' + 'pt spa min js', text: ('Scr' + 'ipt: <b>spa.min@19.js</b>'), code: ('<scr' + 'ipt src="\/\/cdn.componentator.com/spa.min@19.js"></scr' + 'ipt>'), ch: 100 });
 SNIPPETS.push({ type: 'html', search: 'scri' + 'pt livereload', text: ('Scr' + 'ipt: <b>livereload.js</b>'), code: ('@{if DEBUG}<scr' + 'ipt src="\/\/cdn.componentator.com/livereload.js"></scr' + 'ipt>@{fi}'), ch: 100 });
+SNIPPETS.push({ type: 'js', search: 'action workflow query insert update delete list schema', text: '<b>schema.action</b>', code: 'schema.action(\'\', {\n\t{0}name: \'\',\n\t{0}input: \'\',\n\t{0}query: \'\',\n\t{0}params: \'\',\n\t{0}output: \'success:Boolean\',\n\t{0}action: async function($, model) {\n\t{0}\n\t{0}}\n\t});', ch: 16, priority: 1 });
 SNIPPETS.push({ type: 'js', search: '~PATH~', text: '<b>~PATH~</b>', code: '~PATH~', ch: 7 });
 SNIPPETS.push({ type: 'js', search: 'AUTH', text: '<b>AUTH</b>', code: 'AUTH(function($) {\n\t{0}$.success(USER_PROFILE);\n{0}});', ch: 30 });
 SNIPPETS.push({ type: 'js', search: 'PLUGIN', text: '<b>PLUGIN</b>', code: 'PLUGIN(function(exports) {\n\n\t{0}exports.refresh = function() {\n\t{0}};\n\n{0}});', ch: 0 });
@@ -1782,7 +1783,6 @@ SNIPPETS.push({ type: 'js', search: 'callback function', text: '<b>function($) {
 SNIPPETS.push({ type: 'js', search: 'Object.keys', text: '<b>Object.keys</b>', code: 'Object.keys()', ch: 13, priority: 1 });
 SNIPPETS.push({ type: 'js', search: 'schema.define', text: '<b>schema.define</b>', code: 'schema.define(\'\', String, true);', ch: 16, priority: 1 });
 SNIPPETS.push({ type: 'js', search: 'schema.required', text: '<b>schema.required</b>', code: 'schema.required(\'\', model => model.age > 33);', ch: 18, priority: 1 });
-SNIPPETS.push({ type: 'js', search: 'workflow query insert update delete list schema action', text: '<b>schema.action</b>', code: 'schema.action(\'\', {\n\t{0}name: \'\',\n\t{0}input: \'\',\n\t{0}query: \'\',\n\t{0}params: \'\',\n\t{0}output: \'success:Boolean\',\n\t{0}action: async function($, model) {\n\t{0}\n\t{0}}\n\t});', ch: 16, priority: 1 });
 SNIPPETS.push({ type: 'js', search: 'schema.undefine', text: '<b>schema.undefine</b>', code: 'schema.undefine(\'\');', ch: 16, priority: 1 });
 SNIPPETS.push({ type: 'js', search: 'TotalAPI', text: '<b>TotalAPI</b>', code: 'TotalAPI(\'\', { value: \'\' }, $);', ch: 10 });
 SNIPPETS.push({ type: 'js', search: 'ROUTE', text: '<b>ROUTE</b>', code: 'ROUTE(\'\', \'\');', ch: 8 });
