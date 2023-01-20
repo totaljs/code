@@ -2022,10 +2022,10 @@
 
 				items.push({ value: 'definitions', name: '@(Download definitions)', icon: 'cloud-download', classname: 'b' });
 
-				if (!node.children.findItem('name', 'auth.js'))
-					items.push({ makefile: true, name: '@(Create:) auth.js', icon: 'file-text-o' });
 				if (!node.children.findItem('name', 'init.js'))
 					items.push({ makefile: true, name: '@(Create:) init.js', icon: 'file-text-o' });
+				if (!node.children.findItem('name', 'auth.js'))
+					items.push({ makefile: true, name: '@(Create:) auth.js', icon: 'file-text-o' });
 				if (!node.children.findItem('name', 'db.js'))
 					items.push({ makefile: true, name: '@(Create:) db.js', icon: 'file-text-o' });
 				if (!node.children.findItem('name', 'func.js'))
