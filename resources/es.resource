@@ -1,23 +1,24 @@
 // Total.js translation file
 // Created: 2023-02-01 11:23
 
+error-user             : Usuario no encontrado.
+error-credentials      : Credenciales no válidas.
+error-permissions      : No tienes permisos para realizar esta operación.
+error-blocked          : Tu cuenta ha sido bloqueada.
+error-project          : Proyecto no encontrado.
+error-file             : Archivo no encontrado.
+error-invalid          : Datos no válidos.
+error-project-scripts  : Los scripts han sido deshabilitados para este proyecto.
+error-timeout          : Un timeout.
+error-bundles          : La creación de bundle esta deshabilitada para este proyecto.
+error-blocked-ip       : Tu IP ha sido bloqueada.
+error-review-token     : No tienes un token de acceso válido para la revisión de código.
+error-branches-current : No puedes eliminar el branch actual.
+error-external         : No está soportado para proyectos externos.
+offline                : Fuera de linea
+
 // controllers/api.js
 Tbbes7p                    : El proyecto no tiene una ruta de sincronización definida
-
-// schemas/branches.js, schemas/common.js, schemas/files.js, schemas/hours.js, schemas/projects.js, schemas/wiki.js
-error-project              : error-proyecto
-
-// schemas/branches.js, schemas/common.js, schemas/files.js
-error-external             : error-externo
-
-// schemas/branches.js, schemas/dbcommand.js, schemas/files.js, schemas/hours.js, schemas/projects.js, schemas/snippets.js, schemas/users.js
-error-permissions          : error-permisos
-
-// schemas/branches.js
-error-branches-current     : error-branches-actual
-
-// schemas/chat.js
-error-users-404            : error-usuarios-404
 
 // schemas/common.js
 T1p48w9m                   : dirección URL no válida
@@ -25,13 +26,6 @@ T1p48w9m                   : dirección URL no válida
 // schemas/files.js
 T1nyk6ld                   : los tipos de archivo admitidos son ".tar.gz" y ".zip"
 T7gnd4p                    : no compatible con proyectos externos
-error-review-token         : error-revisión-token
-
-// schemas/users.js
-error-users                : error-usuarios
-error-blocked-ip           : error-ip-bloqueada
-error-credentials          : error-credenciales
-error-blocked              : error-bloqueado
 
 // views/dbviewer.html, views/index.html, public/forms/bundles.html, public/forms/componentator.html, public/forms/components.html, public/forms/definitions.html, public/forms/modules.html, public/forms/operations.html, public/forms/packages.html, public/forms/schemas.html, public/parts/code.html
 T14w27d4                   : Buscar
@@ -40,7 +34,7 @@ T14w27d4                   : Buscar
 T16uypo4                   : Historia
 T1ujahn7                   : Ejecutar consulta
 T6v6poe                    : Opciones
-T1djacp3                   : ejecuta una consulta
+T1djacp3                   : Ejecutar una consulta
 T1rjv80j                   : Buscar en resultados
 T15ax5z9                   : Tablas
 T1d7iha                    : Vistas
@@ -126,7 +120,7 @@ T14f871g                   : Quitar
 // views/login.html
 T1vmee4f                   : Serás el primer desarrollador en el <b>Editor de código Total.js</b> en este servidor.
 Tb4jpjc                    : Su identificación
-Tudb8h8                    : mantener en minúsculas y usar solo caracteres AZ
+Tudb8h8                    : Mantener en minúsculas y usar solo caracteres AZ
 T1th8zfv                   : Peter Širka
 T4fx8po                    : Nombre completo
 T1w7l82b                   : Dirección de correo electrónico
@@ -152,9 +146,9 @@ T7bljn1                    : ¿Quieres continuar?
 Tge3gaj                    : Juega con el código
 
 // public/forms/backups.html
-T86h5q9                    : no puede restaurar el archivo en el modo de colaboración.
-T12hr5lg                   : la parte seleccionada se ha restaurado en el editor de código.
-T1jhjyig                   : el archivo se ha restaurado en el editor de código.
+T86h5q9                    : No se puede restaurar el archivo en el modo de colaboración.
+T12hr5lg                   : La parte seleccionada se ha restaurado en el editor de código.
+T1jhjyig                   : El archivo se ha restaurado en el editor de código.
 
 // public/forms/branches.html
 Tnczjk                     : Ramas
@@ -344,7 +338,7 @@ Ts0klzb                    : Quitar de A
 T19579                     : Copiar
 
 // public/parts/account.html
-T1lorn9g                   : Siempre almacenar archivos localmente en la versión Electron
+T1lorn9g                   : Almacenar siempre archivos localmente en la versión Electron
 T41pkh7                    : Cambiar contraseña
 Twmjby3                    : Nueva contraseña
 T157762v                   : La cuenta se ha actualizado correctamente.
@@ -400,7 +394,7 @@ T1r517k2                   : Limpiar contenido
 Td7tr5q                    : Abrir visor de base de datos
 T1ror                      : Ejecutar
 Tr26j3y                    : Mostrar seleccionado
-T1ear7g2                   : copia con sintaxis
+T1ear7g2                   : Copiar con sintaxis
 Tj7r50y                    : Copiar como Markdown
 Thtczjs                    : Copiar como imagen
 Tqecduk                    : Copiar sin etiquetas
@@ -460,8 +454,8 @@ T1sts                      : UID
 T1c2k45                    : UID16
 T1b4w9                     : GUID
 T17ts785                   : URL/nombre de host
-T4tw9l0                    : Dirección IP - mi
-T1oztaz                    : Dirección IP - servidor
+T4tw9l0                    : Mi - Dirección IP
+T1oztaz                    : Servidor - Dirección IP
 Tf2ll8w                    : Fecha / Hora
 T10avd95                   : Insertar
 T1pu9vzz                   : Insertar emoji
@@ -506,7 +500,7 @@ Tfkpx05                    : Auto-recargador (5 seg.)
 T1axnd                     : Buscar
 T19mq5xw                   : Reemplazar
 T1lx3byy                   : Localiza el archivo actual
-T1rol11y                   : ​​Convertir a pestañas
+T1rol11y                   : Convertir a pestañas
 T53zvsl                    : Guardar localmente
 Ts39hl2                    : Restaurar desde copia de seguridad
 T18dn8af                   : Guardar sincronizado
@@ -523,11 +517,11 @@ Tcv29oy                    : Restablecer ventanas
 T12jtlgn                   : Descargar código fuente
 Tifznf8                    : Crear wiki
 T1qu0r2q                   : Descargar paquete localmente
-T1v6422a                   : sincronizar paquete
-T10qc5uc                   : no puede reemplazar todos los espacios en pestañas en el modo de colaboración.
+T1v6422a                   : Sincronizar paquete
+T10qc5uc                   : No se puede reemplazar todos los espacios en pestañas en el modo de colaboración.
 Tzxo510                    : Listo, el paquete se ha sincronizado.
-Td613mc                    : el diccionario localizado se ha copiado en el portapapeles.
-T1xckjt5                   : este archivo no contiene ningún marcado de localización.
+Td613mc                    : El diccionario localizado se ha copiado en el portapapeles.
+T1xckjt5                   : Este archivo no contiene ningún marcado de localización.
 T1cb8721                   : Descargar paquetes
 T18jgsda                   : Crear:
 Thv32fc                    : Descargar definiciones
