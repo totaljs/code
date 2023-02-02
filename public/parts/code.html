@@ -2124,7 +2124,12 @@
 				items.push({ value: 'file', name: '@(Create file)', icon: '!far fa-file-text-o' });
 				items.push({ value: 'directory', name: '@(Create directory)', icon: '!far fa-folder-o' });
 			} else {
+
 				items.push({ value: 'download', name: '@(Download file)', icon: 'cloud-download', classname: 'b' });
+
+				if (common.electron)
+					items.push({ value: 'sync', name: '@(Download file locally)', icon: 'code-branch' });
+
 				items.push({ value: 'metainfo', name: '@(Read info)', icon: 'info-circle' });
 
 				if (ext === 'gz' || ext === 'zip')
@@ -2162,6 +2167,14 @@
 				}
 
 				switch (item.value) {
+					case 'sync':
+						exports.syncfilelocally(node.path, function(err) {
+							if (err)
+								SETTER('notifybar/warning', err);
+							else
+								SETTER('notifybar/success', '@(The file has been synchronized)');
+						});
+						break;
 					case 'unpack':
 						AJAX('POST /api/files/{id}/unpack/'.arg(code.data), { filename: node.path }, ASETTER('message/response', function() {
 							exports.refresh();
@@ -2794,6 +2807,50 @@
 
 			} else if (!nowarning)
 				FUNC.warning('@(You don\'t have defined repository path.)');
+		};
+
+		exports.syncfilelocally = function(filename, callback) {
+
+			var electronpath = require('electron').ipcRenderer.sendSync('getPath', { url: location.protocol + '//' + location.hostname + (location.port ? ':' + location.port : '') });
+			if (!electronpath) {
+				callback && callback('@(You don\'t have defined repository path.)');
+				return;
+			}
+
+			var Path = require('path');
+			var Https = require('https');
+			var Http = require('http');
+			var Fs = require('fs');
+			var filesaveto = Path.join(electronpath, code.data.repository.replace(/\.git$/i, ''), filename);
+
+			FUNC.mkdir(Path.dirname(filesaveto));
+
+			var resume = function() {
+				callback && callback();
+			};
+
+			var url = location.protocol + '//' + location.hostname + (location.port ? ':' + location.port : '') + '/api/download/{id}/?path='.arg(code.data) + encodeURIComponent(filename);
+			var res = function(res) {
+
+				if (res.statusCode !== 200) {
+					resume('@(Unexpected HTTP error: {0})'.format(res.statusCode));
+					return;
+				}
+
+				res.on('error', resume);
+				res.on('end', resume);
+				res.pipe(Fs.createWriteStream(filesaveto));
+			};
+
+			url = require('url').parse(url);
+			url.headers = {};
+			url.headers['user-agent'] = navigator.userAgent;
+			url.headers.cookie = '@{config.cookie}=' + COOKIES.get('@{config.cookie}');
+
+			if (location.protocol === 'https:')
+				Https.get(url, res);
+			else
+				Http.get(url, res);
 		};
 
 		exports.saveallfileslocally = function(nowarning) {
