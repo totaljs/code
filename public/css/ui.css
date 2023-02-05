@@ -110,7 +110,7 @@ div.CodeMirror span.CodeMirror-matchingbracket { border-bottom: 2px solid blue; 
 .ui-tree .item span { position: absolute; right: 5px; color: black; cursor: pointer; font-size: 12px; padding: 2px 0 0 0; top: 6px; height: 16px; width: 16px; z-index: 10px; display: none; }
 .ui-tree .expand { font-weight: bold; color: black; }
 .ui-tree .icon { color: #777777; }
-.ui-tree .item > div { margin-left: 18px; margin-right: 20px; line-height: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ui-tree .item > div { margin-left: 18px; margin-right: 20px; line-height: 15px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .ui-tree .item:hover span { display: block; }
 .ui-tree .item:hover { background-color: rgba(100,100,100,0.15); }
 .ui-tree .show > .children { display: block; }
