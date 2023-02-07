@@ -1,4 +1,4 @@
-<ui-component name="centered" path="common.form" config="if:~PATH~;autofocus:true;reload:?/reload;scrollbar:1" class="hidden" plugin="~PATH~">
+<ui-component name="centered" path="common.form" config="if:~PATH~;autofocus:true;reload:?/reload;scrollbar:1" class="hidden ~PATH~" plugin="~PATH~">
 	<div style="width:300px;margin:0 auto">
 		<div class="padding">
 			CENTERED

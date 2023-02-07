@@ -1,4 +1,4 @@
-<ui-component name="miniform" path="common.form" config="if:~PATH~;icon:hashtag;autofocus:true;reload:?/reload;submit:?/submit;width:400" class="hidden" plugin="~PATH~">
+<ui-component name="miniform" path="common.form" config="if:~PATH~;icon:hashtag;autofocus:true;reload:?/reload;submit:?/submit;width:400" class="hidden ~PATH~" plugin="~PATH~">
 	<div class="padding">
 		YOUR CODE
 	</div>

@@ -1,4 +1,4 @@
-<ui-component name="box" path="common.form" config="if:~PATH~;icon:hashtag;autofocus:true;reload:?/reload;scrollbar:1;submit:?/submit;width:800" class="hidden" plugin="~PATH~">
+<ui-component name="box" path="common.form" config="if:~PATH~;icon:hashtag;autofocus:true;reload:?/reload;scrollbar:1;submit:?/submit;width:800" class="hidden ~PATH~" plugin="~PATH~">
 	<div class="padding">
 		YOUR CODE
 	</div>
