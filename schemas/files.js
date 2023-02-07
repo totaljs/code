@@ -780,8 +780,12 @@ NEWSCHEMA('FilesCreate', function(schema) {
 			if (err) {
 				// file not found
 				// we can continue
+
 				if (model.folder) {
-					FUNC.mkdir(filename, $.done());
+					if (model.clone) {
+						F.Fs.cp(Path.join(project.path, model.clone), filename, { recursive: true, force: true }, $.done());
+					} else
+						FUNC.mkdir(filename, $.done());
 				} else {
 					var name = U.getName(filename);
 					FUNC.mkdir(filename.substring(0, filename.length - name.length), function() {

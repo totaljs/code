@@ -2139,7 +2139,7 @@
 			}
 
 			items.push({ value: 3, name: '@(Rename)', icon: 'pencil' });
-			!node.children && items.push({ value: 2, name: '@(Duplicate)', icon: 'copy' });
+			items.push({ value: node.children ? 22 : 2, name: '@(Duplicate)', icon: 'copy' });
 			items.push({ value: 255, name: '@(Remove)', icon: 'times-circle red' });
 
 			var path = node.path;
@@ -2230,6 +2230,20 @@
 							name = name.substring(0, index) + '-2' + name.substring(index);
 
 						SET('code.statusform.name', 'file');
+						SETTER('statusform/val', name, node.path);
+						break;
+
+					case 22:
+						// Duplicate
+						var name = node.path;
+
+						var index = name.lastIndexOf('/');
+						if (index === -1) {
+							name += '-2';
+						} else
+							name = name.substring(0, index - 1) + '-2/';
+
+						SET('code.statusform.name', 'directory');
 						SETTER('statusform/val', name, node.path);
 						break;
 
