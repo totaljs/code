@@ -2241,7 +2241,7 @@
 						if (index === -1) {
 							name += '-2';
 						} else
-							name = name.substring(0, index - 1) + '-2/';
+							name = name.substring(0, index) + '-2/';
 
 						SET('code.statusform.name', 'directory');
 						SETTER('statusform/val', name, node.path);
