@@ -450,7 +450,7 @@
 				obj.html = '<div data-import="url:/partial/logs.html"></div>';
 				obj.actions = { minimize: false, maximize: false, move: true, resize: true, autosave: true, menu: true, hide: true };
 				obj.make = function(el) {
-					el.parent().find('.ui-windows-lastbutton').rclass2('ti-').aclass('ti-trash');
+					el.parent().find('.ui-windows-lastbutton').rclass2('fa-').aclass('fa-trash-alt');
 					el.closest('.ui-windows-item').css('z-index', 101);
 				};
 				obj.close = function(next) {
