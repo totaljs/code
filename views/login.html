@@ -50,7 +50,7 @@
 		.ui-input-required .ui-input-icon-right { border-color: #D0D0D0; }
 		.ui-input-ricon .ui-input-input { margin-right: 35px; }
 		.ui-input-licon .ui-input-input { margin-left: 32px; }
-		.ui-input-ricon .fa-times, .ui-input-licon .fa-times { color: red; }
+		.ui-input-ricon .ti-times, .ui-input-licon .ti-times { color: red; }
 		.ui-input-value { text-overflow: ellipsis; white-space: nowrap; overflow: hidden; }
 		.ui-input-click { cursor: pointer; }
 		.ui-input-error { margin-top: 7px; font-size: 11px; color: red; }
@@ -107,7 +107,7 @@
 				<br /><br />
 				@{if R.signup}
 
-					<div class="alert m center"><i class="fa fa-user"></i> @(You will be the first developer in the <b>Total.js Code Editor</b> on this server.)</div>
+					<div class="alert m center"><i class="ti ti-user"></i> @(You will be the first developer in the <b>Total.js Code Editor</b> on this server.)</div>
 					<div class="row">
 						<div class="col-md-6 m">
 							<div data---="input__form.id__required:true;placeholder:@(petersirka);type:lower;autofocus:1__''">@(Your ID)</div>
@@ -130,7 +130,7 @@
 
 					<div data---="error__form.response"></div>
 					<div data---="validation__form">
-						<button name="submit" disabled="disabled"><i class="fa fa-key"></i>@(Sign up)</button>
+						<button name="submit" disabled="disabled"><i class="ti ti-key"></i>@(Sign up)</button>
 					</div>
 
 				@{else}
@@ -139,7 +139,7 @@
 					<div class="m" data---="input__form.password__icon2:lock;required:true;type:password;autofill:true">@(Password)</div>
 					<div data---="error__form.response"></div>
 					<div data---="validation__form">
-						<button name="submit" disabled="disabled"><i class="fa fa-lock"></i>@(Sign in)</button>
+						<button name="submit" disabled="disabled"><i class="ti ti-lock"></i>@(Sign in)</button>
 					</div>
 				</form>
 				@{fi}
@@ -198,9 +198,9 @@
 
 			self.init = function() {
 				Thelpers.ui_input_icon = function(val) {
-					return val.charAt(0) === '!' ? ('<span class="ui-input-icon-custom">' + val.substring(1) + '</span>') : ('<i class="fa fa-' + val + '"></i>');
+					return val.charAt(0) === '!' ? ('<span class="ui-input-icon-custom">' + val.substring(1) + '</span>') : ('<i class="ti ti-' + val + '"></i>');
 				};
-				W.ui_input_template = Tangular.compile(('{{ if label }}<div class="{0}-label">{{ if icon }}<i class="fa fa-{{ icon }}"></i>{{ fi }}{{ label | raw }}{{ after | raw }}</div>{{ fi }}<div class="{0}-control{{ if licon }} {0}-licon{{ fi }}{{ if ricon || (type === \'number\' && increment) }} {0}-ricon{{ fi }}">{{ if ricon || (type === \'number\' && increment) }}<div class="{0}-icon-right{{ if type === \'number\' && increment }} {0}-increment{{ else if riconclick || type === \'date\' || type === \'time\' || (type === \'search\' && searchalign === 1) || type === \'password\' }} {0}-click{{ fi }}">{{ if type === \'number\' }}<i class="fa fa-caret-up"></i><i class="fa fa-caret-down"></i>{{ else }}{{ ricon | ui_input_icon }}{{ fi }}</div>{{ fi }}{{ if licon }}<div class="{0}-icon-left{{ if liconclick || (type === \'search\' && searchalign !== 1) }} {0}-click{{ fi }}">{{ licon | ui_input_icon }}</div>{{ fi }}<div class="{0}-input{{ if align === 1 || align === \'center\' }} center{{ else if align === 2 || align === \'right\' }} right{{ fi }}">{{ if placeholder && !innerlabel }}<div class="{0}-placeholder">{{ placeholder }}</div>{{ fi }}<input type="{{ if !dirsource && type === \'password\' }}password{{ else }}text{{ fi }}"{{ if autofill }} autocomplete="on" name="{{ PATH }}"{{ else }} name="input' + Date.now() + '" autocomplete="new-password"{{ fi }}{{ if dirsource }} readonly{{ else }} data-jc-bind=""{{ fi }}{{ if maxlength > 0}} maxlength="{{ maxlength }}"{{ fi }}{{ if autofocus }} autofocus{{ fi }} /></div></div>{{ if error }}<div class="{0}-error hidden"><i class="fa fa-warning"></i> {{ error }}</div>{{ fi }}').format(cls));
+				W.ui_input_template = Tangular.compile(('{{ if label }}<div class="{0}-label">{{ if icon }}<i class="ti ti-{{ icon }}"></i>{{ fi }}{{ label | raw }}{{ after | raw }}</div>{{ fi }}<div class="{0}-control{{ if licon }} {0}-licon{{ fi }}{{ if ricon || (type === \'number\' && increment) }} {0}-ricon{{ fi }}">{{ if ricon || (type === \'number\' && increment) }}<div class="{0}-icon-right{{ if type === \'number\' && increment }} {0}-increment{{ else if riconclick || type === \'date\' || type === \'time\' || (type === \'search\' && searchalign === 1) || type === \'password\' }} {0}-click{{ fi }}">{{ if type === \'number\' }}<i class="ti ti-caret-up"></i><i class="ti ti-caret-down"></i>{{ else }}{{ ricon | ui_input_icon }}{{ fi }}</div>{{ fi }}{{ if licon }}<div class="{0}-icon-left{{ if liconclick || (type === \'search\' && searchalign !== 1) }} {0}-click{{ fi }}">{{ licon | ui_input_icon }}</div>{{ fi }}<div class="{0}-input{{ if align === 1 || align === \'center\' }} center{{ else if align === 2 || align === \'right\' }} right{{ fi }}">{{ if placeholder && !innerlabel }}<div class="{0}-placeholder">{{ placeholder }}</div>{{ fi }}<input type="{{ if !dirsource && type === \'password\' }}password{{ else }}text{{ fi }}"{{ if autofill }} autocomplete="on" name="{{ PATH }}"{{ else }} name="input' + Date.now() + '" autocomplete="new-password"{{ fi }}{{ if dirsource }} readonly{{ else }} data-jc-bind=""{{ fi }}{{ if maxlength > 0}} maxlength="{{ maxlength }}"{{ fi }}{{ if autofocus }} autofocus{{ fi }} /></div></div>{{ if error }}<div class="{0}-error hidden"><i class="ti ti-warning"></i> {{ error }}</div>{{ fi }}').format(cls));
 			};
 
 			self.make = function() {
@@ -513,7 +513,7 @@
 						else if (config.type === 'password')
 							self.password();
 						else if (config.type === 'number') {
-							var n = $(e.target).hclass('fa-caret-up') ? 1 : -1;
+							var n = $(e.target).hclass('ti-caret-up') ? 1 : -1;
 							self.change(true);
 							self.inc(config.increment * n);
 						}
@@ -613,7 +613,7 @@
 			self.password = function(show) {
 				var visible = show == null ? input.attr('type') === 'text' : show;
 				input.attr('type', visible ? 'password' : 'text');
-				self.find(cls2 + '-icon-right').find('i').tclass(config.ricon, visible).tclass('fa-eye-slash', !visible);
+				self.find(cls2 + '-icon-right').find('i').tclass(config.ricon, visible).tclass('ti-eye-slash', !visible).tclass('ti-eye', visible);
 			};
 
 			self.getterin = self.getter;
@@ -689,7 +689,7 @@
 				self.tclass(cls + '-binded', is);
 
 				if (config.type === 'search')
-					self.find(cls2 + '-icon-' + (config.searchalign === 1 ? 'right' : 'left')).find('i').tclass(config.searchalign === 1 ? config.ricon : config.licon, !is).tclass('fa-times', is);
+					self.find(cls2 + '-icon-' + (config.searchalign === 1 ? 'right' : 'left')).find('i').tclass(config.searchalign === 1 ? config.ricon : config.licon, !is).tclass('ti-times', is);
 			};
 
 			self.bindvalue = function() {
@@ -890,7 +890,7 @@
 
 				var builder = [];
 				for (var i = 0, length = value.length; i < length; i++)
-					builder.push('<div><span class="fa {1}"></span>{0}</div>'.format(value[i].error, 'fa-' + (config.icon || 'times-circle')));
+					builder.push('<div><span class="fa {1}"></span>{0}</div>'.format(value[i].error, 'ti-' + (config.icon || 'times-circle')));
 
 				self.html(builder.join(''));
 				self.tclass('hidden', false);

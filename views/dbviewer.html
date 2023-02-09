@@ -42,7 +42,7 @@
 
 			<section data-type="top2" data-size="213" class="topsection">
 				<div data---="codemirror__dbview.query__height:150;type:sql;cmdenter:dbview.submit"></div>
-				<div class="help"><span class="link exec" data-exec="dbview.history"><i class="fa fa-history"></i>@(History)</span><span class="link exec b red" data-exec="dbview.execute"><i class="fa fa-play-circle"></i>@(Run query)</span><span class="link exec" data-exec="dbview.options"><i class="fa fa-cog"></i>@(Options)</span><span data-bind="dbview.duration__text b__show" class="hidden"><i class="far fa-clock"></i><b></b></span><span class="pull-right"><i class="fa fa-keyboard"></i><code data-bind="shortcutexecute__text">---</code> @(executes a query)</span></div>
+				<div class="help"><span class="link exec" data-exec="dbview.history"><i class="ti ti-history"></i>@(History)</span><span class="link exec b red" data-exec="dbview.execute"><i class="ti ti-play-alt"></i>@(Run query)</span><span class="link exec" data-exec="dbview.options"><i class="ti ti-cog-alt"></i>@(Options)</span><span data-bind="dbview.duration__text b__show" class="hidden"><i class="ti ti-clock"></i><b></b></span><span class="pull-right"><i class="ti ti-keyboard"></i><code data-bind="shortcutexecute__text">---</code> @(executes a query)</span></div>
 				<div data---="inputsearch__dbview.search__placeholder:@(Search in results)"></div>
 			</section>
 
@@ -54,28 +54,28 @@
 							{{ if value.tables.length }}
 								<div class="caption">@(Tables)</div>
 								{{ foreach m in value.tables }}
-									<div class="item exec" data-exec="dbview.template" data-type="table"><span class="options exec" data-prevent="true" data-exec="dbview.modify"><i class="fa fa-ellipsis-h"></i></span><i class="fa fa-columns"></i>{{ m.name }}</div>
+									<div class="item exec" data-exec="dbview.template" data-type="table"><span class="options exec" data-prevent="true" data-exec="dbview.modify"><i class="ti ti-ellipsis-h"></i></span><i class="ti ti-columns"></i>{{ m.name }}</div>
 								{{ end }}
 							{{ fi }}
 
 							{{ if value.views.length }}
 								<div class="caption">@(Views)</div>
 								{{ foreach m in value.views }}
-									<div class="item exec" data-exec="dbview.template" data-type="view"><span class="options exec" data-prevent="true" data-exec="dbview.modify"><i class="fa fa-ellipsis-h"></i></span><i class="fa fa-eye"></i>{{ m.name }}</div>
+									<div class="item exec" data-exec="dbview.template" data-type="view"><span class="options exec" data-prevent="true" data-exec="dbview.modify"><i class="ti ti-ellipsis-h"></i></span><i class="ti ti-eye"></i>{{ m.name }}</div>
 								{{ end }}
 							{{ fi }}
 
 							{{ if value.functions.length }}
 								<div class="caption">@(Functions)</div>
 								{{ foreach m in value.functions }}
-									<div class="item exec" data-exec="dbview.template" data-type="function"><span class="options exec" data-prevent="true" data-exec="dbview.modify"><i class="fa fa-ellipsis-h"></i></span><i class="fa fa-code"></i>{{ m.name }}</div>
+									<div class="item exec" data-exec="dbview.template" data-type="function"><span class="options exec" data-prevent="true" data-exec="dbview.modify"><i class="ti ti-ellipsis-h"></i></span><i class="ti ti-code"></i>{{ m.name }}</div>
 								{{ end }}
 							{{ fi }}
 
 							{{ if value.procedures.length }}
 								<div class="caption">@(Procedures)</div>
 								{{ foreach m in value.procedures }}
-									<div class="item exec" data-exec="dbview.template" data-type="procedure"><span class="options exec" data-prevent="true" data-exec="dbview.modify"><i class="fa fa-ellipsis-h"></i></span><i class="fa fa-code-branch"></i>{{ m.name }}</div>
+									<div class="item exec" data-exec="dbview.template" data-type="procedure"><span class="options exec" data-prevent="true" data-exec="dbview.modify"><i class="ti ti-ellipsis-h"></i></span><i class="ti ti-code-branch"></i>{{ m.name }}</div>
 								{{ end }}
 							{{ fi }}
 

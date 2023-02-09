@@ -1,0 +1,11 @@
+{
+	"endpoint": "/$tms/",
+	"icon": "fa fa-code-branch",
+	"token": "",
+	"publish": {
+		"insert": "SCHEMA_NAME_OR_ID"
+	},
+	"subscribe": {
+		"update": "SCHEMA_NAME_OR_ID"
+	}
+}

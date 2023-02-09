@@ -1,21 +1,21 @@
 <div id="panel">
-	<section class="project exec" data-exec="code/projects" data-bind="!code.data__html b:value.name__title:value.name__text div:'@(Branch:) '+(value.branch||'@(Master)')"><i class="fa fa-angle-down"></i><b>@(Choose project)</b><div><i class="far fa-thumbs-up mr5"></i>@(Thank you for using Total.js)</div></section>
+	<section class="project exec" data-exec="code/projects" data-bind="!code.data__html b:value.name__title:value.name__text div:'@(Branch:) '+(value.branch||'@(Master)')"><i class="ti ti-angle-down"></i><b>@(Choose project)</b><div><i class="ti ti-thumbs-up mr5"></i>@(Thank you for using Total.js)</div></section>
 	<div>
 		<div data-bind="common.recent__template__|__code.data__hide" class="hidden">
 			<script type="text/html">
 				{{ foreach m in value }}
-				<div data-id="{{ m.id }}" class="recent exec" data-exec="code/loadproject"><i class="fa fa-code-branch mr5"></i>{{ m.name }}</div>
+				<div data-id="{{ m.id }}" class="recent exec" data-exec="code/loadproject"><i class="ti ti-code-branch mr5"></i>{{ m.name }}</div>
 				{{ end }}
 			</script>
 		</div>
 		<div data---="viewbox__code.tree__scrollbar:1;parent:.ui-dockable-body;margin:86;visibleY:0;scrollbarshadow:1" data-bind="code.data__show" class="hidden">
 			<div class="changedfiles hidden" data-bind="code.recent__template__show:value && value.length">
 				<script type="text/html">
-					<div><i class="far fa-clock-o"></i>@(Last changed files)</div>
+					<div><i class="ti ti-clock"></i>@(Last changed files)</div>
 					<div>
 					{{ foreach m in value }}
 						<div class="changefile">
-							<div class="path exec" data-exec="code/editpath" data-path="{{ m.path }}">{{ if m.changes }}<span>+{{ m.changes }}</span>{{ fi }}<i class="far fa-file-alt"></i>{{ m.path }}</div>
+							<div class="path exec" data-exec="code/editpath" data-path="{{ m.path }}">{{ if m.changes }}<span>+{{ m.changes }}</span>{{ fi }}<i class="ti ti-file"></i>{{ m.path }}</div>
 						</div>
 					{{ end }}
 					</div>
@@ -26,12 +26,12 @@
 	</div>
 
 	<section class="status invisible" data-bind="code.data__visible">
-		<button title="@(Create file)" class="exec" data-name="file" data-exec="code/statusform"><i class="far fa-file-text-o"></i></button>
-		<button title="@(Create folder)" class="exec" data-name="directory" data-exec="code/statusform"><i class="far fa-folder"></i></button>
-		<button title="@(Refresh directories and files)" class="exec" data-exec="code/refresh"><i class="fa fa-refresh"></i></button>
-		<button title="@(Time spent)" class="exec" data-exec="code/timespent"><i class="far fa-calendar"></i></button>
-		<button title="@(All tracked changes)" class="exec" data-exec="code/changes"><i class="fa fa-history"></i></button>
-		<button title="@(Users)" class="exec" data-name="directory" data-exec="code/usersonline"><i class="fa fa-users"></i></button>
+		<button title="@(Create file)" class="exec" data-name="file" data-exec="code/statusform"><i class="ti ti-file"></i></button>
+		<button title="@(Create folder)" class="exec" data-name="directory" data-exec="code/statusform"><i class="ti ti-folder"></i></button>
+		<button title="@(Refresh directories and files)" class="exec" data-exec="code/refresh"><i class="ti ti-refresh"></i></button>
+		<button title="@(Time spent)" class="exec" data-exec="code/timespent"><i class="ti ti-calendar"></i></button>
+		<button title="@(All tracked changes)" class="exec" data-exec="code/changes"><i class="ti ti-history"></i></button>
+		<button title="@(Users)" class="exec" data-name="directory" data-exec="code/usersonline"><i class="ti ti-users"></i></button>
 	</section>
 </div>
 
@@ -52,10 +52,10 @@
 
 		<div class="body-title">@(Total.js Code Editor v)<span data-bind="common.version__text"></span></div>
 		<section class="tabs">
-			<span class="livereloadindicator" data-bind="code.data.livereload__show" class="hidden"><i class="fa fa-circle green"></i></span>
-			<a data-bind="code.data.url__href__show" target="_blank" class="preview" title="@(Preview)"><i class="fa fa-globe"></i></a>
-			<span class="options exec hidden" data-bind="code.editor__show" data-exec="code/options_editor"><i class="fa fa-cog"></i></span>
-			<span class="options2 exec hidden" data-bind="code.editor__show" data-exec="code/branches"><i class="fa fa-code-branch"></i></span>
+			<span class="livereloadindicator" data-bind="code.data.livereload__show" class="hidden"><i class="ti ti-circle-alt green"></i></span>
+			<a data-bind="code.data.url__href__show" target="_blank" class="preview" title="@(Preview)"><i class="ti ti-globe"></i></a>
+			<span class="options exec hidden" data-bind="code.editor__show" data-exec="code/options_editor"><i class="ti ti-cog-alt"></i></span>
+			<span class="options2 exec hidden" data-bind="code.editor__show" data-exec="code/branches"><i class="ti ti-code-branch"></i></span>
 			<nav data---="tabmenu__code.editor.path__datasource:code.open;selector:span;exec:code/opentab;reorder:code/savetabs">
 				<script type="text/html">
 					<span data-value="{{ path }}" class="{{ if !skip }}nolocked{{ fi }}{{ if modified }} modified{{ fi }}" title="{{ path }}"><i class="{{ name | fileicon }} exec" data-exec="code/close"></i>{{ name }}<em>{{ path | shortpath }}</em></span>
@@ -64,24 +64,24 @@
 		</section>
 		<div data-bind="code.editor.path__visible" class="invisible">
 			<div class="search">
-				<span class="label"><i class="fa fa-search"></i>@(Search)</span>
+				<span class="label"><i class="ti ti-search"></i>@(Search)</span>
 				<nav>
-					<button class="search-cancel hidden" name="clear" title="@(Clear search)"><i class="fa fa-times red"></i></button>
-					<button class="search-op" name="prev" disabled="disabled" title="@(Previous result)"><i class="fa fa-angle-up"></i></button>
-					<button class="search-op" name="next" disabled="disabled" title="@(Next result)"><i class="fa fa-angle-down"></i></button>
+					<button class="search-cancel hidden" name="clear" title="@(Clear search)"><i class="ti ti-times red"></i></button>
+					<button class="search-op" name="prev" disabled="disabled" title="@(Previous result)"><i class="ti ti-angle-up"></i></button>
+					<button class="search-op" name="next" disabled="disabled" title="@(Next result)"><i class="ti ti-angle-down"></i></button>
 				</nav>
 				<span class="count hidden"></span>
 				<div><input type="text" maxlength="100" placeholder="@(Type to search and press enter)" /></div>
 			</div>
 		</div>
 		<div id="content">
-			<div class="alert-saved hidden exec" data-bind="code.saved__show__html b" data-exec="code/syncsave"><i class="fa fa-warning"></i><b></b> @(has replaced content of this file on the server.)</div>
+			<div class="alert-saved hidden exec" data-bind="code.saved__show__html b" data-exec="code/syncsave"><i class="ti ti-warning"></i><b></b> @(has replaced content of this file on the server.)</div>
 			<div data-bind="code.editor.path__show" class="codeeditor">
 				<div data---="editor__code.editor.body__height:100%;pk:path;change:code/modified;shortcut:code/shortcut;contextmenu:code/contextmenu;cursor:code/cursorposition;sync:code/sync;todo:code/todo;components:code/components;combo:code/combo"></div>
 			</div>
 			<div class="messages">
-				<div class="alert hidden" data-bind="code.backup__show" data-name="backup"><i class="fa fa-times exec" data-exec="code/warning"></i><i class="fa fa-warning"></i>@(The content of this file wasn't saved before. Do you want to restore it?) <span class="link exec" data-name="restore" data-exec="code/warning">@(Restore)</span> @(or) <span class="link exec" data-exec="code/warning">@(Cancel)</span>.</div>
-				<div class="alert hidden" data-bind="code.multiple__show" data-name="multiple" style="z-index:1001"><i class="fa fa-times exec" data-exec="code/warning"></i><i class="fa fa-users"></i>@(Be careful because another user is editing content of this file.) <span class="link exec b ml5" data-exec="code/syncdata"><i class="fa fa-refresh fa-spin mr5"></i>@(Synchronize)</span> @(or) <span class="link exec" data-exec="code/warning">@(Cancel)</span>.</div>
+				<div class="alert hidden" data-bind="code.backup__show" data-name="backup"><i class="ti ti-times exec" data-exec="code/warning"></i><i class="ti ti-warning"></i>@(The content of this file wasn't saved before. Do you want to restore it?) <span class="link exec" data-name="restore" data-exec="code/warning">@(Restore)</span> @(or) <span class="link exec" data-exec="code/warning">@(Cancel)</span>.</div>
+				<div class="alert hidden" data-bind="code.multiple__show" data-name="multiple" style="z-index:1001"><i class="ti ti-times exec" data-exec="code/warning"></i><i class="ti ti-users"></i>@(Be careful because another user is editing content of this file.) <span class="link exec b ml5" data-exec="code/syncdata"><i class="ti ti-refresh ti-spin mr5"></i>@(Synchronize)</span> @(or) <span class="link exec" data-exec="code/warning">@(Cancel)</span>.</div>
 			</div>
 		</div>
 
@@ -106,18 +106,18 @@
 			</script>
 		</div>
 		<div data-bind="code.errors__html b:value?value.length:0__.red:value && value.length>0" class="status-alerts exec" data-exec="code/warnings">
-			<i class="fa fa-warning"></i><b>0</b>
+			<i class="ti ti-warning"></i><b>0</b>
 		</div>
 		<div class="status-diff" data-bind="code.current.changes__disabled button:!value||!value.length__click button:code/diff__text b:value?value.length:0">
-			<button name="prev" title="@(Previous change)"><i class="fa fa-chevron-left"></i></button>
-			<span title="@(Count of changed lines)"><i class="fa fa-plus green"></i><b>0</b></span>
-			<button name="next" title="@(Next change)"><i class="fa fa-chevron-right"></i></button>
+			<button name="prev" title="@(Previous change)"><i class="ti ti-chevron-left"></i></button>
+			<span title="@(Count of changed lines)"><i class="ti ti-plus green"></i><b>0</b></span>
+			<button name="next" title="@(Next change)"><i class="ti ti-chevron-right"></i></button>
 		</div>
 		<div class="status-modified exec" data-bind="code.current.lastmodified__template__show" data-path="common.form" data-value="'backups'">
 			<script type="text/html">
 				{{ if value && value.updated }}
 					{{ value.user | initials }}
-				 	<div><i class="fa fa-history"></i><b title="{{ value.updated | format('[date]') }}" class="time" data-time="{{ value.updated | utc }}">{{ value.updated | time }}</b></div>
+				 	<div><i class="ti ti-history"></i><b title="{{ value.updated | format('[date]') }}" class="time" data-time="{{ value.updated | utc }}">{{ value.updated | time }}</b></div>
 				{{ fi }}
 			</script>
 		</div>
@@ -138,9 +138,9 @@
 
 <div class="collaborators" data-bind="code.editor.path__show .onlyopen__|__code.data__show">
 	<div class="tools">
-		<a data-bind="code.data.id__href:'/pause/?url=' + encodeURIComponent('/?id=' + (value || ''))" title="@(Pause / Time to Relax)" class="red pause"><i class="fa fa-pause"></i></a>
-		<span title="@(To-Do list)" class="exec" data-path="common.form" data-value="'tasks'"><b class="uncomplete" data-bind="code.data.todo --> code/codetasks_unsolved__show__html"></b><i class="fa fa-tasks"></i></span>
-		<span title="@(Code review)" data-bind="code.editor.path__show" class="hidden exec review onlyopen" data-exec="code/review"><i class="fa fa-check"></i></span>
+		<a data-bind="code.data.id__href:'/pause/?url=' + encodeURIComponent('/?id=' + (value || ''))" title="@(Pause / Time to Relax)" class="red pause"><i class="ti ti-pause"></i></a>
+		<span title="@(To-Do list)" class="exec" data-path="common.form" data-value="'tasks'"><b class="uncomplete" data-bind="code.data.todo --> code/codetasks_unsolved__show__html"></b><i class="ti ti-tasks"></i></span>
+		<span title="@(Code review)" data-bind="code.editor.path__show" class="hidden exec review onlyopen" data-exec="code/review"><i class="ti ti-check"></i></span>
 	</div>
 	<section data-bind="code.usersfile__template" class="onlyopen">
 		<script type="text/html">
@@ -154,13 +154,13 @@
 <div id="panel_prop">
 	<div class="options">
 		<ul class="tabbuttons" data---="tabmenu__common.form">
-			<li data-value="components" title="@(Used parts)"><i class="fa fa-puzzle-piece"></i></li>
-			<li data-value="componentator" title="@(UI components)"><i class="fa fa-drafting-compass"></i></li>
-			<li data-value="output" title="@(Output panel)"><i class="fa fa-rss"></i></li>
-			<li data-value="search" title="@(Search)"><i class="fa fa-search"></i></li>
-			<li data-value="changes" title="@(Last changes)"><i class="fa fa-history"></i></li>
-			<li data-value="backups" title="@(Backups)"><i class="fa fa-archive"></i></li>
-			<li data-value="timespentform" title="@(Time spent)"><i class="far fa-clock-o"></i></li>
+			<li data-value="components" title="@(Used parts)"><i class="ti ti-puzzle"></i></li>
+			<li data-value="componentator" title="@(UI components)"><i class="ti ti-totaljs"></i></li>
+			<li data-value="output" title="@(Output panel)"><i class="ti ti-rss-square"></i></li>
+			<li data-value="search" title="@(Search)"><i class="ti ti-search"></i></li>
+			<li data-value="changes" title="@(Last changes)"><i class="ti ti-history"></i></li>
+			<li data-value="backups" title="@(Backups)"><i class="ti ti-archive"></i></li>
+			<li data-value="timespentform" title="@(Time spent)"><i class="ti ti-clock"></i></li>
 		</ul>
 	</div>
 	<div data---="part__common.form__if:search;url:/forms/search.html;reload:codesearch/reload"></div>
@@ -244,7 +244,7 @@
 			var obj = {};
 			obj.id = 'messenger';
 			obj.offset = { x: 600, y: 300, width: 600, height: 400, minwidth: 200, minheight: 200 };
-			obj.title = '<i class="fa fa-life-ring"></i>@(Chat support with contributors)';
+			obj.title = '<i class="ti ti-support"></i>@(Chat support with contributors)';
 			var meta = $.param({ token: common.token, nick: user.name, position: user.position, darkmode: $(document.body).hclass('td') ? 1 : 0, reference: user.id, source: location.hostname });
 			obj.html = '<div class="messenger"><{1} src="{0}" frameborder="0" scrolling="no" allowtransparency="true" allow="geolocation *; microphone *; camera *; midi *; encrypted-media *"></{1}></div>'.format('https://support.totaljs.com/?' + meta, 'iframe'); // common.electron ? 'webview' : 'iframe');
 			obj.actions = { minimize: true, maximize: true, move: true, resize: true, close: true, autosave: true };
@@ -257,7 +257,7 @@
 			obj.id = 'selected_' + GUID(10);
 			obj.offset = { x: 600, y: 300, width: 450, height: 300, minwidth: 200, minheight: 200 };
 			obj.cachekey = 'selected';
-			obj.title = '<i class="fa fa-font"></i>@(Selected text: <b>{0}</b>)'.format(code.current.name);
+			obj.title = '<i class="ti ti-font"></i>@(Selected text: <b>{0}</b>)'.format(code.current.name);
 
 			var el = document.createElement('PRE');
 			var cur = editor.getModeAt(editor.getCursor());
@@ -276,7 +276,7 @@
 			var size = Thelpers.filesize(bytes);
 			var isbig = bytes > 30000;
 			el.tclass('red b', isbig);
-			return value ? (isbig ? '<i class="fa fa-exclamation-circle mr5"></i>' : '') + size + ' / ' + FUNC.newlineslength(value).pluralize('@(# lines,# line,# lines,# lines)') : DEF.empty;
+			return value ? (isbig ? '<i class="ti ti-exclamation-circle mr5"></i>' : '') + size + ' / ' + FUNC.newlineslength(value).pluralize('@(# lines,# line,# lines,# lines)') : DEF.empty;
 		};
 
 		var statusinfo = function(obj) {
@@ -366,7 +366,7 @@
 
 			obj.hidden = false;
 			obj.offset = { x: ((WW / 2) - 350) >> 0, y: ((WH / 2) - 150) >> 0, width: 800, height: 500, minwidth: 600, minheight: 400 };
-			obj.title = '<i class="fa fa-database"></i> @(Database viewer)';
+			obj.title = '<i class="ti ti-database"></i> @(Database viewer)';
 			obj.html = '<iframe src="/dbviewer/?conn={0}&id={1}" style="width:100%;height:100%;border:0" frameborder="0"></iframe>'.format(encodeURIComponent(conn), obj.id);
 			obj.actions = { minimize: true, maximize: true, move: true, resize: true, autosave: true };
 			PUSH('windows', obj);
@@ -383,7 +383,7 @@
 			obj.id = 'diff';
 			obj.hidden = false;
 			obj.offset = { x: ((WW / 2) - 350) >> 0, y: ((WH / 2) - 150) >> 0, width: 700, height: 600, minwidth: 500, minheight: 300 };
-			obj.title = '<i class="fa fa-code-branch"></i> @(Diff resource)';
+			obj.title = '<i class="ti ti-code-branch"></i> @(Diff resource)';
 			obj.html = '<div data-import="url:/partial/diff.html"></div>';
 			obj.actions = { minimize: true, maximize: true, move: true, resize: true, autosave: true, hide: true };
 			PUSH('windows', obj);
@@ -400,7 +400,7 @@
 			obj.id = 'chat';
 			obj.hidden = false;
 			obj.offset = { x: ((WW / 2) - 350) >> 0, y: ((WH / 2) - 150) >> 0, width: 700, height: 300, minwidth: 300, minheight: 150 };
-			obj.title = '<i class="fa fa-comments"></i> @(Internal chat)';
+			obj.title = '<i class="ti ti-comments"></i> @(Internal chat)';
 			obj.html = '<div data-import="url:/partial/chat.html"></div>';
 			obj.actions = { minimize: true, maximize: true, move: true, resize: true, autosave: true, hide: true };
 
@@ -446,11 +446,11 @@
 				obj.id = 'logs';
 				obj.hidden = false;
 				obj.offset = { x: WW - 850, y: WH - 430, width: 800, height: 300, minwidth: 200, minheight: 200 };
-				obj.title = '<i class="fa fa-pulse fa-spinner green"></i>@(Logs)';
+				obj.title = '<i class="ti ti-pulse ti-spinner green"></i>@(Logs)';
 				obj.html = '<div data-import="url:/partial/logs.html"></div>';
 				obj.actions = { minimize: false, maximize: false, move: true, resize: true, autosave: true, menu: true, hide: true };
 				obj.make = function(el) {
-					el.parent().find('.ui-windows-lastbutton').rclass2('fa-').aclass('fa-trash-o');
+					el.parent().find('.ui-windows-lastbutton').rclass2('ti-').aclass('ti-trash');
 					el.closest('.ui-windows-item').css('z-index', 101);
 				};
 				obj.close = function(next) {
@@ -694,24 +694,24 @@
 				if ((/api/).test(code.current.ext))
 					items.push({ name: '@(Run)', icon: 'play-circle red', value: 'run', classname: 'b', shortcut: (common.ismac ? 'CMD' : 'CTRL') + '+B' });
 
-				items.push({ name: '@(Show selected)', icon: '!fa fa-object-group', value: 'showselected' });
+				items.push({ name: '@(Show selected)', icon: '!ti ti-object-group', value: 'showselected' });
 
-				items.push({ name: '@(Copy)', icon: '!far fa-copy', command: 'copy' });
+				items.push({ name: '@(Copy)', icon: '!ti ti-copy', command: 'copy' });
 				items.push({ name: '@(Copy with syntax)', icon: 'print', value: 'copysyntax' });
-				items.push({ name: '@(Copy as Markdown)', icon: '!fab fa-markdown', value: 'copymarkdown' });
+				items.push({ name: '@(Copy as Markdown)', icon: '!ti ti-pointer', value: 'copymarkdown' });
 
 				if (mode === 'css' || mode === 'html' || mode === 'js' || code.current.ext === 'css' || code.current.ext === 'js' || code.current.ext === 'html' || code.current.ext === 'sh')
-					items.push({ name: '@(Copy as Image)', icon: 'fa fa-image', value: 'copycarbon' });
+					items.push({ name: '@(Copy as Image)', icon: 'ti ti-image', value: 'copycarbon' });
 
 				if (text.indexOf('<') !== -1)
-					items.push({ name: '@(Copy without tags)', icon: '!far fa-copy', value: 'copytext' });
+					items.push({ name: '@(Copy without tags)', icon: '!ti ti-copy', value: 'copytext' });
 
 				if (can && (/^(http(s)?:)?\/\/[^\s]+/).test(text))
 					items.push({ name: '@(Download to clipboard)', icon: 'cloud-download', value: 'downloadclipboard' });
 
 				if (text.indexOf('.define(\'') !== -1) {
-					items.push({ name: '@(Copy as JSON)', icon: '!fa fa-code', value: 'copyasjson' });
-					items.push({ name: '@(Copy as JSON schema)', icon: '!far fa-object-group', value: 'copyasjsonschema' });
+					items.push({ name: '@(Copy as JSON)', icon: '!ti ti-code', value: 'copyasjson' });
+					items.push({ name: '@(Copy as JSON schema)', icon: '!ti ti-object-group', value: 'copyasjsonschema' });
 				}
 
 				if (text.indexOf('NEWSCHEMA(') !== -1) {
@@ -1830,7 +1830,7 @@
 			if (code.data.allowbundle && !code.data.isexternal)
 	 			user.sa && items.push({ value: 23, name: '@(Download source-code)', icon: 'download' });
 
-			items.push({ name: '@(Create Wiki)', icon: '!fa fa-book', value: 98 });
+			items.push({ name: '@(Create Wiki)', icon: '!ti ti-book', value: 98 });
 
 			if (code.data.allowbundle && !code.data.isexternal) {
 				items.push('-');
@@ -2121,8 +2121,8 @@
 
 			if (node.children) {
 				items.push({ value: 'filter', name: '@(Show this folder only)', icon: 'filter green' });
-				items.push({ value: 'file', name: '@(Create file)', icon: '!far fa-file-text-o' });
-				items.push({ value: 'directory', name: '@(Create directory)', icon: '!far fa-folder-o' });
+				items.push({ value: 'file', name: '@(Create file)', icon: '!ti ti-file' });
+				items.push({ value: 'directory', name: '@(Create directory)', icon: '!ti ti-folder' });
 			} else {
 
 				items.push({ value: 'download', name: '@(Download file)', icon: 'cloud-download', classname: 'b' });
@@ -2133,7 +2133,7 @@
 				items.push({ value: 'metainfo', name: '@(Read info)', icon: 'info-circle' });
 
 				if (ext === 'gz' || ext === 'zip')
-					items.push({ value: 'unpack', name: '@(Unpack)', icon: 'fa fa-box-open' });
+					items.push({ value: 'unpack', name: '@(Unpack)', icon: 'ti ti-box' });
 
 				items.push('-');
 			}
@@ -2199,7 +2199,7 @@
 							common.isinfopanel = true;
 							response.mode = '0' + (response.mode & parseInt('777', 8)).toString(8);
 							SETTER('infopanel/show', el, function(el) {
-								el.html('<div class="metainfo"><b><i class="far fa-file-text-o"></i> {4}</b>Size: {0}<br />Mode: {1}<br />Modified: {2}<br />Created: {3}</div>'.format(response.size.filesize(), response.mode, response.mtime.format(), response.ctime.format(), path));
+								el.html('<div class="metainfo"><b><i class="ti ti-file"></i> {4}</b>Size: {0}<br />Mode: {1}<br />Modified: {2}<br />Created: {3}</div>'.format(response.size.filesize(), response.mode, response.mtime.format(), response.ctime.format(), path));
 							}, -10, -105, false, function() {
 								common.isinfopanel = false;
 							});
@@ -2703,7 +2703,7 @@
 
 			for (var i = 0; i < opt.items.length; i++) {
 				var item = opt.items[i];
-				item.template = '<i class="{0}"></i>{{ if online }}<span>{{ online }}</span>{{ fi }}{{ name }}'.format(item.pinned ? 'fa fa-thumbtack orange' : 'fa fa-code-branch');
+				item.template = '<i class="{0}"></i>{{ if online }}<span>{{ online }}</span>{{ fi }}{{ name }}'.format(item.pinned ? 'ti ti-pin-alt orange' : 'ti ti-code-branch');
 				item.classname = code.data && code.data.id === item.id ? 'ui-directory-current' : '';
 			}
 
@@ -3203,83 +3203,83 @@
 						directory[code.tree[i].name] = 1;
 
 					if (!directory.builds)
-						opt.items.push({ name: '<strong>@(Create):</strong> /builds', icon: '!far fa-folder', value: '/builds/' });
+						opt.items.push({ name: '<strong>@(Create):</strong> /builds', icon: '!ti ti-folder', value: '/builds/' });
 
 					if (!directory.bundles)
-						opt.items.push({ name: '<strong>@(Create):</strong> /bundles', icon: '!far fa-folder', value: '/bundles/' });
+						opt.items.push({ name: '<strong>@(Create):</strong> /bundles', icon: '!ti ti-folder', value: '/bundles/' });
 
 					if (!directory.components)
-						opt.items.push({ name: '<strong>@(Create):</strong> /components', icon: '!far fa-folder', value: '/components/' });
+						opt.items.push({ name: '<strong>@(Create):</strong> /components', icon: '!ti ti-folder', value: '/components/' });
 
 					if (!directory.controllers)
-						opt.items.push({ name: '<strong>@(Create):</strong> /controllers', icon: '!far fa-folder', value: '/controllers/' });
+						opt.items.push({ name: '<strong>@(Create):</strong> /controllers', icon: '!ti ti-folder', value: '/controllers/' });
 
 					if (!directory.databases)
-						opt.items.push({ name: '<strong>@(Create):</strong> /databases', icon: '!far fa-folder', value: '/databases/' });
+						opt.items.push({ name: '<strong>@(Create):</strong> /databases', icon: '!ti ti-folder', value: '/databases/' });
 
 					if (!directory.definitions)
-						opt.items.push({ name: '<strong>@(Create):</strong> /definitions', icon: '!far fa-folder', value: '/definitions/' });
+						opt.items.push({ name: '<strong>@(Create):</strong> /definitions', icon: '!ti ti-folder', value: '/definitions/' });
 
 					if (!directory.jsonschemas)
-						opt.items.push({ name: '<strong>@(Create):</strong> /jsonschemas', icon: '!far fa-folder', value: '/jsonschemas/' });
+						opt.items.push({ name: '<strong>@(Create):</strong> /jsonschemas', icon: '!ti ti-folder', value: '/jsonschemas/' });
 
 					if (!directory.middleware)
-						opt.items.push({ name: '<strong>@(Create):</strong> /middleware', icon: '!far fa-folder', value: '/middleware/' });
+						opt.items.push({ name: '<strong>@(Create):</strong> /middleware', icon: '!ti ti-folder', value: '/middleware/' });
 
 					/*
 					if (!directory.models)
-						opt.items.push({ name: '<strong>@(Create):</strong> /models', icon: '!far fa-folder', value: '/models/' });*/
+						opt.items.push({ name: '<strong>@(Create):</strong> /models', icon: '!ti ti-folder', value: '/models/' });*/
 
 					if (!directory.modules)
-						opt.items.push({ name: '<strong>@(Create):</strong> /modules', icon: '!far fa-folder', value: '/modules/' });
+						opt.items.push({ name: '<strong>@(Create):</strong> /modules', icon: '!ti ti-folder', value: '/modules/' });
 
 					if (!directory.operations)
-						opt.items.push({ name: '<strong>@(Create):</strong> /operations', icon: '!far fa-folder', value: '/operations/' });
+						opt.items.push({ name: '<strong>@(Create):</strong> /operations', icon: '!ti ti-folder', value: '/operations/' });
 
 					/*
 					if (!directory.packages)
-						opt.items.push({ name: '<strong>@(Create):</strong> /packages', icon: '!far fa-folder', value: '/packages/' });*/
+						opt.items.push({ name: '<strong>@(Create):</strong> /packages', icon: '!ti ti-folder', value: '/packages/' });*/
 
 					if (!directory.plugins)
-						opt.items.push({ name: '<strong>@(Create):</strong> /plugins', icon: '!far fa-folder', value: '/plugins/' });
+						opt.items.push({ name: '<strong>@(Create):</strong> /plugins', icon: '!ti ti-folder', value: '/plugins/' });
 
 					if (!directory.private)
-						opt.items.push({ name: '<strong>@(Create):</strong> /private', icon: '!far fa-folder', value: '/private/' });
+						opt.items.push({ name: '<strong>@(Create):</strong> /private', icon: '!ti ti-folder', value: '/private/' });
 
 					if (!directory.public)
-						opt.items.push({ name: '<strong>@(Create):</strong> /public', icon: '!far fa-folder', value: '/public/' });
+						opt.items.push({ name: '<strong>@(Create):</strong> /public', icon: '!ti ti-folder', value: '/public/' });
 
 					if (!directory.resources)
-						opt.items.push({ name: '<strong>@(Create):</strong> /resources', icon: '!far fa-folder', value: '/resources/' });
+						opt.items.push({ name: '<strong>@(Create):</strong> /resources', icon: '!ti ti-folder', value: '/resources/' });
 
 					if (!directory.schemas)
-						opt.items.push({ name: '<strong>@(Create):</strong> /schemas', icon: '!far fa-folder', value: '/schemas/' });
+						opt.items.push({ name: '<strong>@(Create):</strong> /schemas', icon: '!ti ti-folder', value: '/schemas/' });
 
 					/*
 					if (!directory.scripts)
-						opt.items.push({ name: '<strong>@(Create):</strong> /scripts', icon: '!far fa-folder', value: '/scripts/' });*/
+						opt.items.push({ name: '<strong>@(Create):</strong> /scripts', icon: '!ti ti-folder', value: '/scripts/' });*/
 
 					if (!directory.tasks)
-						opt.items.push({ name: '<strong>@(Create):</strong> /tasks', icon: '!far fa-folder', value: '/tasks/' });
+						opt.items.push({ name: '<strong>@(Create):</strong> /tasks', icon: '!ti ti-folder', value: '/tasks/' });
 
 					/*
 					if (!directory.themes)
-						opt.items.push({ name: '<strong>@(Create):</strong> /themes', icon: '!far fa-folder', value: '/themes/' });*/
+						opt.items.push({ name: '<strong>@(Create):</strong> /themes', icon: '!ti ti-folder', value: '/themes/' });*/
 
 					if (!directory.threads)
-						opt.items.push({ name: '<strong>@(Create):</strong> /threads', icon: '!far fa-folder', value: '/threads/' });
+						opt.items.push({ name: '<strong>@(Create):</strong> /threads', icon: '!ti ti-folder', value: '/threads/' });
 
 					if (!directory.templates)
-						opt.items.push({ name: '<strong>@(Create):</strong> /templates', icon: '!far fa-folder', value: '/templates/' });
+						opt.items.push({ name: '<strong>@(Create):</strong> /templates', icon: '!ti ti-folder', value: '/templates/' });
 
 					if (!directory.views)
-						opt.items.push({ name: '<strong>@(Create):</strong> /views', icon: '!far fa-folder', value: '/views/' });
+						opt.items.push({ name: '<strong>@(Create):</strong> /views', icon: '!ti ti-folder', value: '/views/' });
 
 					if (!directory.updates)
-						opt.items.push({ name: '<strong>@(Create):</strong> /updates', icon: '!far fa-folder', value: '/updates/' });
+						opt.items.push({ name: '<strong>@(Create):</strong> /updates', icon: '!ti ti-folder', value: '/updates/' });
 
 					if (!directory.workers)
-						opt.items.push({ name: '<strong>@(Create):</strong> /workers', icon: '!far fa-folder', value: '/workers/' });
+						opt.items.push({ name: '<strong>@(Create):</strong> /workers', icon: '!ti ti-folder', value: '/workers/' });
 
 					opt.callback = function(item) {
 						exports.statusform('directory', item.value);
@@ -3303,49 +3303,49 @@
 						files[code.tree[i].name] = 1;
 
 					if (!files['.bundleignore'])
-						opt.items.push({ name: '<strong>@(Create):</strong> /.bundleignore', icon: '!far fa-file-text-o', value: '/.bundleignore' });
+						opt.items.push({ name: '<strong>@(Create):</strong> /.bundleignore', icon: '!ti ti-file', value: '/.bundleignore' });
 
 					if (!files['.gitignore'])
-						opt.items.push({ name: '<strong>@(Create):</strong> /.gitignore', icon: '!far fa-file-text-o', value: '/.gitignore' });
+						opt.items.push({ name: '<strong>@(Create):</strong> /.gitignore', icon: '!ti ti-file', value: '/.gitignore' });
 
 					if (!files['bundles.debug'])
-						opt.items.push({ name: '<strong>@(Create):</strong> /bundles.debug', icon: '!far fa-file-text-o', value: '/bundles.debug' });
+						opt.items.push({ name: '<strong>@(Create):</strong> /bundles.debug', icon: '!ti ti-file', value: '/bundles.debug' });
 
 					if (!files.config)
-						opt.items.push({ name: '<strong>@(Create):</strong> /config', icon: '!far fa-file-text-o', value: '/config' });
+						opt.items.push({ name: '<strong>@(Create):</strong> /config', icon: '!ti ti-file', value: '/config' });
 
 					if (!files['index.js'])
-						opt.items.push({ name: '<strong>@(Create):</strong> /index.js', icon: '!far fa-file-text-o', value: '/index.js' });
+						opt.items.push({ name: '<strong>@(Create):</strong> /index.js', icon: '!ti ti-file', value: '/index.js' });
 
 					if (!files['config-release'])
-						opt.items.push({ name: '<strong>@(Create):</strong> /config-release', icon: '!far fa-file-text-o', value: '/config-release' });
+						opt.items.push({ name: '<strong>@(Create):</strong> /config-release', icon: '!ti ti-file', value: '/config-release' });
 
 					if (!files['config-debug'])
-						opt.items.push({ name: '<strong>@(Create):</strong> /config-debug', icon: '!far fa-file-text-o', value: '/config-debug' });
+						opt.items.push({ name: '<strong>@(Create):</strong> /config-debug', icon: '!ti ti-file', value: '/config-debug' });
 
 					if (!files['license.txt'])
-						opt.items.push({ name: '<strong>@(Create):</strong> /license.txt', icon: '!far fa-file-text-o', value: '/license.txt' });
+						opt.items.push({ name: '<strong>@(Create):</strong> /license.txt', icon: '!ti ti-file', value: '/license.txt' });
 
 					if (!files['package.json'])
-						opt.items.push({ name: '<strong>@(Create):</strong> /package.json', icon: '!far fa-file-text-o', value: '/package.json' });
+						opt.items.push({ name: '<strong>@(Create):</strong> /package.json', icon: '!ti ti-file', value: '/package.json' });
 
 					if (!files['openplatform.json'])
-						opt.items.push({ name: '<strong>@(Create):</strong> /openplatform.json', icon: '!far fa-file-text-o', value: '/openplatform.json' });
+						opt.items.push({ name: '<strong>@(Create):</strong> /openplatform.json', icon: '!ti ti-file', value: '/openplatform.json' });
 
 					if (!files['readme.api'])
-						opt.items.push({ name: '<strong>@(Create):</strong> /readme.api', icon: '!far fa-file-text-o', value: '/readme.api' });
+						opt.items.push({ name: '<strong>@(Create):</strong> /readme.api', icon: '!ti ti-file', value: '/readme.api' });
 
 					if (!files['readme.md'])
-						opt.items.push({ name: '<strong>@(Create):</strong> /readme.md', icon: '!far fa-file-text-o', value: '/readme.md' });
+						opt.items.push({ name: '<strong>@(Create):</strong> /readme.md', icon: '!ti ti-file', value: '/readme.md' });
 
 					if (!files['readme.todo'])
-						opt.items.push({ name: '<strong>@(Create):</strong> /readme.todo', icon: '!far fa-file-text-o', value: '/readme.todo' });
+						opt.items.push({ name: '<strong>@(Create):</strong> /readme.todo', icon: '!ti ti-file', value: '/readme.todo' });
 
 					if (!files['sitemap'])
-						opt.items.push({ name: '<strong>@(Create):</strong> /sitemap', icon: '!far fa-file-text-o', value: '/sitemap' });
+						opt.items.push({ name: '<strong>@(Create):</strong> /sitemap', icon: '!ti ti-file', value: '/sitemap' });
 
 					if (!files['versions'])
-						opt.items.push({ name: '<strong>@(Create):</strong> /versions', icon: '!far fa-file-text-o', value: '/versions' });
+						opt.items.push({ name: '<strong>@(Create):</strong> /versions', icon: '!ti ti-file', value: '/versions' });
 
 					opt.callback = function(item) {
 						exports.statusform('file', item.value);
@@ -3564,7 +3564,7 @@
 			}
 
 			SETTER('approve/show', '@(Are you sure you want to send this file for <b>Code Review</b>?)', '"check-circle" @(Review code) #98BF61', function() {
-				AJAX('GET /api/projects/{id}/review/?path='.arg(code.data) + encodeURIComponent(code.editor.path), FUNC.messageresponse('<b><i class="fa fa-check mr5 green"></i>@(DONE)</b><br />@(File has been sent for code review successfully.)'));
+				AJAX('GET /api/projects/{id}/review/?path='.arg(code.data) + encodeURIComponent(code.editor.path), FUNC.messageresponse('<b><i class="ti ti-check mr5 green"></i>@(DONE)</b><br />@(File has been sent for code review successfully.)'));
 			});
 		};
 
@@ -3652,7 +3652,7 @@
 				var obj = {};
 				obj.id = 'clipboard';
 				obj.offset = { x: 270, y: WH - 350, width: WW - 300, height: 250, minwidth: 200, minheight: 200 };
-				obj.title = '<i class="fa fa-clipboard"></i>@(Clipboard)';
+				obj.title = '<i class="ti ti-clipboard"></i>@(Clipboard)';
 				obj.hidden = false;
 				obj.resize = clipboardresize;
 				obj.html = '<div data-import="url:/partial/clipboard.html;reevaluate:1" style="width:100%;height:100%"></div>'.format(Date.now());

@@ -35,11 +35,11 @@
 <body@{if (user.darkmode === 2 && (NOW.getHours()<=6 || NOW.getHours()>=18)) || (user.darkmode !== 0 && user.darkmode !== 2)} class="ui-dark"@{fi}>
 
 	<div class="panel">
-		<label><i class="fa fa-pause red"></i> @(Paused coding)</label>
+		<label><i class="ti ti-pause red"></i> @(Paused coding)</label>
 		<div class="body">
 			<div class="center"><img src="/img/icon.png" width="100" alt="Total.js Code" /></div>
 			<div class="note">@(Do you want to continue?)<br /><span id="hostnametext" class="b"></span></div>
-			<a href="@{query.url}" class="button"><i class="fa fa-play"></i>@(Play with code)</a>
+			<a href="@{query.url}" class="button"><i class="ti ti-play"></i>@(Play with code)</a>
 		</div>
 	</div>
 
