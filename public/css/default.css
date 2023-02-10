@@ -113,7 +113,7 @@ hr { border-color: #E0E0E0; }
 
 .alert { background-color: #fffad7; border-bottom: 1px solid #fffdbf; padding: 15px; border-radius: 3px; color: #988e56; font-size: 12px; }
 .alert i { margin-right: 5px; }
-.alert .fa-times { float: right; cursor: pointer; margin: 2px 0 0; }
+.alert .ti-times { float: right; cursor: pointer; margin: 2px 0 0; }
 .fs11 { font-size: 11px; }
 .fs12 { font-size: 12px; }
 
@@ -283,7 +283,7 @@ header .tools .external { color: #a2a286; }
 .toolbar button:disabled { color: silver; cursor: not-allowed; background-color: #E0E0E0; border-color: #E0E0E0 !important; box-shadow: none; }
 .toolbar button:disabled .fa, .toolbar button:disabled .far, .toolbar button:disabled .fa { color: silver; }
 .toolbar button.right { float: right; margin-left: 5px; margin-right: 0; }
-.toolbar button .fa-check-circle { color: #68B25B; }
+.toolbar button .ti-check-circle { color: #68B25B; }
 .toolbar .highlight { background-color: #FFFFD5; }
 .toolbar-right { float: right; }
 
@@ -702,23 +702,22 @@ header .tools .external { color: #a2a286; }
 .td .part span { color: #666666; }
 .td .part { color: #A0A0A0; border-color: #404040; }
 .td .partgroup { color: white; }
-.part .fa-crosshairs { color: #9DCEDF; }
-.part .fa-align-left { color: #C8059B; }
-.part .fa-bolt { color: #047CA5; }
-.part .fa-drafting-compass { color: #C0C832; }
-.part .fa-border-outer { color: #B92865; }
-.part .fa-filter { color: #C8059B; }
-.part .fa-code-branch { color: #70C832; }
-.part .fa-plug { color: #32C8C8; }
-.part .fa-tasks { color: #C0C832; }
-.part .fa-link { color: #FF3030; }
-.part .fa-font { color: #A0A0A0; }
-.part .fa-paste { color: #C0C832; }
-.part .fa-eye { color: #FE0086; }
-.part .fa-brain { color: #C58C61; }
-.part .fa-code { color: #F46372; }
-.part .fa-box { color: #8D69CF; }
-.part .fa-filter { color: #2CCF76; }
+.part .ti-crosshairs { color: #9DCEDF; }
+.part .ti-align-left { color: #C8059B; }
+.part .ti-bolt { color: #047CA5; }
+.part .ti-totaljs { color: #C0C832; }
+.part .ti-border-all { color: #B92865; }
+.part .ti-code-branch { color: #70C832; }
+.part .ti-plug { color: #32C8C8; }
+.part .ti-tasks { color: #C0C832; }
+.part .ti-link { color: #FF3030; }
+.part .ti-font { color: #A0A0A0; }
+.part .ti-paste { color: #C0C832; }
+.part .ti-eye { color: #FE0086; }
+.part .ti-puzzle { color: #C58C61; }
+.part .ti-code { color: #F46372; }
+.part .ti-box { color: #8D69CF; }
+.part .ti-filter { color: #2CCF76; }
 
 .ui-panel-toolbar { padding: 0 10px 0; height: 20px; border-bottom: 1px solid #E0E0E0; }
 .td .ui-panel-toolbar { border-bottom-color: #303030; }
@@ -817,9 +816,9 @@ header .tools .external { color: #a2a286; }
 .menu .item { color: #303030; display: block; padding: 1px 5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; cursor: pointer; margin: 0 10px 2px; border-radius: 2px; font-size: 11px; }
 .menu .item .options { float: right; cursor: pointer; font-size: 10px; }
 .menu .item > i { width: 12px; text-align: center; margin: 1px 5px 0 0; float: left; }
-.menu .item > .fa-trash-o { float: right; text-align: center; margin: 4px 0 0; font-size: 12px; }
+.menu .item > .ti-trash { float: right; text-align: center; margin: 4px 0 0; font-size: 12px; }
 .menu .selected { color: white; }
-.menu .selected > .fa-trash-o { color: white !important; }
+.menu .selected > .ti-trash { color: white !important; }
 .menu .item .name { margin: 0 25px; display: block; height: 16px; }
 .menu .item:hover { background-color: rgba(0,0,0,0.05); }
 .menu hr { border-color: #D0D0D0; }

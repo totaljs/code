@@ -2,16 +2,16 @@
 	<br />
 
 	<div class="toolbar">
-		<button class="exec" data-exec="projects/autodiscover"><i class="fa fa-search-plus"></i>@(Auto-Discover)</button>
-		<button class="exec" data-exec="projects/create"><i class="fa fa-plus-circle green"></i>@(Add)</button>
-		<button data-bind="projects.checked__disabled:!value || !value.length" class="exec" data-exec="projects/options" disabled><i class="fa fa-check-circle"></i>@(Selected)</button>
+		<button class="exec" data-exec="projects/autodiscover"><i class="ti ti-search-plus"></i>@(Auto-Discover)</button>
+		<button class="exec" data-exec="projects/create"><i class="ti ti-plus-circle green"></i>@(Add)</button>
+		<button data-bind="projects.checked__disabled:!value || !value.length" class="exec" data-exec="projects/options" disabled><i class="ti ti-check-circle"></i>@(Selected)</button>
 	</div>
 
 	<div data---="datagrid__projects.grid__click:projects/edit;checked:projects/checked;margin:20;cluster:false">
 		<script type="text/plain">
 			[
 				'{{ if hidden }} silver{{ fi }}',
-				{ name: 'name', text: '@(Name)', class: 'b', width: 300, template: '{{ if notfound }}<span class="badge badge-small badge-red mr5">{{ if notfound === \'offline\' }}@(offline){{ else }}@(not found){{ fi }}</span>{{ fi }}{{ if pinned }}<i class="fa fa-thumbtack mr5 orange"></i>{{ fi }}{{ name }}' },
+				{ name: 'name', text: '@(Name)', class: 'b', width: 300, template: '{{ if notfound }}<span class="badge badge-small badge-red mr5">{{ if notfound === \'offline\' }}@(offline){{ else }}@(not found){{ fi }}</span>{{ fi }}{{ if pinned }}<i class="ti ti-pin-alt mr5 orange"></i>{{ fi }}{{ name }}' },
 				{ name: 'url', text: '@(URL)', width: 250 },
 				{ name: 'path', text: '@(Path)', width: 250 },
 				{ name: 'users', text: '@(Users)', template: '{{ foreach m in users }}<span class="badge badge-small" style="background:{{ m | color }}">{{ m }}</span>{{ end }}', width: 250 },
@@ -70,13 +70,13 @@
 
 			var items = [];
 
-			items.push({ value: 1, name: '@(Clear backups)', icon: 'trash-o' });
+			items.push({ value: 1, name: '@(Clear backups)', icon: 'trash' });
 			items.push({ value: 255, name: '@(Remove)', icon: 'times-circle red' });
 
 			SETTER('menu/show', 'left', el, items, function(item) {
 				switch (item.value) {
 					case 1:
-						SETTER('approve/show', '@(Are you sure you want to remove all backups for selected projects?)', '"trash-o"@(Remove)', function() {
+						SETTER('approve/show', '@(Are you sure you want to remove all backups for selected projects?)', '"ti ti-trash"@(Remove)', function() {
 							SETTER('loading/show');
 							projects.checked.wait(function(item, next) {
 								AJAX('DELETE /api/projects/{id}/backups/'.arg(item), next);
@@ -89,7 +89,7 @@
 						break;
 
 					case 255:
-						SETTER('approve/show', '@(Are you sure you want to remove selected projects?)', '"trash-o"@(Remove)', function() {
+						SETTER('approve/show', '@(Are you sure you want to remove selected projects?)', '"ti ti-trash"@(Remove)', function() {
 							SETTER('loading/show');
 							projects.checked.wait(function(item, next) {
 								AJAX('DELETE /api/projects/{id}/'.arg(item), next);

@@ -8,7 +8,7 @@
 		<div data-bind="componentator.items__template" data---="search__componentator.search__selector:div">
 			<script type="text/html">
 				{{ foreach m in value }}
-					<div class="part exec{{ m | componentator_imported }}" data-exec="componentator/append" data-search="{{ m }}"><i class="fa fa-drafting-compass"></i><b class="exec add" data-exec="componentator/add" data-prevent="true"><i class="fa fa-check"></i></b>{{ m }}</div>
+					<div class="part exec{{ m | componentator_imported }}" data-exec="componentator/append" data-search="{{ m }}"><i class="ti ti-totaljs"></i><b class="exec add" data-exec="componentator/add" data-prevent="true"><i class="ti ti-check"></i></b>{{ m }}</div>
 				{{ end }}
 			</script>
 		</div>
@@ -80,7 +80,7 @@
 					var opt = {};
 					opt.is = false;
 					opt.element = el;
-					opt.items = [{ id: 'update', name: '@(Update)', icon: 'fa fa-sync' }, { id: 'remove', name: '@(Remove)', icon: 'fa fa-trash-o red' }];
+					opt.items = [{ id: 'update', name: '@(Update)', icon: 'ti ti-sync' }, { id: 'remove', name: '@(Remove)', icon: 'ti ti-trash red' }];
 					opt.hide = function() {
 						if (!opt.is)
 							$.destroy();

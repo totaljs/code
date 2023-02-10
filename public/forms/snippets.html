@@ -2,7 +2,7 @@
 	It depends on "code editor"
 -->
 
-<div data---="panel__common.form__if:snippets;width:350;title:@(Insert snippet);icon:paste;reload:codesnippets/reload;bg:false;autofocus:true;bottom:87;top:50" class="hidden">
+<div data---="panel__common.form__if:snippets;width:350;title:@(Insert snippet);icon:ti ti-paste;reload:codesnippets/reload;bg:false;autofocus:true;bottom:87;top:50" class="hidden">
 	<div class="padding">
 		<div data---="textbox__codesnippets.search__type:search;placeholder:@(Search snippets);$binding:1;$delay:50"></div>
 	</div>
@@ -14,7 +14,7 @@
 						<div class="partgroup" data-search="">{{ m.name }}</div>
 					{{ fi }}
 					{{ foreach n in m.items }}
-						<div class="part exec" data-exec="codesnippets/append" data-id="{{ n.id }}" data-search="{{ n.name }}"><i class="fa fa-paste"></i><b>snippet</b>{{ n.name }}</div>
+						<div class="part exec" data-exec="codesnippets/append" data-id="{{ n.id }}" data-search="{{ n.name }}"><i class="ti ti-paste"></i><b>snippet</b>{{ n.name }}</div>
 					{{ end }}
 				{{ end }}
 			</script>

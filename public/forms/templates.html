@@ -2,7 +2,7 @@
 	<div data-bind="templatespanel.items__template">
 		<script type="text/html">
 			{{ foreach m in value }}
-				<div class="listitem exec" data-exec="templatespanel/download" data-url="{{ m.url }}"><i class="far fa-copy"></i> {{ m.name }}</div>
+				<div class="listitem exec" data-exec="templatespanel/download" data-url="{{ m.url }}"><i class="ti ti-copy"></i> {{ m.name }}</div>
 			{{ end }}
 		</script>
 	</div>
@@ -24,7 +24,7 @@
 		};
 
 		exports.download = function(el) {
-			SETTER('approve/show', '@(Are you sure you want to download selected template?)', '"cloud-download" @(Download)', function() {
+			SETTER('approve/show', '@(Are you sure you want to download selected template?)', '"ti ti-cloud-download" @(Download)', function() {
 				SETTER('loading/show');
 				AJAX('POST /api/external/templates/' + code.data.id, { git: el.attrd('url') }, ASETTER('message/response', function() {
 					SETTER('loading/hide', 500);

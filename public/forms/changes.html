@@ -7,7 +7,7 @@
 		<script type="text/html">
 			{{ if value.group.length }}
 			<div class="changedfiles">
-				<div><i class="far fa-clock-o"></i>@(Last changes)</div>
+				<div><i class="ti ti-clock"></i>@(Last changes)</div>
 				<div>
 				{{ foreach m in value.group }}
 					<div class="changefile">
@@ -78,7 +78,7 @@
 	});
 
 	Thelpers.changesicon = function(item) {
-		var template = '<i class="fa fa-{0}"></i>';
+		var template = '<i class="ti ti-{0}"></i>';
 		switch (item.type) {
 			case 'remove':
 				return template.format('minus-circle red');
@@ -86,7 +86,7 @@
 			case 'create':
 				return template.format('plus-circle green');
 			case 'save':
-				return template.format('floppy-o');
+				return template.format('save');
 		}
 		return '';
 	};

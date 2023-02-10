@@ -108,7 +108,7 @@
 						builder.push('<hr class="nmt" /><br />');
 
 					item = output[i];
-					builder.push('<div class="container-fluid"><div class="timespent-date"><i class="far fa-calendar"></i><b>{date}</b> - {month}</div>'.arg(item));
+					builder.push('<div class="container-fluid"><div class="timespent-date"><i class="ti ti-calendar"></i><b>{date}</b> - {month}</div>'.arg(item));
 					builder.push('<div class="row"><div class="col-sm-6 m">');
 
 					for (var j = 0; j < item.projects.length; j++) {
@@ -126,7 +126,7 @@
 
 					for (var j = 0; j < item.users.length; j++) {
 						var user = item.users[j];
-						builder.push('<div class="timespent-item"><b>{1}</b><i class="fa fa-user"></i>{0}</div>'.format(user.name, hours(user.count, true)));
+						builder.push('<div class="timespent-item"><b>{1}</b><i class="ti ti-user"></i>{0}</div>'.format(user.name, hours(user.count, true)));
 					}
 
 					builder.push('</div></div></div><br />');

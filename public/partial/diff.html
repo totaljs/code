@@ -11,14 +11,14 @@
 					<div>
 						<div data---="input__?.a__type:multiline;height:150;monospace:1;required:1;placeholder:@(Put the resource content)"><b>@(Resource A)</b></div>
 						<div class="help">
-							<span class="link exec pull-right gray" data-exec="?/push" data-id="a"><i class="fa fa-copy"></i>@(Push to the editor)</span>
-							<span class="link exec" data-exec="?/load" data-id="a"><i class="fa fa-copy"></i>@(Load from the editor)</span>
+							<span class="link exec pull-right gray" data-exec="?/push" data-id="a"><i class="ti ti-copy"></i>@(Push to the editor)</span>
+							<span class="link exec" data-exec="?/load" data-id="a"><i class="ti ti-copy"></i>@(Load from the editor)</span>
 						</div>
 					</div>
 					<div>
 						<div data---="input__?.b__type:multiline;height:150;monospace:1;required:1;placeholder:@(Put the resource content)">@(Resource B)</div>
 						<div class="help">
-							<span class="link exec" data-exec="?/load" data-id="b"><i class="fa fa-copy"></i>@(Load from the editor)</span>
+							<span class="link exec" data-exec="?/load" data-id="b"><i class="ti ti-copy"></i>@(Load from the editor)</span>
 						</div>
 					</div>
 				</div>
@@ -28,18 +28,18 @@
 					<script type="text/html">
 
 						{{ if !value.add.length && !value.rem.length }}
-							<div class="center padding"><i class="fa fa-check-circle green mr5"></i>@(No differences in resources)</div>
+							<div class="center padding"><i class="ti ti-check-circle green mr5"></i>@(No differences in resources)</div>
 						{{ fi }}
 
 						{{ if value.add.length }}
-						<div style="margin-bottom:10px"><span class="exec pull-right link fs11 mt3" data-exec="?/insertall"><i class="fas fa-magic mr5"></i>@(Apply all to Resource A)</span><i class="fa fa-plus mr5"></i><b>@(Insert to A):</b></div>
+						<div style="margin-bottom:10px"><span class="exec pull-right link fs11 mt3" data-exec="?/insertall"><i class="ti ti-arrow-right mr5"></i>@(Apply all to Resource A)</span><i class="ti ti-plus mr5"></i><b>@(Insert to A):</b></div>
 						<table class="table table-small" style="table-layout:fixed">
 							<tbody>
 							{{ foreach m in value.add }}
 								{{ if m }}
 								<tr style="background-color:#9FFF5F32">
 									<td{{ if m.substring(0, 2) === '//' }} class="gray"{{ fi }}><div class="hellip"><pre><code>{{ m }}</code></pre></div></td>
-									<td style="width:80px" class="right"><span class="link exec fs11" data-exec="?/copy"><i class="fa fa-copy mr5"></i>@(Copy)</span></td>
+									<td style="width:80px" class="right"><span class="link exec fs11" data-exec="?/copy"><i class="ti ti-copy mr5"></i>@(Copy)</span></td>
 								</tr>
 								{{ fi }}
 							{{ end }}
@@ -48,14 +48,14 @@
 						{{ fi }}
 
 						{{ if value.rem.length }}
-						<div style="margin-bottom:10px"><span class="exec pull-right link fs11 mt3" data-exec="?/removeall"><i class="fas fa-magic mr5"></i>@(Apply all to Resource A)</span><i class="fa fa-plus mr5"></i><b>@(Remove from A):</b></div>
+						<div style="margin-bottom:10px"><span class="exec pull-right link fs11 mt3" data-exec="?/removeall"><i class="ti ti-arrow-right mr5"></i>@(Apply all to Resource A)</span><i class="ti ti-minus mr5"></i><b>@(Remove from A):</b></div>
 						<table class="table table-small" style="table-layout:fixed">
 							<tbody>
 							{{ foreach m in value.rem }}
 								{{ if m }}
 								<tr style="background-color:#FF5F5F32">
 									<td{{ if m.substring(0, 2) === '//' }} class="gray"{{ fi }}><div class="hellip"><pre><code>{{ m }}</code></pre></div></td>
-									<td style="width:80px" class="right"><span class="link exec fs11" data-exec="?/copy"><i class="fa fa-copy mr5"></i>@(Copy)</span></td>
+									<td style="width:80px" class="right"><span class="link exec fs11" data-exec="?/copy"><i class="ti ti-copy mr5"></i>@(Copy)</span></td>
 								</tr>
 								{{ fi }}
 							{{ end }}

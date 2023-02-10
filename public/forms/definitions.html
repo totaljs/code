@@ -4,7 +4,7 @@
 		<div data-bind="?.items__template" data---="search__?.search__selector:div">
 			<script type="text/html">
 				{{ foreach m in value }}
-					<div class="listitem exec" data-exec="?/download" data-url="{{ m.url }}" data-search="{{ m.name }}" data-name="{{ m.filename }}"><i class="far fa-copy"></i> {{ m.name }}</div>
+					<div class="listitem exec" data-exec="?/download" data-url="{{ m.url }}" data-search="{{ m.name }}" data-name="{{ m.filename }}"><i class="ti ti-copy"></i> {{ m.name }}</div>
 				{{ end }}
 			</script>
 		</div>

@@ -4,7 +4,7 @@
 		<div data-bind="?.items__template" data---="search__?.search__selector:div">
 			<script type="text/html">
 				{{ foreach m in value }}
-					<div class="listitem exec" data-exec="?/download" data-url="{{ m.url }}" data-search="{{ m.name }}" data-name="{{ m.filename }}"><i class="far fa-copy"></i> {{ m.name }}</div>
+					<div class="listitem exec" data-exec="?/download" data-url="{{ m.url }}" data-search="{{ m.name }}" data-name="{{ m.filename }}"><i class="ti ti-copy"></i> {{ m.name }}</div>
 				{{ end }}
 			</script>
 		</div>
@@ -29,7 +29,7 @@
 		};
 
 		exports.download = function(el) {
-			SETTER('approve/show', '@(Are you sure you want to download selected bundle?)', '"cloud-download" @(Download)', function() {
+			SETTER('approve/show', '@(Are you sure you want to download selected bundle?)', '"ti ti-cloud-download" @(Download)', function() {
 				SETTER('loading/show');
 				AJAX('POST /api/external/bundles/' + code.data.id, { url: el.attrd('url'), name: el.attrd('name') }, function() {
 					SETTER('loading/hide', 500);

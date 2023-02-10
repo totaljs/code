@@ -10,7 +10,7 @@ COMPONENT('inputsearch', 'focus:true', function(self, config, cls) {
 
 	self.make = function() {
 		self.aclass(cls);
-		self.append('<div class="{0}-icon"><i class="fa fa-search"></i></div><div class="{0}-control"><span class="{0}-placeholder">{1}</span><input type="text" autocomplete="off" data-jc-bind="" /></div>'.format(cls, config.placeholder));
+		self.append('<div class="{0}-icon"><i class="ti ti-search"></i></div><div class="{0}-control"><span class="{0}-placeholder">{1}</span><input type="text" autocomplete="off" data-jc-bind="" /></div>'.format(cls, config.placeholder));
 
 		input = self.find('input');
 
@@ -21,7 +21,7 @@ COMPONENT('inputsearch', 'focus:true', function(self, config, cls) {
 		self.event('click', cls2 + '-icon', function() {
 			var val = self.get();
 			if (val) {
-				icon.rclass('fa-times').aclass('fa-search');
+				icon.rclass('ti-times').aclass('ti-search');
 				placeholder.rclass('hidden');
 				isplaceholder = true;
 				self.set('');
@@ -41,14 +41,14 @@ COMPONENT('inputsearch', 'focus:true', function(self, config, cls) {
 		var val = input.val();
 		if (val) {
 			if (isplaceholder) {
-				icon.rclass('fa-search').aclass('fa-times');
+				icon.rclass('ti-search').aclass('ti-times');
 				placeholder.aclass('hidden');
 				isplaceholder = false;
 
 			}
 		} else if (!isplaceholder) {
 			isplaceholder = true;
-			icon.rclass('fa-times').aclass('fa-search');
+			icon.rclass('ti-times').aclass('ti-search');
 			placeholder.rclass('hidden');
 		}
 	};
@@ -371,7 +371,7 @@ COMPONENT('editor', function(self, config) {
 			if (done)
 				editor.doc.replaceRange(current.replace(done, '').replace(/\s+$/, ''), { line: cursor.line, ch: 0 }, { line: cursor.line, ch: current.length });
 			else
-				editor.doc.replaceRange(current.replace(/@(canceled|working)(\(.*?\))?/gi, '').replace(/\s+$/, '') + ' @done' + (user.istimestamp ? ('(' + NOW.format(user.format || 'yyyy-MM-dd') + ')') : ''), { line: cursor.line, ch: 0 }, { line: cursor.line, ch: current.length });
+				editor.doc.replaceRange(current.replace(/@(canceled|working)(\(.*?\))?/gi, '').replace(/\s+$/, '') + ' @done' + (user.istimestamp ? ('(' + NOW.format(user.format || 'yyyy-MM-dd') + ')') : ''), { line: cursor.line, ch: 0 }, { line: cursor.line, ch: current.length });
 
 			return false;
 		};
@@ -1024,7 +1024,7 @@ COMPONENT('editor', function(self, config) {
 			// adds new keywords
 			for (var i = 0; i < unique.length; i++) {
 				var s = unique[i];
-				autocomplete.push({ search: s, text: (s.charAt(0) === '#' && s.length === 7 ? '<i class="fa fa-square mr5" style="color:{0}"></i>'.format(s) : '') + s, code: s });
+				autocomplete.push({ search: s, text: (s.charAt(0) === '#' && s.length === 7 ? '<i class="ti ti-square mr5" style="color:{0}"></i>'.format(s) : '') + s, code: s });
 			}
 		}
 	};
@@ -1054,7 +1054,7 @@ COMPONENT('editor', function(self, config) {
 
 			for (var i = 0; i < autocomplete.length; i++) {
 				var s = autocomplete[i];
-				autocomplete[i] = { search: s, text: (s.charAt(0) === '#' && s.length === 7 ? '<i class="fa fa-square mr5" style="color:{0}"></i>'.format(s) : '') + s, code: s };
+				autocomplete[i] = { search: s, text: (s.charAt(0) === '#' && s.length === 7 ? '<i class="ti ti-square mr5" style="color:{0}"></i>'.format(s) : '') + s, code: s };
 			}
 
 			if (code.componentsdb) {
@@ -1174,16 +1174,16 @@ COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 		ext = ext.substring(ext.lastIndexOf('/') + 1);
 
 		if (filename.charAt(0) === '.')
-			return 'far fa-file-alt';
+			return 'ti ti-file';
 
 		switch (ext) {
 			case 'api':
-				return 'fa fa-broadcast-tower';
+				return 'ti ti-network-alt';
 			case 'htm':
 			case 'html':
-				return 'fab fa-html5';
+				return 'ti ti-html5';
 			case 'sitemap':
-				return 'fa fa-code-branch';
+				return 'ti ti-code-branch';
 			case 'versions':
 				return 'fa fa-superscript';
 			case 'css':
@@ -1194,7 +1194,7 @@ COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 			case 'php':
 				return 'fab fa-php';
 			case 'pdf':
-				return 'far fa-file-' + ext;
+				return 'ti ti-file-' + ext;
 			case 'mp3':
 			case 'ogg':
 			case 'wav':
@@ -1202,48 +1202,48 @@ COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 			case 'mp4':
 			case 'avi':
 			case 'mov':
-				return 'far fa-file-video';
+				return 'ti ti-video';
 			case 'eot':
 			case 'ttf':
 			case 'woff':
 			case 'woff2':
-				return 'fa fa-font';
+				return 'ti ti-font';
 			case 'log':
-				return 'fa fa-clipboard-list';
+				return 'ti ti-clipboard';
 			case 'csv':
 			case 'txt':
 			case 'sh':
-				return 'far fa-file-alt';
+				return 'ti ti-file';
 			case 'md':
-				return 'fab fa-markdown';
+				return 'ti ti-highlighter';
 			case 'build':
-				return 'fa fa-code-branch';
+				return 'ti ti-code-branch';
 			case 'bundle':
 			case 'package':
-				return 'fa fa-box';
+				return 'ti ti-box';
 			case 'url':
-				return 'fa fa-link';
+				return 'ti ti-link';
 			case 'nosql':
 			case 'table':
 			case 'sql':
-				return 'fa fa-database';
+				return 'ti ti-database';
 			case 'json':
-				return filename === 'tms.json' ? 'fa fa-cog' : 'fa fa-toolbox';
+				return filename === 'tms.json' ? 'ti ti-cog' : 'ti ti-suitcase';
 			case 'todo':
-				return 'fa fa-check';
+				return 'ti ti-check';
 			case 'gif':
 			case 'ico':
 			case 'jpeg':
 			case 'jpg':
 			case 'png':
 			case 'svg':
-				return 'far fa-image';
+				return 'ti ti-image';
 			case 'pid':
-				return 'fa fa-plug';
+				return 'ti ti-plug';
 			case 'js':
-				return 'fab fa-js';
+				return 'ti ti-js';
 			case 'ts':
-				return 'fab fa-js blue';
+				return 'ti ti-js blue';
 			case 'config':
 			case 'config-debug':
 			case 'config-release':
@@ -1251,14 +1251,14 @@ COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 			case 'resource':
 			case 'workflows':
 			case 'yaml':
-				return 'fa fa-cog';
+				return 'ti ti-cog';
 			case 'c':
 			case 'wasm':
 			case 'wat':
 			case 'wast':
-				return 'fa fa-code';
+				return 'ti ti-code';
 		}
-		return 'fa-file-o far';
+		return 'ti ti-file-alt';
 	};
 
 	var cache = null;
@@ -1279,7 +1279,7 @@ COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 		}
 	};
 
-	self.template = Tangular.compile('<div class="item{{ if children }} expand{{ fi }}{{ path | treefilecolor }}" data-index="{{ $pointer }}" title="{{ name }}"><i class="icon {{ if children }}fa fa-folder{{ if isopen }}-open {{ fi }}{{ if name === \'threads\' || name === \'builds\' }} special{{ fi }}{{ else }}{{ name | fileicon }}{{ fi }}"></i><span class="options"><i class="fa fa-ellipsis-h"></i></span><div>{{ name }}</div></div>');
+	self.template = Tangular.compile('<div class="item{{ if children }} expand{{ fi }}{{ path | treefilecolor }}" data-index="{{ $pointer }}" title="{{ name }}"><i class="icon {{ if children }}ti ti-folder{{ if isopen }}-open {{ fi }}{{ if name === \'threads\' || name === \'builds\' }} special{{ fi }}{{ else }}{{ name | fileicon }}{{ fi }}"></i><span class="options"><i class="ti ti-ellipsis-h"></i></span><div>{{ name }}</div></div>');
 	self.readonly();
 
 	self.resizescrollbar = function() {
@@ -1301,7 +1301,7 @@ COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 		if (key === selected)
 			selindex = counter;
 
-		builder.push('<div class="extrabutton" data-name="reset"><i class="fa fa-times red"></i>{0}</div>'.format(item.path));
+		builder.push('<div class="extrabutton" data-name="reset"><i class="ti ti-times red"></i>{0}</div>'.format(item.path));
 
 		for (var i = 0; i < item.children.length; i++) {
 			var child = item.children[i];
@@ -1455,7 +1455,7 @@ COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 			else
 				expanded[index] = is ? 1 : 0;
 
-			el.find('.icon').tclass('fa-folder', !is).tclass('fa-folder-open', is);
+			el.find('.icon').tclass('ti-folder', !is).tclass('ti-folder-open', is);
 			!noeval && config.exec && EXEC(config.exec, cache[index], true, is);
 			self.resizescrollbar();
 		} else {
@@ -1504,7 +1504,7 @@ COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 			self.find('.expand').each(function() {
 				var el = $(this);
 				el.parent().aclass('show');
-				el.find('> .icon').rclass('fa-folder').aclass('fa-folder-open');
+				el.find('> .icon').rclass('ti-folder').aclass('ti-folder-open');
 			});
 		} else {
 			self.find('[data-index="{0}"]'.format(index)).each(function() {
@@ -1518,7 +1518,7 @@ COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 						el = el.closest('.children').prev();
 						if (!el.hclass('expand'))
 							break;
-						el.find('> .icon').rclass('fa-folder').aclass('fa-folder-open');
+						el.find('> .icon').rclass('ti-folder').aclass('ti-folder-open');
 						var parent = el.parent().aclass('show');
 						var tmp = +parent.find('> .item').attrd('index');
 						var item = cache[tmp];
@@ -1537,7 +1537,7 @@ COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 			self.find('.expand').each(function() {
 				var el = $(this);
 				el.parent().rclass('show');
-				el.find('> .icon').aclass('fa-folder').rclass('fa-folder-open');
+				el.find('> .icon').aclass('ti-folder').rclass('ti-folder-open');
 			});
 		} else {
 			self.find('[data-index="{0}"]'.format(index)).each(function() {
@@ -1551,7 +1551,7 @@ COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 						el = el.closest('.children').prev();
 						if (!el.hclass('expand'))
 							break;
-						el.find('> .icon').aclass('fa-folder').rclass('fa-folder-open');
+						el.find('> .icon').aclass('ti-folder').rclass('ti-folder-open');
 						el.parent().rclass('show');
 					}
 				}
@@ -1615,7 +1615,7 @@ COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 					break;
 				}
 			}
-			extra && builder.push('<div class="extrabutton"><i class="fa fa-cloud-download"></i>{0}</div>'.format(config.extralabel));
+			extra && builder.push('<div class="extrabutton"><i class="ti ti-cloud-download"></i>{0}</div>'.format(config.extralabel));
 		}
 
 		value && value.forEach(function(item) {
@@ -1843,7 +1843,7 @@ COMPONENT('datagrid', 'checkbox:true;colwidth:150;rowheight:28;clusterize:true;l
 	var opt = { filter: {}, filtercache: {}, filtercl: {}, filtervalues: {}, scroll: false, selected: {}, operation: '' };
 	var header, vbody, footer, container, ecolumns, isecolumns = false, ready = false;
 	var sheader, sbody;
-	var Theadercol = Tangular.compile('<div class="dg-hcol dg-col-{{ index }}{{ if sorting }} dg-sorting{{ fi }}" data-index="{{ index }}">{{ if sorting }}<i class="dg-sort fa fa-sort"></i>{{ fi }}<div class="dg-label{{ alignheader }}"{{ if labeltitle }} title="{{ labeltitle }}"{{ fi }}{{ if reorder }} draggable="true"{{ fi }}>{{ label | raw }}</div>{{ if filter }}<div class="dg-filter{{ alignfilter }}{{ if filterval != null && filterval !== \'\' }} dg-filter-selected{{ fi }}"><i class="fa dg-filter-cancel fa-times"></i>{{ if options }}<label data-name="{{ name }}">{{ if filterval }}{{ filterval }}{{ else }}{{ filter }}{{ fi }}</label>{{ else }}<input autocomplete="new-password" type="text" placeholder="{{ filter }}" class="dg-filter-input" name="{{ name }}{{ ts }}" data-name="{{ name }}" value="{{ filterval }}" />{{ fi }}</div>{{ else }}<div class="dg-filter-empty">&nbsp;</div>{{ fi }}</div>');
+	var Theadercol = Tangular.compile('<div class="dg-hcol dg-col-{{ index }}{{ if sorting }} dg-sorting{{ fi }}" data-index="{{ index }}">{{ if sorting }}<i class="dg-sort ti ti-sort"></i>{{ fi }}<div class="dg-label{{ alignheader }}"{{ if labeltitle }} title="{{ labeltitle }}"{{ fi }}{{ if reorder }} draggable="true"{{ fi }}>{{ label | raw }}</div>{{ if filter }}<div class="dg-filter{{ alignfilter }}{{ if filterval != null && filterval !== \'\' }} dg-filter-selected{{ fi }}"><i class="ti dg-filter-cancel ti-times"></i>{{ if options }}<label data-name="{{ name }}">{{ if filterval }}{{ filterval }}{{ else }}{{ filter }}{{ fi }}</label>{{ else }}<input autocomplete="new-password" type="text" placeholder="{{ filter }}" class="dg-filter-input" name="{{ name }}{{ ts }}" data-name="{{ name }}" value="{{ filterval }}" />{{ fi }}</div>{{ else }}<div class="dg-filter-empty">&nbsp;</div>{{ fi }}</div>');
 	var isIE = (/msie|trident/i).test(navigator.userAgent);
 	var isredraw = false;
 	var forcescroll = '';
@@ -2020,7 +2020,7 @@ COMPONENT('datagrid', 'checkbox:true;colwidth:150;rowheight:28;clusterize:true;l
 		});
 
 		Thelpers.ui_datagrid_checkbox = function(val) {
-			return '<div class="dg-checkbox' + (val ? ' dg-checked' : '') + '" data-custom="1"><i class="fa fa-check"></i></div>';
+			return '<div class="dg-checkbox' + (val ? ' dg-checked' : '') + '" data-custom="1"><i class="ti ti-check"></i></div>';
 		};
 	};
 
@@ -2134,9 +2134,9 @@ COMPONENT('datagrid', 'checkbox:true;colwidth:150;rowheight:28;clusterize:true;l
 		var pagination = '';
 
 		if (config.exec)
-			pagination = '<div class="dg-footer hidden"><div class="dg-pagination-items hidden-xs"></div><div class="dg-pagination"><button name="page-first" disabled><i class="fa fa-angle-double-left"></i></button><button name="page-prev" disabled><i class="fa fa-angle-left"></i></button><div><input type="text" name="page" maxlength="5" class="dg-pagination-input" /></div><button name="page-next" disabled><i class="fa fa-angle-right"></i></button><button name="page-last" disabled><i class="fa fa-angle-double-right"></i></button></div><div class="dg-pagination-pages"></div></div>';
+			pagination = '<div class="dg-footer hidden"><div class="dg-pagination-items hidden-xs"></div><div class="dg-pagination"><button name="page-first" disabled><i class="ti ti-angle-double-left"></i></button><button name="page-prev" disabled><i class="ti ti-angle-left"></i></button><div><input type="text" name="page" maxlength="5" class="dg-pagination-input" /></div><button name="page-next" disabled><i class="ti ti-angle-right"></i></button><button name="page-last" disabled><i class="ti ti-angle-double-right"></i></button></div><div class="dg-pagination-pages"></div></div>';
 
-		self.dom.innerHTML = '<div class="dg-btn-columns"><i class="fa fa-caret-left"></i><span class="fa fa-columns"></span></div><div class="dg-columns hidden"><div><div class="dg-columns-body"></div></div><button class="dg-columns-button" name="columns-apply"><i class="fa fa-columns"></i>{1}</button><span class="dt-columns-reset">{2}</span></div><div class="dg-container"><span class="dg-resize-line hidden"></span><div class="dg-header-scrollbar"><div class="dg-header"></div><div class="dg-body-scrollbar"><div class="dg-body"></div></div></div></div>{0}'.format(pagination, config.buttonapply, config.buttonreset);
+		self.dom.innerHTML = '<div class="dg-btn-columns"><i class="ti ti-caret-left"></i><span class="ti ti-columns"></span></div><div class="dg-columns hidden"><div><div class="dg-columns-body"></div></div><button class="dg-columns-button" name="columns-apply"><i class="ti ti-columns"></i>{1}</button><span class="dt-columns-reset">{2}</span></div><div class="dg-container"><span class="dg-resize-line hidden"></span><div class="dg-header-scrollbar"><div class="dg-header"></div><div class="dg-body-scrollbar"><div class="dg-body"></div></div></div></div>{0}'.format(pagination, config.buttonapply, config.buttonreset);
 
 		header = self.find('.dg-header');
 		vbody = self.find('.dg-body');
@@ -2974,7 +2974,7 @@ COMPONENT('datagrid', 'checkbox:true;colwidth:150;rowheight:28;clusterize:true;l
 		opt.width = (config.numbering !== false ? 40 : 0) + (config.checkbox ? 40 : 0) + 30;
 
 		if (config.checkbox)
-			column += Theadercol({ index: -1, label: '<div class="dg-checkbox dg-checkbox-main" data-value="-1"><i class="fa fa-check"></i></div>', filter: false, name: '$', sorting: false });
+			column += Theadercol({ index: -1, label: '<div class="dg-checkbox dg-checkbox-main" data-value="-1"><i class="ti ti-check"></i></div>', filter: false, name: '$', sorting: false });
 
 		for (var i = 0; i < opt.cols.length; i++) {
 			var col = opt.cols[i];
@@ -3086,7 +3086,7 @@ COMPONENT('datagrid', 'checkbox:true;colwidth:150;rowheight:28;clusterize:true;l
 			column += Tcol.format(-1, '<div class="dg-number">{0}</div>'.format(index + 1 + (plus || 0)));
 
 		if (config.checkbox)
-			column += Tcol.format(-1, '<div class="dg-checkbox-main dg-checkbox{1}" data-value="{0}"><i class="fa fa-check"></i></div>'.format(row.ROW, opt.checked[row.ROW] ? ' dg-checked' : ''));
+			column += Tcol.format(-1, '<div class="dg-checkbox-main dg-checkbox{1}" data-value="{0}"><i class="ti ti-check"></i></div>'.format(row.ROW, opt.checked[row.ROW] ? ' dg-checked' : ''));
 
 		for (var j = 0; j < opt.cols.length; j++) {
 			var col = opt.cols[j];
@@ -3434,16 +3434,16 @@ COMPONENT('datagrid', 'checkbox:true;colwidth:150;rowheight:28;clusterize:true;l
 			var el = $(this);
 			var col = opt.cols[+el.attrd('index')];
 			if (col) {
-				var fa = el.find('.dg-sort').rclass2('fa-');
+				var fa = el.find('.dg-sort').rclass2('ti-');
 				switch (col.sort) {
 					case 1:
-						fa.aclass('fa-arrow-up');
+						fa.aclass('ti-arrow-up');
 						break;
 					case 2:
-						fa.aclass('fa-arrow-down');
+						fa.aclass('ti-arrow-down');
 						break;
 					default:
-						fa.aclass('fa-sort');
+						fa.aclass('ti-sort');
 						break;
 				}
 			}
@@ -3856,7 +3856,7 @@ COMPONENT('datagrid', 'checkbox:true;colwidth:150;rowheight:28;clusterize:true;l
 		}
 
 		var align = meta.col.align;
-		el.rclass('dg-value').html(meta.col.type.substring(0, 4) === 'bool' ? '<div{1}><div class="dg-checkbox{0}" data-custom="2"><i class="fa fa-check"></i></div></div>'.format(meta.value ? ' dg-checked' : '', align ? (' class="' + align.trim() + '"') : '') : '<input type="{0}" maxlength="{1}"{2} />'.format(meta.col.ispassword ? 'password' : 'text', meta.col.maxlength || 100, align ? (' class="' + align.trim() + '"') : ''));
+		el.rclass('dg-value').html(meta.col.type.substring(0, 4) === 'bool' ? '<div{1}><div class="dg-checkbox{0}" data-custom="2"><i class="ti ti-check"></i></div></div>'.format(meta.value ? ' dg-checked' : '', align ? (' class="' + align.trim() + '"') : '') : '<input type="{0}" maxlength="{1}"{2} />'.format(meta.col.ispassword ? 'password' : 'text', meta.col.maxlength || 100, align ? (' class="' + align.trim() + '"') : ''));
 		current.el = el;
 
 		var input = meta.elcol.find('input');
@@ -4112,11 +4112,11 @@ COMPONENT('selectbox', function(self, config) {
 			var el = $(this);
 			el.tclass('hidden', el.attrd('search').indexOf(search) === -1);
 		});
-		self.find('.ui-selectbox-search-icon').tclass('fa-search', search.length === 0).tclass('fa-times', search.length > 0);
+		self.find('.ui-selectbox-search-icon').tclass('ti-search', search.length === 0).tclass('ti-times', search.length > 0);
 	};
 
 	self.redraw = function() {
-		self.html((typeof(config.search) === 'string' ? '<div class="ui-selectbox-search"><span><i class="fa fa-search ui-selectbox-search-icon"></i></span><div><input type="text" placeholder="{0}" /></div></div><div>'.format(config.search) : '') + '<div style="height:{0}px"><ul></ul><ul style="height:{0}px"></ul></div>'.format(config.height || '200'));
+		self.html((typeof(config.search) === 'string' ? '<div class="ui-selectbox-search"><span><i class="ti ti-search ui-selectbox-search-icon"></i></span><div><input type="text" placeholder="{0}" /></div></div><div>'.format(config.search) : '') + '<div style="height:{0}px"><ul></ul><ul style="height:{0}px"></ul></div>'.format(config.height || '200'));
 		self.find('ul').each(function(index) {
 			if (index)
 				Eselected = $(this);
@@ -4183,7 +4183,7 @@ COMPONENT('selectbox', function(self, config) {
 			self.change(true);
 		});
 
-		self.event('click', '.fa-times', function() {
+		self.event('click', '.ti-times', function() {
 			if (!config.disabled) {
 				self.find('input').val('');
 				self.search();
@@ -4281,7 +4281,7 @@ COMPONENT('textbox', function(self, config) {
 		self.type = config.type;
 		self.format = config.format;
 
-		self.event('click', '.fa-calendar', function(e) {
+		self.event('click', '.ti-calendar', function(e) {
 			if (!config.disabled && !config.readonly && config.type === 'date') {
 				e.preventDefault();
 				SETTER('calendar', 'toggle', self.element, self.get(), function(date) {
@@ -4291,10 +4291,10 @@ COMPONENT('textbox', function(self, config) {
 			}
 		});
 
-		self.event('click', '.fa-caret-up,.fa-caret-down', function() {
+		self.event('click', '.ti-caret-up,.ti-caret-down', function() {
 			if (!config.disabled && !config.readonly && config.increment) {
 				var el = $(this);
-				var inc = el.hclass('fa-caret-up') ? 1 : -1;
+				var inc = el.hclass('ti-caret-up') ? 1 : -1;
 				self.change(true);
 				self.inc(inc);
 			}
@@ -4305,7 +4305,7 @@ COMPONENT('textbox', function(self, config) {
 				return;
 			if (self.type === 'search') {
 				self.$stateremoved = false;
-				$(this).rclass('fa-times').aclass('fa-search');
+				$(this).rclass('ti-times').aclass('ti-search');
 				self.set('');
 			} else if (config.icon2click)
 				EXEC(config.icon2click, self);
@@ -4365,12 +4365,12 @@ COMPONENT('textbox', function(self, config) {
 				if (self.$stateremoved && !value)
 					return;
 				self.$stateremoved = !value;
-				self.find('.ui-textbox-control-icon').tclass('fa-times', !!value).tclass('fa-search', !value);
+				self.find('.ui-textbox-control-icon').tclass('ti-times', !!value).tclass('ti-search', !value);
 			};
 		}
 
-		icon2 && builder.push('<div class="ui-textbox-control"><span class="fa fa-{0} ui-textbox-control-icon"></span></div>'.format(icon2));
-		config.increment && !icon2 && builder.push('<div class="ui-textbox-control"><span class="fa fa-caret-up"></span><span class="fa fa-caret-down"></span></div>');
+		icon2 && builder.push('<div class="ui-textbox-control"><span class="ti ti-{0} ui-textbox-control-icon"></span></div>'.format(icon2));
+		config.increment && !icon2 && builder.push('<div class="ui-textbox-control"><span class="ti ti-caret-up"></span><span class="ti ti-caret-down"></span></div>');
 
 		if (config.label)
 			content = config.label;
@@ -4379,15 +4379,15 @@ COMPONENT('textbox', function(self, config) {
 			var html = builder.join('');
 			builder = [];
 			builder.push('<div class="ui-textbox-label">');
-			icon && builder.push('<i class="fa fa-{0}"></i> '.format(icon));
+			icon && builder.push('<i class="ti ti-{0}"></i> '.format(icon));
 			builder.push('<span>' + content + (content.substring(content.length - 1) === '?' ? '' : ':') + '</span>');
 			builder.push('</div><div class="ui-textbox">{0}</div>'.format(html));
-			config.error && builder.push('<div class="ui-textbox-helper"><i class="fa fa-warning" aria-hidden="true"></i> {0}</div>'.format(config.error));
+			config.error && builder.push('<div class="ui-textbox-helper"><i class="ti ti-warning" aria-hidden="true"></i> {0}</div>'.format(config.error));
 			self.html(builder.join(''));
 			self.aclass('ui-textbox-container');
 			input = self.find('input');
 		} else {
-			config.error && builder.push('<div class="ui-textbox-helper"><i class="fa fa-warning" aria-hidden="true"></i> {0}</div>'.format(config.error));
+			config.error && builder.push('<div class="ui-textbox-helper"><i class="ti ti-warning" aria-hidden="true"></i> {0}</div>'.format(config.error));
 			self.aclass('ui-textbox ui-textbox-container');
 			self.html(builder.join(''));
 			input = self.find('input');
@@ -4452,7 +4452,7 @@ COMPONENT('textbox', function(self, config) {
 			case 'icon':
 				var tmp = self.find('.ui-textbox-label .fa');
 				if (tmp.length)
-					tmp.rclass2('fa-').aclass('fa-' + value);
+					tmp.rclass2('ti-').aclass('ti-' + value);
 				else
 					redraw = true;
 				break;
@@ -4660,7 +4660,7 @@ COMPONENT('menu', function(self, config, cls) {
 			var icon = '';
 
 			if (item.icon)
-				icon = '<i class="{0}"></i>'.format(item.icon.charAt(0) === '!' ? item.icon.substring(1) : item.icon.indexOf('fa-') === -1 ? ('fa fa-' + item.icon) : item.icon);
+				icon = '<i class="{0}"></i>'.format(item.icon.charAt(0) === '!' ? item.icon.substring(1) : item.icon.indexOf('ti-') === -1 ? ('ti ti-' + item.icon) : item.icon);
 			else
 				cn = (cn ? (cn + ' ') : '') + cls + '-nofa';
 
@@ -4668,7 +4668,7 @@ COMPONENT('menu', function(self, config, cls) {
 
 			if (index == null && item.children && item.children.length) {
 				cn += (cn ? ' ' : '') + cls + '-children';
-				tmp += '<i class="fa fa-play pull-right"></i>';
+				tmp += '<i class="ti ti-play pull-right"></i>';
 			}
 
 			if (item.selected)
@@ -4941,15 +4941,15 @@ COMPONENT('snackbar', 'timeout:4000;button:OK', function(self, config) {
 	};
 
 	self.waiting = function(message, button, close) {
-		self.show(message, button, close, 'fa-spinner fa-pulse');
+		self.show(message, button, close, 'ti-spinner ti-spin');
 	};
 
 	self.success = function(message, button, close) {
-		self.show(message, button, close, 'fa-check-circle');
+		self.show(message, button, close, 'ti-check-circle');
 	};
 
 	self.warning = function(message, button, close) {
-		self.show(message, button, close, 'fa-times-circle');
+		self.show(message, button, close, 'ti-times-circle');
 	};
 
 	self.show = function(message, button, close, icon) {
@@ -4961,7 +4961,7 @@ COMPONENT('snackbar', 'timeout:4000;button:OK', function(self, config) {
 
 		callback = close;
 
-		self.find(cls2 + '-icon').html('<i class="fa {0}"></i>'.format(icon || 'fa-info-circle'));
+		self.find(cls2 + '-icon').html('<i class="fa {0}"></i>'.format(icon || 'ti-info-circle'));
 		self.find(cls2 + '-body').html(message).attr('title', message);
 		self.find(cls2 + '-dismiss').html(button || config.button);
 
@@ -5353,7 +5353,7 @@ COMPONENT('features', 'height:37', function(self, config) {
 
 	self.oldsearch = '';
 	self.items = null;
-	self.template = Tangular.compile('<li data-search="{{ $.search }}" data-index="{{ $.index }}"{{ if selected }} class="selected"{{ fi }}>{{ if icon }}<i class="fa fa-{{ icon }}"></i>{{ fi }}{{ name | raw }}</li>');
+	self.template = Tangular.compile('<li data-search="{{ $.search }}" data-index="{{ $.index }}"{{ if selected }} class="selected"{{ fi }}>{{ if icon }}<i class="ti ti-{{ icon }}"></i>{{ fi }}{{ name | raw }}</li>');
 	self.callback = null;
 	self.readonly();
 	self.singleton();
@@ -5372,7 +5372,7 @@ COMPONENT('features', 'height:37', function(self, config) {
 	self.make = function() {
 
 		self.aclass(cls + '-layer hidden');
-		self.append('<div class="{1}"><div class="{1}-search"><span><i class="fa fa-search"></i></span><div><input type="text" placeholder="{0}" class="{1}-search-input" /></div></div><div class="{1}-container noscrollbar"><ul></ul></div></div>'.format(config.placeholder, cls));
+		self.append('<div class="{1}"><div class="{1}-search"><span><i class="ti ti-search"></i></span><div><input type="text" placeholder="{0}" class="{1}-search-input" /></div></div><div class="{1}-container noscrollbar"><ul></ul></div></div>'.format(config.placeholder, cls));
 
 		container = self.find('ul');
 		input = self.find('input');
@@ -5637,7 +5637,7 @@ COMPONENT('tasks', function(self, config) {
 		self.aclass('ui-tasks');
 		self.append('<div class="ui-tasks-input"><input type="text" maxlength="1000" placeholder="{0}" /></div><div class="ui-tasks-items"></div>'.format(config.placeholder));
 
-		binder = VBINDARRAY('<div class="ui-tasks-item" data-bind=".solved__.ui-tasks-solved:value"><span><i class="fa fa-check"></i></span><div><b data-bind=".userid__text:value"></b><span data-bind=".body__text:value"></span></div></div>', self.find('.ui-tasks-items'));
+		binder = VBINDARRAY('<div class="ui-tasks-item" data-bind=".solved__.ui-tasks-solved:value"><span><i class="ti ti-check"></i></span><div><b data-bind=".userid__text:value"></b><span data-bind=".body__text:value"></span></div></div>', self.find('.ui-tasks-items'));
 
 		self.event('keydown', 'input', function(e) {
 			var t = this;
@@ -5683,14 +5683,14 @@ COMPONENT('checkbox', function(self, config) {
 				self.tclass('ui-disabled', value);
 				break;
 			case 'checkicon':
-				self.find('i').rclass2('fa-').aclass('fa-' + value);
+				self.find('i').rclass2('ti-').aclass('ti-' + value);
 				break;
 		}
 	};
 
 	self.make = function() {
 		self.aclass('ui-checkbox');
-		self.html('<div><i class="fa fa-{2}"></i></div><span{1}>{0}</span>'.format(config.label || self.html(), config.required ? ' class="ui-checkbox-label-required"' : '', config.checkicon || 'check'));
+		self.html('<div><i class="ti ti-{2}"></i></div><span{1}>{0}</span>'.format(config.label || self.html(), config.required ? ' class="ui-checkbox-label-required"' : '', config.checkicon || 'check'));
 		config.disabled && self.aclass('ui-disabled');
 		self.event('click', function() {
 			if (config.disabled)
@@ -5796,7 +5796,7 @@ COMPONENT('textarea', function(self, config) {
 		var label = config.label || content;
 
 		if (!label.length) {
-			config.error && builder.push('<div class="ui-textarea-helper"><i class="fa fa-warning" aria-hidden="true"></i> {0}</div>'.format(config.error));
+			config.error && builder.push('<div class="ui-textarea-helper"><i class="ti ti-warning" aria-hidden="true"></i> {0}</div>'.format(config.error));
 			self.aclass('ui-textarea ui-textarea-container');
 			self.html(builder.join(''));
 			input = self.find('textarea');
@@ -5807,10 +5807,10 @@ COMPONENT('textarea', function(self, config) {
 
 		builder = [];
 		builder.push('<div class="ui-textarea-label">');
-		config.icon && builder.push('<i class="fa fa-{0}"></i>'.format(config.icon));
+		config.icon && builder.push('<i class="ti ti-{0}"></i>'.format(config.icon));
 		builder.push(label);
 		builder.push(':</div><div class="ui-textarea">{0}</div>'.format(html));
-		config.error && builder.push('<div class="ui-textarea-helper"><i class="fa fa-warning" aria-hidden="true"></i> {0}</div>'.format(config.error));
+		config.error && builder.push('<div class="ui-textarea-helper"><i class="ti ti-warning" aria-hidden="true"></i> {0}</div>'.format(config.error));
 
 		self.html(builder.join(''));
 		self.rclass('ui-textarea');
@@ -5855,7 +5855,7 @@ COMPONENT('error', function(self, config) {
 
 		var builder = [];
 		for (var i = 0, length = value.length; i < length; i++)
-			builder.push('<div><span class="fa {1}"></span>{0}</div>'.format(value[i].error, 'fa-' + (config.icon || 'times-circle')));
+			builder.push('<div><span class="fa {1}"></span>{0}</div>'.format(value[i].error, 'ti-' + (config.icon || 'times-circle')));
 
 		self.html(builder.join(''));
 		self.tclass('hidden', false);
@@ -6011,7 +6011,7 @@ COMPONENT('suggestion', function(self, config) {
 	self.make = function() {
 
 		self.aclass('ui-suggestion hidden');
-		self.append('<span class="ui-suggestion-arrow"></span><div class="ui-suggestion-search"><span class="ui-suggestion-button"><i class="fa fa-search"></i></span><div><input type="text" placeholder="{0}" class="ui-suggestion-search-input" /></div></div><div class="ui-suggestion-container"><ul></ul></div>'.format(config.placeholder));
+		self.append('<span class="ui-suggestion-arrow"></span><div class="ui-suggestion-search"><span class="ui-suggestion-button"><i class="ti ti-search"></i></span><div><input type="text" placeholder="{0}" class="ui-suggestion-search-input" /></div></div><div class="ui-suggestion-container"><ul></ul></div>'.format(config.placeholder));
 		container = self.find('ul');
 		arrow = self.find('.ui-suggestion-arrow');
 		input = self.find('input');
@@ -6130,7 +6130,7 @@ COMPONENT('suggestion', function(self, config) {
 
 	self.search = function(value) {
 
-		icon.tclass('fa-times', !!value).tclass('fa-search', !value);
+		icon.tclass('ti-times', !!value).tclass('ti-search', !value);
 
 		if (!value) {
 			container.find('li').rclass('hidden');
@@ -6524,7 +6524,7 @@ COMPONENT('directory', 'minwidth:200', function(self, config, cls) {
 	var is = false, selectedindex = 0, resultscount = 0, skiphide = false;
 	var templateE = '{{ name | encode | ui_directory_helper }}';
 	var templateR = '{{ name | raw }}';
-	var template = '<li data-index="{{ $.index }}" data-search="{{ $.search }}" {{ if selected }} class="current selected{{ if classname }} {{ classname }}{{ fi }}"{{ else if classname }} class="{{ classname }}"{{ fi }}>{{ if $.checkbox }}<span class="' + cls + '-checkbox"><i class="fa fa-check"></i></span>{{ fi }}{0}</li>';
+	var template = '<li data-index="{{ $.index }}" data-search="{{ $.search }}" {{ if selected }} class="current selected{{ if classname }} {{ classname }}{{ fi }}"{{ else if classname }} class="{{ classname }}"{{ fi }}>{{ if $.checkbox }}<span class="' + cls + '-checkbox"><i class="ti ti-check"></i></span>{{ fi }}{0}</li>';
 	var templateraw = template.format(templateR);
 	var regstrip = /(&nbsp;|<([^>]+)>)/ig;
 	var parentclass;
@@ -6556,7 +6556,7 @@ COMPONENT('directory', 'minwidth:200', function(self, config, cls) {
 	self.make = function() {
 
 		self.aclass(cls + ' hidden');
-		self.append('<div class="{1}-search"><span class="{1}-add hidden"><i class="fa fa-plus"></i></span><span class="{1}-button"><i class="fa fa-search"></i></span><div><input type="text" placeholder="{0}" class="{1}-search-input" name="dir{2}" autocomplete="new-password" /></div></div><div class="{1}-container"><ul></ul></div>'.format(config.placeholder, cls, Date.now()));
+		self.append('<div class="{1}-search"><span class="{1}-add hidden"><i class="ti ti-plus"></i></span><span class="{1}-button"><i class="ti ti-search"></i></span><div><input type="text" placeholder="{0}" class="{1}-search-input" name="dir{2}" autocomplete="new-password" /></div></div><div class="{1}-container"><ul></ul></div>'.format(config.placeholder, cls, Date.now()));
 		container = self.find('ul');
 		input = self.find('input');
 		icon = self.find(cls2 + '-button').find('.fa');
@@ -6800,7 +6800,7 @@ COMPONENT('directory', 'minwidth:200', function(self, config, cls) {
 		if (!self.opt)
 			return;
 
-		icon.tclass('fa-times', !!value).tclass('fa-search', !value);
+		icon.tclass('ti-times', !!value).tclass('ti-search', !value);
 		self.opt.custom && plus.tclass('hidden', !value);
 
 		if (!value && !self.opt.ajax) {
@@ -7121,7 +7121,7 @@ COMPONENT('directory', 'minwidth:200', function(self, config, cls) {
 	};
 });
 
-COMPONENT('input', 'maxlength:200;dirkey:name;dirvalue:id;increment:1;autovalue:name;direxclude:false;checkicon:fa fa-check;forcevalidation:1;searchalign:1;height:80;after:\\:', function(self, config, cls) {
+COMPONENT('input', 'maxlength:200;dirkey:name;dirvalue:id;increment:1;autovalue:name;direxclude:false;checkicon:ti ti-check;forcevalidation:1;searchalign:1;height:80;after:\\:', function(self, config, cls) {
 
 	var cls2 = '.' + cls;
 	var input, placeholder, dirsource, binded, customvalidator, mask, rawvalue, isdirvisible = false, nobindcamouflage = false, focused = false;
@@ -7130,9 +7130,9 @@ COMPONENT('input', 'maxlength:200;dirkey:name;dirvalue:id;increment:1;autovalue:
 
 	self.init = function() {
 		Thelpers.ui_input_icon = function(val) {
-			return val.charAt(0) === '!' || val.indexOf(' ') !== -1 ? ('<span class="ui-input-icon-custom">' + (val.charAt(0) === '!' ? val.substring(1) : ('<i class="' + val) + '"></i>') + '</span>') : ('<i class="fa fa-' + val + '"></i>');
+			return val.charAt(0) === '!' || val.indexOf(' ') !== -1 ? ('<span class="ui-input-icon-custom">' + (val.charAt(0) === '!' ? val.substring(1) : ('<i class="' + val) + '"></i>') + '</span>') : ('<i class="ti ti-' + val + '"></i>');
 		};
-		W.ui_input_template = Tangular.compile(('{{ if label }}<div class="{0}-label">{{ if icon }}<i class="{{ icon }}"></i>{{ fi }}{{ label | raw }}{{ after | raw }}</div>{{ fi }}<div class="{0}-control{{ if licon }} {0}-licon{{ fi }}{{ if ricon || (type === \'number\' && increment) }} {0}-ricon{{ fi }}">{{ if ricon || (type === \'number\' && increment) }}<div class="{0}-icon-right{{ if type === \'number\' && increment && !ricon }} {0}-increment{{ else if riconclick || type === \'date\' || type === \'time\' || (type === \'search\' && searchalign === 1) || type === \'password\' }} {0}-click{{ fi }}">{{ if type === \'number\' && !ricon }}<i class="fa fa-caret-up"></i><i class="fa fa-caret-down"></i>{{ else }}{{ ricon | ui_input_icon }}{{ fi }}</div>{{ fi }}{{ if licon }}<div class="{0}-icon-left{{ if liconclick || (type === \'search\' && searchalign !== 1) }} {0}-click{{ fi }}">{{ licon | ui_input_icon }}</div>{{ fi }}<div class="{0}-input{{ if align === 1 || align === \'center\' }} center{{ else if align === 2 || align === \'right\' }} right{{ fi }}">{{ if placeholder && !innerlabel }}<div class="{0}-placeholder">{{ placeholder }}</div>{{ fi }}{{ if dirsource || type === \'icon\' || type === \'emoji\' || type === \'color\' }}<div class="{0}-value" tabindex="0"></div>{{ else }}{{ if type === \'multiline\' }}<textarea data-jc-bind="" style="height:{{ height }}px"></textarea>{{ else }}<input type="{{ if type === \'password\' }}password{{ else }}text{{ fi }}"{{ if autofill }} autocomplete="on" name="{{ NAME }}"{{ else }} name="input' + Date.now() + '" autocomplete="new-password"{{ fi }} data-jc-bind=""{{ if maxlength > 0}} maxlength="{{ maxlength }}"{{ fi }}{{ if autofocus }} autofocus{{ fi }} />{{ fi }}{{ fi }}</div></div>{{ if error }}<div class="{0}-error hidden"><i class="fa fa-warning"></i> {{ error }}</div>{{ fi }}').format(cls));
+		W.ui_input_template = Tangular.compile(('{{ if label }}<div class="{0}-label">{{ if icon }}<i class="{{ icon }}"></i>{{ fi }}{{ label | raw }}{{ after | raw }}</div>{{ fi }}<div class="{0}-control{{ if licon }} {0}-licon{{ fi }}{{ if ricon || (type === \'number\' && increment) }} {0}-ricon{{ fi }}">{{ if ricon || (type === \'number\' && increment) }}<div class="{0}-icon-right{{ if type === \'number\' && increment && !ricon }} {0}-increment{{ else if riconclick || type === \'date\' || type === \'time\' || (type === \'search\' && searchalign === 1) || type === \'password\' }} {0}-click{{ fi }}">{{ if type === \'number\' && !ricon }}<i class="ti ti-caret-up"></i><i class="ti ti-caret-down"></i>{{ else }}{{ ricon | ui_input_icon }}{{ fi }}</div>{{ fi }}{{ if licon }}<div class="{0}-icon-left{{ if liconclick || (type === \'search\' && searchalign !== 1) }} {0}-click{{ fi }}">{{ licon | ui_input_icon }}</div>{{ fi }}<div class="{0}-input{{ if align === 1 || align === \'center\' }} center{{ else if align === 2 || align === \'right\' }} right{{ fi }}">{{ if placeholder && !innerlabel }}<div class="{0}-placeholder">{{ placeholder }}</div>{{ fi }}{{ if dirsource || type === \'icon\' || type === \'emoji\' || type === \'color\' }}<div class="{0}-value" tabindex="0"></div>{{ else }}{{ if type === \'multiline\' }}<textarea data-jc-bind="" style="height:{{ height }}px"></textarea>{{ else }}<input type="{{ if type === \'password\' }}password{{ else }}text{{ fi }}"{{ if autofill }} autocomplete="on" name="{{ NAME }}"{{ else }} name="input' + Date.now() + '" autocomplete="new-password"{{ fi }} data-jc-bind=""{{ if maxlength > 0}} maxlength="{{ maxlength }}"{{ fi }}{{ if autofocus }} autofocus{{ fi }} />{{ fi }}{{ fi }}</div></div>{{ if error }}<div class="{0}-error hidden"><i class="ti ti-warning"></i> {{ error }}</div>{{ fi }}').format(cls));
 	};
 
 	self.make = function() {
@@ -7572,8 +7572,8 @@ COMPONENT('input', 'maxlength:200;dirkey:name;dirvalue:id;increment:1;autovalue:
 					self.password();
 				else if (config.type === 'number' || config.type === 'number2') {
 					var tmp = $(e.target);
-					if (tmp.attr('class').indexOf('fa-') !== -1) {
-						var n = tmp.hclass('fa-caret-up') ? 1 : -1;
+					if (tmp.attr('class').indexOf('ti-') !== -1) {
+						var n = tmp.hclass('ti-caret-up') ? 1 : -1;
 						self.change(true);
 						var val = self.preparevalue((self.get() || 0) + (config.increment * n));
 						self.set(val, 2);
@@ -7686,7 +7686,7 @@ COMPONENT('input', 'maxlength:200;dirkey:name;dirvalue:id;increment:1;autovalue:
 	self.password = function(show) {
 		var visible = show == null ? input.attr('type') === 'text' : show;
 		input.attr('type', visible ? 'password' : 'text');
-		self.find(cls2 + '-icon-right').find('i').tclass(config.ricon, visible).tclass('fa-eye-slash', !visible);
+		self.find(cls2 + '-icon-right').find('i').tclass(config.ricon, visible).tclass('ti-eye-slash', !visible);
 	};
 
 	self.preparevalue = function(value) {
@@ -7777,7 +7777,7 @@ COMPONENT('input', 'maxlength:200;dirkey:name;dirvalue:id;increment:1;autovalue:
 		self.tclass(cls + '-binded', is);
 
 		if (config.type === 'search')
-			self.find(cls2 + '-icon-' + (config.searchalign === 1 ? 'right' : 'left')).find('i').tclass(config.searchalign === 1 ? config.ricon : config.licon, !is).tclass('fa-times', is);
+			self.find(cls2 + '-icon-' + (config.searchalign === 1 ? 'right' : 'left')).find('i').tclass(config.searchalign === 1 ? config.ricon : config.licon, !is).tclass('ti-times', is);
 	};
 
 	self.bindvalue = function() {
@@ -7920,7 +7920,7 @@ COMPONENT('input', 'maxlength:200;dirkey:name;dirvalue:id;increment:1;autovalue:
 		switch (key) {
 			case 'icon':
 				if (value && value.indexOf(' ') === -1)
-					config.icon = 'fa fa-' + value;
+					config.icon = 'ti ti-' + value;
 				break;
 			case 'dirsource':
 				if (config.dirajax || value.indexOf('/') !== -1) {
@@ -8224,7 +8224,7 @@ COMPONENT('codemirror', 'linenumbers:false;required:false;trim:true;tabs:true', 
 				self.state(1, 1);
 				break;
 			case 'icon':
-				self.find('i').rclass().aclass('fa fa-' + value);
+				self.find('i').rclass().aclass('ti ti-' + value);
 				break;
 		}
 
@@ -8232,7 +8232,7 @@ COMPONENT('codemirror', 'linenumbers:false;required:false;trim:true;tabs:true', 
 
 	self.make = function() {
 		var content = config.label || self.html();
-		self.html((content ? '<div class="ui-codemirror-label' + (config.required ? ' ui-codemirror-label-required' : '') + '">' + (config.icon ? '<i class="fa fa-' + config.icon + '"></i> ' : '') + content + ':</div>' : '') + '<div class="ui-codemirror"></div>');
+		self.html((content ? '<div class="ui-codemirror-label' + (config.required ? ' ui-codemirror-label-required' : '') + '">' + (config.icon ? '<i class="ti ti-' + config.icon + '"></i> ' : '') + content + ':</div>' : '') + '<div class="ui-codemirror"></div>');
 		var container = self.find('.ui-codemirror');
 
 		var options = {};
@@ -8462,7 +8462,7 @@ COMPONENT('message', 'button:OK', function(self, config, cls) {
 	self.content = function(classname, text, icon) {
 
 		if (icon.indexOf(' ') === -1)
-			icon = 'fa fa-' + icon;
+			icon = 'ti ti-' + icon;
 
 		!is && self.html('<div><div class="{0}-icon"><i class="{1}"></i></div><div class="{0}-body"><div class="{0}-text"></div><hr /><button>{2}</button></div></div>'.format(cls, icon, config.button));
 		visible = true;
@@ -8489,7 +8489,7 @@ FUNC.messageresponse = function(success, callback) {
 		if (err || response instanceof Array) {
 
 			var msg = [];
-			var template = '<div class="ui-message-error"><i class="fa fa-warning"></i>{0}</div>';
+			var template = '<div class="ui-message-error"><i class="ti ti-warning"></i>{0}</div>';
 
 			if (response instanceof Array) {
 				for (var i = 0; i < response.length; i++)
@@ -8550,7 +8550,7 @@ COMPONENT('emoji', 'categories:128342,128578,128161,127944,128008,128690,128172,
 
 	self.changepage = function() {
 		self.find(cls2 + '-search-input').val('');
-		self.find('.clearsearch').rclass2('fa-').aclass('fa-search');
+		self.find('.clearsearch').rclass2('ti-').aclass('ti-search');
 		self.find(cls2 + '-nav span').rclass('active');
 		self.find(cls2 	+ '-nav span[data-type="' + page +'"]').tclass('active');
 		self.find(cls2 + '-content').html(allemoticons[page]);
@@ -8559,7 +8559,7 @@ COMPONENT('emoji', 'categories:128342,128578,128161,127944,128008,128690,128172,
 	};
 
 	self.redraw = function() {
-		self.html('<div class="{12}"><div class="{12}-header"><div class="{12}-nav"><span data-type="0">{0}</span><span data-type="1">{1}</span><span data-type="2">{2}</span><span data-type="3">{3}</span><span data-type="4">{4}</span><span data-type="5">{5}</span><span data-type="6">{6}</span><span data-type="7">{7}</span><span data-type="8">{8}</span></div><div class="{12}-search"><span><i class="fa fa-search clearsearch"></i></span><div><input type="text" placeholder="{13}" class="{12}-search-input"></div></div></div><div class="{12}-scrollbar" style="height:{9}px"><div class="{12}-content"></div></div><div class="{12}-footer"><div class="{12}-footer-text">{10}</div><span data-type="0">&#{11};</span><span data-type="1">&#{11};&#127995;</span><span data-type="2">&#{11};&#127996;</span><span data-type="3">&#{11};&#127997;</span><span data-type="4">&#{11};&#127998;</span><span data-type="5">&#{11};&#127999;</span></div></div>'.format(categories[0], categories[1], categories[2], categories[3], categories[4], categories[5], categories[6], categories[7], categories[8], config.height, config.footer, config.toneemoji, cls, config.search));
+		self.html('<div class="{12}"><div class="{12}-header"><div class="{12}-nav"><span data-type="0">{0}</span><span data-type="1">{1}</span><span data-type="2">{2}</span><span data-type="3">{3}</span><span data-type="4">{4}</span><span data-type="5">{5}</span><span data-type="6">{6}</span><span data-type="7">{7}</span><span data-type="8">{8}</span></div><div class="{12}-search"><span><i class="ti ti-search clearsearch"></i></span><div><input type="text" placeholder="{13}" class="{12}-search-input"></div></div></div><div class="{12}-scrollbar" style="height:{9}px"><div class="{12}-content"></div></div><div class="{12}-footer"><div class="{12}-footer-text">{10}</div><span data-type="0">&#{11};</span><span data-type="1">&#{11};&#127995;</span><span data-type="2">&#{11};&#127996;</span><span data-type="3">&#{11};&#127997;</span><span data-type="4">&#{11};&#127998;</span><span data-type="5">&#{11};&#127999;</span></div></div>'.format(categories[0], categories[1], categories[2], categories[3], categories[4], categories[5], categories[6], categories[7], categories[8], config.height, config.footer, config.toneemoji, cls, config.search));
 		self.scrollbar = SCROLLBAR(self.find(cls2 + '-scrollbar'), { visibleY: 1 });
 		self.renderemoji();
 	};
@@ -8617,10 +8617,10 @@ COMPONENT('emoji', 'categories:128342,128578,128161,127944,128008,128690,128172,
 	self.search = function(value) {
 
 		var search = self.find('.clearsearch');
-		search.rclass2('fa-');
+		search.rclass2('ti-');
 
 		if (!value.length) {
-			search.aclass('fa-search');
+			search.aclass('ti-search');
 			self.changepage();
 			return;
 		}
@@ -8628,7 +8628,7 @@ COMPONENT('emoji', 'categories:128342,128578,128161,127944,128008,128690,128172,
 		var html = '';
 		value = value.toSearch();
 		self.find(cls2 + '-content').html('');
-		search.aclass('fa-times');
+		search.aclass('ti-times');
 
 		for (var i = 0, len = W.emoticons_search.length; i < len; i++) {
 			if (W.emoticons_search[i].search.indexOf(value) !== -1) {
@@ -8655,10 +8655,10 @@ COMPONENT('emoji', 'categories:128342,128578,128161,127944,128008,128690,128172,
 			}, 300);
 		});
 
-		self.event('click', '.fa-times', function() {
+		self.event('click', '.ti-times', function() {
 			self.find(cls2 + '-search-input').val('');
 			self.changepage();
-			$(this).rclass2('fa-').aclass('fa-search');
+			$(this).rclass2('ti-').aclass('ti-search');
 		});
 
 		self.event('click', cls2 + '-nav span', function() {
@@ -9186,7 +9186,7 @@ COMPONENT('radiobutton', 'inline:1', function(self, config) {
 			var el = $(this);
 			var is = el.attrd('value') === (value == null ? null : value.toString());
 			el.tclass(cls + '-selected', is);
-			el.find('.fa').tclass('fa-circle-o', !is).tclass('fa-circle', is);
+			el.find('.ti').tclass('ti-circle', !is).tclass('ti-circle-alt', is);
 		});
 	};
 
@@ -9299,7 +9299,7 @@ COMPONENT('tooltip', function(self) {
 
 });
 
-COMPONENT('windows', 'menuicon:fa fa-navicon;reoffsetresize:0', function(self, config, cls) {
+COMPONENT('windows', 'menuicon:ti ti-navicon;reoffsetresize:0', function(self, config, cls) {
 
 	var cls2 = '.' + cls;
 	var cache = {};
@@ -9692,7 +9692,7 @@ COMPONENT('windows', 'menuicon:fa fa-navicon;reoffsetresize:0', function(self, c
 
 		hidden = ishidden ? ' hidden' : '';
 
-		var el = $('<div class="{0}-item{2}" data-id="{id}" style="left:{x}px;top:{y}px;width:{width}px"><span class="{0}-resize {0}-resize-tl"></span><span class="{0}-resize {0}-resize-tr"></span><span class="{0}-resize {0}-resize-bl"></span><span class="{0}-resize {0}-resize-br"></span><div class="{0}-title"><i class="fa fa-times {0}-control" data-name="close"></i><i class="far fa-window-maximize {0}-control" data-name="maximize"></i><i class="far fa-window-minimize {0}-control" data-name="minimize"></i><i class="{1} {0}-control {0}-lastbutton" data-name="menu"></i><span>{{ title }}</span></div><div class="{0}-body" style="height:{height}px"></div></div>'.format(cls, config.menuicon, hidden).arg(item.offset).arg(item));
+		var el = $('<div class="{0}-item{2}" data-id="{id}" style="left:{x}px;top:{y}px;width:{width}px"><span class="{0}-resize {0}-resize-tl"></span><span class="{0}-resize {0}-resize-tr"></span><span class="{0}-resize {0}-resize-bl"></span><span class="{0}-resize {0}-resize-br"></span><div class="{0}-title"><i class="ti ti-times {0}-control" data-name="close"></i><i class="ti ti-maximize {0}-control" data-name="maximize"></i><i class="ti ti-underscore {0}-control" data-name="minimize"></i><i class="{1} {0}-control {0}-lastbutton" data-name="menu"></i><span>{{ title }}</span></div><div class="{0}-body" style="height:{height}px"></div></div>'.format(cls, config.menuicon, hidden).arg(item.offset).arg(item));
 		var body = el.find(cls2 + '-body');
 		var pos;
 
@@ -9735,8 +9735,8 @@ COMPONENT('windows', 'menuicon:fa fa-navicon;reoffsetresize:0', function(self, c
 			var builder = [];
 			for (var i = 0; i < item.buttons.length; i++) {
 				var btn = item.buttons[i];
-				var icon = btn.icon.indexOf(' ') === -1 ? ('fa fa-' + btn.icon) : btn.icon;
-				builder.push('<i class="fa fa-{1} {0}-control" data-name="{2}"></i>'.format(cls, icon, btn.name));
+				var icon = btn.icon.indexOf(' ') === -1 ? ('ti ti-' + btn.icon) : btn.icon;
+				builder.push('<i class="ti ti-{1} {0}-control" data-name="{2}"></i>'.format(cls, icon, btn.name));
 			}
 			builder.length && el.find(cls2 + '-lastbutton').before(builder.join(''));
 		}
@@ -9976,7 +9976,7 @@ COMPONENT('windows', 'menuicon:fa fa-navicon;reoffsetresize:0', function(self, c
 
 });
 
-COMPONENT('dockable', 'menuicon:fa fa-navicon;style:2;parent:window;margin:0;reoffsetresize:0', function(self, config, cls) {
+COMPONENT('dockable', 'menuicon:ti ti-navicon;style:2;parent:window;margin:0;reoffsetresize:0', function(self, config, cls) {
 
 	var cls2 = '.' + cls;
 	var cache = {};
@@ -10632,7 +10632,7 @@ COMPONENT('dockable', 'menuicon:fa fa-navicon;style:2;parent:window;margin:0;reo
 
 		hidden = ishidden ? ' hidden' : '';
 
-		var el = $('<div class="{0}-item{2}" data-id="{id}" style="left:{x}px;top:{y}px;width:{width}px"><span class="{0}-resize {0}-resize-tl"></span><span class="{0}-resize {0}-resize-tr"></span><span class="{0}-resize {0}-resize-bl"></span><span class="{0}-resize {0}-resize-br"></span><div class="{0}-title"><i class="fa fa-times {0}-control" data-name="close"></i><span>{{ title }}</span></div><div class="{0}-body" style="height:{height}px"></div></div>'.format(cls, config.menuicon, hidden).arg(item.offset).arg(item));
+		var el = $('<div class="{0}-item{2}" data-id="{id}" style="left:{x}px;top:{y}px;width:{width}px"><span class="{0}-resize {0}-resize-tl"></span><span class="{0}-resize {0}-resize-tr"></span><span class="{0}-resize {0}-resize-bl"></span><span class="{0}-resize {0}-resize-br"></span><div class="{0}-title"><i class="ti ti-times {0}-control" data-name="close"></i><span>{{ title }}</span></div><div class="{0}-body" style="height:{height}px"></div></div>'.format(cls, config.menuicon, hidden).arg(item.offset).arg(item));
 		var body = el.find(cls2 + '-body');
 		var pos;
 
@@ -10688,8 +10688,8 @@ COMPONENT('dockable', 'menuicon:fa fa-navicon;style:2;parent:window;margin:0;reo
 			var builder = [];
 			for (var i = 0; i < item.buttons.length; i++) {
 				var btn = item.buttons[i];
-				var icon = btn.icon.indexOf(' ') === -1 ? ('fa fa-' + btn.icon) : btn.icon;
-				builder.push('<i class="fa fa-{1} {0}-control" data-name="{2}"></i>'.format(cls, icon, btn.name));
+				var icon = btn.icon.indexOf(' ') === -1 ? ('ti ti-' + btn.icon) : btn.icon;
+				builder.push('<i class="ti ti-{1} {0}-control" data-name="{2}"></i>'.format(cls, icon, btn.name));
 			}
 			builder.length && el.find(cls2 + '-lastbutton').before(builder.join(''));
 		}
@@ -11005,7 +11005,7 @@ COMPONENT('faicons', 'search:Search;scrollbarshadow:0', function(self, config, c
 			}, 300);
 		});
 
-		self.event('click', '.fa-times', function() {
+		self.event('click', '.ti-times', function() {
 			self.find('input').val('');
 			self.search('');
 		});
@@ -11061,7 +11061,7 @@ COMPONENT('faicons', 'search:Search;scrollbarshadow:0', function(self, config, c
 
 		var search = self.find(cls2 + '-search-input');
 		search.val('');
-		self.find('.clearsearch').rclass2('fa-').aclass('fa-search');
+		self.find('.clearsearch').rclass2('ti-').aclass('ti-search');
 
 		if (M.scope)
 			opt.scope = M.scope();
@@ -11195,7 +11195,7 @@ COMPONENT('form', 'zindex:62;scrollbar:1', function(self, config, cls) {
 
 	self.icon = function(value) {
 		var el = this.rclass2('fa');
-		value.icon && el.aclass(value.icon.indexOf(' ') === -1 ? ('fa fa-' + value.icon) : value.icon);
+		value.icon && el.aclass(value.icon.indexOf(' ') === -1 ? ('ti ti-' + value.icon) : value.icon);
 	};
 
 	self.resize = function() {
@@ -11218,7 +11218,7 @@ COMPONENT('form', 'zindex:62;scrollbar:1', function(self, config, cls) {
 
 	self.make = function() {
 
-		$(document.body).append('<div id="{0}" class="hidden {4}-container invisible"><div class="{4}-scrollbar"><div class="{4}-container-padding"><div class="{4}" style="max-width:{1}px"><div data-bind="@config__html span:value.title__change .{4}-icon:@icon" class="{4}-title"><button name="cancel" class="{4}-button-close{3}" data-path="{2}"><i class="fa fa-times"></i></button><i class="{4}-icon"></i><span></span></div></div></div></div>'.format(self.ID, config.width || 800, self.path, config.closebutton == false ? ' hidden' : '', cls));
+		$(document.body).append('<div id="{0}" class="hidden {4}-container invisible"><div class="{4}-scrollbar"><div class="{4}-container-padding"><div class="{4}" style="max-width:{1}px"><div data-bind="@config__html span:value.title__change .{4}-icon:@icon" class="{4}-title"><button name="cancel" class="{4}-button-close{3}" data-path="{2}"><i class="ti ti-times"></i></button><i class="{4}-icon"></i><span></span></div></div></div></div>'.format(self.ID, config.width || 800, self.path, config.closebutton == false ? ' hidden' : '', cls));
 
 		var scr = self.find('> script');
 		self.template = scr.length ? scr.html().trim() : '';
@@ -11368,7 +11368,7 @@ COMPONENT('floatinginput', 'minwidth:200', function(self, config, cls) {
 	self.make = function() {
 
 		self.aclass(cls + ' hidden');
-		self.append('<div class="{1}-summary hidden"></div><div class="{1}-input"><span class="{1}-add hidden"><i class="fa fa-plus"></i></span><span class="{1}-button"><i class="fa fa-search"></i></span><div><input type="text" placeholder="{0}" class="{1}-search-input" name="dir{2}" autocomplete="dir{2}" /></div></div'.format(config.placeholder, cls, Date.now()));
+		self.append('<div class="{1}-summary hidden"></div><div class="{1}-input"><span class="{1}-add hidden"><i class="ti ti-plus"></i></span><span class="{1}-button"><i class="ti ti-search"></i></span><div><input type="text" placeholder="{0}" class="{1}-search-input" name="dir{2}" autocomplete="dir{2}" /></div></div'.format(config.placeholder, cls, Date.now()));
 
 		input = self.find('input');
 		icon = self.find(cls2 + '-button').find('i');
@@ -11535,11 +11535,11 @@ COMPONENT('floatinginput', 'minwidth:200', function(self, config, cls) {
 
 		if (opt.icon) {
 			if (opt.icon.indexOf(' ') === -1)
-				ico = 'fa fa-' + opt.icon;
+				ico = 'ti ti-' + opt.icon;
 			else
 				ico = opt.icon;
 		} else
-			ico = 'fa fa-pencil-alt';
+			ico = 'ti ti-pencil-alt';
 
 		icon.rclass2('fa').aclass(ico).rclass('hidden');
 
@@ -11703,8 +11703,8 @@ COMPONENT('markdown', function (self) {
 
 			var is = next.hclass('hidden');
 			var icons = el.find('i');
-			icons.eq(0).tclass('fa-unlock', !is).tclass('fa-lock', is);
-			icons.eq(1).tclass('fa-angle-up', !is).tclass('fa-angle-down', is);
+			icons.eq(0).tclass('ti-unlock', !is).tclass('ti-lock', is);
+			icons.eq(1).tclass('ti-angle-up', !is).tclass('ti-angle-down', is);
 
 			el.find('b').html(el.attrd(is ? 'show' : 'hide'));
 		});
@@ -11875,7 +11875,7 @@ COMPONENT('markdown', function (self) {
 				}
 			}
 
-			return value.substring(0, beg - 1) + '<i class="fa fa-' + value.substring(beg, end) + '"></i>' + value.substring(end + 1);
+			return value.substring(0, beg - 1) + '<i class="ti ti-' + value.substring(beg, end) + '"></i>' + value.substring(end + 1);
 		}
 
 		function markdown_urlify(str) {
@@ -11899,7 +11899,7 @@ COMPONENT('markdown', function (self) {
 
 			el.find('.lang-secret').each(function() {
 				var el = $(this);
-				el.parent().replaceWith('<div class="secret" data-show="{0}" data-hide="{1}"><span class="showsecret"><i class="fa fa-lock"></i><i class="fa pull-right fa-angle-down"></i><b>{0}</b></span><div class="hidden">'.format(opt.showsecret || 'Show secret data', opt.hidesecret || 'Hide secret data') + el.html().trim().markdown(opt.secretoptions) +'</div></div>');
+				el.parent().replaceWith('<div class="secret" data-show="{0}" data-hide="{1}"><span class="showsecret"><i class="ti ti-lock"></i><i class="ti pull-right ti-angle-down"></i><b>{0}</b></span><div class="hidden">'.format(opt.showsecret || 'Show secret data', opt.hidesecret || 'Hide secret data') + el.html().trim().markdown(opt.secretoptions) +'</div></div>');
 			});
 
 			el.find('.lang-video').each(function() {
@@ -12482,7 +12482,7 @@ COMPONENT('markdown', function (self) {
 						prevsize = size;
 					}
 
-					builder.push('<li>' + (type === 'ol' ? tmpline.substring(tmpline.indexOf('.') + 1) : tmpline.substring(2)).trim().replace(/\[x\]/g, '<i class="fa fa-check-square green"></i>').replace(/\[\s\]/g, '<i class="far fa-square"></i>') + '</li>');
+					builder.push('<li>' + (type === 'ol' ? tmpline.substring(tmpline.indexOf('.') + 1) : tmpline.substring(2)).trim().replace(/\[x\]/g, '<i class="ti ti-check-square green"></i>').replace(/\[\s\]/g, '<i class="ti ti-square"></i>') + '</li>');
 
 				} else {
 					closeul();
@@ -12546,7 +12546,7 @@ COMPONENT('imageviewer', 'selector:.img-viewer;container:body;loading:1', functi
 
 	self.make = function() {
 		self.aclass(cls + ' hidden');
-		self.append('<div class="{0}-header"><button name="close"><i class="fa fa-times"></i></button><div><b>Name</b><div class="help">Dimension</div></div></div><div class="{0}-loading hidden"><div></div></div><div class="{0}-viewer"><div class="{0}-cell"><img /></div></div>'.format(cls));
+		self.append('<div class="{0}-header"><button name="close"><i class="ti ti-times"></i></button><div><b>Name</b><div class="help">Dimension</div></div></div><div class="{0}-loading hidden"><div></div></div><div class="{0}-viewer"><div class="{0}-cell"><img /></div></div>'.format(cls));
 		self.resize();
 
 		$(W).on('resize', self.resize);
@@ -13224,7 +13224,7 @@ COMPONENT('notifybar', 'timeout:5000', function(self, config, cls) {
 
 	self.make = function() {
 		self.aclass(cls + ' hidden');
-		self.append('<div class="{0}-controls"><button name="prev" disabled><i class="fa fa-angle-left"></i></button><button name="next" disabled><i class="fa fa-angle-right"></i></button></div><div class="{0}-body">OK</div>'.format(cls));
+		self.append('<div class="{0}-controls"><button name="prev" disabled><i class="ti ti-angle-left"></i></button><button name="next" disabled><i class="ti ti-angle-right"></i></button></div><div class="{0}-body">OK</div>'.format(cls));
 		self.event('click', cls2 + '-body', self.hide);
 		self.event('click', 'button', function() {
 			self[this.name]();
@@ -13260,8 +13260,8 @@ COMPONENT('notifybar', 'timeout:5000', function(self, config, cls) {
 		prevtype && self.rclass(cls + '-' + prevtype);
 		var msg = self.history[currentindex];
 
-		if (msg.body.indexOf('fa-') === -1)
-			msg.body = '<i class="fa fa-' + (msg.type === 1 ? 'check-circle' : msg.type === 2 ? 'warning' : 'info-circle') + '"></i>' + msg.body;
+		if (msg.body.indexOf('ti-') === -1)
+			msg.body = '<i class="ti ti-' + (msg.type === 1 ? 'check-circle' : msg.type === 2 ? 'warning' : 'info-circle') + '"></i>' + msg.body;
 
 		body.html(msg.body);
 		buttons[0].disabled = !self.history.length || currentindex === 0;
@@ -13607,8 +13607,8 @@ COMPONENT('largeform', 'zindex:12;padding:30;scrollbar:1;scrolltop:1;style:1', f
 	};
 
 	self.icon = function(value) {
-		var el = this.rclass2('fa');
-		value.icon && el.aclass(value.icon.indexOf(' ') === -1 ? ('fa fa-' + value.icon) : value.icon);
+		var el = this.rclass2('ti');
+		value.icon && el.aclass(value.icon.indexOf(' ') === -1 ? ('ti ti-' + value.icon) : value.icon);
 	};
 
 	self.resize = function() {
@@ -13642,7 +13642,7 @@ COMPONENT('largeform', 'zindex:12;padding:30;scrollbar:1;scrolltop:1;style:1', f
 
 	self.make = function() {
 
-		$(document.body).append('<div id="{0}" class="hidden {4}-container invisible"><div class="{4}" style="max-width:{1}px"><div data-bind="@config__text span:value.title__change .{4}-icon:@icon" class="{4}-title"><button name="cancel" class="{4}-button-close{3}" data-path="{2}"><i class="fa fa-times"></i></button><i class="{4}-icon"></i><span></span></div><div class="{4}-body"></div></div>'.format(self.ID, config.width || 800, self.path, config.closebutton == false ? ' hidden' : '', cls));
+		$(document.body).append('<div id="{0}" class="hidden {4}-container invisible"><div class="{4}" style="max-width:{1}px"><div data-bind="@config__text span:value.title__change .{4}-icon:@icon" class="{4}-title"><button name="cancel" class="{4}-button-close{3}" data-path="{2}"><i class="ti ti-times"></i></button><i class="{4}-icon"></i><span></span></div><div class="{4}-body"></div></div>'.format(self.ID, config.width || 800, self.path, config.closebutton == false ? ' hidden' : '', cls));
 
 		var scr = self.find('> script');
 		self.template = scr.length ? scr.html().trim() : '';
@@ -13831,7 +13831,7 @@ COMPONENT('approve', 'cancel:Cancel', function(self, config, cls) {
 	self.make = function() {
 
 		self.aclass(cls + ' hidden');
-		self.html('<div><div class="{0}-body"><span class="{0}-close"><i class="fa fa-times"></i></span><div class="{0}-content"></div><div class="{0}-buttons"><button data-index="0"></button><button data-index="1"></button></div></div></div>'.format(cls));
+		self.html('<div><div class="{0}-body"><span class="{0}-close"><i class="ti ti-times"></i></span><div class="{0}-content"></div><div class="{0}-buttons"><button data-index="0"></button><button data-index="1"></button></div></div></div>'.format(cls));
 
 		buttons = self.find(cls2 + '-buttons').find('button');
 
@@ -13891,7 +13891,7 @@ COMPONENT('approve', 'cancel:Cancel', function(self, config, cls) {
 
 			var tmp = icon + '';
 			if (tmp.indexOf(' ') == -1)
-				tmp = 'fa fa-' + tmp;
+				tmp = 'ti ti-' + tmp;
 
 			a = a.replace(icon, '').trim();
 			icon = '<i class="{0}"></i>'.format(tmp.replace(/"/g, ''));
@@ -13932,3 +13932,152 @@ COMPONENT('approve', 'cancel:Cancel', function(self, config, cls) {
 		}, 1000);
 	};
 });
+
+// Component: j-Animation
+// Version: 1
+// Updated: 2023-01-23 10:12
+COMPONENT('animation', 'style:2;delay:200;init:1000;cleaner:1000;visible:0;offset:50', function(self, config, cls) {
+
+	self.readonly();
+
+	if (!config.if)
+		self.blind();
+
+	self.destroy = function() {
+		self.visibleinterval && clearInterval(self.interval);
+	};
+
+	self.make = function() {
+		if (config.visible) {
+			self.visibleinterval = setInterval(function() {
+				if (VISIBLE(self.dom, config.offset)) {
+					self.visibleinterval = null;
+					clearInterval(self.visibleinterval);
+					self.animate();
+				}
+			}, 500);
+		} else
+			setTimeout2(self.ID, self.animate, config.init);
+
+		config.datasource && self.datasource(config.datasource, function() {
+			setTimeout2(self.ID, self.animate, config.init);
+		});
+	};
+
+	self.restore = function() {
+		self.find('.animated').aclass('animation').rclass('animated');
+	};
+
+	self.animate = function() {
+
+		var el = self.find('.animation');
+		var arr = [];
+
+		for (var i = 0; i < el.length; i++) {
+
+			var t = el[i];
+
+			if (!t.$anim) {
+				var $t = $(t);
+
+				if (!t.$animopt) {
+					var opt = ($t.attrd('animation') || '').parseConfig();
+					t.$animopt = opt;
+				}
+
+				t.$anim = cls + '-' + (t.$animopt.style || config.style);
+				$t.aclass(t.$anim + '-init animating');
+				arr.push($t);
+			}
+		}
+
+		if (!arr.length)
+			return;
+
+		setTimeout(function(arr) {
+
+			if (self.removed)
+				return;
+
+			var maxdelay = 500;
+
+			if (config.together) {
+
+				for (var i = 0; i < arr.length; i++) {
+					var el = arr[i];
+					var c = el[0].$anim;
+					var opt = el[0].$animopt;
+					if (!self.removed) {
+						if (opt.noanimation)
+							el.rclass('animation ' + c + '-init');
+						else
+							el.rclass('animation').aclass(c + '-run');
+					}
+				}
+
+				setTimeout(function() {
+					if (!self.removed) {
+						for (var i = 0; i < arr.length; i++) {
+							var c = arr[i][0].$anim;
+							arr[i].rclass(c + '-init ' + c + '-run animating').aclass('animated');
+							delete arr[i][0].$anim;
+						}
+						config.exec && self.EXEC(config.exec, self.element);
+					}
+				}, 1500);
+
+				return;
+			}
+
+			arr.wait(function(el, next, index) {
+
+				var opt = el[0].$animopt;
+				var delay = (opt.order || index) * (opt.delay || config.delay);
+				var clsname = cls + '-' + (opt.style || config.style);
+
+				if (maxdelay < delay)
+					maxdelay = delay;
+
+				if (el.hclass('hidden') || el.hclass('invisible')) {
+					el.rclass('animation ' + clsname + '-init').aclass('animated');
+					next();
+					return;
+				}
+
+				el[0].$animtime = setTimeout(function(el) {
+					if (!self.removed) {
+						if (opt.noanimation)
+							el.rclass('animation ' + clsname + '-init');
+						else
+							el.rclass('animation').aclass(clsname + '-run');
+					}
+				}, delay, el);
+
+				next();
+
+			}, function() {
+
+				setTimeout(function() {
+					for (var i = 0; i < arr.length; i++) {
+						var c = arr[i][0].$anim;
+						arr[i].rclass(c + '-init ' + c + '-run animating').aclass('animated');
+						delete arr[i][0].$anim;
+					}
+					config.exec && self.EXEC(config.exec, self.element);
+				}, maxdelay + 1000);
+			});
+
+		}, config.init / 10 >> 0, arr);
+	};
+
+	self.setter = function(value) {
+		if (config.if) {
+			if (value === config.if)
+				setTimeout2(self.ID, self.animate, config.init);
+			else
+				self.restore();
+		}
+	};
+
+});
+// End: j-Animation

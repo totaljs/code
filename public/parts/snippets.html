@@ -3,8 +3,8 @@
 	<div class="fullheight">
 
 		<div class="toolbar">
-			<button class="exec" data-exec="snippets/create"><i class="fa fa-plus-circle"></i>@(Add)</button>
-			<button data-bind="snippets.checked__disabled:!value || !value.length" class="exec" data-exec="snippets/options" disabled><i class="fa fa-check-circle"></i>@(Selected)</button>
+			<button class="exec" data-exec="snippets/create"><i class="ti ti-plus-circle"></i>@(Add)</button>
+			<button data-bind="snippets.checked__disabled:!value || !value.length" class="exec" data-exec="snippets/options" disabled><i class="ti ti-check-circle"></i>@(Selected)</button>
 		</div>
 
 		<div data---="datagrid__snippets.grid__click:snippets/edit;checked:snippets/checked;highlight:true">
@@ -56,13 +56,13 @@
 
 			var items = [];
 
-			items.push({ value: 1, name: '@(Clear backups)', icon: 'trash-o' });
-			items.push({ value: 255, name: '@(Remove)', icon: 'times-circle red' });
+			items.push({ value: 1, name: '@(Clear backups)', icon: 'ti ti-trash' });
+			items.push({ value: 255, name: '@(Remove)', icon: 'ti ti-times-circle red' });
 
 			SETTER('menu', 'show', 'left', el, items, function(item) {
 				switch (item.value) {
 					case 1:
-						SETTER('approve/show', '@(Are you sure you want to remove all backups for selected snippets?)', '"trash-o"@(Remove)', function() {
+						SETTER('approve/show', '@(Are you sure you want to remove all backups for selected snippets?)', '"ti ti-trash"@(Remove)', function() {
 							SETTER('loading/show');
 							snippets.checked.wait(function(item, next) {
 								AJAX('DELETE /api/snippets/{id}/backups/'.arg(item), next);
@@ -75,7 +75,7 @@
 						break;
 
 					case 255:
-						SETTER('approve/show', '@(Are you sure you want to remove selected snippets?)', '"trash-o"@(Remove)', function() {
+						SETTER('approve/show', '@(Are you sure you want to remove selected snippets?)', '"ti ti-trash"@(Remove)', function() {
 							SETTER('loading/show');
 							snippets.checked.wait(function(item, next) {
 								AJAX('DELETE /api/snippets/{id}/'.arg(item), next);

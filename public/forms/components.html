@@ -5,7 +5,7 @@
 <div data---="invisible" class="invisible">
 	<div data---="inputsearch__components.search__placeholder:@(Search);$binding:1;$delay:50"></div>
 	<div data---="viewbox__components.search__margin:78;parent:.ui-dockable-body;scrollbar:1;scrollbarshadow:1" class="invisible">
-		<div class="partdocs"><a href="#" target="_blank" data-bind="code.data.id__href:'/docs/' + value + '/'"><i class="fa fa-cloud-download"></i>@(Download documentation)</a></div>
+		<div class="partdocs"><a href="#" target="_blank" data-bind="code.data.id__href:'/docs/' + value + '/'"><i class="ti ti-cloud-download"></i>@(Download documentation)</a></div>
 		<div data---="search__components.search__selector:.part">
 
 			<div data-bind="code.data.todocurrent__template">
@@ -13,7 +13,7 @@
 					{{ if value && value.length }}
 					<div class="partscurrent">
 						{{ foreach m in value }}
-							<div class="part exec" data-exec="components/find" data-search="{{ m.name }}" data-todo="1" data-index="{{ $index }}" title="@(Line:) {{ m.line }}"><i class="far fa-warning red"></i>{{ m.name }}</div>
+							<div class="part exec" data-exec="components/find" data-search="{{ m.name }}" data-todo="1" data-index="{{ $index }}" title="@(Line:) {{ m.line }}"><i class="ti ti-warning red"></i>{{ m.name }}</div>
 						{{ end }}
 					</div>
 					{{ fi }}
@@ -163,7 +163,7 @@
 			var plus = '';
 
 			if (item.type === 'component') {
-				plus = ' <i class="pull-right fa fa-exclamation-circle red mt2"></i>';
+				plus = ' <i class="pull-right ti ti-exclamation-circle red mt2"></i>';
 				var stop = false;
 				for (var i = 0; i < code.componentsdb.length; i++) {
 					var sub = code.componentsdb[i];
