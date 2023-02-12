@@ -95,7 +95,7 @@ hr { border-color: #E0E0E0; }
 .td .timespent-user b { color: gray; }
 
 #combo { position: absolute; font-size: 10px; top: 20px; right: 47px; z-index: 2; line-height: 18px; text-align: center; color: #000000; cursor: pointer; }
-#combo .rating { font-size: 20px; text-align: center; font-family: Arial; position: absolute; width: 140px; margin-left: -34px; text-align: center; text-transform: uppercase; font-weight: bold; }
+#combo .rating { font-size: 20px; text-align: center; font-family: Arial; position: absolute; width: 140px; margin-left: -34px; text-align: center; text-transform: uppercase; font-weight: bold; pointer-events: none; }
 #combo .progress { height: 3px; margin: 0 auto; background-color: #505050; border-radius: 10px; width: 5%; }
 #combo b { font-size: 20px; display: block; height: 26px; }
 #combo .rating-animate { margin-top: 20px; opacity: 0; }
