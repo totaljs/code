@@ -10,8 +10,8 @@ cp -a ../resources/ resources
 cp -a ../views/ views
 cp ../clone.sh clone.sh
 
-total4 --bundle code.bundle
-cp code.bundle ../code.bundle
+total4 --bundle app.bundle
+cp app.bundle ../app.bundle
 
 cd ..
 rm -rf .bundle
