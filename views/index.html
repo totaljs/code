@@ -22,7 +22,6 @@
 	@{import('meta', 'head', 'ui.css + default.css', 'editor.js + ui.js + func.js + default.js', 'favicon.ico')}
 </head>
 <body data---="exec" class="@{if (user.darkmode !== 0 && user.darkmode !== 2)}td @{fi}invisible codebody">
-
 	<div class="bbfooter"></div>
 	<div data---="loading" class="ui-loading"><div></div></div>
 	<div data---="LAZY builder"></div>
@@ -167,6 +166,7 @@
 		CACHEPATH('common.powermode', '1 year');
 		CACHEPATH('common.powermodeshaking', '1 year');
 		CACHEPATH('common.volume', '1 year');
+		CACHEPATH('formlocalize', '1 year');
 
 		ENV('date', 'yyyy-MM-dd HH:mm');
 		DEF.dateformat = 'yyyy-MM-dd HH:mm';
@@ -364,7 +364,7 @@
 
 			var arr = [];
 
-			arr.push({ name: '@(Help)', id: 'help', icon: 'life-ring' });
+			arr.push({ name: '@(Help)', id: 'help', icon: 'support' });
 			arr.push({ name: '@(Pause)', id: 'pause', icon: 'pause' });
 
 			if (common.page === 'code' && W.code && W.code.data) {
@@ -380,7 +380,7 @@
 					arr.unshift({ name: '@(Changes)', id: 'changes', icon: 'clock-o' });
 
 				if (code.components && code.components.length)
-					arr.unshift({ name: '@(Used parts)', id: 'components', icon: 'puzzle-piece' });
+					arr.unshift({ name: '@(Used parts)', id: 'components', icon: 'puzzle' });
 
 				if (code.data && code.data.id)
 					arr.unshift({ name: '@(Translate application)', id: 'localize', icon: 'language', keywords: 'localize' });
@@ -391,18 +391,18 @@
 				arr.unshift({ name: '@(Show logfile)', id: 'logfile', icon: 'bug' });
 				arr.push({ name: '@(Clipboard)', id: 'clipboard', icon: 'clipboard' });
 				arr.push({ name: '@(Internal chat)', id: 'chat', icon: 'comments', keywords: 'chat messenger' });
-				arr.push({ name: '@(Support)', id: 'messenger', icon: 'life-ring', keywords: 'chat messenger support' });
+				arr.push({ name: '@(Support)', id: 'messenger', icon: 'support', keywords: 'chat messenger support' });
 
 				if (code.editor.path) {
-					arr.unshift({ name: '@(Insert UI components)', id: 'componentator', icon: 'puzzle-piece' });
-					arr.unshift({ name: '@(Save)', id: 'save', icon: 'floppy-o' });
+					arr.unshift({ name: '@(Insert UI components)', id: 'componentator', icon: 'puzzle' });
+					arr.unshift({ name: '@(Save)', id: 'save', icon: 'save' });
 					arr.unshift({ name: '@(Reload)', id: 'reload', icon: 'refresh', keywords: 'refresh' });
-					arr.push({ name: '@(Clear changes)', id: 'clearchanges', icon: 'trash-o', keywords: 'clear changes' });
+					arr.push({ name: '@(Clear changes)', id: 'clearchanges', icon: 'trash', keywords: 'clear changes' });
 					code.data.review && arr.unshift({ name: '@(Code review)', id: 'review', icon: 'check-circle green' });
 					arr.unshift({ name: '@(History &amp; Backups)', id: 'history', icon: 'history', keywords: 'backups' });
 				}
 
-				arr.push({ name: '@(Clear the project)', id: 'removeall', icon: 'trash-o' });
+				arr.push({ name: '@(Clear the project)', id: 'removeall', icon: 'trash' });
 			}
 
 			for (var i = 0; i < code.projects.length; i++) {
@@ -424,7 +424,7 @@
 							REDIRECT('/?id=' + value.projectid);
 							break;
 						case 'removeall':
-							SETTER('approve/show', '@(Are you sure you want to clear the project?)', '"trash-o" @(Remove)', function() {
+							SETTER('approve/show', '@(Are you sure you want to clear the project?)', '"trash" @(Remove)', function() {
 								SETTER('loading/show');
 								var allowed = { logs: 1, 'debug.js': 1, 'release.js': 1, 'debug.pid': 1, 'superadmin.pid': 1, 'index.pid': 1 };
 								code.tree.wait(function(item, next) {

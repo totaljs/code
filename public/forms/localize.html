@@ -1,0 +1,29 @@
+<ui-component name="miniform" path="common.form" config="if:formlocalize;title:@(Localize);icon:ti ti-language;zindex:50;autofocus:true;scrollbar:1;submit:?/submit;width:350" class="hidden" plugin="formlocalize">
+	<div class="padding">
+		<ui-component name="input" path="?.sl" config="dirsource:DEF.cl.languages;required:1" default="'EN'" class="m">@(Source)</ui-component>
+		<ui-component name="input" path="?.tl" config="dirsource:DEF.cl.languages;required:1" default="'SK'">@(Target)</ui-component>
+	</div>
+	<nav>
+		<button name="submit" style="width:100%"><i class="ti ti-language-alt"></i>@(TRANSLATE)</button>
+	</nav>
+</ui-component>
+
+<script>
+
+	SET('#languages', 'BG|Bulgarian,CS|Czech,DA|Danish,DE|German,EL|Greek,EN|English,ES|Spanish,ET|Estonian,FI|Finnish,FR|French,HU|Hungarian,ID|Indonesian,IT|Italian,JA|Japanese,KO|Korean,LT|Lithuanian,LV|Latvian,NB|Norwegian (Bokmål),NL|Dutch,PL|Polish,PT|Portuguese (all Portuguese varieties mixed),RO|Romanian,RU|Russian,SK|Slovak,SL|Slovenian,SV|Swedish,TR|Turkish,UK|Ukrainian,ZH|Chinese'.parseSource());
+
+	PLUGIN('formlocalize', function(exports) {
+
+		exports.submit = function() {
+			var model = exports.model;
+			var arg = {};
+			arg.tl = model.tl.toLowerCase();
+			arg.sl = model.sl.toLowerCase();;
+			var url = 'GET https://translate.googleapis.com/translate_a/single?client=gtx&sl={sl}&tl={tl}&dt=t&q='.args(arg, 'url');
+			model.callback(url);
+			NUL('common.form');
+		};
+
+	});
+
+</script>
