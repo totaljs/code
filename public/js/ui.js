@@ -1024,7 +1024,7 @@ COMPONENT('editor', function(self, config) {
 			// adds new keywords
 			for (var i = 0; i < unique.length; i++) {
 				var s = unique[i];
-				autocomplete.push({ search: s, text: (s.charAt(0) === '#' && s.length === 7 ? '<i class="ti ti-square mr5" style="color:{0}"></i>'.format(s) : '') + s, code: s });
+				autocomplete.push({ search: s, text: (s.charAt(0) === '#' && s.length === 7 ? '<i class="ti ti-square-alt mr5" style="color:{0}"></i>'.format(s) : '') + s, code: s });
 			}
 		}
 	};
@@ -1054,7 +1054,7 @@ COMPONENT('editor', function(self, config) {
 
 			for (var i = 0; i < autocomplete.length; i++) {
 				var s = autocomplete[i];
-				autocomplete[i] = { search: s, text: (s.charAt(0) === '#' && s.length === 7 ? '<i class="ti ti-square mr5" style="color:{0}"></i>'.format(s) : '') + s, code: s };
+				autocomplete[i] = { search: s, text: (s.charAt(0) === '#' && s.length === 7 ? '<i class="ti ti-square-alt mr5" style="color:{0}"></i>'.format(s) : '') + s, code: s };
 			}
 
 			if (code.componentsdb) {
