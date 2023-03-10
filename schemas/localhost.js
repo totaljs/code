@@ -47,11 +47,16 @@ NEWSCHEMA('Localhost', function(schema) {
 		}
 
 		var item = MAIN.projects.findItem('id', $.model.id);
+		if (!item) {
+			$.invalid('error-project');
+			return;
+		}
 
 		if ($.model.type === 'start')
 			PATH.unlink(item.path + 'logs/debug.log');
 
 		var done = async function() {
+
 			var filename = getfilename(item.path, $.model.iscustom);
 
 			if (!$.model.iscustom)

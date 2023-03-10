@@ -900,3 +900,9 @@ header .tools .external { color: #a2a286; }
 
 .td .iconmenu > div.selected { background-color: rgba(255,255,255,0.1); }
 .td .iconmenu > div { border-color: #404040; }
+
+.docker .label { font-size: 12px; margin-bottom: 5px; }
+.docker button { width: 100%; display: block; height: 28px; font-size: 11px; background-color: #68B25B; cursor: pointer; border: 0; border-radius: var(--radius); color: #FFF; }
+.docker button.stop { background-color: #E8483F; }
+.docker button:hover { opacity: 0.8; }
+.docker button i { margin-right: 5px; }

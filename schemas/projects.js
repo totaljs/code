@@ -503,20 +503,25 @@ NEWSCHEMA('Projects', function(schema) {
 		var index = MAIN.projects.findIndex('id', id);
 		var item = MAIN.projects[index];
 
-		if (index !== -1) {
-			MAIN.projects.splice(index, 1);
-			MAIN.save(2);
-		}
+		var done = function() {
+
+			if (index !== -1) {
+				MAIN.projects.splice(index, 1);
+				MAIN.save(2);
+			}
+
+			MAIN.log($.user, 'projects_remove', item, null);
+			NOSQL(id + '_parts').drop();
+
+			PUBLISH('projects_emove', FUNC.tms($, null, item));
+
+			$.success();
+		};
 
 		if (CONF.folder_npm && CONF.folder_www)
-			EXEC('+Localhost --> save', { id: id, type: 'stop' }, NOOP);
-
-		MAIN.log($.user, 'projects_remove', item, null);
-		NOSQL(id + '_parts').drop();
-
-		PUBLISH('projects_emove', FUNC.tms($, null, item));
-
-		$.success();
+			EXEC('+Localhost --> save', { id: id, type: 'stop' }, () => done());
+		else
+			done();
 	});
 
 	schema.addWorkflow('backupsclear', function($) {

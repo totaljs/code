@@ -3,17 +3,23 @@
 -->
 
 <div data---="invisible" class="invisible" data-scope="localhostpanel">
-	<div data---="viewbox__?__margin:78;parent:.ui-dockable-body;scrollbar:1;scrollbarshadow:1" class="invisible">
-		<h2 style="margin:20px 0 10px">@(Application status)</h2>
-		<strong data-bind="?.app__html:value?'@(Running)':'@(Not running)'__.red:!value"></strong>
-		<div>
-			<button class="exec" data-exec="?/state" data-bind="?.app__html:value?'@(Stop)':'@(Start)'"></button>
-		</div>
-
-		<h2 style="margin:20px 0 10px">@(Docker compose status)</h2>
-		<strong data-bind="?.custom__html:value?'@(Running)':'@(Not running)'__.red:!value"></strong>
-		<div>
-			<button class="exec" data-exec="?/state" data-bind="?.custom__html:value?'@(Stop)':'@(Start)'" data-id="custom"></button>
+	<div data---="viewbox__?__margin:78;parent:.ui-dockable-body;scrollbar:1;scrollbarshadow:1" class="invisible docker">
+		<br />
+		<div style="padding:0 15px">
+			<div data-bind="?__template__show">
+				<script type="text/html">
+					<div class="grid-2">
+						<div>
+							<div class="label">Docker app</div>
+							<button class="exec{{ if value.app }} stop{{ fi }}" data-exec="?/state">{{ if value.app }}<i class="ti ti-stop-alt"></i>@(Stop){{ else }}<i class="ti ti-play-alt"></i>@(Start){{ fi }}</button>
+						</div>
+						<div>
+							<div class="label">Docker compose</div>
+							<button class="exec{{ if value.custom }} stop{{ fi }}" data-exec="?/state" data-id="custom">{{ if value.custom }}<i class="ti ti-stop-alt"></i>@(Stop){{ else }}<i class="ti ti-play-alt"></i>@(Start){{ fi }}</button>
+						</div>
+					</div>
+				</script>
+			</div>
 		</div>
 	</div>
 </div>
@@ -35,13 +41,19 @@
 		};
 
 		exports.state = function(el) {
-			SETTER('loading/show');
 			var is = el.attrd('id') ? GET('?.custom') : GET('?.app');
 			var model = {};
 			model.id = code.data.id;
 			model.type = is ? 'stop' : 'start';
 			model.iscustom = !!el.attrd('id');
-			AJAX('POST /api/localhost/state/', model, ASETTER('message/response', () => exports.reload()));
+			var done = function() {
+				SETTER('loading/show');
+				AJAX('POST /api/localhost/state/', model, ASETTER('message/response', () => exports.reload()));
+			};
+			if (model.type === 'start')
+				SETTER('approve/show', '@(Are you sure you want to start a Docker container?)', '"ti ti-play-alt" @(Start)', done);
+			else
+				done();
 		};
 	})
 </script>
