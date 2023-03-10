@@ -93,13 +93,15 @@
 
 			var items = [];
 
-			items.push({ value: 1, name: '@(Clear backups)', icon: 'trash' });
-			items.push({ value: 255, name: '@(Remove)', icon: 'times-circle red' });
+			items.push({ value: 1, name: '@(Clear backups)', icon: 'clean' });
+			items.push({ value: 254, name: '@(Unregister)', icon: 'sign-out orange' });
+			items.push('-');
+			items.push({ value: 255, name: '@(Remove)', icon: 'remove red' });
 
 			SETTER('menu/show', 'left', el, items, function(item) {
 				switch (item.value) {
 					case 1:
-						SETTER('approve/show', '@(Are you sure you want to remove all backups for selected projects?)', '"ti ti-trash"@(Remove)', function() {
+						SETTER('approve/show', '@(Are you sure you want to remove all backups for selected projects?)', '"ti ti-clean" @(Remove)', function() {
 							SETTER('loading/show');
 							projects.checked.wait(function(item, next) {
 								AJAX('DELETE /api/projects/{id}/backups/'.arg(item), next);
@@ -111,11 +113,24 @@
 						});
 						break;
 
-					case 255:
-						SETTER('approve/show', '@(Are you sure you want to remove selected projects?)', '"ti ti-trash"@(Remove)', function() {
+					case 254:
+						SETTER('approve/show', '@(Are you sure you want to unregister selected projects?)', '"ti ti-sign-out" @(Remove)', function() {
 							SETTER('loading/show');
 							projects.checked.wait(function(item, next) {
 								AJAX('DELETE /api/projects/{id}/'.arg(item), next);
+							}, function() {
+								SETTER('loading/hide', 100);
+								SETTER('notifybar/success', '@(Selected projects have been unregistered.)');
+								exports.refresh();
+							});
+						});
+						break;
+
+					case 255:
+						SETTER('approve/show', '@(Are you sure you want to remove selected projects with all files?)', '"ti ti-trash" @(Remove)', function() {
+							SETTER('loading/show');
+							projects.checked.wait(function(item, next) {
+								AJAX('DELETE /api/projects/{id}/?remove=1'.arg(item), next);
 							}, function() {
 								SETTER('loading/hide', 100);
 								SETTER('notifybar/success', '@(Selected projects have been removed.)');

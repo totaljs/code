@@ -334,6 +334,7 @@ NEWSCHEMA('Projects', function(schema) {
 			model.ownerid = $.user ? $.user.id : null;
 			model.created = NOW;
 			MAIN.projects.push(model);
+			PATH.mkdir(model.path);
 
 			PUBLISH('projects_create', FUNC.tms($, model));
 		}
@@ -516,6 +517,10 @@ NEWSCHEMA('Projects', function(schema) {
 			PUBLISH('projects_emove', FUNC.tms($, null, item));
 
 			$.success();
+
+			// Remove all files
+			if ($.query.remove === '1')
+				SHELL('rm -r ' + item.path, NOOP);
 		};
 
 		if (CONF.folder_npm && CONF.folder_www)

@@ -229,6 +229,7 @@ h3 i { margin-right: 5px; color: $color; }
 .td .help .link { color: #79d0ff; }
 
 .red2 { color: #935050 !important; }
+.orange { color: #F7BE01 !important; }
 
 .table-small { font-size: 12px; }
 .table-small > tbody > tr > td { padding: 3px 5px; }
@@ -281,11 +282,12 @@ header .tools .external { color: #a2a286; }
 .toolbar button:last-child { border-top-right-radius: 3px; border-bottom-right-radius: 3px; }
 .toolbar button:hover { background-color: #F0F0F0; border-color: #D0D0D0; }
 .toolbar button:disabled { color: silver; cursor: not-allowed; background-color: #E0E0E0; border-color: #E0E0E0 !important; box-shadow: none; }
-.toolbar button:disabled .fa, .toolbar button:disabled .far, .toolbar button:disabled .fa { color: silver; }
+.toolbar button:disabled .ti, .toolbar button:disabled .fa { color: #B0B0B0; }
 .toolbar button.right { float: right; margin-left: 5px; margin-right: 0; }
 .toolbar button .ti-check-circle { color: #68B25B; }
 .toolbar .highlight { background-color: #FFFFD5; }
 .toolbar-right { float: right; }
+.td .toolbar button:disabled .ti, .toolbar button:disabled .fa { color: #777; }
 
 .td .toolbar button { background-color: #252525; border-color: #353535; color: #A0A0A0; }
 .td .toolbar button:hover { background-color: #303030; }
