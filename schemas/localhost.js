@@ -71,8 +71,13 @@ async function copydockercompose(path, filename, host) {
 	wwwfolder = wwwfolder[wwwfolder.length - 1] === '/' ? wwwfolder.substr(0, wwwfolder.length - 1) : wwwfolder;
 	nodemodules = nodemodules[nodemodules.length - 1] === '/' ? nodemodules.substr(0, nodemodules.length - 1) : nodemodules;
 
-	var content = await ReadFile(PATH.root('app-compose.yaml'));
-	host = host.replace('http://', '').replace('https://', '');
-	content = content.toString('utf8').replace('##HOST##', host).replace('##NODE_MODULES##', nodemodules).replace('##folder_www##', wwwfolder);
+	if (host.indexOf('.localhost') !== -1)
+		host = host.replace('http://', '').replace('https://', '');
+	else
+		islocalhost = false;
+
+	var content = await ReadFile(PATH.root(islocalhost ? 'app-compose.yaml' : 'app-compose-https.yaml'));
+	content = content.toString('utf8').replace('##HOST##', host).replace('##NODE_MODULES##', nodemodules).replace('##WWW_FOLDER##', wwwfolder);
+
 	return WriteFile(filename, content);
 }

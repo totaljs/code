@@ -1,0 +1,18 @@
+version: '3.1'
+
+services:
+  main_app:
+    image: tomee03/run
+    volumes:
+      - ##WWW_FOLDER##:/www
+      - ##NODE_MODULES##:/node_modules
+    environment:
+      - VIRTUAL_HOST=##HOST##
+      - LETSENCRYPT_HOST=##HOST##
+      - HTTPS_METHOD=redirect
+      - VIRTUAL_PORT=8000
+
+networks:
+  default:
+    name: proxy
+    external: true

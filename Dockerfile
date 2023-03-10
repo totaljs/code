@@ -1,15 +1,12 @@
 FROM node:19-alpine
-MAINTAINER totalplatform "info@totaljs.com"
+
+RUN apk update && apk add bash
+RUN apk add curl
+RUN apk add docker docker-cli-compose
 
 VOLUME /code/
 WORKDIR /code/
-RUN mkdir -p /code/
-RUN mkdir -p /code/bundles/
-
-COPY app.bundle ./bundles/app.bundle
-COPY index.js .
-COPY config .
-COPY package.json .
+COPY . /
 
 RUN npm install
 EXPOSE 8000
