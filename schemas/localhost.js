@@ -3,6 +3,7 @@ const Promisify = require('util').promisify;
 
 const ReadFile = Promisify(Fs.readFile);
 const WriteFile = Promisify(Fs.writeFile);
+const CopyFile = Promisify(Fs.copyFile);
 const Exec = Promisify(require('child_process').exec);
 
 NEWSCHEMA('Localhost', function(schema) {
@@ -21,6 +22,9 @@ NEWSCHEMA('Localhost', function(schema) {
 		var item = MAIN.projects.findItem('id', $.id);
 		var filename = getfilename(item.path);
 
+		PATH.mkdir(item.path);
+
+		await CopyFile(PATH.databases('run.js'), PATH.join(item.path, 'index.js'));
 		await copydockercompose(item.path, filename, item.url);
 		var ps = await Exec('docker compose -f {0} ps --format json'.format(filename));
 		PATH.unlink(filename);
@@ -71,7 +75,9 @@ async function copydockercompose(path, filename, host) {
 	wwwfolder = wwwfolder[wwwfolder.length - 1] === '/' ? wwwfolder.substr(0, wwwfolder.length - 1) : wwwfolder;
 	nodemodules = nodemodules[nodemodules.length - 1] === '/' ? nodemodules.substr(0, nodemodules.length - 1) : nodemodules;
 
-	if (host.indexOf('.localhost') !== -1)
+	var islocalhost = host.indexOf('.localhost') !== -1;
+
+	if (islocalhost)
 		host = host.replace('http://', '').replace('https://', '');
 	else
 		islocalhost = false;
