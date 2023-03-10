@@ -1,0 +1,45 @@
+<!--
+	It depends on "code editor"
+-->
+
+<div data---="invisible" class="invisible" data-scope="localhostpanel">
+	<div data---="viewbox__?__margin:78;parent:.ui-dockable-body;scrollbar:1;scrollbarshadow:1" class="invisible">
+		<h2 style="margin:20px 0 10px">Application status</h2>
+		<strong data-bind="?.app__html:value?'Running':'Not running'__.red:!value"></strong>
+		<div>
+			<button class="exec" data-exec="?/state" data-bind="?.app__html:value?'Stop':'Start'"></button>
+		</div>
+
+		<h2 style="margin:20px 0 10px">Docker compose status</h2>
+		<strong data-bind="?.custom__html:value?'Running':'Not running'__.red:!value"></strong>
+		<div>
+			<button class="exec" data-exec="?/state" data-bind="?.custom__html:value?'Stop':'Start'" data-id="custom"></button>
+		</div>
+	</div>
+</div>
+
+<script>
+	PLUGIN('localhostpanel', function(exports) {
+		exports.reload = function() {
+
+			if (!code.data || !code.data.id)
+				return;
+
+			SETTER('loading/show');
+			AJAX('GET /api/localhost/{id}/'.arg(code.data), function(response) {
+				SET('?', response);
+				SETTER('loading/hide', 500);
+			});
+		};
+
+		exports.state = function(el) {
+			SETTER('loading/show');
+			var is = el.attrd('id') ? GET('?.custom') : GET('?.app');
+			var model = {};
+			model.id = code.data.id;
+			model.type = is ? 'stop' : 'start';
+			model.iscustom = !!el.attrd('id');
+			AJAX('POST /api/localhost/state/', model, exports.reload);
+		};
+	})
+</script>

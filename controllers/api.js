@@ -13,6 +13,9 @@ exports.install = function() {
 	ROUTE('+DELETE  /api/{schema}/{id}/                    *{schema}          --> @remove');
 	ROUTE('+POST    /api/{schema}/{id}/                    *{schema}          --> @save', 1024);
 
+	// Localhost
+	ROUTE('+POST    /api/localhost/state/                  *Localhost         --> @save', [30000]);
+
 	// Files
 	ROUTE('+POST    /api/files/{id}/rename/                *FilesRename       --> @exec');
 	ROUTE('+POST    /api/files/{id}/remove/                *FilesRemove       --> @exec');
