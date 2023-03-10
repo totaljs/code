@@ -32,7 +32,7 @@
 
 	</style>
 </head>
-<body@{if (user.darkmode === 2 && (NOW.getHours()<=6 || NOW.getHours()>=18)) || (user.darkmode !== 0 && user.darkmode !== 2)} class="ui-dark"@{fi}>
+<body@{if user && ((user.darkmode === 2 && (NOW.getHours()<=6 || NOW.getHours()>=18)) || (user.darkmode !== 0 && user.darkmode !== 2))} class="ui-dark"@{fi}>
 
 	<div class="panel">
 		<label><i class="ti ti-pause red"></i> @(Paused coding)</label>
