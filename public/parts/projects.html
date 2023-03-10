@@ -33,7 +33,7 @@
 			var opt = {};
 			opt.element = el;
 			opt.summary = '@(Enter URL address to your web app)';
-			opt.value = 'https://';
+			opt.value = location.origin.indexOf('.localhost') === -1 ? 'https://' : 'http://';
 			opt.monospace = true;
 			opt.offsetWidth = 300;
 			opt.offsetY = 10;
