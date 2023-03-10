@@ -53,6 +53,7 @@
 		<div class="body-title">@(Total.js Code Editor v)<span data-bind="common.version__text"></span></div>
 		<section class="tabs">
 			<span class="livereloadindicator hidden" data-bind="code.data.livereload__show"><i class="ti ti-circle-alt green"></i></span>
+			<span class="docker exec" data-exec="code/docker" title="@(Docker)"><i class="ti ti-plug-alt"></i></span>
 			<a data-bind="code.data.url__href__show" target="_blank" class="preview" title="@(Preview)"><i class="ti ti-globe"></i></a>
 			<span class="options exec hidden" data-bind="code.editor__show" data-exec="code/options_editor"><i class="ti ti-cog-alt"></i></span>
 			<span class="options2 exec hidden" data-bind="code.editor__show" data-exec="code/branches"><i class="ti ti-code-branch"></i></span>
@@ -161,7 +162,7 @@
 			<li data-value="changes" title="@(Last changes)"><i class="ti ti-history"></i></li>
 			<li data-value="backups" title="@(Backups)"><i class="ti ti-archive"></i></li>
 			<li data-value="timespentform" title="@(Time spent)"><i class="ti ti-clock"></i></li>
-			<li data-value="localhost" title="@(Docker)"><i class="ti ti-spinner"></i></li>
+			<!--<li data-value="localhost" title="@(Docker)"><i class="ti ti-spinner"></i></li>-->
 		</ul>
 	</div>
 	<div data---="part__common.form__if:search;url:/forms/search.html;reload:codesearch/reload"></div>
@@ -3589,6 +3590,44 @@
 					SETTER('loading/hide');
 				});
 			});
+		};
+
+		exports.docker = function(el) {
+
+			var model = exports.model;
+			var opt = {};
+			opt.offsetX = 10;
+			opt.offsetY = -5;
+			opt.element = el;
+			opt.large = true;
+
+			SETTER('loading/show');
+			AJAX('GET /api/localhost/{id}/'.arg(model.data), ASETTER('message/response', function(response) {
+
+				opt.align = 'right';
+				opt.items = [];
+				opt.items.push({ id: 'app', name: response.app ? '@(Stop app)' : '@(Run app)', icon: response.app ? 'ti ti-stop-alt red' : 'ti ti-play-alt green' });
+				opt.items.push('-');
+				opt.items.push({ id: 'custom', name: response.custom ? '@(Stop docker compose)' : '@(Run docker compose)', icon: response.app ? 'ti ti-stop-alt red' : 'ti ti-play-alt green' });
+				opt.callback = function(sel) {
+					var is = self.id === 'app' ? response.app : response.custom;
+					var data = {};
+					data.id = model.data.id;
+					data.type = is ? 'stop' : 'start';
+					data.iscustom = self.id === 'custom';
+					var done = function() {
+						SETTER('loading/show');
+						AJAX('POST /api/localhost/state/', data, ASETTER('message/response', () => exports.reload()));
+					};
+					if (data.type === 'start')
+						SETTER('approve/show', '@(Are you sure you want to start a Docker container?)', '"ti ti-play-alt" @(Start)', done);
+					else
+						done();
+				};
+
+				SETTER('loading/hide', 500);
+				SETTER('menu/show', opt);
+			}));
 		};
 
 		exports.review = function(el) {

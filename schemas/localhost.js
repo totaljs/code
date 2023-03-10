@@ -38,8 +38,8 @@ NEWSCHEMA('Localhost', function(schema) {
 		}
 
 		var apps = JSON.parse(ps.stdout);
-		var appisonline = apps.filter(app => app.Image === 'totalplatform/run').length > 0;
-		var customisonline = apps.filter(app => app.Image !== 'totalplatform/run').length > 0;
+		var appisonline = apps.filter(app => app.Image.indexOf('totalplatform/run') !== -1).length > 0;
+		var customisonline = apps.filter(app => app.Image.indexOf('totalplatform/run') !== -1).length > 0;
 
 		$.callback({ app: appisonline, custom: customisonline, apps });
 	});

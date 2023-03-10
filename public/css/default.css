@@ -94,7 +94,7 @@ hr { border-color: #E0E0E0; }
 .td .timespent-item.b { color: #E0E0E0; }
 .td .timespent-user b { color: gray; }
 
-#combo { position: absolute; font-size: 10px; top: 20px; right: 47px; z-index: 2; line-height: 18px; text-align: center; color: #000000; cursor: pointer; }
+#combo { position: absolute; font-size: 10px; top: 20px; right: 94px; z-index: 2; line-height: 18px; text-align: center; color: #000000; cursor: pointer; }
 #combo .rating { font-size: 20px; text-align: center; font-family: Arial; position: absolute; width: 140px; margin-left: -34px; text-align: center; text-transform: uppercase; font-weight: bold; pointer-events: none; }
 #combo .progress { height: 3px; margin: 0 auto; background-color: #505050; border-radius: 10px; width: 5%; }
 #combo b { font-size: 20px; display: block; height: 26px; }
@@ -338,10 +338,13 @@ header .tools .external { color: #a2a286; }
 .tabs .livereloadindicator { position: absolute; right: 4px; font-size: 8px; top: 4px; animation: 1s uncomplete infinite forwards; }
 .tabs .preview { float: right; font-size: 20px; margin: 11px 13px 0 0; cursor: pointer; color: #4285F4; }
 .tabs .preview:hover { opacity: 0.6; }
+.tabs .docker { float: right; font-size: 20px; margin: 11px 13px 0 0; cursor: pointer; color: #68B25B; border-left: 1px solid #E0E0E0; padding-left: 13px; }
+.tabs .docker:hover { opacity: 0.6; }
 .td .tabs .options:hover { color: white; }
 .nolocked { font-style: italic; color: gray !important; }
 .nolocked > em { font-style: italic !important; }
 .td .nolocked { color: #C0C0C0 !important; }
+.td .tabs .docker { border-left-color: #404040; }
 
 .status { height: 35px; border-top: 1px solid #E0E0E0; padding: 0 0 0 10px; font-size: 12px; }
 .status-alerts { padding: 9px 0 0; cursor: pointer; position: relative; display: inline-block; vertical-align: top; height: 34px; min-width: 42px; text-align: left; }
