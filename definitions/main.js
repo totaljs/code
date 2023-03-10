@@ -1,7 +1,7 @@
 const Path = require('path');
 const Fs = require('fs');
 
-MAIN.version = '1.8.0';
+MAIN.version = '2.0.0';
 
 // Projects
 MAIN.projects = [];
