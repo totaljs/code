@@ -14,5 +14,5 @@ __Instructions__:
 __Localhost (Docker)__:
 
 - download `docker-compose.yaml`
-- edit `docker-compose.yaml`, and set `FOLDER_WWW` + `FOLDER_MODULES`
+- edit `docker-compose.yaml`, and set `FOLDER_WWW` + `FOLDER_NPM`
 - run `docker compose up` or `docker compose up -d` as service

@@ -13,7 +13,7 @@ NEWSCHEMA('Localhost', function(schema) {
 
 	schema.setRead(async function($) {
 
-		if (!CONF.folder_modules || !CONF.folder_www) {
+		if (!CONF.folder_npm || !CONF.folder_www) {
 			$.invalid('Node modules folder is not set.');
 			return;
 		}
@@ -34,7 +34,7 @@ NEWSCHEMA('Localhost', function(schema) {
 
 	schema.setSave(async function($) {
 
-		if (!CONF.folder_modules || !CONF.folder_www) {
+		if (!CONF.folder_npm || !CONF.folder_www) {
 			$.invalid('"node_modules" folder is not set');
 			return;
 		}
@@ -66,7 +66,7 @@ function getfilename(path, iscustom) {
 async function copydockercompose(path, filename, host) {
 
 	var wwwfolder = path.replace('/www/www', CONF.folder_www);
-	var nodemodules = CONF.folder_modules;
+	var nodemodules = CONF.folder_npm;
 
 	wwwfolder = wwwfolder[wwwfolder.length - 1] === '/' ? wwwfolder.substr(0, wwwfolder.length - 1) : wwwfolder;
 	nodemodules = nodemodules[nodemodules.length - 1] === '/' ? nodemodules.substr(0, nodemodules.length - 1) : nodemodules;

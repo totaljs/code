@@ -21,7 +21,7 @@ services:
     - VIRTUAL_HOST=code.localhost
     - VIRTUAL_PORT=8000
     - FOLDER_WWW=/your_working_path/     # Edit development folder
-    - FOLDER_MODULES=/your_working_path/ # Edit node_modules folder
+    - FOLDER_NPM=/your_working_path/     # Edit node_modules folder
 
 volumes:
   codedata:

@@ -10,4 +10,4 @@ autodiscover          : /www/www/
 allow_tms             : false
 
 folder_www     (env)  : FOLDER_WWW
-folder_modules (env)  : FOLDER_MODULES
+folder_npm     (env)  : FOLDER_NPM
