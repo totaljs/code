@@ -24,10 +24,19 @@ NEWSCHEMA('Localhost', function(schema) {
 
 		PATH.mkdir(item.path);
 
+		console.log('1-->', item.path);
+		console.log('2-->', PATH.databases('run.js'));
+
 		await CopyFile(PATH.databases('run.js'), PATH.join(item.path, 'index.js'));
 		await copydockercompose(item.path, filename, item.url);
-		var ps = await Exec('docker compose -f {0} ps --format json'.format(filename));
-		PATH.unlink(filename);
+
+		try {
+			var ps = await Exec('docker compose -f {0} ps --format json'.format(filename));
+			PATH.unlink(filename);
+		} catch (e) {
+			$.invalid(e);
+			return;
+		}
 
 		var apps = JSON.parse(ps.stdout);
 		var appisonline = apps.filter(app => app.Image === 'totalplatform/run').length > 0;
@@ -83,7 +92,7 @@ async function copydockercompose(path, filename, host) {
 		islocalhost = false;
 
 	var content = await ReadFile(PATH.root(islocalhost ? 'app-compose.yaml' : 'app-compose-https.yaml'));
-	content = content.toString('utf8').replace('##HOST##', host).replace('##NODE_MODULES##', nodemodules).replace('##WWW_FOLDER##', wwwfolder);
+	content = content.toString('utf8').replace(/##HOST##/g, host).replace(/##NODE_MODULES##/g, nodemodules).replace(/##WWW_FOLDER##/g, wwwfolder);
 
 	return WriteFile(filename, content);
 }
