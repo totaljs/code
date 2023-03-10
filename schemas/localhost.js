@@ -27,7 +27,7 @@ NEWSCHEMA('Localhost', function(schema) {
 		var filename = getfilename(item.path);
 
 		PATH.mkdir(item.path);
-		await copydockercompose(item.path, filename, item.url);
+		await copydockercompose(item.path, filename, item.url, item.releasemode);
 
 		try {
 			var ps = await Exec('docker compose -f {0} ps --format json'.format(filename));
@@ -65,7 +65,7 @@ NEWSCHEMA('Localhost', function(schema) {
 			var filename = getfilename(item.path, $.model.iscustom);
 
 			if (!$.model.iscustom)
-				await copydockercompose(item.path, filename, item.url);
+				await copydockercompose(item.path, filename, item.url, item.releasemode);
 
 			await Exec('docker compose -f {0} {1}'.format(filename, $.model.type === 'start' ? 'up -d' : 'down'));
 
@@ -87,7 +87,7 @@ function getfilename(path, iscustom) {
 	return path + (iscustom ? 'docker-compose.yaml' : 'app-compose.yaml');
 }
 
-async function copydockercompose(path, filename, host) {
+async function copydockercompose(path, filename, host, release) {
 
 	var wwwfolder = path.replace('/www/www', CONF.folder_www);
 	var nodemodules = CONF.folder_npm;
@@ -99,7 +99,7 @@ async function copydockercompose(path, filename, host) {
 
 	host = host.replace('http://', '').replace('https://', '');
 
-	var content = await ReadFile(PATH.root(islocalhost ? 'app-compose.yaml' : 'app-compose-https.yaml'));
+	var content = await ReadFile(PATH.root((islocalhost ? 'app-compose{0}.yaml' : 'app-compose-https{0}.yaml'.format(release ? '-release' : ''))));
 	content = content.toString('utf8').replace(/##HOST##/g, host).replace(/##FOLDER_NPM##/g, nodemodules).replace(/##FOLDER_WWW##/g, wwwfolder);
 
 	return WriteFile(filename, content);

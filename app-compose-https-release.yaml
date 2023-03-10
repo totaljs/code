@@ -1,0 +1,19 @@
+version: '3.1'
+
+services:
+  main_app:
+    image: totalplatform/run:release
+    restart: always
+    volumes:
+      - ##FOLDER_WWW##:/www
+      - ##FOLDER_NPM##:/node_modules
+    environment:
+      - VIRTUAL_HOST=##HOST##
+      - LETSENCRYPT_HOST=##HOST##
+      - HTTPS_METHOD=redirect
+      - VIRTUAL_PORT=8000
+
+networks:
+  default:
+    name: proxy
+    external: true
