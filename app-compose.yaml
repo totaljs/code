@@ -1,0 +1,16 @@
+version: '3.1'
+
+services:
+  main_app:
+    image: totalplatform/run
+    volumes:
+      - ##WWW_FOLDER##:/www
+      - ##NODE_MODULES##:/node_modules
+    environment:
+      - VIRTUAL_HOST=##HOST##
+      - VIRTUAL_PORT=8000
+
+networks:
+  default:
+    name: proxy
+    external: true
