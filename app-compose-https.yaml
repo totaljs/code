@@ -3,6 +3,7 @@ version: '3.1'
 services:
   main_app:
     image: totalplatform/run
+    restart: always
     volumes:
       - ##FOLDER_WWW##:/www
       - ##FOLDER_NPM##:/node_modules
