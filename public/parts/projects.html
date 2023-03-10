@@ -28,10 +28,33 @@
 
 	PLUGIN('projects', function(exports) {
 
-		exports.create = function() {
-			SET('projectsform.id', null);
-			DEFAULT('projectsform.*');
-			SET('common.form', 'projectsform');
+		exports.create = function(el) {
+
+			var opt = {};
+			opt.element = el;
+			opt.summary = '@(Enter URL address to your web app)';
+			opt.value = 'https://';
+			opt.monospace = true;
+			opt.offsetWidth = 300;
+			opt.offsetY = 10;
+			opt.callback = function(val) {
+
+				var url = val.replace(/^(http|https):\/\//gi, '').replace(/\//g, '');
+				var path = '';
+				if (url) {
+					var arr = url.split('.');
+					arr.reverse();
+					var tmp = arr[1];
+					arr[1] = arr[0];
+					arr[0] = tmp;
+					path = arr.join('-').replace('-', '_') + (path ? path.replace(/\//g, '--').replace(/--$/g, '') : '');
+				}
+
+				DEFAULT('projectsform.*');
+				SET('projectsform', { id: null, url: val, name: path, path: '/www/www/' + (path ? (path + '/') : '') });
+				SET('common.form', 'projectsform');
+			};
+			SETTER('floatinginput/show', opt);
 		};
 
 		exports.refresh = function() {

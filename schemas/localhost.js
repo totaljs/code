@@ -19,6 +19,11 @@ NEWSCHEMA('Localhost', function(schema) {
 		}
 
 		var item = MAIN.projects.findItem('id', $.id);
+		if (!item) {
+			$.invalid('error-project');
+			return;
+		}
+
 		var filename = getfilename(item.path);
 
 		PATH.mkdir(item.path);
