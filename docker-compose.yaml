@@ -12,7 +12,7 @@ services:
 
   code:
     container_name: code
-    image: tomee03/code
+    image: totalplatform/code
     volumes:
       - codedata:/databases
       - /your_working_path/:/www/www     # Edit development folder
