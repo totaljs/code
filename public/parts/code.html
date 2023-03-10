@@ -3608,9 +3608,9 @@
 				opt.items = [];
 				opt.items.push({ id: 'app', name: response.app ? '@(Stop app)' : '@(Run app)', icon: response.app ? 'ti ti-stop-alt red' : 'ti ti-play-alt green' });
 				opt.items.push('-');
-				opt.items.push({ id: 'custom', name: response.custom ? '@(Stop docker compose)' : '@(Run docker compose)', icon: response.app ? 'ti ti-stop-alt red' : 'ti ti-play-alt green' });
+				opt.items.push({ id: 'custom', name: response.custom ? '@(Stop docker compose)' : '@(Run docker compose)', icon: response.custom ? 'ti ti-stop-alt red' : 'ti ti-play-alt green' });
 				opt.callback = function(sel) {
-					var is = self.id === 'app' ? response.app : response.custom;
+					var is = sel.id === 'app' ? response.app : response.custom;
 					var data = {};
 					data.id = model.data.id;
 					data.type = is ? 'stop' : 'start';
