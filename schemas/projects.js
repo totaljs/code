@@ -508,6 +508,9 @@ NEWSCHEMA('Projects', function(schema) {
 			MAIN.save(2);
 		}
 
+		if (CONF.folder_npm && CONF.folder_www)
+			EXEC('+Localhost --> save', { id: id, type: 'stop' }, NOOP);
+
 		MAIN.log($.user, 'projects_remove', item, null);
 		NOSQL(id + '_parts').drop();
 

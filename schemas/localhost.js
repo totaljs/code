@@ -8,7 +8,7 @@ const Exec = Promisify(require('child_process').exec);
 NEWSCHEMA('Localhost', function(schema) {
 
 	schema.define('id', 'UID', true);
-	schema.define('type', 'String', true);
+	schema.define('type', ['start', 'stop'], true);
 	schema.define('iscustom', 'Boolean');
 
 	schema.setRead(async function($) {
@@ -51,8 +51,7 @@ NEWSCHEMA('Localhost', function(schema) {
 		if ($.model.type === 'start')
 			PATH.unlink(item.path + 'logs/debug.log');
 
-		DOWNLOAD('https://cdn.totaljs.com/code/run.js', PATH.join(item.path, 'index.js'), async function() {
-
+		var done = async function() {
 			var filename = getfilename(item.path, $.model.iscustom);
 
 			if (!$.model.iscustom)
@@ -64,7 +63,12 @@ NEWSCHEMA('Localhost', function(schema) {
 				PATH.unlink(filename);
 
 			$.success();
-		});
+		};
+
+		if ($.model.type === 'start')
+			DOWNLOAD('https://cdn.totaljs.com/code/run.js', PATH.join(item.path, 'index.js'), done);
+		else
+			done();
 	});
 
 });
