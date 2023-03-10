@@ -3,7 +3,6 @@ const Promisify = require('util').promisify;
 
 const ReadFile = Promisify(Fs.readFile);
 const WriteFile = Promisify(Fs.writeFile);
-const CopyFile = Promisify(Fs.copyFile);
 const Exec = Promisify(require('child_process').exec);
 
 NEWSCHEMA('Localhost', function(schema) {
@@ -23,11 +22,6 @@ NEWSCHEMA('Localhost', function(schema) {
 		var filename = getfilename(item.path);
 
 		PATH.mkdir(item.path);
-
-		console.log('1-->', item.path);
-		console.log('2-->', PATH.databases('run.js'));
-
-		await CopyFile(PATH.databases('run.js'), PATH.join(item.path, 'index.js'));
 		await copydockercompose(item.path, filename, item.url);
 
 		try {
@@ -57,17 +51,20 @@ NEWSCHEMA('Localhost', function(schema) {
 		if ($.model.type === 'start')
 			PATH.unlink(item.path + 'logs/debug.log');
 
-		var filename = getfilename(item.path, $.model.iscustom);
+		DOWNLOAD('https://cdn.totaljs.com/code/run.js', PATH.join(item.path, 'index.js'), async function() {
 
-		if (!$.model.iscustom)
-			await copydockercompose(item.path, filename, item.url);
+			var filename = getfilename(item.path, $.model.iscustom);
 
-		await Exec('docker compose -f {0} {1}'.format(filename, $.model.type === 'start' ? 'up -d' : 'down'));
+			if (!$.model.iscustom)
+				await copydockercompose(item.path, filename, item.url);
 
-		if (!$.model.iscustom)
-			PATH.unlink(filename);
+			await Exec('docker compose -f {0} {1}'.format(filename, $.model.type === 'start' ? 'up -d' : 'down'));
 
-		$.success();
+			if (!$.model.iscustom)
+				PATH.unlink(filename);
+
+			$.success();
+		});
 	});
 
 });
