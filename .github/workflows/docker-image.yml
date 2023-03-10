@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       -
-        name: Checkout
+        name: heckout
         uses: actions/checkout@v2
         with:
           repository: 'totaljs/code'
