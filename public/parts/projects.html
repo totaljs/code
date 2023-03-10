@@ -53,6 +53,7 @@
 				DEFAULT('projectsform.*');
 				SET('projectsform', { id: null, url: val, name: path, path: '/www/www/' + (path ? (path + '/') : '') });
 				SET('common.form', 'projectsform');
+				path && CHANGE('projectsform.name');
 			};
 			SETTER('floatinginput/show', opt);
 		};
