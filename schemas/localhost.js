@@ -99,7 +99,7 @@ async function copydockercompose(path, filename, host, release) {
 
 	host = host.replace('http://', '').replace('https://', '');
 
-	var content = await ReadFile(PATH.root((islocalhost ? 'app-compose{0}.yaml' : 'app-compose-https{0}.yaml'.format(release ? '-release' : ''))));
+	var content = await ReadFile(PATH.root((islocalhost ? 'app-compose{0}.yaml' : 'app-compose-https{0}.yaml').format(release ? '-release' : '')));
 	content = content.toString('utf8').replace(/##HOST##/g, host).replace(/##FOLDER_NPM##/g, nodemodules).replace(/##FOLDER_WWW##/g, wwwfolder);
 
 	return WriteFile(filename, content);

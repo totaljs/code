@@ -171,7 +171,6 @@
 	<div data---="part__common.form__if:changes;url:/forms/changes.html;reload:codechanges/reload"></div>
 	<div data---="part__common.form__if:componentator;url:/forms/componentator.html;reload:componentator/reload"></div>
 	<div data---="part__common.form__if:components;url:/forms/components.html;reload:components/reload"></div>
-	<div data---="part__common.form__if:snippets;url:/forms/snippets.html;reload:snippets/reload"></div>
 	<div data---="part__common.form__if:output;url:/forms/output.html;reload:output/reload"></div>
 	<div data---="part__common.form__if:timespentform;url:/forms/timespent.html;reload:timespentform/reload"></div>
 	<div data---="part__common.form__if:bundles;url:/forms/bundles.html;reload:bundlespanel/reload"></div>
@@ -826,10 +825,8 @@
 
 			sub = [];
 
-			if ((/^(js|css|html)$/).test(code.current.ext)) {
+			if ((/^(js|css|html)$/).test(code.current.ext))
 				sub.push({ name: '@(UI components)', icon: 'chevron-right', value: 'ui' });
-				// sub.push({ name: '@(Snippet)', icon: 'chevron-right', value: 'snippet' });
-			}
 
 			sub.push({ name: '@(UID)', icon: 'chevron-right', value: 'uid' });
 			sub.push({ name: '@(UID16)', icon: 'chevron-right', value: 'uid16' });
