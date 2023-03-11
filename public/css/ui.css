@@ -1160,7 +1160,7 @@ li.ui-directory-current { background-color: rgba(0,0,0,0.02); font-weight: bold;
 .td .ui-layout-resize:hover { background-color: #505050; }
 .td .ui-layout-lock { background-color: rgba(34,34,34,0.8); }
 
-.ui-notifybar-container { position: fixed; max-width: 400px; z-index: 100; text-align: center; width: 100%; }
+.ui-notifybar-container { position: fixed; max-width: 600px; z-index: 100; text-align: center; width: 100%; }
 .ui-notifybar { height: 80px; transition: 0.15s transform,opacity; transform: scale(1); transition-timing-function: ease-in; opacity: 1; }
 .ui-notifybar figure { background-color: #FFF; box-shadow: 0 3px 20px rgba(0,0,0,0.2); border-radius: var(--radius); font-size: 14px; padding: 0; color: #000; cursor: default; position: relative; height: 60px; display: block; }
 .ui-notifybar-dot { width: 10px; height: 10px; position: absolute; border-radius: var(--radius) var(--radius) var(--radius) var(--radius); right: 5px; bottom: 5px; }
@@ -1171,7 +1171,7 @@ li.ui-directory-current { background-color: rgba(0,0,0,0.02); font-weight: bold;
 .ui-notifybar-2 .ui-notifybar-icon { color: #F43D35; }
 .ui-notifybar-3 .ui-notifybar-icon { color: var(--color); }
 .ui-notifybar-icon { float: left; font-size: 25px; padding: 0 0 0 10px; width: 50px; text-align: center; height: 60px; line-height: 60px; border-radius: var(--radius) 0 0 var(--radius); }
-.ui-notifybar-message { margin: 1px 0 0 60px; line-height: 16px; height: 60px; display: table-cell; width: 100%; vertical-align: middle; padding: 0 10px; text-align: left; }
+.ui-notifybar-message { margin: 1px 0 0 60px; line-height: 16px; height: 60px; display: table-cell; width: 100%; vertical-align: middle; padding: 0 10px; text-align: left; word-break: break-all; }
 .ui-notifybar-hidden { transform: scale(0.7); opacity: 0.1; }
 
 .ui-notifybar-container-top { left: 50%; margin-left: -200px; top: 20px; }
