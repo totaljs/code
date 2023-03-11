@@ -22,9 +22,10 @@
 	@{import('meta', 'head', 'ui.css + default.css', 'editor.js + ui.js + func.js + default.js', 'favicon.ico')}
 </head>
 <body data---="exec" class="@{if (user.darkmode !== 0 && user.darkmode !== 2)}td @{fi}invisible codebody">
+
 	<div class="bbfooter"></div>
+
 	<div data---="loading" class="ui-loading"><div></div></div>
-	<div data---="LAZY builder"></div>
 	<div data---="LAZY audio__common.volume"></div>
 	<div data---="LAZY imageviewer"></div>
 	<div data---="LAZY suggestion__null__placeholder:@(Search)"></div>
@@ -46,6 +47,9 @@
 	<div data---="LAZY emoji"></div>
 	<div data---="LAZY colorpicker"></div>
 	<div data---="windows__windows"></div>
+
+	<ui-component name="LAZY builder"></ui-component>
+	<ui-component name="LAZY uidesigner"></ui-component>
 
 	<div class="windowtitlebar" data-bind="document.title__text">@{config.name}</div>
 

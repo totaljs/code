@@ -1227,6 +1227,8 @@ COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 			case 'table':
 			case 'sql':
 				return 'ti ti-database';
+			case 'ui':
+				return 'ti ti-variables';
 			case 'json':
 				return filename === 'tms.json' ? 'ti ti-cog' : 'ti ti-suitcase';
 			case 'todo':
@@ -12054,6 +12056,7 @@ COMPONENT('markdown', function (self) {
 						type = 'text/x-sql';
 						break;
 					case 'json':
+					case 'ui':
 						type = 'application/ld+json';
 						break;
 					case 'py':
@@ -13212,84 +13215,50 @@ COMPONENT('layout', 'space:1;border:0;parent:window;margin:0;remember:1;autoresi
 
 });
 
-COMPONENT('notifybar', 'timeout:5000', function(self, config, cls) {
+COMPONENT('notifybar', 'timeout:3000;position:bottom-right', function(self, config, cls) {
+
+	var cls2 = '.' + cls;
+	var istop = false;
+	var autoclosing;
 
 	self.singleton();
 	self.readonly();
-	self.nocompile && self.nocompile();
-	self.history = [];
+	self.nocompile();
 
-	var cls2 = '.' + cls;
-	var body, buttons, prevtype, timeout, currentindex = 0;
+	self.template = Tangular.compile('<div class="{0} {0}-{{ type }} {0}-hidden" data-id="{{ id }}"><figure><div class="{0}-dot"></div><div class="{0}-icon"><i class="ti {{ icon }}"></i></div><div class="{0}-message">{{ message | raw }}</div></figure></div>'.format(cls));
+	self.items = {};
 
 	self.make = function() {
-		self.aclass(cls + ' hidden');
-		self.append('<div class="{0}-controls"><button name="prev" disabled><i class="ti ti-angle-left"></i></button><button name="next" disabled><i class="ti ti-angle-right"></i></button></div><div class="{0}-body">OK</div>'.format(cls));
-		self.event('click', cls2 + '-body', self.hide);
-		self.event('click', 'button', function() {
-			self[this.name]();
+
+		self.aclass(cls + '-container');
+
+		self.event('click', cls2, function() {
+			var el = $(this);
+			self.close(el.attrd('id'));
+			clearTimeout(autoclosing);
+			autoclosing = null;
+			self.autoclose();
 		});
-		body = self.find(cls2 + '-body');
-		buttons = self.find('button');
 	};
 
-	self.hide = function() {
-		self.aclass('hidden');
-	};
-
-	self.next = function() {
-		currentindex++;
-		self.draw(config.timeout * 2);
-	};
-
-	self.prev = function() {
-		currentindex--;
-		self.draw(config.timeout * 2);
-	};
-
-	self.show = function() {
-		currentindex = self.history.length - 1;
-		if (currentindex >= 0) {
-			self.draw(config.timeout);
-			self.check();
+	self.configure = function(key, value) {
+		if (key === 'position') {
+			var c = cls + '-container-';
+			self.rclass2(c).aclass(c + value.replace(/_|\s/, '-'));
+			istop = value.indexOf('top') !== -1;
 		}
 	};
 
-	self.draw = function(delay) {
-
-		prevtype && self.rclass(cls + '-' + prevtype);
-		var msg = self.history[currentindex];
-
-		if (msg.body.indexOf('ti-') === -1)
-			msg.body = '<i class="ti ti-' + (msg.type === 1 ? 'check-circle' : msg.type === 2 ? 'warning' : 'info-circle') + '"></i>' + msg.body;
-
-		body.html(msg.body);
-		buttons[0].disabled = !self.history.length || currentindex === 0;
-		buttons[1].disabled = !self.history.length || currentindex >= (self.history.length - 1);
-		prevtype = msg.type;
-		self.aclass(cls + '-' + prevtype);
-		self.rclass('hidden');
-
-		timeout && clearTimeout(timeout);
-		timeout = setTimeout(self.hide, delay);
-	};
-
-	self.success = function(body) {
-		currentindex = self.history.push({ type: 1, body: body }) - 1;
-		self.draw(config.timeout);
-		self.check();
-	};
-
-	self.info = function(body) {
-		currentindex = self.history.push({ type: 3, body: body }) - 1;
-		self.draw(config.timeout);
-		self.check();
-	};
-
-	self.warning = function(body) {
-		currentindex = self.history.push({ type: 2, body: body }) - 1;
-		self.draw(config.timeout);
-		self.check();
+	self.close = function(id) {
+		var obj = self.items[id];
+		if (obj) {
+			delete self.items[id];
+			var item = self.find('div[data-id="{0}"]'.format(id));
+			item.find('figure').empty();
+			item.animate({ height: 0 }, 300, function() {
+				item.remove();
+			});
+		}
 	};
 
 	self.response = function(message, callback, response) {
@@ -13313,26 +13282,95 @@ COMPONENT('notifybar', 'timeout:5000', function(self, config, cls) {
 				var err = response[i].error;
 				err && builder.push(err);
 			}
-			self.warning(builder.join('<br />'));
-		} else if (typeof(response) === 'string')
-			self.warning(response);
-		else {
-			message && self.success(message);
-			fn && fn(response);
+			self.append(builder.join('<br />'), 2);
+			SETTER('!loading/hide');
+		} else if (typeof(response) === 'string') {
+			self.append(response, 2);
+			SETTER('!loading/hide');
+		} else {
+
+			if (message) {
+				if (message.length < 40 && message.charAt(0) === '?')
+					SET(message, response);
+				else
+					self.append(message, 1);
+			}
+
+			if (typeof(fn) === 'string')
+				SET(fn, response);
+			else if (fn)
+				fn(response);
 		}
 	};
 
-	self.info = function(body) {
-		currentindex = self.history.push({ type: 3, body: body }) - 1;
-		self.draw(config.timeout);
-		self.check();
+	self.warning = function(message) {
+		self.append(message, 2);
 	};
 
-	self.check = function() {
-		if (self.history.length > 20)
-			self.history.unshift();
+	self.success = function(message) {
+		self.append(message, 1);
 	};
 
+	self.info = function(message) {
+		self.append(message, 3);
+	};
+
+	self.append = function(message, type) {
+
+		if (!type)
+			type = 1;
+
+		switch (type) {
+			case 'success':
+				type = 1;
+				break;
+			case 'warning':
+				type = 2;
+				break;
+			case 'info':
+				type = 3;
+				break;
+		}
+
+		var icon;
+
+		if (message.charAt(0) === '"') {
+			var index = message.indexOf('"', 1);
+			icon = self.faicon(message.substring(1, index).trim());
+			message = message.substring(index + 1).trim();
+		}
+
+		// type 1: success
+		// type 2: warning
+		// type 3: info
+
+		var obj = { id: Math.floor(Math.random() * 100000).toString(36), message: message, type: type, icon: icon || (type === 1 ? 'ti-check-circle' : type === 2 ? 'ti-times-circle' : 'ti-info-circle') };
+		self.items[obj.id] = obj;
+		var el = $(self.template(obj));
+		if (istop)
+			self.element.append(el);
+		else
+			self.element.prepend(el);
+		self.autoclose();
+		setTimeout(function() {
+			el.rclass(cls + '-hidden');
+		}, 20);
+	};
+
+	self.autoclose = function() {
+
+		if (autoclosing)
+			return;
+
+		autoclosing = setTimeout(function() {
+			clearTimeout(autoclosing);
+			autoclosing = null;
+			var el = self.find(cls2);
+			el.length > 1 && self.autoclose();
+			el.length && self.close(el.eq(istop ? 0 : (el.length - 1)).attrd('id'));
+		}, config.timeout);
+
+	};
 });
 
 COMPONENT('invisible', function(self) {
@@ -14087,3 +14125,89 @@ COMPONENT('animation', 'style:2;delay:200;init:1000;cleaner:1000;visible:0;offse
 // Updated: 2023-01-18 12:16
 COMPONENT('miniform','zindex:12',function(self,config,cls){var cls2='.'+cls,csspos={};if(!W.$$miniform){W.$$miniform_level=W.$$miniform_level||1;W.$$miniform=true;$(document).on('click',cls2+'-button-close',function(){SET($(this).attrd('path'),'')});var resize=function(){setTimeout2(self.name,function(){for(var i=0;i<M.components.length;i++){var com=M.components[i];if(com.name==='miniform'&&!HIDDEN(com.dom)&&com.$ready&&!com.$removed)com.resize()}},200)};ON('resize2',resize);$(document).on('click',cls2+'-container',function(e){if(e.target===this){var com=$(this).component();if(com&&com.config.closeoutside){com.set('');return}}var el=$(e.target);if(el.hclass(cls+'-container-cell')){var form=$(this).find(cls2);var c=cls+'-animate-click';form.aclass(c).rclass(c,300);var com=el.parent().component();if(com&&com.config.closeoutside)com.set('')}})}self.readonly();self.submit=function(){if(config.submit)self.EXEC(config.submit,self.hide,self.element);else self.hide()};self.cancel=function(){if(config.cancel)self.EXEC(config.cancel,self.hide);else self.hide()};self.hide=function(){config.close&&self.EXEC(config.close);if(config.independent)self.hideforce();self.esc(false);self.set('')};self.esc=function(bind){if(bind){if(!self.$esc){self.$esc=true;$(W).on('keydown',self.esc_keydown)}}else{if(self.$esc){self.$esc=false;$(W).off('keydown',self.esc_keydown)}}};self.esc_keydown=function(e){if(e.which===27&&!e.isPropagationStopped()){var val=self.get();if(!val||config.if===val){e.preventDefault();e.stopPropagation();self.hide()}}};self.hideforce=function(){if(!self.hclass('hidden')){self.aclass('hidden');self.release(true);self.find(cls2).rclass(cls+'-animate');W.$$miniform_level--}};self.resize=function(){if(!config.center||self.hclass('hidden'))return;var ui=self.find(cls2);var fh=ui.innerHeight();var wh=WH,r=(wh/2)-(fh/2);csspos.marginTop=(r>30?(r-15):20)+'px';ui.css(csspos)};self.make=function(){$(document.body).append('<div id="{0}" class="hidden {4}-container invisible"><div class="{4}-container-table"><div class="{4}-container-cell"><div class="{4}" style="max-width:{1}px"><div class="{4}-title"><button name="cancel" class="{4}-button-close{3}" data-path="{2}"><i class="ti ti-times"></i></button><i class="{4}-icon hidden"></i><span></span></div></div></div></div>'.format(self.ID,config.width||800,self.path,config.closebutton==false?' hidden':'',cls));var scr=self.find('> script');self.template=scr.length?scr.html().trim():'';if(scr.length)scr.remove();var el=$('#'+self.ID);var body=el.find(cls2)[0];while(self.dom.children.length)body.appendChild(self.dom.children[0]);self.rclass('hidden invisible');var csscls=self.attr('class');csscls&&el.aclass(csscls);self.replace(el,true);self.event('scroll',function(){EMIT('scroll',self.name);EMIT('reflow',self.name)});self.event('click','button[name]',function(){var t=this;switch(t.name){case'submit':self.submit(self.hide);break;case'cancel':!t.disabled&&self[t.name](self.hide);break}});config.enter&&self.event('keydown','input',function(e){e.which===13&&!self.find('button[name="submit"]')[0].disabled&&setTimeout2(self.ID+'enter',self.submit,500)})};self.configure=function(key,value,init,prev){switch(key){case'title':self.find(cls2+'-title > span').text(value);break;case'icon':var icon=self.find(cls2+'-icon');icon.rclass2('fa ti');if(value)icon.aclass(self.faicon(value)).rclass('hidden');else icon.aclass('hidden');break;case'width':!init&&value!==prev&&self.find(cls2).css('max-width',value+'px');break;case'closebutton':!init&&self.find(cls2+'-button-close').tclass('hidden',value!==true);break}};self.setter=function(value){setTimeout2(cls+'-noscroll',function(){$('html').tclass(cls+'-noscroll',!!$(cls2+'-container').not('.hidden').length)},50);var isHidden=value!==config.if;if(self.hclass('hidden')===isHidden){if(!isHidden){config.reload&&self.EXEC(config.reload,self);config.default&&DEFAULT(self.makepath(config.default),true)}return}setTimeout2(cls,function(){EMIT('reflow',self.name)},10);if(isHidden){if(!config.independent)self.hideforce();return}if(self.template){var is=self.template.COMPILABLE();self.find(cls2).append(self.template);self.template=null;is&&COMPILE()}if(W.$$miniform_level<1)W.$$miniform_level=1;W.$$miniform_level++;self.css('z-index',W.$$miniform_level*config.zindex);self.rclass('hidden');self.resize();self.release(false);config.reload&&self.EXEC(config.reload,self);config.default&&DEFAULT(self.makepath(config.default),true);setTimeout(function(){self.rclass('invisible');self.find(cls2).aclass(cls+'-animate');config.autofocus&&self.autofocus(config.autofocus)},200);setTimeout2(self.ID,function(){self.css('z-index',(W.$$miniform_level*config.zindex)+1)},400);config.closeesc&&self.esc(true)}});
 // End: j-MiniForm
+
+COMPONENT('uidesigner', 'url:https://uibuilder.totaljs.com', function(self, config, cls) {
+
+	var self = this;
+	var iframe;
+	var meta;
+
+	self.singleton();
+	self.readonly();
+
+	self.make = function() {
+
+		self.aclass(cls + ' hidden');
+		self.css({ position: 'absolute', 'z-index': 80, left: 0, top: 0, right: 0, bottom: 0 });
+		self.on('resize + resize2', self.resize);
+
+		$(W).on('message', function(e) {
+
+			e = e.originalEvent;
+
+			var data = e.data;
+
+			if (typeof(data) === 'string')
+				data = PARSE(data);
+
+			if (!data.uibuilder)
+				return;
+
+			switch (data.TYPE) {
+				case 'close':
+					setTimeout(self.hide, 200);
+					meta.close && meta.close();
+					break;
+				case 'ready':
+					var msg = { TYPE: 'init', data: meta.data, upload: meta.upload, groups: meta.groups, apps: meta.apps, uibuilder: 1 };
+					iframe.contentWindow.postMessage(STRINGIFY(msg), '*');
+					break;
+				case 'save':
+					meta.save && meta.save(data.data);
+					break;
+				case 'publish':
+					meta.publish && meta.publish(data.data);
+					break;
+				case 'render':
+					meta.render && meta.render(data.data);
+					break;
+			}
+		});
+	};
+
+	self.hide = function() {
+		if (iframe) {
+			self.find('iframe').remove();
+			iframe = null;
+			meta = null;
+			self.aclass('hidden');
+		}
+	};
+
+	self.make_iframe = function() {
+		iframe && self.find('iframe').remove();
+		self.append('<iframe src="{0}" scrolling="no" frameborder="0" allow="geolocation *; microphone *; camera *; midi *; encrypted-media *"></iframe>'.format(config.url));
+		iframe = self.find('iframe')[0];
+		self.resize();
+		self.rclass('hidden');
+	};
+
+	self.load = function(data) {
+		meta = data;
+		self.make_iframe();
+		self.rclass('hidden');
+	};
+
+	self.resize = function() {
+
+		if (!iframe)
+			return;
+
+		var css = {};
+		css.width = WW;
+		css.height = WH;
+		self.css(css);
+		$(iframe).css(css);
+	};
+
+});

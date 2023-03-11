@@ -686,6 +686,11 @@
 			if (isscript && !text)
 				items.push({ name: '@(Run script)', icon: 'play red', value: 'run', classname: 'b', shortcut: (common.ismac ? 'CMD' : 'CTRL') + '+B' });
 
+			if (!can && (code.current.ext === 'ui' || (code.current.ext === 'json' && editor.getValue().indexOf('"components"') !== -1))) {
+				items.push({ name: '@(Open UI Builder)', icon: 'totaljs', value: 'uibuilder', classname: 'b' });
+				items.push('-');
+			}
+
 			if (can) {
 
 				if (code.current.ext === 'resource')
@@ -907,6 +912,21 @@
 					setTimeout(function() {
 						document.execCommand(value.command, true);
 					}, 100);
+					return;
+				}
+
+				if (value.value === 'uibuilder') {
+					var data = {};
+					data.data = PARSE(editor.getValue()) || {};
+					data.publish = function(response) {
+						SETTER('clipboard/copy', JSON.stringify(response));
+						SETTER('notifybar/success', '@(The build has been copied into the clipboard successfully)');
+					};
+					data.save = function(response) {
+						editor.setValue(JSON.stringify(response, null, '\t'));
+						setTimeout(() => exports.save(), 500);
+					};
+					SETTER('uidesigner/load', data);
 					return;
 				}
 
@@ -1664,14 +1684,17 @@
 				return;
 
 			if ((/\.build$/).test(item.path)) {
+
 				// open designer
 				AJAX('GET /api/projects/{id}/edit/'.arg(code.data), { path: item.path }, function(response) {
+
 					SETTER('loading/show');
 					SETTER('loading/hide', 2000);
-					SETTER('builder/load', response, function(response) {
+
+					var save = function(body) {
 						SETTER('loading/show');
 						var data = {};
-						data.body = STRINGIFY(response);
+						data.body = typeof(body) === 'object' ? STRINGIFY(body) : body;
 						data.path = item.path;
 						data.parts = [];
 						AJAX('POST /api/files/{id}/ REPEAT'.arg(code.data), data, ASETTER('message/response', function(response) {
@@ -1681,9 +1704,11 @@
 							common.electron && code.data.repository && user.localsave && exports.savelocal();
 							FUNC.livereload(data.path);
 						}));
-					});
+					};
+
+					SETTER('builder/load', response, save);
+					return;
 				});
-				return;
 			}
 
 			code.SYNCUSER = null;
@@ -2444,6 +2469,7 @@
 						mode = 'codeapi';
 						break;
 					case 'json':
+					case 'ui':
 					case 'nosql':
 						mode = 'application/ld+json';
 						break;
