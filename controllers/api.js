@@ -10,7 +10,7 @@ exports.install = function() {
 	ROUTE('+GET     /api/{schema}/                         *{schema}          --> @query');
 	ROUTE('+GET     /api/{schema}/{id}/                    *{schema}          --> @read');
 	ROUTE('+POST    /api/{schema}/                         *{schema}          --> @save', 1024);
-	ROUTE('+DELETE  /api/{schema}/{id}/                    *{schema}          --> @remove');
+	ROUTE('+DELETE  /api/{schema}/{id}/                    *{schema}          --> @remove', [30000]);
 	ROUTE('+POST    /api/{schema}/{id}/                    *{schema}          --> @save', 1024);
 
 	// Localhost
