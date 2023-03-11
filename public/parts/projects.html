@@ -93,6 +93,7 @@
 		exports.options = function(el) {
 
 			var items = [];
+			var refreshcurrent = false;
 
 			items.push({ value: 1, name: '@(Clear backups)', icon: 'clean' });
 			items.push({ value: 254, name: '@(Unregister)', icon: 'sign-out orange' });
@@ -118,11 +119,14 @@
 						SETTER('approve/show', '@(Are you sure you want to unregister selected projects?)', '"ti ti-sign-out" @(Remove)', function() {
 							SETTER('loading/show');
 							projects.checked.wait(function(item, next) {
+								if (W.code && W.code.data && item.id === W.code.data.id)
+									refreshcurrent = true;
 								AJAX('DELETE /api/projects/{id}/'.arg(item), next);
 							}, function() {
 								SETTER('loading/hide', 100);
 								SETTER('notifybar/success', '@(Selected projects have been unregistered.)');
 								exports.refresh();
+								refreshcurrent && EXEC('code/refresh');
 							});
 						});
 						break;
@@ -131,11 +135,14 @@
 						SETTER('approve/show', '@(Are you sure you want to remove selected projects with all files?)', '"ti ti-trash" @(Remove)', function() {
 							SETTER('loading/show');
 							projects.checked.wait(function(item, next) {
+								if (W.code && W.code.data && item.id === W.code.data.id)
+									refreshcurrent = true;
 								AJAX('DELETE /api/projects/{id}/?remove=1'.arg(item), next);
 							}, function() {
 								SETTER('loading/hide', 100);
 								SETTER('notifybar/success', '@(Selected projects have been removed.)');
 								exports.refresh();
+								refreshcurrent && EXEC('code/refresh');
 							});
 						});
 						break;

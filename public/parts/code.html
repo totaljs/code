@@ -1,5 +1,13 @@
 <div id="panel">
-	<section class="project exec" data-exec="code/projects" data-bind="!code.data__html b:value.name__title:value.name__text div:'@(Branch:) '+(value.branch||'@(Master)')"><i class="ti ti-angle-down"></i><b>@(Choose project)</b><div><i class="ti ti-thumbs-up mr5"></i>@(Thank you for using Total.js)</div></section>
+	<section class="project exec" data-exec="code/projects" data-bind="code.data__template">
+		<script type="text/html">
+			{{ if value }}
+			<i class="ti ti-angle-down"></i><b>{{ value.name }}</b><div>@(Branch:) {{ value.branch | empty('@(Master)') }}</div>
+			{{ else }}
+			<i class="ti ti-angle-down"></i><b>@(Choose project)</b><div><i class="ti ti-thumbs-up mr5"></i>@(Thank you for using Total.js)</div>
+			{{ fi }}
+		</script>
+	</section>
 	<div>
 		<div data-bind="common.recent__template__|__code.data__hide" class="hidden">
 			<script type="text/html">
@@ -2651,10 +2659,13 @@
 
 			AJAX('GET /api/projects/{0}/files/'.format(id), function(response) {
 
+				exports.scope();
 				SETTER('loading/hide', 1000);
 
 				if (response instanceof Array) {
 					FUNC.warning(response);
+					NUL('?.data');
+					NUL('?.tree');
 					callback && callback();
 					return;
 				}
