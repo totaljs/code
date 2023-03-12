@@ -326,9 +326,9 @@ header .tools .external { color: #a2a286; }
 .tabs-bk nav .modified i:before { content: '\f111'; font-size: 10px; }
 .tabs nav i:hover { color: red !important; font-family: 'Font Awesome 5 Free', 'Font Awesome 5 Pro' !important; font-weight: 900; }
 .tabs nav i:hover:before { content: '\f00d'; }
-.tabs .options { position: absolute; left: 11px; font-size: 16px; top: 15px; cursor: pointer; color: #505050; }
+.tabs .options { position: absolute; left: 11px; font-size: 14px; top: 18px; cursor: pointer; color: #505050; }
 .tabs .options:hover { color: #000000; }
-.tabs .options2 { position: absolute; left: 36px; font-size: 16px; top: 15px; cursor: pointer; border-left: 1px solid #D0D0D0; width: 25px; text-align: right; color: #505050; }
+.tabs .options2 { position: absolute; left: 36px; font-size: 14px; top: 18px; cursor: pointer; border-left: 1px solid #D0D0D0; width: 25px; text-align: right; color: #505050; }
 .tabs .options2:hover { color: #000000; }
 .td .tabs .options { color: gray; }
 .td .tabs .options2 { border-left-color: #404040; color: gray; }
