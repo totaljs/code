@@ -3642,7 +3642,7 @@
 			opt.large = true;
 
 			SETTER('loading/show');
-			AJAX('GET /api/localhost/{id}/'.arg(model.data), ASETTER('message/response', function(response) {
+			AJAX('GET /api/localhost/{id}/ ERROR'.arg(model.data), function(response) {
 				opt.align = 'right';
 				opt.items = [];
 				opt.items.push({ id: 'app', name: response.app ? '@(Stop app)' : '@(Run app)', icon: response.app ? 'ti ti-stop-alt red' : 'ti ti-play-alt green' });
@@ -3662,7 +3662,7 @@
 
 				SETTER('loading/hide', 500);
 				SETTER('menu/show', opt);
-			}));
+			});
 		};
 
 		exports.review = function(el) {
