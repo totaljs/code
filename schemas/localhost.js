@@ -28,7 +28,6 @@ NEWSCHEMA('Localhost', function(schema) {
 
 		try {
 			var ps = await Exec('docker compose -f {0} ps --format json'.format(filename));
-			PATH.unlink(filename);
 		} catch (e) {
 			$.invalid(e);
 			return;
@@ -57,7 +56,6 @@ NEWSCHEMA('Localhost', function(schema) {
 			var filename = PATH.join(item.path, 'app-compose.yaml');
 			await preparedocker(item);
 			await Exec('docker compose -f {0} {1}'.format(filename, $.model.type === 'start' ? 'up -d' : 'down'));
-			PATH.unlink(filename);
 			$.success();
 		};
 

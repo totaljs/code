@@ -327,7 +327,7 @@ NEWSCHEMA('Projects', function(schema) {
 				model.resettime = undefined;
 				model.resetchangelog = undefined;
 
-				U.extend(item, model);
+				COPY(model, item);
 				item.updated = NOW;
 
 				PUBLISH('projects_update', FUNC.tms($, model, item));
@@ -691,7 +691,6 @@ NEWSCHEMA('Projects', function(schema) {
 		}
 
 		if (project.customdocker) {
-			console.log('SOM TU -->', 'docker compose -f {0} ps --format json'.format(PATH.join(project.path, 'app-compose.yaml')));
 			SHELL('docker compose -f {0} ps --format json'.format(PATH.join(project.path, 'app-compose.yaml')), function(err, response) {
 				console.log('0000', arguments);
 
