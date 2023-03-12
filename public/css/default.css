@@ -52,7 +52,7 @@ hr { border-color: #E0E0E0; }
 .search > .label i { margin-right: 5px; }
 .search > div { margin: 0 130px 0 75px; }
 .search > div input { width: 100%; height: 27px; border: 0; padding: 0 5px; margin: 0; outline: 0; color: #000000; font-family: Menlo,Menlo2,Consolas,monospace; }
-.search .is { font-weight: bold; }
+.search .is {}
 .search > nav { float: right; }
 .search > nav button { width: 24px; height: 27px; outline: 0; background-color: white; border: 0; font-size: 11px; border-left: 1px solid #E0E0E0; border-radius: 0; }
 .search > nav button:hover { background-color: #F8F8F8; }
