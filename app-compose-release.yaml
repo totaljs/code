@@ -11,8 +11,9 @@ services:
       - VIRTUAL_MAX_UPLOAD=##MAXUPLOAD##
       - VIRTUAL_HOST=##HOST##
       - VIRTUAL_PORT=8000
+      - DISABLE_ACCESS_LOGS=1
 
 networks:
   default:
     name: proxy
-    external: true
+    external: tru

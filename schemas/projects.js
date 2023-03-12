@@ -690,6 +690,20 @@ NEWSCHEMA('Projects', function(schema) {
 			return;
 		}
 
+		if (project.customdocker) {
+			SHELL('docker compose -f {0} ps --format json'.format(PATH.join(filename, 'app-compose.yaml')), function(err, response) {
+				console.log('0000', arguments);
+				if (response.length) {
+					SHELL('docker container logs {0} --tail 100'.format(response[0].ID), function(err, response) {
+						console.log('1111', arguments);
+						$.callback(response);
+					});
+				} else
+					$.callback('');
+			});
+			return;
+		}
+
 		var filename = project.logfile ? project.logfile : Path.join(project.path, name);
 
 		Fs.stat(filename, function(err, stats) {

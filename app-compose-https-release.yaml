@@ -13,6 +13,7 @@ services:
       - VIRTUAL_HOST=##HOST##
       - LETSENCRYPT_HOST=##HOST##
       - HTTPS_METHOD=redirect
+      - DISABLE_ACCESS_LOGS=1
 
 networks:
   default:
