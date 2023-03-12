@@ -1160,7 +1160,7 @@ li.ui-directory-current { background-color: rgba(0,0,0,0.02); font-weight: bold;
 .td .ui-layout-resize:hover { background-color: #505050; }
 .td .ui-layout-lock { background-color: rgba(34,34,34,0.8); }
 
-.ui-notifybar-container { position: fixed; max-width: 600px; z-index: 100; text-align: center; width: 100%; }
+.ui-notifybar-container { position: fixed; max-width: 400px; z-index: 100; text-align: center; width: 100%; }
 .ui-notifybar { height: 80px; transition: 0.15s transform,opacity; transform: scale(1); transition-timing-function: ease-in; opacity: 1; }
 .ui-notifybar figure { background-color: #FFF; box-shadow: 0 3px 20px rgba(0,0,0,0.2); border-radius: var(--radius); font-size: 14px; padding: 0; color: #000; cursor: default; position: relative; height: 60px; display: block; }
 .ui-notifybar-dot { width: 10px; height: 10px; position: absolute; border-radius: var(--radius) var(--radius) var(--radius) var(--radius); right: 5px; bottom: 5px; }
@@ -1177,7 +1177,7 @@ li.ui-directory-current { background-color: rgba(0,0,0,0.02); font-weight: bold;
 .ui-notifybar-container-top { left: 50%; margin-left: -200px; top: 20px; }
 .ui-notifybar-container-top-left { left: 25px; top: 20px; }
 .ui-notifybar-container-top-right { right: 25px; top: 20px; }
-.ui-notifybar-container-bottom { bottom: 10px; left: 50%; margin-left: -150px; }
+.ui-notifybar-container-bottom { bottom: 10px; left: 50%; margin-left: -200px; }
 .ui-notifybar-container-bottom-left { bottom: 10px; left: 25px; }
 .ui-notifybar-container-bottom-right { bottom: 10px; right: 25px; }
 

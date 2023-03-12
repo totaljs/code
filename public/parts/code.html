@@ -67,7 +67,7 @@
 			<span class="options2 exec hidden" data-bind="code.editor__show" data-exec="code/branches"><i class="ti ti-code-branch"></i></span>
 			<nav data---="tabmenu__code.editor.path__datasource:code.open;selector:span;exec:code/opentab;reorder:code/savetabs">
 				<script type="text/html">
-					<span data-value="{{ path }}" class="{{ if !skip }}nolocked{{ fi }}{{ if modified }} modified{{ fi }}" title="{{ path }}"><i class="{{ name | fileicon }} exec" data-exec="code/close"></i>{{ name }}<em>{{ path | shortpath }}</em></span>
+					<span data-value="{{ path }}" class="{{ if !skip }}nolocked{{ fi }}{{ if modified }} modified{{ fi }}" title="{{ path }}"><i class="{{ name | fileicon }} exec" data-exec="code/close"></i>{{ name }}</span>
 				</script>
 			</nav>
 		</section>
@@ -692,7 +692,7 @@
 			mode = mode.helperType || mode.name;
 
 			if (isscript && !text)
-				items.push({ name: '@(Run script)', icon: 'play red', value: 'run', classname: 'b', shortcut: (common.ismac ? 'CMD' : 'CTRL') + '+B' });
+				items.push({ name: '@(Run script)', icon: 'play-alt red', value: 'run', classname: 'b', shortcut: (common.ismac ? 'CMD' : 'CTRL') + '+B' });
 
 			if (!can && (code.current.ext === 'ui' || (code.current.ext === 'json' && editor.getValue().indexOf('"components"') !== -1))) {
 				items.push({ name: '@(Open UI Builder)', icon: 'totaljs', value: 'uibuilder', classname: 'b' });
@@ -2821,8 +2821,8 @@
 				require('fs').writeFile(filename, code.NOTRIM[ext] ? val : FUNC.rtrim(val), function(err) {
 					if (err)
 						FUNC.warning(err.toString());
-					else
-						FUNC.success('<b>{0}</b> saved successfully.'.format(filename));
+					// else
+					// 	FUNC.success('<b>{0}</b> saved successfully.'.format(filename));
 				});
 			} else if (!nowarning)
 				FUNC.warning('@(You don\'t have defined repository path.)');
@@ -3650,8 +3650,7 @@
 					data.type = is ? 'stop' : 'start';
 					data.iscustom = self.id === 'custom';
 					var done = function() {
-						SETTER('loading/show');
-						AJAX('POST /api/localhost/state/', data, ASETTER('message/response', () => exports.reload()));
+						AJAX('POST /api/localhost/state/ @showloading ERROR', data, ASETTER('loading/hide'));
 					};
 					if (data.type === 'start')
 						SETTER('approve/show', '@(Are you sure you want to start a Docker container?)', '"ti ti-play-alt" @(Start)', done);

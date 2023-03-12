@@ -30,7 +30,7 @@
 	<div data---="LAZY imageviewer"></div>
 	<div data---="LAZY suggestion__null__placeholder:@(Search)"></div>
 	<div data---="LAZY autocomplete__null__height:200"></div>
-	<div data---="LAZY notifybar"></div>
+	<div data---="LAZY notifybar__null__position:bottom"></div>
 	<div data---="LAZY tooltip"></div>
 	<div data---="LAZY floatinginput"></div>
 	<div data---="LAZY approve"></div>
@@ -691,6 +691,14 @@
 
 		$(W).on('click keypress', function (e) {
 			common.idletime = 0;
+		});
+
+		ON('@flag showloading', function() {
+			EXEC('-loading/show');
+		});
+
+		ON('@flag hideloading', function() {
+			EXEC('-loading/hide', 1000);
 		});
 
 		FUNC.autodarkmode();

@@ -311,12 +311,12 @@ header .tools .external { color: #a2a286; }
 
 .tabs { height: 50px; background-color: #F0F0F0; border-bottom: 1px solid #E0E0E0; position: relative; }
 .tabs, .tabs * { user-select: none; }
-.tabs nav { position: absolute; margin: 11px 0 0 73px; }
-.tabs nav > span { position: relative; display: inline-block; min-width: 80px; max-width: 180px; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; height: 38px; border: 1px solid #D5D5D5; border-bottom: 0; border-left-width: 0; background-color: #E0E0E0; padding: 7px 15px 0 30px; font-size: 12px; cursor: default; color: gray; vertical-align: top; line-height: 12px; cursor: pointer; }
+.tabs nav { position: absolute; margin: 15px 0 0 73px; }
+.tabs nav > span { position: relative; display: inline-block; min-width: 80px; max-width: 180px; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; height: 34px; border: 1px solid #D5D5D5; border-bottom: 0; border-left-width: 0; background-color: #E0E0E0; padding: 9px 10px 0 30px; font-size: 12px; cursor: default; color: gray; vertical-align: top; line-height: 12px; cursor: pointer; }
 .tabs nav > span:first-child { border-top-left-radius: 2px; border-left-width: 1px; }
 .tabs nav > span:last-child { border-top-right-radius: 2px; }
 .tabs nav > span em { display: block; font-size: 9px; color: #A0A0A0; font-style: normal; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; font-weight: normal; }
-.tabs nav .selected { background-color: white; height: 39px; color: #000000; }
+.tabs nav .selected { background-color: white; height: 35px; color: #000000; }
 .tabs nav i { color: gray; font-size: 15px; position: absolute; left: 7px; top: 8px; width: 15px; cursor: pointer; text-align: center; }
 .tabs nav .modified { color: red !important; }
 .tabs nav .modified:before { content: '*'; margin-right: 2px; }
@@ -497,9 +497,9 @@ header .tools .external { color: #a2a286; }
 .td .ui-tree .item-ddhere { background-color: rgba(150,150,150,0.15) !important; }
 
 .td .tabs nav { margin-left: 72px; }
-.td .tabs nav .selected { background-color: #303030; color: white; border-color: #343434; }
+.td .tabs nav .selected { background-color: #303030; color: white; border-color: #404040; }
 .td .tabs nav .selected em { color: #A0A0A0; }
-.td .tabs nav span { border-color: #343434; color: #888888; background-color: #1C1C1C; }
+.td .tabs nav span { border-color: #404040; color: #888888; background-color: #1C1C1C; }
 .td .tabs nav > span em { color: #606060; }
 .td .CodeMirror { background-color: #2A2A2A; }
 .td .CodeMirror-activeline-background { background-color: rgba(95,95,95,0.15); }

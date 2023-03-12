@@ -2420,7 +2420,7 @@ FUNC.jcomponent_update = function(name, type, content, body, meta) {
 		var REGPLUGINOP_REPLACE = /(\s)+=(\s)+function/g;
 		var REGFUNCTION = /((\s)+=(\s)+function)/;
 		var REGTASKOP = /('|").*?('|")/g;
-		var REGVERSION = /version[":-='\s]+[a-z0-9."',\s]+/i;
+		// var REGVERSION = /version[":-='\s]+[a-z0-9."',\s]+/i;
 		var REGJC = /data---=".*?(__|")/g;
 		var REGFILE = /<file name.*?>/g;
 		var todos = [];
@@ -2449,6 +2449,7 @@ FUNC.jcomponent_update = function(name, type, content, body, meta) {
 			if (m && !REGTODODONE.test(line))
 				todos.push({ line: i + 1, ch: m.index || 0, name: line.substring(m.index, 200).replace(REGTODOREPLACE, '').replace(REGTODOCLEAN, '').trim() });
 
+			/*
 			if (line && mode !== 'css') {
 				m = line.match(REGVERSION);
 				if (m) {
@@ -2458,7 +2459,7 @@ FUNC.jcomponent_update = function(name, type, content, body, meta) {
 						components.push({ line: i, ch: m.index || 0, name: version, type: 'version' });
 					}
 				}
-			}
+			}*/
 
 			if (mode === 'javascript' || mode === 'totaljs' || mode === 'html' || mode === 'htmlmixed' || mode === 'totaljs_server') {
 

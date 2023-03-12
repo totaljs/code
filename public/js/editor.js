@@ -3221,9 +3221,10 @@ https://twitter.com/JoelBesada/status/670343885655293952
 			el.find('.search-cancel').tclass('hidden', !is);
 		};
 
+		/*
 		input.on('focus blur', function(e) {
 			input.tclass('b', e.type === 'focus');
-		});
+		});*/
 
 		el.on('click', 'button', function() {
 			var t = this;
