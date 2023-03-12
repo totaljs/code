@@ -34,6 +34,7 @@ NEWSCHEMA('Projects', function(schema) {
 	schema.define('allowlivereload', Boolean);
 	schema.define('customdocker', Boolean);
 	schema.define('hidden', Boolean);
+	schema.define('maxupload', Number);
 
 	// TMS
 	schema.jsonschema_define('userid', 'String');

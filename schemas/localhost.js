@@ -88,7 +88,7 @@ async function preparedocker(item) {
 	var path = item.customdocker ? PATH.join(item.path, 'docker-compose.yaml') : PATH.root((islocalhost ? 'app-compose{0}.yaml' : 'app-compose-https{0}.yaml').format(item.releasemode ? '-release' : ''));
 
 	var content = await ReadFile(path);
-	content = content.toString('utf8').replace(/##HOST##/g, host).replace(/##FOLDER_NPM##/g, nodemodules).replace(/##FOLDER_WWW##/g, wwwfolder);
+	content = content.toString('utf8').replace(/##MAXUPLOAD##/g, item.maxupload || 50).replace(/##HOST##/g, host).replace(/##FOLDER_NPM##/g, nodemodules).replace(/##FOLDER_WWW##/g, wwwfolder);
 	return WriteFile(filename, content);
 
 }

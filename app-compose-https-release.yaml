@@ -8,10 +8,11 @@ services:
       - ##FOLDER_WWW##:/www
       - ##FOLDER_NPM##:/node_modules
     environment:
+      - VIRTUAL_MAX_UPLOAD=##MAXUPLOAD##
+      - VIRTUAL_PORT=8000
       - VIRTUAL_HOST=##HOST##
       - LETSENCRYPT_HOST=##HOST##
       - HTTPS_METHOD=redirect
-      - VIRTUAL_PORT=8000
 
 networks:
   default:

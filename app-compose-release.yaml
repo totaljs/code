@@ -8,6 +8,7 @@ services:
       - ##FOLDER_WWW##:/www
       - ##FOLDER_NPM##:/node_modules
     environment:
+      - VIRTUAL_MAX_UPLOAD=##MAXUPLOAD##
       - VIRTUAL_HOST=##HOST##
       - VIRTUAL_PORT=8000
 
