@@ -9,7 +9,6 @@ NEWSCHEMA('Localhost', function(schema) {
 
 	schema.define('id', 'UID', true);
 	schema.define('type', ['start', 'stop'], true);
-	schema.define('iscustom', 'Boolean');
 
 	schema.setRead(async function($) {
 
@@ -36,8 +35,7 @@ NEWSCHEMA('Localhost', function(schema) {
 		}
 
 		var apps = JSON.parse(ps.stdout);
-		var appisonline = apps.filter(app => app.Image.indexOf('totalplatform/run') !== -1).length > 0;
-		$.callback({ app: appisonline, apps });
+		$.callback(apps);
 	});
 
 	schema.setSave(async function($) {

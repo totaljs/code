@@ -3647,7 +3647,7 @@
 				opt.items = [];
 				opt.items.push({ id: 'app', name: response.app ? '@(Stop app)' : '@(Run app)', icon: response.app ? 'ti ti-stop-alt red' : 'ti ti-play-alt green' });
 				opt.callback = function(sel) {
-					var is = response.app;
+					var is = response.apps && response.apps.length > 0;
 					var data = {};
 					data.id = model.data.id;
 					data.type = is ? 'stop' : 'start';
