@@ -3648,7 +3648,7 @@
 					var data = {};
 					data.id = model.data.id;
 					data.type = is ? 'stop' : 'start';
-					data.iscustom = self.id === 'custom';
+					data.iscustom = sel.id === 'custom';
 					var done = function() {
 						AJAX('POST /api/localhost/state/ @showloading ERROR', data, ASETTER('loading/hide'));
 					};
