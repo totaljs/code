@@ -31,7 +31,7 @@
 		.panelshow { transform: scale(1); }
 
 		h1 { color: black; margin: 0; padding: 20px 0 15px; font-family: Arial; text-align: center; border-bottom: 1px solid #E0E0E0; border-radius: 4px 4px 0 0; font-size: 18px; }
-		h1 .fa { margin-right: 10px; }
+		h1 .ti { margin-right: 10px; }
 
 		.ui-input { position: relative; font-size: 13px; }
 		.ui-input-required .ui-input-control { border-color: #D0D0D0; }
@@ -82,7 +82,7 @@
 		.ui-input-type-icon .ui-input-control, .ui-input-type-color .ui-input-control, .ui-input-type-color .ui-input-emoji { cursor: pointer; }
 
 		.ui-error { margin: 0 0 15px; padding: 0; list-style-type: none; padding: 10px 0; color: #BE3A48; font-family: Arial; font-size: 14px }
-		.ui-error .fa { width: 16px; }
+		.ui-error .ti { width: 20px; }
 
 		.hidden { display: none; }
 		.m { margin-bottom: 15px; }
@@ -890,7 +890,7 @@
 
 				var builder = [];
 				for (var i = 0, length = value.length; i < length; i++)
-					builder.push('<div><span class="fa {1}"></span>{0}</div>'.format(value[i].error, 'ti-' + (config.icon || 'times-circle')));
+					builder.push('<div><span class="ti {1}"></span>{0}</div>'.format(value[i].error, 'ti-' + (config.icon || 'times-circle')));
 
 				self.html(builder.join(''));
 				self.tclass('hidden', false);
