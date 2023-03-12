@@ -372,13 +372,13 @@
 
 				for (var i = 0; i < code.data.files.length; i++) {
 					var file = code.data.files[i];
-					arr.push({ name: file, icon: 'file-o', filename: FUNC.getName(file) });
+					arr.push({ name: file, icon: 'file', filename: FUNC.getName(file) });
 				}
 
 				arr.quicksort('name');
 
 				if (code.data && code.data.id)
-					arr.unshift({ name: '@(Changes)', id: 'changes', icon: 'clock-o' });
+					arr.unshift({ name: '@(Changes)', id: 'changes', icon: 'clock' });
 
 				if (code.components && code.components.length)
 					arr.unshift({ name: '@(Used parts)', id: 'components', icon: 'puzzle' });
