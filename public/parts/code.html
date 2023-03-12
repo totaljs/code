@@ -1570,6 +1570,11 @@
 
 					if (is) {
 						UPLOAD('POST /api/projects/{id}/upload/'.arg(code.data), data, function(response) {
+
+							if (ERROR(response)) {
+								callback && callback();
+								return;
+							}
 							dirs.wait(function(entry, next) {
 								traverseupload(path + entry.name + '/', entry, next);
 							}, callback);
@@ -1639,9 +1644,12 @@
 							next();
 						});
 					}, function() {
-						if (is)
-							UPLOAD('POST /api/projects/{id}/upload/'.arg(code.data), data, done);
-						else
+						if (is) {
+							UPLOAD('POST /api/projects/{id}/upload/'.arg(code.data), data, function(response) {
+								ERROR(response);
+								done();
+							});
+						} else
 							done();
 					});
 				});
@@ -1668,9 +1676,7 @@
 			}
 
 			UPLOAD('POST /api/projects/{id}/upload/'.arg(code.data), data, function(response) {
-				if (response instanceof Array)
-					FUNC.warning(response);
-				else {
+				if (!ERROR(response)) {
 					FUNC.success('Uploaded successfully: <b>' + name.join(', ') + '</b>');
 					exports.load(code.data.id, true);
 				}
