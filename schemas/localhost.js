@@ -23,7 +23,7 @@ NEWSCHEMA('Localhost', function(schema) {
 			return;
 		}
 
-		var filename = PATH.join(item.path, 'app-compose.yaml');
+		var filename = PATH.databases(item.id + '.yaml');
 		await preparedocker(item);
 
 		try {
@@ -53,7 +53,7 @@ NEWSCHEMA('Localhost', function(schema) {
 		PATH.unlink(item.path + 'logs/debug.log');
 
 		var done = async function() {
-			var filename = PATH.join(item.path, 'app-compose.yaml');
+			var filename = PATH.databases(item.id + '.yaml');
 			await preparedocker(item);
 			await Exec('docker compose -f {0} {1}'.format(filename, $.model.type === 'start' ? 'up -d' : 'down'));
 			$.success();
@@ -77,7 +77,7 @@ async function preparedocker(item) {
 	nodemodules = nodemodules[nodemodules.length - 1] === '/' ? nodemodules.substr(0, nodemodules.length - 1) : nodemodules;
 
 	var islocalhost = host.indexOf('.localhost') !== -1;
-	var filename = PATH.join(item.path, 'app-compose.yaml');
+	var filename = PATH.databases(item.id + '.yaml');
 
 	host = host.replace('http://', '').replace('https://', '');
 

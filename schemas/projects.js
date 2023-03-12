@@ -691,7 +691,7 @@ NEWSCHEMA('Projects', function(schema) {
 		}
 
 		if (project.customdocker) {
-			SHELL('docker compose -f {0} ps --format json'.format(PATH.join(project.path, 'app-compose.yaml')), function(err, response) {
+			SHELL('docker compose -f {0} ps --format json'.format(PATH.databases(project.id + '.yaml')), function(err, response) {
 
 				if (err || !response) {
 					$.callback('');
