@@ -691,8 +691,13 @@ NEWSCHEMA('Projects', function(schema) {
 		}
 
 		if (project.customdocker) {
+			console.log('SOM TU -->', 'docker compose -f {0} ps --format json'.format(PATH.join(filename, 'app-compose.yaml')));
 			SHELL('docker compose -f {0} ps --format json'.format(PATH.join(filename, 'app-compose.yaml')), function(err, response) {
 				console.log('0000', arguments);
+
+				if (typeof(response) === 'string')
+					response = JSON.parse(response);
+
 				if (response.length) {
 					SHELL('docker container logs {0} --tail 100'.format(response[0].ID), function(err, response) {
 						console.log('1111', arguments);

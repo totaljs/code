@@ -3643,11 +3643,11 @@
 
 			SETTER('loading/show');
 			AJAX('GET /api/localhost/{id}/ ERROR'.arg(model.data), function(response) {
+				var is = response && response.length > 0;
 				opt.align = 'right';
 				opt.items = [];
-				opt.items.push({ id: 'app', name: response.app ? '@(Stop app)' : '@(Run app)', icon: response.app ? 'ti ti-stop-alt red' : 'ti ti-play-alt green' });
+				opt.items.push({ id: 'app', name: is ? '@(Stop docker)' : '@(Run docker)', icon: is ? 'ti ti-stop-alt red' : 'ti ti-play-alt green' });
 				opt.callback = function(sel) {
-					var is = response && response.length > 0;
 					var data = {};
 					data.id = model.data.id;
 					data.type = is ? 'stop' : 'start';
