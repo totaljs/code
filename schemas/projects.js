@@ -691,8 +691,8 @@ NEWSCHEMA('Projects', function(schema) {
 		}
 
 		if (project.customdocker) {
-			console.log('SOM TU -->', 'docker compose -f {0} ps --format json'.format(PATH.join(filename, 'app-compose.yaml')));
-			SHELL('docker compose -f {0} ps --format json'.format(PATH.join(filename, 'app-compose.yaml')), function(err, response) {
+			console.log('SOM TU -->', 'docker compose -f {0} ps --format json'.format(PATH.join(project.path, 'app-compose.yaml')));
+			SHELL('docker compose -f {0} ps --format json'.format(PATH.join(project.path, 'app-compose.yaml')), function(err, response) {
 				console.log('0000', arguments);
 
 				if (typeof(response) === 'string')
