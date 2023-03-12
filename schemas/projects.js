@@ -430,18 +430,17 @@ NEWSCHEMA('Projects', function(schema) {
 		else
 			allowed = null;
 
-		var skip = '\\.socket';
+		var skip = '\\.socket|\\index.yaml';
 
 		if (item.skiptmp)
-			skip += (skip ? '|' : '') + (IS_WINDOWS ? '\\\\tmp\\\\' : '\\/tmp\\/');
-
+			skip += '|' + (IS_WINDOWS ? '\\\\tmp\\\\' : '\\/tmp\\/');
 		if (item.skipsrc)
-			skip += (skip ? '|' : '') + (IS_WINDOWS ? '\\\\.src\\\\' : '\\/\\.src\\/');
+			skip += '|' + (IS_WINDOWS ? '\\\\.src\\\\' : '\\/\\.src\\/');
 
 		if (item.skipnm)
-			skip += (skip ? '|' : '') + (IS_WINDOWS ? '\\\\node_modules\\\\' : '\\/node_modules\\/');
+			skip += '|' + (IS_WINDOWS ? '\\\\node_modules\\\\' : '\\/node_modules\\/');
 
-		var process = function(files, directories) {
+		var browse = function(files, directories) {
 
 			if (!item.isexternal) {
 				for (var i = 0, length = files.length; i < length; i++)
@@ -480,7 +479,7 @@ NEWSCHEMA('Projects', function(schema) {
 				if (err)
 					$.invalid(err);
 				else
-					process(response.files, response.directories);
+					browse(response.files, response.directories);
 			});
 		} else {
 
@@ -489,7 +488,7 @@ NEWSCHEMA('Projects', function(schema) {
 			else
 				skip = null;
 
-			U.ls(path, process, n => !SKIP.test(n) && (!skip || !skip.test(n)));
+			U.ls(path, browse, n => !SKIP.test(n) && (!skip || !skip.test(n)));
 		}
 	});
 
@@ -527,7 +526,7 @@ NEWSCHEMA('Projects', function(schema) {
 		};
 
 		if (CONF.folder_npm && CONF.folder_www)
-			EXEC('+Localhost --> save', { id: id, type: 'stop' }, () => done());
+			EXEC('+Localhost --> save', { id: id, type: 'stop' }, done);
 		else
 			done();
 	});
@@ -671,7 +670,7 @@ NEWSCHEMA('Projects', function(schema) {
 		});
 	});
 
-	schema.addWorkflow('logfile', function($) {
+	schema.addWorkflow('logfile', async function($) {
 
 		var project = MAIN.projects.findItem('id', $.id);
 		if (project == null) {
@@ -691,7 +690,8 @@ NEWSCHEMA('Projects', function(schema) {
 		}
 
 		if (project.customdocker) {
-			SHELL('docker compose -f {0} ps --format json'.format(PATH.databases(project.id + '.yaml')), function(err, response) {
+			var yaml = PATH.join(project.path, 'index.yaml');
+			SHELL('docker compose -f {0} ps --format json'.format(yaml), function(err, response) {
 
 				if (err || !response) {
 					$.callback('');
@@ -736,6 +736,11 @@ NEWSCHEMA('Projects', function(schema) {
 		var project = MAIN.projects.findItem('id', $.id);
 		if (project == null) {
 			$.invalid('error-project');
+			return;
+		}
+
+		if (project.customdocker) {
+			$.success();
 			return;
 		}
 

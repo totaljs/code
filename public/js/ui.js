@@ -14131,6 +14131,7 @@ COMPONENT('uidesigner', 'url:https://uibuilder.totaljs.com', function(self, conf
 	var self = this;
 	var iframe;
 	var meta;
+	var margin = common.electron ? (common.ismac ? 28 : 1) : 0;
 
 	self.singleton();
 	self.readonly();
@@ -14138,7 +14139,7 @@ COMPONENT('uidesigner', 'url:https://uibuilder.totaljs.com', function(self, conf
 	self.make = function() {
 
 		self.aclass(cls + ' hidden');
-		self.css({ position: 'absolute', 'z-index': 80, left: 0, top: 0, right: 0, bottom: 0 });
+		self.css({ position: 'absolute', 'z-index': 80, left: 0, top: margin, right: 0, bottom: 0 });
 		self.on('resize + resize2', self.resize);
 
 		$(W).on('message', function(e) {
@@ -14205,7 +14206,7 @@ COMPONENT('uidesigner', 'url:https://uibuilder.totaljs.com', function(self, conf
 
 		var css = {};
 		css.width = WW;
-		css.height = WH;
+		css.height = WH - margin;
 		self.css(css);
 		$(iframe).css(css);
 	};

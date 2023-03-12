@@ -92,19 +92,19 @@ exports.install = function() {
 	ROUTE('+GET    /api/request/{id}/',                                       makerequestscript, [20000]);
 
 	ROUTE('+GET    /api/external/bundles/                 *ExternalBundle     --> @query');
-	ROUTE('+POST   /api/external/bundles/{id}/            *ExternalBundle     --> @save', [4000]);
+	ROUTE('+POST   /api/external/bundles/{id}/            *ExternalBundle     --> @save', [120000]);
 	ROUTE('+GET    /api/external/packages/                *ExternalPackage    --> @query');
-	ROUTE('+POST   /api/external/packages/{id}/           *ExternalPackage    --> @save', [4000]);
+	ROUTE('+POST   /api/external/packages/{id}/           *ExternalPackage    --> @save', [120000]);
 	ROUTE('+GET    /api/external/templates/               *ExternalTemplate   --> @query');
-	ROUTE('+POST   /api/external/templates/{id}/          *ExternalTemplate   --> @save', [4000]);
+	ROUTE('+POST   /api/external/templates/{id}/          *ExternalTemplate   --> @save', [120000]);
 	ROUTE('+GET    /api/external/modules/                 *ExternalModule     --> @query');
-	ROUTE('+POST   /api/external/modules/{id}/            *ExternalModule     --> @save', [4000]);
+	ROUTE('+POST   /api/external/modules/{id}/            *ExternalModule     --> @save', [120000]);
 	ROUTE('+GET    /api/external/definitions/             *ExternalDefinition --> @query');
-	ROUTE('+POST   /api/external/definitions/{id}/        *ExternalDefinition --> @save', [4000]);
+	ROUTE('+POST   /api/external/definitions/{id}/        *ExternalDefinition --> @save', [120000]);
 	ROUTE('+GET    /api/external/schemas/                 *ExternalSchema     --> @query');
-	ROUTE('+POST   /api/external/schemas/{id}/            *ExternalSchema     --> @save', [4000]);
+	ROUTE('+POST   /api/external/schemas/{id}/            *ExternalSchema     --> @save', [120000]);
 	ROUTE('+GET    /api/external/operations/              *ExternalOperation  --> @query');
-	ROUTE('+POST   /api/external/operations/{id}/         *ExternalOperation  --> @save', [4000]);
+	ROUTE('+POST   /api/external/operations/{id}/         *ExternalOperation  --> @save', [120000]);
 
 	ROUTE('-POST    /api/login/                           *Login              --> @save');
 	ROUTE('-POST    /api/sign/                            *Users              --> @create');

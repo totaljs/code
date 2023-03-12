@@ -408,6 +408,11 @@ NEWSCHEMA('Files', function(schema) {
 		var output = [];
 		var q = $.query.search.toLowerCase();
 
+		if ($.query.path.toLowerCase().indexOf('index.yaml') !== -1) {
+			$.callback(EMPTYARRAY);
+			return;
+		}
+
 		if (project.isexternal) {
 			FUNC.external_download(project, $.query.path, function(err, response) {
 

@@ -23,11 +23,12 @@ NEWSCHEMA('Localhost', function(schema) {
 			return;
 		}
 
-		var filename = PATH.databases(item.id + '.yaml');
-		await preparedocker(item);
+		var filename = PATH.join(item.path, 'index.yaml');
+		await FUNC.preparedockerfile(item);
 
 		try {
 			var ps = await Exec('docker compose -f {0} ps --format json'.format(filename));
+			// PATH.unlink(filename);
 		} catch (e) {
 			$.invalid(e);
 			return;
@@ -53,10 +54,14 @@ NEWSCHEMA('Localhost', function(schema) {
 		PATH.unlink(item.path + 'logs/debug.log');
 
 		var done = async function() {
-			var filename = PATH.databases(item.id + '.yaml');
-			await preparedocker(item);
-			await Exec('docker compose -f {0} {1}'.format(filename, $.model.type === 'start' ? 'up -d' : 'down'));
-			$.success();
+			var filename = PATH.join(item.path, 'index.yaml');
+			await FUNC.preparedockerfile(item);
+			try {
+				await Exec('docker compose -f {0} {1}'.format(filename, $.model.type === 'start' ? 'up -d' : 'down'));
+				// PATH.unlink(filename);
+			} finally {
+				$.success();
+			}
 		};
 
 		if ($.model.type === 'start')
@@ -67,7 +72,7 @@ NEWSCHEMA('Localhost', function(schema) {
 
 });
 
-async function preparedocker(item) {
+FUNC.preparedockerfile = async function(item) {
 
 	var host = item.url;
 	var wwwfolder = item.path.replace('/www/www', CONF.folder_www);
@@ -77,7 +82,7 @@ async function preparedocker(item) {
 	nodemodules = nodemodules[nodemodules.length - 1] === '/' ? nodemodules.substr(0, nodemodules.length - 1) : nodemodules;
 
 	var islocalhost = host.indexOf('.localhost') !== -1;
-	var filename = PATH.databases(item.id + '.yaml');
+	var filename = PATH.join(item.path, 'index.yaml');
 
 	host = host.replace('http://', '').replace('https://', '');
 
@@ -86,5 +91,4 @@ async function preparedocker(item) {
 	var content = await ReadFile(path);
 	content = content.toString('utf8').replace(/##MAXUPLOAD##/g, item.maxupload || 50).replace(/##HOST##/g, host).replace(/##FOLDER_NPM##/g, nodemodules).replace(/##FOLDER_WWW##/g, wwwfolder);
 	return WriteFile(filename, content);
-
-}
+};
