@@ -692,15 +692,21 @@ NEWSCHEMA('Projects', function(schema) {
 
 		if (project.customdocker) {
 			SHELL('docker compose -f {0} ps --format json'.format(PATH.join(project.path, 'app-compose.yaml')), function(err, response) {
-				console.log('0000', arguments);
+
+				if (err || !response) {
+					$.callback('');
+					return;
+				}
 
 				if (typeof(response) === 'string')
 					response = JSON.parse(response);
 
 				if (response.length) {
 					SHELL('docker container logs {0} --tail 100'.format(response[0].ID), function(err, response) {
-						console.log('1111', arguments);
-						$.callback(response);
+						if (err)
+							$.callback('');
+						else
+							$.callback(response);
 					});
 				} else
 					$.callback('');
