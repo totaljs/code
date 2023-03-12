@@ -24,10 +24,8 @@ NEWSCHEMA('Localhost', function(schema) {
 			return;
 		}
 
-		var filename = getfilename(item.path);
-
-		PATH.mkdir(item.path);
-		await copydockercompose(item.path, filename, item.url, item.releasemode);
+		var filename = PATH.join(item.path, 'app-compose.yaml');
+		await preparedocker(item);
 
 		try {
 			var ps = await Exec('docker compose -f {0} ps --format json'.format(filename));
@@ -39,9 +37,7 @@ NEWSCHEMA('Localhost', function(schema) {
 
 		var apps = JSON.parse(ps.stdout);
 		var appisonline = apps.filter(app => app.Image.indexOf('totalplatform/run') !== -1).length > 0;
-		var customisonline = apps.filter(app => app.Image.indexOf('totalplatform/run') === -1).length > 0;
-
-		$.callback({ app: appisonline, custom: customisonline, apps });
+		$.callback({ app: appisonline, apps });
 	});
 
 	schema.setSave(async function($) {
@@ -57,21 +53,13 @@ NEWSCHEMA('Localhost', function(schema) {
 			return;
 		}
 
-		if ($.model.type === 'start')
-			PATH.unlink(item.path + 'logs/debug.log');
+		PATH.unlink(item.path + 'logs/debug.log');
 
 		var done = async function() {
-
-			var filename = getfilename(item.path, $.model.iscustom);
-
-			if (!$.model.iscustom)
-				await copydockercompose(item.path, filename, item.url, item.releasemode);
-
+			var filename = PATH.join(item.path, 'app-compose.yaml');
+			await preparedocker(item);
 			await Exec('docker compose -f {0} {1}'.format(filename, $.model.type === 'start' ? 'up -d' : 'down'));
-
-			if (!$.model.iscustom)
-				PATH.unlink(filename);
-
+			PATH.unlink(filename);
 			$.success();
 		};
 
@@ -83,24 +71,24 @@ NEWSCHEMA('Localhost', function(schema) {
 
 });
 
-function getfilename(path, iscustom) {
-	return path + (iscustom ? 'docker-compose.yaml' : 'app-compose.yaml');
-}
+async function preparedocker(item) {
 
-async function copydockercompose(path, filename, host, release) {
-
-	var wwwfolder = path.replace('/www/www', CONF.folder_www);
+	var host = item.url;
+	var wwwfolder = item.path.replace('/www/www', CONF.folder_www);
 	var nodemodules = CONF.folder_npm;
 
 	wwwfolder = wwwfolder[wwwfolder.length - 1] === '/' ? wwwfolder.substr(0, wwwfolder.length - 1) : wwwfolder;
 	nodemodules = nodemodules[nodemodules.length - 1] === '/' ? nodemodules.substr(0, nodemodules.length - 1) : nodemodules;
 
 	var islocalhost = host.indexOf('.localhost') !== -1;
+	var filename = PATH.join(item.path, 'app-compose.yaml');
 
 	host = host.replace('http://', '').replace('https://', '');
 
-	var content = await ReadFile(PATH.root((islocalhost ? 'app-compose{0}.yaml' : 'app-compose-https{0}.yaml').format(release ? '-release' : '')));
-	content = content.toString('utf8').replace(/##HOST##/g, host).replace(/##FOLDER_NPM##/g, nodemodules).replace(/##FOLDER_WWW##/g, wwwfolder);
+	var path = item.customdocker ? PATH.join(item.path, 'docker-compose.yaml') : PATH.root((islocalhost ? 'app-compose{0}.yaml' : 'app-compose-https{0}.yaml').format(item.releasemode ? '-release' : ''));
 
+	var content = await ReadFile(path);
+	content = content.toString('utf8').replace(/##HOST##/g, host).replace(/##FOLDER_NPM##/g, nodemodules).replace(/##FOLDER_WWW##/g, wwwfolder);
 	return WriteFile(filename, content);
+
 }

@@ -32,6 +32,7 @@ NEWSCHEMA('Projects', function(schema) {
 	schema.define('resettime', Boolean);
 	schema.define('resetchangelog', Boolean);
 	schema.define('allowlivereload', Boolean);
+	schema.define('customdocker', Boolean);
 	schema.define('hidden', Boolean);
 
 	// TMS
