@@ -61,7 +61,7 @@ hr { border-color: #E0E0E0; }
 /*.codepanel .search { margin-right: 350px; }*/
 
 .td .search { border-bottom-color: #404040; background-color: #303030; }
-.td .search > .label { border-right-color: #404040; color: #777777; border-bottom: 1px solid #404040; line-height: 27px; }
+.td .search > .label { border-right-color: #404040; color: #777777; border-bottom: 1px solid #404040; line-height: 29px; }
 .td .search > div input { background-color: #303030; color: white; }
 .td .search > nav button { background-color: #303030; color: white; border-left-color: #404040; }
 .td .search > nav button:hover { background-color: #353535; }
