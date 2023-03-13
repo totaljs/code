@@ -357,7 +357,7 @@ header .tools .external { color: #a2a286; }
 .td .status-info { border-left-color: #404040; color: white; }
 
 .status-path { padding: 10px 0 0 5px; font-size: 11px; position: relative; display: inline-block; height: 34px; vertical-align: top; color: #A0A0A0; font-family: Menlo,Menlo2; }
-.td .status-path { color: #444; }
+.td .status-path { color: #888; }
 
 .status-diff { position: relative; display: inline-block; height: 35px; border-left: 1px solid #E0E0E0; }
 .status-diff button { width: 35px; height: 35px; border: 0; background: transparent; margin: 0; color: #000000; }

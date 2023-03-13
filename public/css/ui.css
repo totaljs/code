@@ -101,7 +101,7 @@ div.CodeMirror span.CodeMirror-matchingbracket { border-bottom: 2px solid blue; 
 
 .ui-tree { background-color: white; min-height: 100%; }
 .ui-tree .extrabutton i { width: 16px; float: right; text-align: right; }
-.ui-tree .extrabutton { cursor: pointer; padding: 8px 10px 8px 13px; font-size: 11px; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; border-bottom: 1px solid #E8E8E8; user-select: none; line-height: 11px; background-color: #F8F8F8; color: #A0A0A0; }
+.ui-tree .extrabutton { cursor: pointer; padding: 9px 10px 9px 13px; font-size: 11px; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; border-bottom: 1px solid #E8E8E8; user-select: none; line-height: 11px; background-color: #F8F8F8; color: #A0A0A0; }
 .ui-tree .extrabutton:hover { background-color: #F0F0F0; color: black; }
 .ui-tree .children { display: none; background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAyCAYAAACd+7GKAAAAEElEQVR4AWMAAl8mEDnSCAB60gCwDZ47yAAAAABJRU5ErkJggg==) repeat-y -1px 0; }
 .td .ui-tree .children { background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAyCAYAAACd+7GKAAAAEElEQVQIW2P4//+/PcNIJAA0s6G5t89XxgAAAABJRU5ErkJggg==); }
