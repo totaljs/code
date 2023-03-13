@@ -46,15 +46,15 @@ hr { border-color: #E0E0E0; }
 
 .panelsearch { height: 27px; }
 
-.search { height: 28px; border-bottom: 1px solid #E0E0E0; font-size: 12px; }
-.search .count { float: right; width: 40px; line-height: 27px; text-align: right; margin-right: 10px; color: #E62222; font-weight: bold; }
-.search > .label { width: 74px; border-right: 1px solid #E0E0E0; float: left; line-height: 28px; text-align: center; color: #A0A0A0; }
+.search { height: 30px; border-bottom: 1px solid #E0E0E0; font-size: 12px; }
+.search .count { float: right; width: 40px; line-height: 29px; text-align: right; margin-right: 10px; color: #E62222; font-weight: bold; }
+.search > .label { width: 74px; border-right: 1px solid #E0E0E0; float: left; line-height: 30px; text-align: center; color: #A0A0A0; }
 .search > .label i { margin-right: 5px; }
 .search > div { margin: 0 130px 0 75px; }
-.search > div input { width: 100%; height: 27px; border: 0; padding: 0 5px; margin: 0; outline: 0; color: #000000; font-family: Menlo,Menlo2,Consolas,monospace; }
+.search > div input { width: 100%; height: 29px; border: 0; padding: 0 5px; margin: 0; outline: 0; color: #000000; font-family: Menlo,Menlo2,Consolas,monospace; }
 .search .is {}
 .search > nav { float: right; }
-.search > nav button { width: 24px; height: 27px; outline: 0; background-color: white; border: 0; font-size: 11px; border-left: 1px solid #E0E0E0; border-radius: 0; }
+.search > nav button { width: 24px; height: 29px; outline: 0; background-color: white; border: 0; font-size: 11px; border-left: 1px solid #E0E0E0; border-radius: 0; }
 .search > nav button:hover { background-color: #F8F8F8; }
 .search > nav button:disabled { color: #C0C0C0;  background-color: white; }
 .td .search > .label { width: 73px; }
@@ -351,15 +351,18 @@ header .tools .external { color: #a2a286; }
 .status i { margin-right: 5px; }
 .status-meta { padding: 10px 0 0 0; font-size: 11px; position: relative; display: inline-block; border-left: 1px solid #E0E0E0; height: 34px; vertical-align: top; color: #000000; width: 200px; font-family: Menlo,Menlo2; text-align: center; }
 .td .status-meta { border-left-color: #404040; color: white; }
-.status-info { padding: 10px 0 0 10px; font-size: 11px; position: relative; display: inline-block; border-left: 1px solid #E0E0E0; height: 34px; vertical-align: top; color: #000000; width: 200px; font-family: Menlo,Menlo2; }
+.status-info { padding: 10px 10px 0 10px; font-size: 11px; position: relative; display: inline-block; border-left: 1px solid #E0E0E0; height: 34px; vertical-align: top; color: #000; font-family: Menlo,Menlo2; }
 .status-info code { background-color: rgba(100,100,100,0.2); padding: 1px 2px; border-radius: 2px; font-size: 11px; }
 .td .status-info code { background-color: rgba(100,100,100,0.5); }
 .td .status-info { border-left-color: #404040; color: white; }
 
+.status-path { padding: 10px 0 0 5px; font-size: 11px; position: relative; display: inline-block; height: 34px; vertical-align: top; color: #A0A0A0; font-family: Menlo,Menlo2; }
+.td .status-path { color: #444; }
+
 .status-diff { position: relative; display: inline-block; height: 35px; border-left: 1px solid #E0E0E0; }
 .status-diff button { width: 35px; height: 35px; border: 0; background: transparent; margin: 0; color: #000000; }
 .status-diff button:disabled { color: gray; }
-.status-diff span { width: 45px; height: 35px; vertical-align: top; display: inline-block; position: relative; text-align: center; line-height: 32px; font-size: 10px; border-left: 1px solid #E0E0E0; border-right: 1px solid #E0E0E0; color: gray; }
+.status-diff span { width: 45px; height: 35px; vertical-align: top; display: inline-block; position: relative; text-align: center; line-height: 32px; font-size: 11px; border-left: 1px solid #E0E0E0; border-right: 1px solid #E0E0E0; color: gray; }
 .status-diff button i { margin: 0; }
 .status-diff button:first-child {  }
 .td .status-diff button:disabled { color: #404040; background-color: #282828 !important; }

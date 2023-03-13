@@ -131,8 +131,8 @@ COMPONENT('editor', function(self, config) {
 
 	self.resize = function() {
 		var h = self.element.closest('.ui-dockable-layout').height();
-		$('#content').css('height', h - 133);
-		self.find('.CodeMirror').css('height', h - 133);
+		$('#content').css('height', h - 135);
+		self.find('.CodeMirror').css('height', h - 135);
 	};
 
 	self.gotoline = function(line, ch) {
