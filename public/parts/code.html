@@ -1699,8 +1699,7 @@
 				return;
 
 			if ((/\.build$/).test(item.path)) {
-
-				// open designer
+				// Open designer
 				AJAX('GET /api/projects/{id}/edit/'.arg(code.data), { path: item.path }, function(response) {
 
 					SETTER('loading/show');
@@ -1722,8 +1721,8 @@
 					};
 
 					SETTER('builder/load', response, save);
-					return;
 				});
+				return;
 			}
 
 			code.SYNCUSER = null;
