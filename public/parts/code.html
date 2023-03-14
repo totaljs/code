@@ -3646,8 +3646,10 @@
 			AJAX('GET /api/localhost/{id}/ ERROR'.arg(model.data), function(response) {
 				var is = response && response.length > 0;
 				opt.align = 'right';
+				opt.custom = '<div style="margin-bottom:8px"><img src="/img/docker.png" style="width:150px;border-radius:var(--radius) var(--radius) 0 0" /></div>';
 				opt.items = [];
-				opt.items.push({ id: 'app', name: is ? '@(Stop docker)' : '@(Run docker)', icon: is ? 'ti ti-stop-alt red' : 'ti ti-play-alt green' });
+				opt.offsetX = -1;
+				opt.items.push({ id: 'app', name: is ? '@(<strong>Stop</strong> docker)' : '@(<strong>Run</strong> docker)', icon: is ? 'ti ti-stop-alt red' : 'ti ti-play-alt green' });
 				opt.callback = function(sel) {
 					var data = {};
 					data.id = model.data.id;

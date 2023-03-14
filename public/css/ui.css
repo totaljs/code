@@ -445,6 +445,7 @@ input:invalid { box-shadow: none; }
 .ui-menu li.ui-menu-disabled { color: #a0a0a0; background-color: #FFF; cursor: not-allowed; }
 .ui-menu li.ui-menu-disabled i { color: #c5c5c5; }
 
+.ui-menu-custom { padding-top: 0; }
 .ui-menu-style-2 .ui-menu-items { border-radius: var(--radius); }
 .ui-menu-style-2 li { margin: 2px 5px; padding: 4px 2px; border-radius: var(--radius); font-size: 13px; }
 .ui-menu-style-2 .pull-right { margin-top: 3px; }
@@ -453,7 +454,7 @@ input:invalid { box-shadow: none; }
 .ui-menu-style-2 .ui-menu-divider span { padding-left: 10px; }
 
 .td .ui-menu b { color: #505050; }
-.td .ui-menu-items, .td .ui-menu-submenu { background-color: #303030; border-color: #353535; box-shadow: 1px 5px 10px rgba(0,0,0,0.2); }
+.td .ui-menu-items, .td .ui-menu-submenu { background-color: #383838; border-color: transparent; box-shadow: 0 0 20px rgba(0,0,0,0.5); }
 .td .ui-menu-name i { color: #FFF; }
 .td .ui-menu-selected { background-color: #252525; }
 .td .ui-menu li:hover { background-color: #202020; }

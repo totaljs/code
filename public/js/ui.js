@@ -4522,13 +4522,14 @@ COMPONENT('menu', function(self, config, cls) {
 	var issubmenu = false;
 	var isopen = false;
 	var events = {};
-	var ul, children, prevsub, parentclass;
+	var ul, children, prevsub, parentclass, custom;
 
 	self.make = function() {
 		self.aclass(cls + ' hidden ' + cls + '-style-' + (config.style || 1));
-		self.append('<div class="{0}-items"><ul></ul></div><div class="{0}-submenu hidden"><ul></ul></div>'.format(cls));
+		self.append('<div class="{0}-items"><div class="{0}-custom"></div><ul></ul></div><div class="{0}-submenu hidden"><ul></ul></div>'.format(cls));
 		ul = self.find(cls2 + '-items').find('ul');
 		children = self.find(cls2 + '-submenu');
+		custom = self.find(cls2 + '-custom');
 
 		self.event('click', 'li', function(e) {
 
@@ -4733,6 +4734,9 @@ COMPONENT('menu', function(self, config, cls) {
 		children.aclass('hidden');
 		children.find('ul').empty();
 		clearTimeout2(self.ID);
+
+		custom.html(opt.custom || '');
+		custom.parent().tclass(cls + '-custom', !!opt.custom);
 
 		ul.html(self.makehtml(opt.items));
 
