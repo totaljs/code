@@ -338,7 +338,7 @@ header .tools .external { color: #a2a286; }
 .tabs .livereloadindicator { position: absolute; right: 4px; font-size: 8px; top: 4px; animation: 1s uncomplete infinite forwards; }
 .tabs .preview { float: right; font-size: 20px; margin: 11px 13px 0 0; cursor: pointer; color: #4285F4; }
 .tabs .preview:hover { opacity: 0.6; }
-.tabs .docker { float: right; font-size: 20px; margin: 11px 13px 0 0; cursor: pointer; color: #68B25B; border-left: 1px solid #E0E0E0; padding-left: 13px; }
+.tabs .docker { float: right; font-size: 20px; margin: 11px 13px 0 0; cursor: pointer; color: #BE5A87; border-left: 1px solid #E0E0E0; padding-left: 13px; }
 .tabs .docker:hover { opacity: 0.6; }
 .td .tabs .options:hover { color: white; }
 .nolocked { font-style: italic; color: gray !important; }
