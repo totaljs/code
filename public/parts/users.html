@@ -13,14 +13,13 @@
 	<div data---="datagrid__users.grid__click:users/edit;checked:users/checked;margin:20;cluster:false">
 		<script type="text/plain">
 			[
-				{ name: 'id', text: '@(ID)', template: '{{ if online }}<i class="ti ti-circle-alt green fs11 mr5" title="@(Online)"></i>{{ fi }}{{ if blocked }}<span class="badge badge-small badge-red">@(blocked)</span>{{ fi }}{{ id }}', width: 120 },
-				{ name: 'name', text: '@(Name)', width: 200 },
+				{ name: 'id', text: '@(ID)', template: '{{ if online }}<i class="ti ti-circle-alt green fs11 mr5" title="@(Online)"></i>{{ fi }}{{ if blocked }}<span class="badge badge-small badge-red">@(blocked)</span>{{ fi }}<span class="monospace">{{ id }}</span>', width: 150 },
+				{ name: 'name', text: '@(Name)', template: '{{ if external }}<span class="badge badge-gray badge-small">@(external)</span>{{ fi }}{{ name }}', width: 250 },
 				{ name: 'email', text: '@(Email)', width: 200 },
-				{ name: 'phone', text: '@(Phone)', width: 200 },
-				{ name: 'position', text: '@(Position)', width: 200 },
+				{ name: 'position', text: '@(Position)', width: 150 },
 				{ name: 'sa', text: '@(Admin)', template: '{{ if sa }}<i class="ti ti-check-square green"></i>{{ fi }}', options: [{ text: 'yes', value: true }, { text: 'no', value: false }], width: 100, align: 1 },
-				{ name: 'logged', text: '@(Logged)', align: 'center', template: '{{ logged | format(\'dd.MM.yyyy\') }}', align: 1, width: 100 },
-				{ name: 'created', text: '@(Created)', align: 'center', template: '{{ created | format(\'dd.MM.yyyy\') }}', align: 1, width: 100 }
+				{ name: 'logged', text: '@(Logged)', align: 'center', template: '{{ logged | format(\'dd.MM.yyyy\') }}', align: 1, width: 150 },
+				{ name: 'created', text: '@(Created)', align: 'center', template: '{{ created | format(\'dd.MM.yyyy\') }}', align: 1, width: 150 }
 			]
 		</script>
 	</div>

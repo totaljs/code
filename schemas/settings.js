@@ -1,8 +1,9 @@
 NEWSCHEMA('Settings', function(schema) {
 
-	schema.define('token', 'String(100)');
-	schema.define('name', 'String(50)');
-	schema.define('superadmin', 'String(200)');
+	schema.define('token', 'String');
+	schema.define('name', 'String');
+	schema.define('superadmin', 'String');
+	schema.define('login', 'String');
 
 	schema.setQuery(function($) {
 
@@ -15,6 +16,7 @@ NEWSCHEMA('Settings', function(schema) {
 		data.token = PREF.token;
 		data.name = CONF.name;
 		data.superadmin = PREF.superadmin;
+		data.login = PREF.login;
 		$.callback(data);
 
 	});
@@ -31,6 +33,7 @@ NEWSCHEMA('Settings', function(schema) {
 		CONF.name = model.name;
 		PREF.set('name', model.name);
 		PREF.set('token', model.token);
+		PREF.set('login', model.login);
 		PREF.set('superadmin', model.superadmin);
 
 		$.success();

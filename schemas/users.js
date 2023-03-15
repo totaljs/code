@@ -139,6 +139,48 @@ NEWSCHEMA('Users', function(schema) {
 
 });
 
+function login($, user) {
+	MAIN.auth.authcookie($, UID(), user.id, '1 month');
+	$.success();
+}
+
+(function() {
+
+	var schema = '*id:lower,*name:string,*email:string,phone:string,position:string,sa:boolean'.toJSONSchema();
+
+	FUNC.syncuser = function(response) {
+
+		var output = schema.transform(response);
+		if (output.error)
+			return { error: output.error };
+
+		var profile = output.response;
+		var tmp = profile.name.split(' ');
+
+		profile.id = profile.id.slug().replace(/-/g, '');
+		profile.initials = (tmp[0][0] + (tmp.length > 1 ? tmp[1][0] : '')).toUpperCase();
+
+		var user = MAIN.users.findItem('id', profile.id);
+		if (user) {
+			COPY(response, user);
+			user.external = true;
+		} else {
+			user = response;
+			user.created = NOW;
+			user.blocked = false;
+			user.darkmode = 2;
+			user.localsave = true;
+			user.dbviewer = true;
+			user.external = true;
+			MAIN.users.push(user);
+		}
+
+		MAIN.save(1);
+		return { user: user };
+	};
+
+})();
+
 NEWSCHEMA('Login', function(schema) {
 
 	schema.define('email', 'Email', true);
@@ -149,6 +191,46 @@ NEWSCHEMA('Login', function(schema) {
 
 		if (DDOS[$.ip] > 4) {
 			$.invalid('error-blocked-ip');
+			return;
+		}
+
+		if (PREF.login) {
+
+			$.model.type = 'login';
+			$.model.code = PREF.name;
+			$.model.url = $.req.hostname();
+
+			RESTBuilder.POST(PREF.login, $.model).callback(function(err, response) {
+
+				if (err) {
+					$.invalid(err);
+					return;
+				}
+
+				if (response instanceof Array) {
+					err = response[0];
+					$.invalid(err ? (err.error || err.message) : 'error-credentials');
+					return;
+				}
+
+				if (typeof(response) === 'string') {
+					$.invalid(response);
+					return;
+				}
+
+				if (!response || !response.id) {
+					$.invalid('error-credentials');
+					return;
+				}
+
+				var output = FUNC.syncuser(response);
+				if (output.error) {
+					$.invalid(output.error);
+					return;
+				}
+
+				login($, output.user);
+			});
 			return;
 		}
 
@@ -168,15 +250,7 @@ NEWSCHEMA('Login', function(schema) {
 			return;
 		}
 
-		var opt = {};
-		opt.name = CONF.cookie;
-		opt.key = CONF.authkey;
-		opt.id = user.id;
-		opt.expire = '1 month';
-		opt.data = user;
-		opt.note = ($.headers['user-agent'] || '').parseUA() + ' ({0})'.format($.ip);
-		opt.options = {};
-		MAIN.session.setcookie($.controller, opt, $.done());
+		login($, user);
 	});
 
 });

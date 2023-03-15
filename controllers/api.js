@@ -757,7 +757,7 @@ function users_export() {
 
 	for (var i = 0; i < MAIN.users.length; i++) {
 		var user = MAIN.users[i];
-		if (!user.blocked)
+		if (!user.blocked && !user.external)
 			arr.push({ id: user.id, name: user.name, email: user.email, phone: user.phone, position: user.position, password: 'sha256:' + user.password, sa: user.sa, darkmode: user.darkmode, localsave: user.localsave });
 	}
 

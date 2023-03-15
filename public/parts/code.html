@@ -3656,7 +3656,11 @@
 					data.id = model.data.id;
 					data.type = is ? 'stop' : 'start';
 					var done = function() {
-						AJAX('POST /api/localhost/state/ @showloading ERROR', data, ASETTER('loading/hide'));
+						AJAX('POST /api/localhost/state/ @showloading ERROR', data, function() {
+							if (is && !code.data.files.includes('/index.js.json'))
+								EXEC('code/refresh');
+							SETTER('loading/hide');
+						});
 					};
 					if (data.type === 'start')
 						SETTER('approve/show', '@(Are you sure you want to start a Docker container?)', '"ti ti-play-alt" @(Start)', done);

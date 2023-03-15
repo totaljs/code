@@ -13,7 +13,7 @@ NEWSCHEMA('Localhost', function(schema) {
 	schema.setRead(async function($) {
 
 		if (!CONF.folder_npm || !CONF.folder_www) {
-			$.invalid('Node modules folder is not set.');
+			$.invalid('@(Docker engine is not activated)');
 			return;
 		}
 
@@ -26,6 +26,8 @@ NEWSCHEMA('Localhost', function(schema) {
 		var filename = PATH.join(item.path, 'index.yaml');
 		await FUNC.preparedockerfile(item);
 
+		item.running = false;
+
 		try {
 			var ps = await Exec('docker compose -f {0} ps --format json'.format(filename));
 			// PATH.unlink(filename);
@@ -35,13 +37,18 @@ NEWSCHEMA('Localhost', function(schema) {
 		}
 
 		var apps = JSON.parse(ps.stdout);
+		var is = apps.length > 0;
+		if (item.running !== is) {
+			item.running = is;
+			MAIN.save(2);
+		}
 		$.callback(apps);
 	});
 
 	schema.setSave(async function($) {
 
 		if (!CONF.folder_npm || !CONF.folder_www) {
-			$.invalid('"node_modules" folder is not set');
+			$.invalid('@(Docker engine is not activated)');
 			return;
 		}
 
@@ -56,9 +63,14 @@ NEWSCHEMA('Localhost', function(schema) {
 		var done = async function() {
 			var filename = PATH.join(item.path, 'index.yaml');
 			await FUNC.preparedockerfile(item);
+			item.running = false;
 			try {
 				await Exec('docker compose -f {0} {1}'.format(filename, $.model.type === 'start' ? 'up -d' : 'down'));
-				// PATH.unlink(filename);
+				var is = $.model.type === 'start';
+				if (item.running !== is) {
+					item.running = is;
+					MAIN.save(2);
+				}
 			} finally {
 				$.success();
 			}
