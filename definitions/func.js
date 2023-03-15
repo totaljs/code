@@ -103,7 +103,7 @@ FUNC.autodiscover = function(callback) {
 				if (path)
 					model.name = model.name.replace(/--/, '/') + '/';
 
-				model.url = 'https://' + tmp + path;
+				model.url = 'http' + (path.indexOf('localhost') === -1 ? 's' : '') + '://' + tmp + path;
 				model.permissions = '';
 				model.documentation = 'https://docs.totaljs.com';
 				model.support = 'https://platform.totaljs.com';
