@@ -2113,53 +2113,55 @@
 					items.push({ makefile: true, name: '@(Create:) service.js', icon: 'file' });
 			}
 
-			if (node.name === 'controllers') {
-				if (!node.children.findItem('name', 'default.js'))
-					items.push({ makefile: true, name: '@(Create:) default.js', icon: 'file' });
-				if (!node.children.findItem('name', 'api.js'))
-					items.push({ makefile: true, name: '@(Create:) api.js', icon: 'file' });
-			}
+			if (node.children) {
+				if (node.name === 'controllers') {
+					if (!node.children.findItem('name', 'default.js'))
+						items.push({ makefile: true, name: '@(Create:) default.js', icon: 'file' });
+					if (!node.children.findItem('name', 'api.js'))
+						items.push({ makefile: true, name: '@(Create:) api.js', icon: 'file' });
+				}
 
-			if (node.name === 'css') {
-				if (!node.children.findItem('name', 'default.css'))
-					items.push({ makefile: true, name: '@(Create:) default.css', icon: 'file' });
-				if (!node.children.findItem('name', 'ui.css'))
-					items.push({ makefile: true, name: '@(Create:) ui.css', icon: 'file' });
-			}
+				if (node.name === 'css') {
+					if (!node.children.findItem('name', 'default.css'))
+						items.push({ makefile: true, name: '@(Create:) default.css', icon: 'file' });
+					if (!node.children.findItem('name', 'ui.css'))
+						items.push({ makefile: true, name: '@(Create:) ui.css', icon: 'file' });
+				}
 
-			if (node.name === 'public') {
-				if (!node.children.findItem('name', 'css'))
-					items.push({ makedir: true, name: '@(Create:) css', icon: 'folder' });
-				if (!node.children.findItem('name', 'forms'))
-					items.push({ makedir: true, name: '@(Create:) forms', icon: 'folder' });
-				if (!node.children.findItem('name', 'img'))
-					items.push({ makedir: true, name: '@(Create:) img', icon: 'folder' });
-				if (!node.children.findItem('name', 'js'))
-					items.push({ makedir: true, name: '@(Create:) js', icon: 'folder' });
-				if (!node.children.findItem('name', 'pages'))
-					items.push({ makedir: true, name: '@(Create:) pages', icon: 'folder' });
-				if (!node.children.findItem('name', 'panels'))
-					items.push({ makedir: true, name: '@(Create:) panels', icon: 'folder' });
-				if (!node.children.findItem('name', 'parts'))
-					items.push({ makedir: true, name: '@(Create:) parts', icon: 'folder' });
-				if (!node.children.findItem('name', 'templates'))
-					items.push({ makedir: true, name: '@(Create:) templates', icon: 'folder' });
-			}
+				if (node.name === 'public') {
+					if (!node.children.findItem('name', 'css'))
+						items.push({ makedir: true, name: '@(Create:) css', icon: 'folder' });
+					if (!node.children.findItem('name', 'forms'))
+						items.push({ makedir: true, name: '@(Create:) forms', icon: 'folder' });
+					if (!node.children.findItem('name', 'img'))
+						items.push({ makedir: true, name: '@(Create:) img', icon: 'folder' });
+					if (!node.children.findItem('name', 'js'))
+						items.push({ makedir: true, name: '@(Create:) js', icon: 'folder' });
+					if (!node.children.findItem('name', 'pages'))
+						items.push({ makedir: true, name: '@(Create:) pages', icon: 'folder' });
+					if (!node.children.findItem('name', 'panels'))
+						items.push({ makedir: true, name: '@(Create:) panels', icon: 'folder' });
+					if (!node.children.findItem('name', 'parts'))
+						items.push({ makedir: true, name: '@(Create:) parts', icon: 'folder' });
+					if (!node.children.findItem('name', 'templates'))
+						items.push({ makedir: true, name: '@(Create:) templates', icon: 'folder' });
+				}
 
-			if (node.name === 'js') {
-				if (!node.children.findItem('name', 'default.js'))
-					items.push({ makefile: true, name: '@(Create:) default.js', icon: 'file' });
-				if (!node.children.findItem('name', 'func.js'))
-					items.push({ makefile: true, name: '@(Create:) func.js', icon: 'file' });
-				if (!node.children.findItem('name', 'helpers.js'))
-					items.push({ makefile: true, name: '@(Create:) helpers.js', icon: 'file' });
-				if (!node.children.findItem('name', 'ui.js'))
-					items.push({ makefile: true, name: '@(Create:) ui.js', icon: 'file' });
-			}
+				if (node.name === 'js') {
+					if (!node.children.findItem('name', 'default.js'))
+						items.push({ makefile: true, name: '@(Create:) default.js', icon: 'file' });
+					if (!node.children.findItem('name', 'func.js'))
+						items.push({ makefile: true, name: '@(Create:) func.js', icon: 'file' });
+					if (!node.children.findItem('name', 'helpers.js'))
+						items.push({ makefile: true, name: '@(Create:) helpers.js', icon: 'file' });
+					if (!node.children.findItem('name', 'ui.js'))
+						items.push({ makefile: true, name: '@(Create:) ui.js', icon: 'file' });
+				}
 
-			if (node.name === 'resources') {
-				if (!node.children.findItem('name', 'default.resource'))
-					items.push({ makefile: true, name: '@(Create:) default.resource', icon: 'file' });
+				if (node.name === 'resources') {
+					if (!node.children.findItem('name', 'default.resource'))
+						items.push({ makefile: true, name: '@(Create:) default.resource', icon: 'file' });
+				}
 			}
 
 			var tmp = node.path.split('/').trim();
