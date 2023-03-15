@@ -11,10 +11,11 @@
 		<script type="text/plain">
 			[
 				'{{ if hidden }} silver{{ fi }}',
-				{ name: 'name', text: '@(Name)', class: 'b', width: 300, template: '{{ if notfound }}<span class="badge badge-small badge-red mr5">{{ if notfound === \'offline\' }}@(offline){{ else }}@(not found){{ fi }}</span>{{ fi }}{{ if pinned }}<i class="ti ti-pin-alt mr5 orange"></i>{{ fi }}{{ name }}' },
+				{ name: 'name', text: '@(Name)', class: 'b highlight', width: 250, template: '{{ if running }}<i class="ti ti-docker green mr5"></i>{{ fi }}{{ if notfound }}<span class="badge badge-small badge-red mr5">{{ if notfound === \'offline\' }}@(offline){{ else }}@(not found){{ fi }}</span>{{ fi }}{{ if pinned }}<i class="ti ti-pin-alt mr5 orange"></i>{{ fi }}{{ name }}' },
 				{ name: 'url', text: '@(URL)', width: 250 },
 				{ name: 'path', text: '@(Path)', width: 250 },
 				{ name: 'users', text: '@(Users)', template: '{{ foreach m in users }}<span class="badge badge-small" style="background:{{ m | color }}">{{ m }}</span>{{ end }}', width: 250 },
+				{ name: 'running', text: '@(Running)', width: 100, type: 'boolean', options: [{ text: 'yes', value: true }, { text: 'no', value: false }], align: 1 },
 				{ name: 'created', text: '@(Created)', align: 'center', template: '{{ created | format(\'dd.MM.yyyy\') }}', align: 1, width: 100 }
 			]
 		</script>

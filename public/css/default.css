@@ -20,6 +20,8 @@ html, body { margin: 0; padding: 0; overflow: hidden; }
 .colorpalette { position: absolute; z-index: 10; bottom: 25px; right: 25px; }
 .colorpalette > span { float: right; width: 17px; height: 17px; border: 1px solid #000000; border-left: 0; cursor: pointer; }
 .colorpalette > span:last-child { border-left: 1px solid #000000; }
+.dg .highlight { background-color: rgba(0,0,0,0.01); }
+.td .dg .highlight { background-color: rgba(255,255,255,0.01); }
 
 .version { position: absolute; font-size: 9px; z-index: 1; left: 210px; top: 55px; }
 .electron .version { top: 77px; }
