@@ -5,8 +5,10 @@
 
 			<div class="body">
 
-				<div data---="input__?.email__required:true;type:email" class="m">@(Email address)</div>
-				<div data---="input__?.phone__type:phone" class="m">@(Phone number)</div>
+				<ui-bind path="user.external" config="disabled">
+					<div data---="input__?.email__required:true;type:email" class="m">@(Email address)</div>
+					<div data---="input__?.phone__type:phone" class="m">@(Phone number)</div>
+				</ui-bind>
 
 				<div data---="choose__?.darkmode__type:number;selector:.item__0" class="iconmenu">
 
@@ -27,12 +29,14 @@
 				<div class="clearfix">&nbsp;</div>
 
 				<div data---="input__?.localsave__type:checkbox">@(Always local storing files in Electron version)</div>
-				<div data---="input__?.ispassword__type:checkbox" class="b">@(Change password)</div>
 
-				<div bind="?.ispassword__show" class="hidden" style="margin-top:15px">
-					<hr />
-					<div data---="input__?.password__camouflage:•;required:true">@(New password)</div>
-				</div>
+				<ui-bind path="user.external" config="hide" class="hidden">
+					<div data---="input__?.ispassword__type:checkbox" class="b">@(Change password)</div>
+					<div bind="?.ispassword__show" class="hidden" style="margin-top:15px">
+						<hr />
+						<div data---="input__?.password__camouflage:•;required:true">@(New password)</div>
+					</div>
+				</ui-bind>
 			</div>
 
 			<div class="body npt">

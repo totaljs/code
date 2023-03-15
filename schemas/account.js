@@ -2,19 +2,9 @@ NEWSCHEMA('Accounts', function(schema) {
 
 	schema.define('email', 'Email', true);
 	schema.define('phone', 'Phone');
-	schema.define('token', 'String(100)');
-	schema.define('appname', 'String(50)');
-	schema.define('superadmin', 'String(200)');
 	schema.define('darkmode', 'Number');
 	schema.define('localsave', 'Boolean');
 	schema.define('password', 'String(30)');
-
-	// TMS
-	schema.jsonschema_define('username', 'String');
-	schema.jsonschema_define('userid', 'String');
-	schema.jsonschema_define('ip', 'String');
-	schema.jsonschema_define('ua', 'String');
-	schema.jsonschema_define('dttms', 'Date');
 
 	schema.setQuery(function($) {
 		var user = $.user;
@@ -40,31 +30,18 @@ NEWSCHEMA('Accounts', function(schema) {
 		var user = $.user;
 		var model = $.model;
 
-		user.email = model.email;
-		user.phone = model.phone;
+		if (!PREF.login) {
+			user.email = model.email;
+			user.phone = model.phone;
+		}
+
 		user.darkmode = model.darkmode;
 		user.localsave = model.localsave;
 		user.autodarkmode = model.autodarkmode;
 
-		if (user.sa) {
-			CONF.name = model.appname;
-			PREF.set('name', model.appname);
-			PREF.set('token', model.token);
-			PREF.set('superadmin', model.superadmin);
-		}
-
-		if (model.password && model.password.substring(0, 3) !== '***')
-			user.password = model.password.sha256();
-
-		if (CONF.allow_tms) {
-			var publish = {};
-			publish.email = user.email;
-			publish.phone = user.phone;
-			publish.darkmode = user.darkmode;
-			publish.localsave = user.localsave;
-			publish.token = user.token;
-			publish.appname = user.appname;
-			PUBLISH('accounts_save', FUNC.tms($, publish));
+		if (!PREF.login) {
+			if (model.password && model.password.substring(0, 3) !== '***')
+				user.password = model.password.sha256();
 		}
 
 		MAIN.save(1);

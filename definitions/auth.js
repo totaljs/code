@@ -36,11 +36,15 @@
 						return;
 					}
 
+					var user = CLONE(output.user);
+					user.password = undefined;
 					next(null, output.user);
 				});
 
 			} else {
 				user.logged = NOW;
+				user = CLONE(user);
+				user.password = undefined;
 				next(null, user);
 			}
 		} else

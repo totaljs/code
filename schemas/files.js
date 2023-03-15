@@ -201,8 +201,6 @@ NEWSCHEMA('Files', function(schema) {
 		MAIN.log($.user, 'files_save', project, filename, count, model.time, model.changes);
 		MAIN.change('save' + (model.sync ? '_sync' : ''), $.user, project, model.path, count, model.time, model.changes);
 
-		PUBLISH('files_upload', FUNC.tms($, model, project));
-
 		if (project.isexternal) {
 
 			var saveforce = function() {
@@ -607,9 +605,6 @@ NEWSCHEMA('FilesRename', function(schema) {
 
 			MAIN.changelog(user, $.id, oldpath, true);
 			MAIN.changelog(user, $.id, newpath);
-
-			PUBLISH('files_rename', FUNC.tms($, { oldpath: oldpath, newpath: newpath }, project));
-
 			Fs.rename(model.oldpath, model.newpath, $.done());
 		});
 	});
@@ -647,8 +642,6 @@ NEWSCHEMA('FilesRemove', function(schema) {
 		MAIN.log($.user, 'files_remove', project, model.path);
 		MAIN.change('remove', $.user, project, model.path);
 		MAIN.changelog(user, $.id, model.path, true);
-
-		PUBLISH('files_remove', FUNC.tms($, model, project));
 
 		if (project.isexternal) {
 			if (project.backup)
@@ -764,14 +757,6 @@ NEWSCHEMA('FilesCreate', function(schema) {
 
 		MAIN.change('create', $.user, project, model.path);
 		MAIN.changelog($.user, $.id, model.path);
-
-		if (CONF.allow_tms) {
-			var publish = {};
-			publish.path = model.path;
-			publish.folder = model.folder;
-			publish.clone = model.clone;
-			PUBLISH('files_reate', FUNC.tms($, publish, project));
-		}
 
 		if (project.isexternal) {
 			FUNC.external(project, 'create', model.path, JSON.stringify({ clone: model.clone, folder: model.folder }), $.callback);
