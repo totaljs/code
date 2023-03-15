@@ -47,6 +47,8 @@ Thelpers.shortpath = function(path) {
 
 Thelpers.particon = function(type) {
 	switch (type) {
+		case 'action':
+			return 'ti ti-atom';
 		case 'markdown':
 			return 'fa fa-heading';
 		case 'helper':

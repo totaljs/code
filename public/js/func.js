@@ -2410,6 +2410,7 @@ FUNC.jcomponent_update = function(name, type, content, body, meta) {
 		var REGTODODONE = /@done|@canceled/i;
 		var REGTODOCLEAN = /-->|\*\//g;
 		var REGPART = /(COMPONENT|COMPONENT_EXTEND|EXTENSION|CONFIG|NEWSCHEMA|NEWCOMMAND|NEWOPERATION|NEWTASK|MIDDLEWARE|WATCH|ROUTE|(^|\s)ON|PLUGIN|PLUGINABLE)+\(.*?\)/g;
+		var REGACTION = /NEWACTION\(.*?\{/g;
 		var REGPARTCLEAN = /('|").*?('|")/;
 		var REGHELPER = /(Thelpers|FUNC|REPO|MAIN)\.[a-z0-9A-Z_$]+(\s)+=/g;
 		var REGCONSOLE = /console\.\w+\(.*?\)/g;
@@ -2526,7 +2527,17 @@ FUNC.jcomponent_update = function(name, type, content, body, meta) {
 						if (type === 'watch' && oldplugin)
 							name = name.replace(/\?/g, oldplugin);
 
-						components.push({ line: i, ch: beg, name: name.trim(), type: type.substring(0, 3) === 'on(' ? 'event' : type === 'exten' ? 'extension' : type === 'compo' ? 'component' : type === 'newsc' ? 'schema' : type === 'confi' ? 'config' : type === 'newop' ? 'operation' : type === 'newta' ? 'task' : type === 'newco' ? 'command' : type === 'watch' ? 'watcher' : type === 'plugi' ? ispluginable ? 'pluginable' : 'plugin' : type === 'middl' ? 'middleware' : type === 'route' ? 'route' : 'undefined' });
+						components.push({ line: i, ch: beg, name: name.trim(), type: type.substring(0, 3) === 'on(' ? 'event' : type === 'exten' ? 'extension' : type === 'compo' ? 'component' : type === 'newsc' ? 'schema' : type === 'confi' ? 'config' : type === 'newop' ? 'operation' : type === 'newta' ? 'task' : type === 'newac' ? 'action' : type === 'newco' ? 'command' : type === 'watch' ? 'watcher' : type === 'plugi' ? ispluginable ? 'pluginable' : 'plugin' : type === 'middl' ? 'middleware' : type === 'route' ? 'route' : 'undefined' });
+						is = beg;
+					}
+				}
+
+				m = line.match(REGACTION);
+				if (m) {
+					name = m[0].match(REGPARTCLEAN);
+					if (name) {
+						name = name[0].replace(/'|"/g, '');
+						components.push({ line: i, ch: beg, name: name.trim(), type: 'action' });
 						is = beg;
 					}
 				}
