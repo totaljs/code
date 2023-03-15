@@ -343,6 +343,7 @@ NEWSCHEMA('Projects', function(schema) {
 			data.isexternal = item.isexternal;
 			data.users = item.users;
 			data.hidden = item.hidden;
+			data.running = item.running;
 			data.pinned = item.pinned == true;
 
 			if ($.user.sa) {

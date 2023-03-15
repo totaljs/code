@@ -11,7 +11,7 @@
 		<script type="text/plain">
 			[
 				'{{ if hidden }} silver{{ fi }}',
-				{ name: 'name', text: '@(Name)', class: 'b highlight', width: 250, template: '{{ if running }}<i class="ti ti-docker green mr5"></i>{{ fi }}{{ if notfound }}<span class="badge badge-small badge-red mr5">{{ if notfound === \'offline\' }}@(offline){{ else }}@(not found){{ fi }}</span>{{ fi }}{{ if pinned }}<i class="ti ti-pin-alt mr5 orange"></i>{{ fi }}{{ name }}' },
+				{ name: 'name', text: '@(Name)', class: 'b highlight', width: 250, template: '{{ if running }}<i class="ti ti-spin ti-spinner green mr5"></i>{{ fi }}{{ if notfound }}<span class="badge badge-small badge-red mr5">{{ if notfound === \'offline\' }}@(offline){{ else }}@(not found){{ fi }}</span>{{ fi }}{{ if pinned }}<i class="ti ti-pin-alt mr5 orange"></i>{{ fi }}{{ name }}' },
 				{ name: 'url', text: '@(URL)', width: 250 },
 				{ name: 'path', text: '@(Path)', width: 250 },
 				{ name: 'users', text: '@(Users)', template: '{{ foreach m in users }}<span class="badge badge-small" style="background:{{ m | color }}">{{ m }}</span>{{ end }}', width: 250 },
@@ -96,6 +96,8 @@
 			var items = [];
 			var refreshcurrent = false;
 
+			items.push({ value: 2, name: '@(Run/Stop Docker)', icon: 'docker blue' });
+			items.push('-');
 			items.push({ value: 1, name: '@(Clear backups)', icon: 'clean' });
 			items.push({ value: 254, name: '@(Unregister)', icon: 'sign-out orange' });
 			items.push('-');
@@ -111,6 +113,24 @@
 							}, function() {
 								SETTER('loading/hide', 100);
 								SETTER('notifybar/success', '@(All backups of selected projects have been removed.)');
+								exports.refresh();
+							});
+						});
+						break;
+
+					case 2:
+						SETTER('approve/show', '@(Are you sure you want to perform run/stop Docker for the selected projects?)', '"ti ti-docker" @(Continue)', function() {
+							SETTER('loading/show');
+							var index = 0;
+							projects.checked.wait(function(item, next) {
+								index++;
+								var data = {};
+								data.id = item.id;
+								data.type = item.running ? 'stop' : 'start';
+								SET('common.percentage', (index * 100) / projects.checked.length);
+								AJAX('POST /api/localhost/state/', data, next);
+							}, function() {
+								SETTER('loading/hide', 100);
 								exports.refresh();
 							});
 						});
