@@ -999,9 +999,9 @@ li.ui-directory-current { background-color: rgba(0,0,0,0.02); font-weight: bold;
 .td .ui-dockable-control:hover { background-color: #404040; }
 
 .ui-inputsearch { border-bottom: 1px solid #E0E0E0; }
-.ui-inputsearch-control { margin-left: 24px; }
-.ui-inputsearch-control input { border: 0; width: 100%; background-color: transparent; font-size: 12px; outline: 0; height: 27px; }
-.ui-inputsearch-icon { float: left; width: 24px; font-size: 12px; color: gray; text-align: center; padding: 6px 0 0 0; cursor: pointer; height: 27px; }
+.ui-inputsearch-control { margin-left: 29px; }
+.ui-inputsearch-control input { border: 0; width: 100%; background-color: transparent; font-size: 12px; outline: 0; height: 29px; }
+.ui-inputsearch-icon { float: left; width: 29px; font-size: 12px; color: gray; text-align: center; padding: 6px 0 0 0; cursor: pointer; height: 29px; }
 .ui-inputsearch-icon .ti-times { color: red; cursor: pointer; }
 .ui-inputsearch-placeholder { position: absolute; font-size: 12px; line-height: 28px; margin: 0 0 0 2px; }
 .td .ui-inputsearch { border-bottom-color: #404040; }

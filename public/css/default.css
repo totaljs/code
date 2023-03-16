@@ -46,8 +46,6 @@ hr { border-color: #E0E0E0; }
 .td #currenticon { color: #FFF; }
 /*.codepanel #currentcolor { right: 380px; }*/
 
-.panelsearch { height: 27px; }
-
 .search { height: 30px; border-bottom: 1px solid #E0E0E0; font-size: 12px; }
 .search .count { float: right; width: 40px; line-height: 29px; text-align: right; margin-right: 10px; color: #E62222; font-weight: bold; }
 .search > .label { width: 74px; border-right: 1px solid #E0E0E0; float: left; line-height: 30px; text-align: center; color: #A0A0A0; }
@@ -213,7 +211,7 @@ h3 i { margin-right: 5px; color: $color; }
 #body .caption { font-size: 12px; font-family: $font; font-weight: 700; margin-bottom: 10px; text-transform: uppercase; color: #000000; border-bottom: 1px solid #E0E0E0; padding: 0 0 5px 0; }
 #body .caption i { margin-right: 5px; }
 
-.panelsearch { line-height: 28px; height: 28px; padding: 0 10px; border-bottom: 1px solid #E0E0E0; font-size: 11px; }
+.panelsearch { line-height: 30px; height: 30px; padding: 0 10px; border-bottom: 1px solid #E0E0E0; font-size: 11px; }
 .td .panelsearch { border-bottom-color: #404040; background-color: #303030; }
 
 .panelcheckbox { padding: 9px 10px 0; background-color: #F8F8F8; height: 58px; border-top: 1px solid #E0E0E0; }
