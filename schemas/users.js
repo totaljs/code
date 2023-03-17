@@ -103,16 +103,7 @@ NEWSCHEMA('Users', function(schema) {
 		MAIN.users.push(model);
 		MAIN.save(1);
 
-		// Login
-		var opt = {};
-		opt.name = CONF.cookie;
-		opt.key = CONF.authkey;
-		opt.id = model.id;
-		opt.expire = '1 month';
-		opt.data = model;
-		opt.note = ($.headers['user-agent'] || '').parseUA() + ' ({0})'.format($.ip);
-		opt.options = {};
-		MAIN.session.setcookie($.controller, opt, $.done());
+		login($, model);
 	});
 
 	schema.setRemove(function($) {
@@ -146,7 +137,7 @@ function login($, user) {
 
 (function() {
 
-	var schema = '*id:lower,*name:string,*email:string,phone:string,position:string,sa:boolean'.toJSONSchema();
+	var schema = '*id:lower,*name:string,*email:string,phone:string,position:string,sa:boolean,permissions:[string]'.toJSONSchema();
 
 	FUNC.syncuser = function(response) {
 
@@ -174,6 +165,9 @@ function login($, user) {
 			user.external = true;
 			MAIN.users.push(user);
 		}
+
+		if (profile.permissions && profile.permissions.includes('admin'))
+			user.sa = true;
 
 		MAIN.save(1);
 		return { user: user };
