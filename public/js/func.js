@@ -2410,7 +2410,7 @@ FUNC.jcomponent_update = function(name, type, content, body, meta) {
 		var REGTODODONE = /@done|@canceled/i;
 		var REGTODOCLEAN = /-->|\*\//g;
 		var REGPART = /(COMPONENT|COMPONENT_EXTEND|EXTENSION|CONFIG|NEWSCHEMA|NEWCOMMAND|NEWOPERATION|NEWTASK|MIDDLEWARE|WATCH|ROUTE|(^|\s)ON|PLUGIN|PLUGINABLE)+\(.*?\)/g;
-		var REGACTION = /NEWACTION\(.*?\{/g;
+		var REGACTION = /NEWACTION\(('|").*?('|"),(\s)?\{/g;
 		var REGPARTCLEAN = /('|").*?('|")/;
 		var REGHELPER = /(Thelpers|FUNC|REPO|MAIN)\.[a-z0-9A-Z_$]+(\s)+=/g;
 		var REGCONSOLE = /console\.\w+\(.*?\)/g;
@@ -2430,7 +2430,7 @@ FUNC.jcomponent_update = function(name, type, content, body, meta) {
 		var is = null;
 		var name, type, oldschema, oldplugin, pluginvariable, oldtask, taskvariable, tmp, index;
 		var ispluginable = false;
-		var version = '';
+		// var version = '';
 		var version_file = '';
 		var lines = val.split('\n');
 
