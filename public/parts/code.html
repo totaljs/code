@@ -3284,14 +3284,21 @@
 					for (var i = 0; i < code.tree.length; i++)
 						directory[code.tree[i].name] = 1;
 
+					if (!directory.actions)
+						opt.items.push({ name: '<strong>@(Create):</strong> /actions', icon: '!ti ti-folder', value: '/actions/' });
+
+					/*
 					if (!directory.builds)
 						opt.items.push({ name: '<strong>@(Create):</strong> /builds', icon: '!ti ti-folder', value: '/builds/' });
+						*/
 
 					if (!directory.bundles)
 						opt.items.push({ name: '<strong>@(Create):</strong> /bundles', icon: '!ti ti-folder', value: '/bundles/' });
 
+					/*
 					if (!directory.components)
 						opt.items.push({ name: '<strong>@(Create):</strong> /components', icon: '!ti ti-folder', value: '/components/' });
+					*/
 
 					if (!directory.controllers)
 						opt.items.push({ name: '<strong>@(Create):</strong> /controllers', icon: '!ti ti-folder', value: '/controllers/' });
@@ -3302,13 +3309,13 @@
 					if (!directory.definitions)
 						opt.items.push({ name: '<strong>@(Create):</strong> /definitions', icon: '!ti ti-folder', value: '/definitions/' });
 
+					/*
 					if (!directory.jsonschemas)
 						opt.items.push({ name: '<strong>@(Create):</strong> /jsonschemas', icon: '!ti ti-folder', value: '/jsonschemas/' });
 
 					if (!directory.middleware)
 						opt.items.push({ name: '<strong>@(Create):</strong> /middleware', icon: '!ti ti-folder', value: '/middleware/' });
 
-					/*
 					if (!directory.models)
 						opt.items.push({ name: '<strong>@(Create):</strong> /models', icon: '!ti ti-folder', value: '/models/' });*/
 
