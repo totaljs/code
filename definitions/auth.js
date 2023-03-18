@@ -17,6 +17,7 @@
 				data.ip = meta.ip;
 				data.id = user.id;
 				data.email = user.email;
+				data.url = PREF.url;
 
 				RESTBuilder.POST(PREF.login, data).callback(function(err, response) {
 

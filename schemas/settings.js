@@ -31,6 +31,7 @@ NEWSCHEMA('Settings', function(schema) {
 		var model = $.model;
 
 		CONF.name = model.name;
+		PREF.set('url', $.req.hostname());
 		PREF.set('name', model.name);
 		PREF.set('token', model.token);
 		PREF.set('login', model.login);

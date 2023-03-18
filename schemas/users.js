@@ -192,7 +192,7 @@ NEWSCHEMA('Login', function(schema) {
 
 			$.model.type = 'login';
 			$.model.code = PREF.name;
-			$.model.url = $.req.hostname();
+			$.model.url = PREF.url;
 
 			RESTBuilder.POST(PREF.login, $.model).callback(function(err, response) {
 
