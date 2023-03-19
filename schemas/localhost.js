@@ -30,7 +30,6 @@ NEWSCHEMA('Localhost', function(schema) {
 
 		try {
 			var ps = await Exec('docker compose -f {0} ps --format json'.format(filename));
-			// PATH.unlink(filename);
 		} catch (e) {
 			$.invalid(e);
 			return;
@@ -42,6 +41,7 @@ NEWSCHEMA('Localhost', function(schema) {
 			item.running = is;
 			MAIN.save(2);
 		}
+
 		$.callback(apps);
 	});
 
@@ -61,14 +61,14 @@ NEWSCHEMA('Localhost', function(schema) {
 		PATH.unlink(item.path + 'logs/debug.log');
 
 		var done = async function() {
+			var start = $.model.type === 'start';
 			var filename = PATH.join(item.path, 'index.yaml');
-			await FUNC.preparedockerfile(item);
+			await FUNC.preparedockerfile(item, start);
 			item.running = false;
 			try {
-				await Exec('docker compose -f {0} {1}'.format(filename, $.model.type === 'start' ? 'up -d' : 'down'));
-				var is = $.model.type === 'start';
-				if (item.running !== is) {
-					item.running = is;
+				await Exec('docker compose -f {0} {1}'.format(filename, start ? 'up -d' : 'down'));
+				if (item.running !== start) {
+					item.running = start;
 					MAIN.save(2);
 				}
 			} finally {
@@ -76,15 +76,17 @@ NEWSCHEMA('Localhost', function(schema) {
 			}
 		};
 
-		if ($.model.type === 'start')
-			DOWNLOAD('https://cdn.totaljs.com/code/run.js', PATH.join(item.path, 'index.js'), done);
-		else
+		if ($.model.type === 'start') {
+			await WriteFile(PATH.join(item.path, 'index.js'), `// Total.js start script\n// https://www.totaljs.com\n\nvar type = process.argv.indexOf('--release', 1) !== -1 ? 'release' : 'debug';
+require('total4/' + type)({});`);
+			done();
+		} else
 			done();
 	});
 
 });
 
-FUNC.preparedockerfile = async function(item) {
+FUNC.preparedockerfile = async function(item, run) {
 
 	var host = item.url;
 	var wwwfolder = item.path.replace('/www/www', CONF.folder_www);
@@ -98,9 +100,25 @@ FUNC.preparedockerfile = async function(item) {
 
 	host = host.replace('http://', '').replace('https://', '');
 
-	var path = item.customdocker ? PATH.join(item.path, 'docker-compose.yaml') : PATH.root((islocalhost ? 'app-compose{0}.yaml' : 'app-compose-https{0}.yaml').format(item.releasemode ? '-release' : ''));
+	var path = item.customdocker ? PATH.join(item.path, 'docker-compose.yaml') : PATH.root((islocalhost ? 'app-compose.yaml' : 'app-compose-https.yaml'));
+	var content;
 
-	var content = await ReadFile(path);
+	if (run && !item.customdocker) {
+		var package = PATH.join(item.path, 'package.json');
+		try {
+			content = await ReadFile(package);
+			content = content.toString('utf8').parseJSON();
+			if (!content.scripts)
+				content.scripts = {};
+			content.scripts.start = 'node index.js 8000' + (item.releasemode ? ' --release' : '');
+			await WriteFile(package, JSON.stringify(content, null, '\t'));
+		} catch (e) {
+			// create new
+			await WriteFile(package, JSON.stringify({ name: item.name.slug(), version: '1.0.0', scripts: { start: 'node index.js 8000' + (item.releasemode ? ' --release' : '') }}, null, '\t'));
+		}
+	}
+
+	content = await ReadFile(path);
 	content = content.toString('utf8').replace(/##ID##/g, item.id).replace(/##MAXUPLOAD##/g, item.maxupload || 50).replace(/##HOST##/g, host).replace(/##FOLDER_NPM##/g, nodemodules).replace(/##FOLDER_WWW##/g, wwwfolder);
 	return WriteFile(filename, content);
 };

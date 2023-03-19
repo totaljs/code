@@ -1,8 +1,9 @@
+# Do not change this file, it is generated automatically
 version: '3.1'
 
 services:
   main_app:
-    image: totalplatform/run
+    image: totalplatform/run:npm
     restart: always
     volumes:
       - ##FOLDER_WWW##:/www
