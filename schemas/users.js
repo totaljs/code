@@ -55,21 +55,26 @@ NEWSCHEMA('Users', function(schema) {
 
 		} else {
 
-			item.name = model.name;
-			item.email = model.email;
-			item.sa = model.sa;
-			item.blocked = model.blocked;
-			item.position = model.position;
+			if (!item.external) {
+				item.name = model.name;
+				item.email = model.email;
+				item.sa = model.sa;
+				item.blocked = model.blocked;
+				item.position = model.position;
+				item.initials = model.initials;
+			}
+
 			item.darkmode = model.darkmode;
 			item.localsave = model.localsave;
-			item.initials = model.initials;
 			item.dbviewer = model.dbviewer;
 
-			if (model.password.substring(0, 3) !== '***') {
-				if (model.password.substring(0, 7) === 'sha256:')
-					item.password = model.password.substring(7);
-				else
-					item.password = model.password.sha256();
+			if (!item.external) {
+				if (model.password.substring(0, 3) !== '***') {
+					if (model.password.substring(0, 7) === 'sha256:')
+						item.password = model.password.substring(7);
+					else
+						item.password = model.password.sha256();
+				}
 			}
 
 			if (item.blocked && MAIN.ws)

@@ -1,31 +1,34 @@
 <div data---="form__common.form__if:usersform;icon:robot;width:650;reload:usersform/reload;autofocus:1;submit:usersform/submit" class="hidden">
 	<div data-scope="usersform">
 		<div class="padding">
-			<div class="row">
-				<div class="col-sm-6 m">
-					<div data---="input__?.id__required:true;placeholder:@(petersirka);type:lower__''" data-bind="?.isnew__enabled">@(ID)</div>
+
+			<ui-bind path="?.external" config="disabled">
+				<div class="row">
+					<div class="col-sm-6 m">
+						<div data---="input__?.id__required:true;placeholder:@(petersirka);type:lower__''" data-bind="?.isnew__enabled">@(ID)</div>
+					</div>
+					<div class="col-sm-6 m">
+						<div data---="input__?.name__required:true__''">@(Name)</div>
+					</div>
 				</div>
-				<div class="col-sm-6 m">
-					<div data---="input__?.name__required:true__''">@(Name)</div>
+				<div class="row">
+					<div class="col-sm-6 m">
+						<div data---="input__?.email__required:true__'@'">@(Email address)</div>
+					</div>
+					<div class="col-sm-6 m">
+						<div data---="input__?.phone__null__''">@(Phone number)</div>
+					</div>
 				</div>
-			</div>
-			<div class="row">
-				<div class="col-sm-6 m">
-					<div data---="input__?.email__required:true__'@'">@(Email address)</div>
+				<div class="row">
+					<div class="col-sm-6 m">
+						<div data---="input__?.password__required:true__GUID(12)">@(Password)</div>
+						<ui-bind path="?.external" config="hide" class="help block"><span class="exec link" data-exec="?/generate">@(Generate password)</span></ui-bind>
+					</div>
+					<div class="col-sm-6 m">
+						<div data---="input__?.position__null__'Developer'">@(Position)</div>
+					</div>
 				</div>
-				<div class="col-sm-6 m">
-					<div data---="input__?.phone__null__''">@(Phone number)</div>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-sm-6 m">
-					<div data---="input__?.password__required:true__GUID(12)">@(Password)</div>
-					<div class="help"><span class="exec link" data-exec="usersform/generate">@(Generate password)</span></div>
-				</div>
-				<div class="col-sm-6 m">
-					<div data---="input__?.position__null__'Developer'">@(Position)</div>
-				</div>
-			</div>
+			</ui-bind>
 
 			<hr class="nmt" />
 
@@ -48,7 +51,9 @@
 			<div class="clearfix">&nbsp;</div>
 
 			<div data---="input__?.sa__type:checkbox__false" class="b">@(User is administrator)</div>
-			<div data---="input__?.blocked__type:checkbox__false">@(User is blocked)</div>
+			<ui-bind path="?.external" config="hide" class="block">
+				<div data---="input__?.blocked__type:checkbox__false">@(User is blocked)</div>
+			</ui-bind>
 			<div data---="input__?.dbviewer__type:checkbox__false">@(Allow to open DB viewer)</div>
 			<div data---="input__?.localsave__type:checkbox__true">@(Enable local storing of files)</div>
 		</div>
