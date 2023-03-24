@@ -1,0 +1,33 @@
+exports.install = function() {
+	ROUTE('POST /upload/', upload, ['upload'], 1024 * 5); // Max. 5 MB
+	ROUTE('FILE /download/*.*', files);
+};
+
+async function upload() {
+
+	var $ = this;
+	var output = [];
+
+	for (var file of $.files) {
+		var response = await file.fs('files', UID());
+		response.url = '/download/{0}.{1}'.format(response.id.sign(CONF.salt), response.ext);
+		output.push(response);
+	}
+
+	$.json(output);
+}
+
+function files(req, res) {
+
+	var index = req.split[1].lastIndexOf('.');
+	if (index !== -1) {
+		var hash = req.split[1].substring(0, index);
+		var id = hash.substring(0, hash.indexOf('-', 10));
+		if (hash === id.sign(CONF.salt)) {
+			res.filefs('files', id);
+			return;
+		}
+	}
+
+	res.throw404();
+}

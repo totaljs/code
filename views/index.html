@@ -427,7 +427,7 @@
 						case 'removeall':
 							SETTER('approve/show', '@(Are you sure you want to clear the project?)', '"trash" @(Remove)', function() {
 								SETTER('loading/show');
-								var allowed = { logs: 1, 'debug.js': 1, 'release.js': 1, 'debug.pid': 1, 'superadmin.pid': 1, 'index.pid': 1 };
+								var allowed = { logs: 1, 'debug.js': 1, 'release.js': 1, 'debug.pid': 1, 'superadmin.pid': 1, 'index.pid': 1, 'app.yaml': 1 };
 								code.tree.wait(function(item, next) {
 									if (allowed[item.name]) {
 										next();
