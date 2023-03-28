@@ -1281,7 +1281,7 @@ COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 		}
 	};
 
-	self.template = Tangular.compile('<div class="item{{ if children }} expand{{ fi }}{{ path | treefilecolor }}" data-index="{{ $pointer }}" title="{{ name }}"><i class="icon {{ if children }}ti ti-folder{{ if isopen }}-open {{ fi }}{{ if name === \'threads\' || name === \'builds\' }} special{{ fi }}{{ else }}{{ name | fileicon }}{{ fi }}"></i><span class="options"><i class="ti ti-ellipsis-h"></i></span><div>{{ name }}</div></div>');
+	self.template = Tangular.compile('<div class="item{{ if children }} expand{{ fi }}{{ path | treefilecolor }}" data-index="{{ $pointer }}" title="{{ name }}"><i class="icon {{ if children }}ti ti-folder{{ if isopen }}-open-alt{{ else }}-alt{{ fi }} {{ if name === \'threads\' || name === \'builds\' }} special{{ fi }}{{ else }}{{ name | fileicon }}{{ fi }}"></i><span class="options"><i class="ti ti-ellipsis-h"></i></span><div>{{ name }}</div></div>');
 	self.readonly();
 
 	self.resizescrollbar = function() {
@@ -1457,7 +1457,7 @@ COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 			else
 				expanded[index] = is ? 1 : 0;
 
-			el.find('.icon').tclass('ti-folder', !is).tclass('ti-folder-open', is);
+			el.find('.icon').tclass('ti-folder-alt', !is).tclass('ti-folder-open-alt', is);
 			!noeval && config.exec && EXEC(config.exec, cache[index], true, is);
 			self.resizescrollbar();
 		} else {
@@ -1506,7 +1506,7 @@ COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 			self.find('.expand').each(function() {
 				var el = $(this);
 				el.parent().aclass('show');
-				el.find('> .icon').rclass('ti-folder').aclass('ti-folder-open');
+				el.find('> .icon').rclass('ti-folder-alt').aclass('ti-folder-open-alt');
 			});
 		} else {
 			self.find('[data-index="{0}"]'.format(index)).each(function() {
@@ -1520,7 +1520,7 @@ COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 						el = el.closest('.children').prev();
 						if (!el.hclass('expand'))
 							break;
-						el.find('> .icon').rclass('ti-folder').aclass('ti-folder-open');
+						el.find('> .icon').rclass('ti-folder-alt').aclass('ti-folder-open-alt');
 						var parent = el.parent().aclass('show');
 						var tmp = +parent.find('> .item').attrd('index');
 						var item = cache[tmp];
@@ -1539,7 +1539,7 @@ COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 			self.find('.expand').each(function() {
 				var el = $(this);
 				el.parent().rclass('show');
-				el.find('> .icon').aclass('ti-folder').rclass('ti-folder-open');
+				el.find('> .icon').aclass('ti-folder-alt').rclass('ti-folder-open-alt');
 			});
 		} else {
 			self.find('[data-index="{0}"]'.format(index)).each(function() {
@@ -1553,7 +1553,7 @@ COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 						el = el.closest('.children').prev();
 						if (!el.hclass('expand'))
 							break;
-						el.find('> .icon').aclass('ti-folder').rclass('ti-folder-open');
+						el.find('> .icon').aclass('ti-folder-alt').rclass('ti-folder-open-alt');
 						el.parent().rclass('show');
 					}
 				}
