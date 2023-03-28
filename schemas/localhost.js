@@ -61,11 +61,13 @@ NEWSCHEMA('Localhost', function(schema) {
 		PATH.unlink(item.path + 'logs/debug.log');
 
 		var done = async function() {
+
 			var start = $.model.type === 'start';
 			var filename = PATH.join(item.path, 'index.yaml');
-			await FUNC.preparedockerfile(item, start);
-			item.running = false;
+
 			try {
+				await FUNC.preparedockerfile(item, start);
+				item.running = false;
 				await Exec('docker compose -f {0} {1}'.format(filename, start ? 'up -d' : 'down'));
 				if (item.running !== start) {
 					item.running = start;
