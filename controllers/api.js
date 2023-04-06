@@ -109,6 +109,7 @@ exports.install = function() {
 	// Public API
 	ROUTE('+POST    /apps/create/                         *API                --> create', [120000]);
 	ROUTE('+POST    /apps/stop/                           *API                --> stop', [120000]);
+	ROUTE('+GET     /apps/list/                           *API                --> list', [120000]);
 
 	ROUTE('-POST    /api/login/                           *Login              --> @save');
 	ROUTE('-POST    /api/sign/                            *Users              --> @create');

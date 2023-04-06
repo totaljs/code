@@ -647,7 +647,7 @@ NEWSCHEMA('Projects', function(schema) {
 
 	schema.addWorkflow('logfile', async function($) {
 
-		var project = MAIN.projects.findItem('id', $.id);
+		var project = MAIN.projects.findItem('id', $.params.id);
 		if (project == null) {
 			$.invalid('error-project');
 			return;

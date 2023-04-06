@@ -2,7 +2,7 @@ NEWSCHEMA('API', function(schema) {
 
 	schema.action('create', {
 		name: 'Create',
-		input: 'name:String,*url:String,*template:String,dockercompose:Boolean',
+		input: 'name:String,*url:String,*template:String,compose:Boolean,release:boolean',
 		action: function($, model) {
 
 			var url = model.url.replace(/^(http|https):\/\//gi, '').replace(/\//g, '');
@@ -30,12 +30,14 @@ NEWSCHEMA('API', function(schema) {
 
 			model.backup = true;
 			model.maxupload = 0;
-			model.customdocker = model.dockercompose == true;
+			model.customdocker = model.compose == true;
 			model.allowbundle = true;
+			model.releasemode = model.release == true;
 
 			var template = model.template;
 
-			delete model.dockercompose;
+			delete model.compose;
+			delete model.release;
 			delete model.template;
 
 			var user = { id: 'api', name: 'API', sa: true };
@@ -92,7 +94,7 @@ NEWSCHEMA('API', function(schema) {
 
 			var item = MAIN.projects.findItem('id', model.id);
 			if (!item)
-				item = MAIN.projects.findItem('url', model.url);
+				item = MAIN.projects.findItem('url', model.id);
 
 			if (!item) {
 				$.invalid('@(Project not found)');
@@ -100,6 +102,32 @@ NEWSCHEMA('API', function(schema) {
 			}
 
 			CALL('Docker --> save', { id: item.id, type: 'stop' }, $.done(item.id));
+		}
+	});
+
+	schema.action('list', {
+		name: 'List of apps',
+		action: function($) {
+			var arr = [];
+			MAIN.projects.wait(function(m, next) {
+
+				var item = {};
+
+				item.id = m.id;
+				item.name = m.name;
+				item.url = m.url;
+				item.running = m.running;
+				item.created = m.created;
+				item.isexternal = m.isexternal;
+
+				arr.push(item);
+
+				CALL('Projects --> logfile').params({ id: m.id }).callback(function(err, response) {
+					item.logfile = response;
+					next();
+				});
+
+			}, () => $.callback(arr));
 		}
 	});
 
