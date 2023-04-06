@@ -425,7 +425,7 @@ input:invalid { box-shadow: none; }
 .ui-center { text-align: center; }
 
 .ui-menu { position: absolute; z-index: 100; transform-origin: top left; padding: 10px 0; }
-.ui-menu-items { background-color: #FFF; padding: 5px 0; border-radius: var(--radius); box-shadow: 2px 5px 10px rgba(0,0,0,0.05); border: 1px solid #E0E0E0; position: relative; }
+.ui-menu-items { background-color: #FFF; padding: 5px 0; border-radius: var(--radius); box-shadow: 2px 5px 10px rgba(0,0,0,0.05); border: 1px solid #E0E0E0; position: relative; min-width: 180px; }
 .ui-menu-submenu { position: absolute; z-index: 101; background-color: #FFF; padding: 5px 0; border-radius: var(--radius); box-shadow: 2px 5px 10px rgba(0,0,0,0.05); border: 1px solid #E0E0E0; }
 .ui-menu-visible {}
 .ui-menu ul { margin: 0; padding: 0; }
@@ -922,7 +922,6 @@ li.ui-directory-current { background-color: rgba(0,0,0,0.02); font-weight: bold;
 .ui-windows-maximized { box-shadow: none; }
 .ui-windows-maximized .ui-windows-title { border-left: 0; border-right: 0; }
 .ui-windows-maximized .ui-windows-body { border: 0; }
-.ui-windows-maximized .ui-windows-title .ti-maximize:before { content: '\f2d2'; }
 .ui-windows-minimized .ui-windows-body { display: none; }
 .ui-windows-nominimize .ui-windows-control[data-name='minimize'] { display: none; }
 .ui-windows-nomaximize .ui-windows-control[data-name='maximize'] { display: none; }
