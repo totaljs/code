@@ -681,7 +681,7 @@ NEWSCHEMA('Projects', function(schema) {
 						if (err)
 							$.callback('');
 						else
-							$.callback(response);
+							$.callback(response.replace(/\0/g, ''));
 					});
 				} else
 					$.callback('');
@@ -699,7 +699,7 @@ NEWSCHEMA('Projects', function(schema) {
 				var buffer = [];
 				Fs.createReadStream(filename, { start: start < 0 ? 0 : start }).on('data', chunk => buffer.push(chunk)).on('end', function() {
 					var buf = Buffer.concat(buffer);
-					$.callback(buf.toString('utf8'));
+					$.callback(buf.toString('utf8').replace(/\0/g, ''));
 				});
 			} else
 				$.callback('');
