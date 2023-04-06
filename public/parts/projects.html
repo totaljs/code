@@ -128,7 +128,7 @@
 								data.id = item.id;
 								data.type = item.running ? 'stop' : 'start';
 								SET('common.percentage', (index * 100) / projects.checked.length);
-								AJAX('POST /api/localhost/state/', data, next);
+								AJAX('POST /api/docker/state/', data, next);
 							}, function() {
 								SETTER('loading/hide', 100);
 								exports.refresh();

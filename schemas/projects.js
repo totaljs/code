@@ -319,7 +319,7 @@ NEWSCHEMA('Projects', function(schema) {
 		}
 
 		MAIN.save(2);
-		$.success();
+		$.success(model.id);
 	});
 
 	schema.setQuery(function($) {
@@ -501,7 +501,7 @@ NEWSCHEMA('Projects', function(schema) {
 		};
 
 		if (CONF.folder_npm && CONF.folder_www)
-			EXEC('+Localhost --> save', { id: id, type: 'stop' }, done);
+			EXEC('+Docker --> save', { id: id, type: 'stop' }, done);
 		else
 			done();
 	});

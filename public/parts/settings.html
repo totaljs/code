@@ -13,6 +13,9 @@
 				<div data---="input__?.login__maxlength:200">@(URL address for login)</div>
 				<div class="help"><i class="ti ti-keys"></i>@(The code will send credentials to this URL address in the background and the API must return a user profile or an error.) <a href="https://docs.totaljs.com/code/z5hu001uc41d/" target="_blank">@(Read more)</a>.</div>
 				<hr />
+				<div data---="input__?.accesstoken__maxlength:100;camouflage:•;icon:check-circle green;placeholder:@(Enter a token);icon:ti ti-key">@(API Access token)</div>
+				<div class="help m"><span class="link exec" data-exec="?/generate">@(Generate token)</span></div>
+				<hr />
 				<div data---="input__?.token__maxlength:100;camouflage:•;icon:check-circle green;placeholder:@(Enter a token)">@(Token for chat and code review)</div>
 				<div class="help m"><i class="ti ti-support"></i>@(Total.js Team offers a professional code review. You can obtain a token on) <a href="https://platform.totaljs.com?open=api" target="_blank">https://platform.totaljs.com</a>.</div>
 			</div>
@@ -20,7 +23,7 @@
 			<div class="body">
 				<div data---="error__?.response"></div>
 				<div data---="validation__?">
-					<button name="submit" class="button b exec" data-exec="?/submit" disabled="disabled"><i class="ti ti-save"></i>@(Save)</button>
+					<button name="submit" class="button b exec" data-exec="?/submit" disabled="disabled"><i class="ti ti-check-circle"></i>@(Apply)</button>
 				</div>
 			</div>
 		</div>
@@ -31,8 +34,13 @@
 
 <script>
 	PLUGIN('settings', function(exports) {
+
 		exports.reload = function() {
 			AJAX('GET /api/settings/', 'settings @reset');
+		};
+
+		exports.generate = function() {
+			exports.set('accesstoken @type:show @change', GUID(40));
 		};
 
 		exports.submit = function() {

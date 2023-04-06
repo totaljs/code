@@ -14,7 +14,7 @@ exports.install = function() {
 	ROUTE('+POST    /api/{schema}/{id}/                    *{schema}          --> @save', 1024);
 
 	// Localhost
-	ROUTE('+POST    /api/localhost/state/                  *Localhost         --> @save', [1200000]);
+	ROUTE('+POST    /api/docker/state/                     *Docker            --> @save', [1200000]);
 
 	// Files
 	ROUTE('+POST    /api/files/{id}/rename/                *FilesRename       --> @exec');
@@ -105,6 +105,10 @@ exports.install = function() {
 	ROUTE('+POST   /api/external/schemas/{id}/            *ExternalSchema     --> @save', [120000]);
 	ROUTE('+GET    /api/external/operations/              *ExternalOperation  --> @query');
 	ROUTE('+POST   /api/external/operations/{id}/         *ExternalOperation  --> @save', [120000]);
+
+	// Public API
+	ROUTE('+POST    /apps/create/                         *API                --> create', [120000]);
+	ROUTE('+POST    /apps/stop/                           *API                --> stop', [120000]);
 
 	ROUTE('-POST    /api/login/                           *Login              --> @save');
 	ROUTE('-POST    /api/sign/                            *Users              --> @create');

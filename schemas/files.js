@@ -479,7 +479,7 @@ NEWSCHEMA('FilesUnpack', function(schema) {
 
 		var user = $.user;
 		var model = $.clean();
-		var project = MAIN.projects.findItem('id', $.id);
+		var project = MAIN.projects.findItem('id', $.params.id);
 
 		if (project == null) {
 			$.invalid('error-project');
@@ -504,7 +504,6 @@ NEWSCHEMA('FilesUnpack', function(schema) {
 			$.invalid('@(Supported file types are ".tar.gz" and ".zip")');
 			return;
 		}
-
 
 		if (project.isexternal) {
 			$.invalid('@(Not supported for external projects)');

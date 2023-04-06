@@ -1,9 +1,22 @@
+var APIUSER = { id: 'api', name: 'API', sa: true };
+
 (function() {
 
 	var opt = {};
 	opt.secret = CONF.authkey;
 	opt.cookie = CONF.cookie;
 	opt.ddos = 5;
+
+	opt.onauthorize = function($) {
+		if ($.url.substring(0, 6) === '/apps/') {
+			var token = $.headers['x-token'] || $.query.token;
+			if (PREF.accesstoken && token && PREF.accesstoken === token)
+				$.success(APIUSER);
+			else
+				$.invalid();
+			return true;
+		}
+	};
 
 	opt.onread = function(meta, next) {
 		var user = MAIN.users.findItem('id', meta.userid);

@@ -1100,16 +1100,18 @@ FUNC.request = function(text, body) {
 		SETTER('loading', 'hide', 100);
 
 		var builder = [];
-		var keys = Object.keys(response.headers);
+		var keys = response.headers ? Object.keys(response.headers) : [];
 		var skip = { server: 1, date: 1, 'transfer-encoding': 1, connection: 1, vary: 1, expires: 1, 'cache-control': 1 };
 		var template = '<div class="output-response-header">{0}:</div><div class="output-response-header-value">{1}</div>';
 
 		builder.push(template.format('HTTP Status', response.statustext));
 
 		for (var i = 0; i < keys.length; i++) {
+
 			var key = keys[i];
 			if (skip[key])
 				continue;
+
 			var val = response.headers[key];
 
 			key = key.charAt(0).toUpperCase() + key.substring(1);
