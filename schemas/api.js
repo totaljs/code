@@ -60,7 +60,7 @@ NEWSCHEMA('API', function(schema) {
 					}
 
 					// Unpack
-					CALL('FilesUnpack --> exec', { filename: 'template.zip' }).user(user).params({ id: model.id }).callback(function(err) {
+					CALL('FilesUnpack --> exec', { filename: 'template.zip' }).user(USER).params({ id: model.id }).callback(function(err) {
 
 						if (err) {
 							$.invalid(err);
