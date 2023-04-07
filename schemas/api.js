@@ -1,3 +1,5 @@
+const USER = { id: 'api', name: 'API', sa: true };
+
 NEWSCHEMA('API', function(schema) {
 
 	schema.action('create', {
@@ -40,9 +42,7 @@ NEWSCHEMA('API', function(schema) {
 			delete model.release;
 			delete model.template;
 
-			var user = { id: 'api', name: 'API', sa: true };
-
-			CALL('Projects --> save', model).user(user).callback(function(err, response) {
+			CALL('Projects --> save', model).user(USER).callback(function(err, response) {
 
 				if (err) {
 					$.invalid(err);
@@ -119,6 +119,7 @@ NEWSCHEMA('API', function(schema) {
 				item.running = m.running;
 				item.created = m.created;
 				item.isexternal = m.isexternal;
+				item.stats = m.stats;
 
 				arr.push(item);
 
@@ -128,6 +129,24 @@ NEWSCHEMA('API', function(schema) {
 				});
 
 			}, () => $.callback(arr));
+		}
+	});
+
+	schema.action('remove', {
+		name: 'Remove app',
+		input: '*id:String',
+		action: function($, model) {
+
+			var item = MAIN.projects.findItem('id', model.id);
+			if (!item)
+				item = MAIN.projects.findItem('url', model.id);
+
+			if (!item) {
+				$.invalid('@(Project not found)');
+				return;
+			}
+
+			CALL('Projects --> remove').params({ id: item.id }).query({ remove: '1' }).user(USER).callback($.done(item.id));
 		}
 	});
 

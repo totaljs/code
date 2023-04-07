@@ -110,6 +110,7 @@ exports.install = function() {
 	ROUTE('+POST    /apps/create/                         *API                --> create', [120000]);
 	ROUTE('+POST    /apps/stop/                           *API                --> stop', [120000]);
 	ROUTE('+GET     /apps/list/                           *API                --> list', [120000]);
+	ROUTE('+POST    /apps/remove/                         *API                --> remove', [120000]);
 
 	ROUTE('-POST    /api/login/                           *Login              --> @save');
 	ROUTE('-POST    /api/sign/                            *Users              --> @create');
@@ -693,6 +694,7 @@ function makebundle(id) {
 		data.push('/debug.js.json');
 		data.push('/release.js.json');
 		data.push('/index.js.json');
+		data.push('/index.yaml');
 		data.push('/bundle.sh');
 		data.push('/config-release');
 		data.push('/config-debug');

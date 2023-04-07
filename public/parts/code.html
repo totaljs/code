@@ -3648,9 +3648,13 @@
 
 			SETTER('loading/show');
 			AJAX('GET /api/docker/{id}/ ERROR'.arg(model.data), function(response) {
-				var is = response && response.length > 0;
+				var is = response && response.items.length > 0;
 				opt.align = 'right';
-				opt.custom = '<div style="margin-bottom:8px"><img src="/img/docker.png" style="width:150px;border-radius:var(--radius) var(--radius) 0 0" /></div>';
+				opt.custom = '<div style="margin-bottom:8px"><img src="/img/docker.png" style="width:180px;border-radius:var(--radius) var(--radius) 0 0" /></div>';
+
+				if (response && response.stats)
+					opt.custom += '<div class="docker-info">{0}% <span>{1} MB</span></div>'.format(response.stats.cpu, response.stats.mem.format(1));
+
 				opt.items = [];
 				opt.offsetX = -1;
 				opt.items.push({ id: 'app', name: is ? '@(<strong>Stop</strong> docker)' : '@(<strong>Run</strong> docker)', icon: is ? 'ti ti-stop-alt red' : 'ti ti-play-alt green' });

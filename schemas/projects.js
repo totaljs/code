@@ -345,6 +345,7 @@ NEWSCHEMA('Projects', function(schema) {
 			data.hidden = item.hidden;
 			data.running = item.running;
 			data.pinned = item.pinned == true;
+			data.stats = item.running ? item.stats : null;
 
 			if ($.user.sa) {
 				data.path = item.path;
@@ -471,39 +472,42 @@ NEWSCHEMA('Projects', function(schema) {
 
 	schema.setRemove(function($) {
 
-		var id = $.id || $.options.id;
+		var params = $.params;
+		var id = params.id || $.options.id;
 
 		if ($.user && !$.user.sa) {
 			$.invalid('error-permissions');
 			return;
 		}
 
-		$WORKFLOW('Projects', 'backupsclear', { id: id, internal: $.options.internal }, NOOP);
+		$WORKFLOW('Projects', 'backupsclear', { id: id, internal: $.options.internal }, function() {
 
-		var index = MAIN.projects.findIndex('id', id);
-		var item = MAIN.projects[index];
+			var index = MAIN.projects.findIndex('id', id);
+			var item = MAIN.projects[index];
 
-		var done = function() {
+			var done = function() {
 
-			if (index !== -1) {
-				MAIN.projects.splice(index, 1);
-				MAIN.save(2);
-			}
+				if (index !== -1) {
+					MAIN.projects.splice(index, 1);
+					MAIN.save(2);
+				}
 
-			MAIN.log($.user, 'projects_remove', item, null);
-			NOSQL(id + '_parts').drop();
+				MAIN.log($.user, 'projects_remove', item, null);
+				NOSQL(id + '_parts').drop();
 
-			$.success();
+				$.success();
 
-			// Remove all files
-			if ($.query.remove === '1')
-				SHELL('rm -r ' + item.path, NOOP);
-		};
+				// Remove all files
+				if ($.query.remove === '1')
+					SHELL('rm -r ' + item.path, NOOP);
+			};
 
-		if (CONF.folder_npm && CONF.folder_www)
-			EXEC('+Docker --> save', { id: id, type: 'stop' }, done);
-		else
-			done();
+			if (CONF.folder_npm && CONF.folder_www)
+				EXEC('+Docker --> save', { id: id, type: 'stop' }, done);
+			else
+				done();
+		});
+
 	});
 
 	schema.addWorkflow('backupsclear', function($) {

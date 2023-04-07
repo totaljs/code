@@ -16,7 +16,10 @@
 				{ name: 'path', text: '@(Path)', width: 250 },
 				{ name: 'users', text: '@(Users)', template: '{{ foreach m in users }}<span class="badge badge-small" style="background:{{ m | color }}">{{ m }}</span>{{ end }}', width: 250 },
 				{ name: 'running', text: '@(Running)', width: 100, type: 'boolean', options: [{ text: 'yes', value: true }, { text: 'no', value: false }], align: 1 },
-				{ name: 'created', text: '@(Created)', align: 'center', template: '{{ created | format(\'dd.MM.yyyy\') }}', align: 1, width: 100 }
+				{ name: 'cpu', text: '@(CPU)', width: 120, template: '{{ if running }}{{ cpu }}%{{ else }}---{{ fi }}', align: 2 },
+				{ name: 'memory', text: '@(Memory)', width: 120, template: '{{ if running }}{{ memory | format(1) }} MB{{ else }}---{{ fi }}', align: 2, type: 'number' },
+				{ name: 'network', text: '@(Network)', width: 120, template: '{{ if running }}{{ network | format(1) }} MB{{ else }}---{{ fi }}', align: 2, type: 'number' },
+				{ name: 'created', text: '@(Created)', align: 'center', template: '{{ created | format(\'dd.MM.yyyy\') }}', align: 1, width: 120 }
 			]
 		</script>
 	</div>
@@ -60,7 +63,22 @@
 		};
 
 		exports.refresh = function() {
-			AJAX('GET /api/projects/?check=1', 'projects.grid');
+			AJAX('GET /api/projects/?check=1', function(response) {
+
+				for (var m of response) {
+					if (m.stats) {
+						m.cpu = m.stats.cpu;
+						m.memory = m.stats.mem;
+						m.network = m.stats.net;
+					} else {
+						m.memory = 0;
+						m.network = 0;
+						m.cpu = 0;
+					}
+				}
+
+				SET('projects.grid', response);
+			});
 		};
 
 		exports.reload = function() {

@@ -8,8 +8,9 @@ RUN apk add zip
 
 VOLUME /code/
 WORKDIR /code/
-COPY . /
+COPY . /code/
 
+RUN cd /code/
 RUN npm install
 EXPOSE 8000
 

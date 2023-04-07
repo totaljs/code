@@ -10,83 +10,136 @@ NEWSCHEMA('Docker', function(schema) {
 	schema.define('id', 'UID', true);
 	schema.define('type', ['start', 'stop'], true);
 
-	schema.setRead(async function($) {
+	schema.action('read', {
+		name: 'Read docker information',
+		action: async function($) {
 
-		if (!CONF.folder_npm || !CONF.folder_www) {
-			$.invalid('@(Docker engine is not activated)');
-			return;
-		}
+			if (!CONF.folder_npm || !CONF.folder_www) {
+				$.invalid('@(Docker engine is not activated)');
+				return;
+			}
 
-		var item = MAIN.projects.findItem('id', $.id);
-		if (!item) {
-			$.invalid('error-project');
-			return;
-		}
+			var item = MAIN.projects.findItem('id', $.id);
+			if (!item) {
+				$.invalid('error-project');
+				return;
+			}
 
-		var filename = PATH.join(item.path, 'index.yaml');
-		await FUNC.preparedockerfile(item);
-
-		item.running = false;
-
-		try {
-			var ps = await Exec('docker compose -f {0} ps --format json'.format(filename));
-		} catch (e) {
-			$.invalid(e);
-			return;
-		}
-
-		var apps = JSON.parse(ps.stdout);
-		var is = apps.length > 0;
-		if (item.running !== is) {
-			item.running = is;
-			MAIN.save(2);
-		}
-
-		$.callback(apps);
-	});
-
-	schema.setSave(async function($) {
-
-		if (!CONF.folder_npm || !CONF.folder_www) {
-			$.invalid('@(Docker engine is not activated)');
-			return;
-		}
-
-		var item = MAIN.projects.findItem('id', $.model.id);
-		if (!item) {
-			$.invalid('error-project');
-			return;
-		}
-
-		PATH.unlink(item.path + 'logs/debug.log');
-
-		var done = async function() {
-
-			var start = $.model.type === 'start';
 			var filename = PATH.join(item.path, 'index.yaml');
+			await FUNC.preparedockerfile(item);
+
+			item.running = false;
 
 			try {
-				await FUNC.preparedockerfile(item, start);
-				item.running = false;
-				await Exec('docker compose -f {0} {1}'.format(filename, start ? 'up -d' : 'down'));
-				if (item.running !== start) {
-					item.running = start;
-					MAIN.save(2);
-				}
-			} finally {
-				$.success();
+				var ps = await Exec('docker compose -f {0} ps --format json'.format(filename));
+			} catch (e) {
+				$.invalid(e);
+				return;
 			}
-		};
 
-		if ($.model.type === 'start') {
-			await WriteFile(PATH.join(item.path, 'index.js'), `// Total.js start script\n// https://www.totaljs.com\n\nvar type = process.argv.indexOf('--release', 1) !== -1 ? 'release' : 'debug';
-require('total4/' + type)({});`);
-			done();
-		} else
-			done();
+			var apps = JSON.parse(ps.stdout);
+			var is = apps.length > 0;
+
+			item.containername = is ? apps[0].Name : undefined;
+
+			if (item.running !== is) {
+				item.running = is;
+				MAIN.save(2);
+			}
+
+			$.callback({ stats: item.stats, items: apps });
+		}
+	});
+
+	schema.action('exec', {
+		name: 'Exec docker operation',
+		action: async function($) {
+
+			if (!CONF.folder_npm || !CONF.folder_www) {
+				$.invalid('@(Docker engine is not activated)');
+				return;
+			}
+
+			var item = MAIN.projects.findItem('id', $.model.id);
+			if (!item) {
+				$.invalid('error-project');
+				return;
+			}
+
+			PATH.unlink(item.path + 'logs/debug.log');
+
+			var done = async function() {
+
+				var start = $.model.type === 'start';
+				var filename = PATH.join(item.path, 'index.yaml');
+
+				try {
+					await FUNC.preparedockerfile(item, start);
+					item.running = false;
+					await Exec('docker compose -f {0} {1}'.format(filename, start ? 'up -d' : 'down'));
+					if (item.running !== start) {
+						item.running = start;
+						MAIN.save(2);
+					}
+				} finally {
+					$.success();
+				}
+			};
+
+			if ($.model.type === 'start') {
+				await WriteFile(PATH.join(item.path, 'index.js'), `// Total.js start script\n// https://www.totaljs.com\n\nvar type = process.argv.indexOf('--release', 1) !== -1 ? 'release' : 'debug';
+	require('total4/' + type)({});`);
+				done();
+			} else
+				done();
+		}
 	});
 
 });
+
+function stats() {
+
+	if (!CONF.folder_npm || !CONF.folder_www)
+		return;
+
+	SHELL('docker stats --no-stream --format "table {{.ID}}\t{{.Name}}\t{{.CPUPerc}}\t{{.MemUsage}}\t{{.NetIO}}"', function(err, response) {
+
+		var toMB = function(val, unit) {
+			return unit === 'gib' ? (val * 1000).floor(3) : unit === 'kb' ? (val / 1024).floor(3) : val;
+		};
+
+		var is = false;
+
+		response.parseTerminal(function(line, index) {
+
+			if (!index)
+				return;
+
+			var unit = '';
+			var cpu = line[2].parseFloat();
+			var mem = line[3];
+			var net = line[6];
+
+			unit = mem.replace(/[0-9.]/g, '').toLowerCase();
+			mem = toMB(mem.parseFloat2(), unit);
+			unit = net.replace(/[0-9.]/g, '').toLowerCase();
+			net = toMB(net.parseFloat2(), unit);
+
+			var project = MAIN.projects.findItem('containername', line[1]);
+			if (project) {
+				project.stats = { id: line[0], cpu: cpu, mem: mem, net: net };
+				is = true;
+			}
+
+		});
+
+		is && MAIN.save();
+		setTimeout(stats, 20000);
+	});
+
+}
+
+ON('ready', stats);
 
 FUNC.preparedockerfile = async function(item, run) {
 
