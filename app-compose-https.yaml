@@ -3,6 +3,7 @@ version: '3.1'
 
 services:
   main_app:
+    container_name: ##ID##
     image: totalplatform/run:npm
     restart: always
     volumes:

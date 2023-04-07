@@ -40,8 +40,6 @@ NEWSCHEMA('Docker', function(schema) {
 			var apps = JSON.parse(ps.stdout);
 			var is = apps.length > 0;
 
-			item.containername = is ? apps[0].Name : undefined;
-
 			if (item.running !== is) {
 				item.running = is;
 				MAIN.save(2);
@@ -125,7 +123,7 @@ function stats() {
 			unit = net.replace(/[0-9.]/g, '').toLowerCase();
 			net = toMB(net.parseFloat2(), unit);
 
-			var project = MAIN.projects.findItem('containername', line[1]);
+			var project = MAIN.projects.findItem('id', line[1]);
 			if (project) {
 				project.stats = { id: line[0], cpu: cpu, mem: mem, net: net };
 				is = true;
@@ -138,8 +136,6 @@ function stats() {
 	});
 
 }
-
-ON('ready', stats);
 
 FUNC.preparedockerfile = async function(item, run) {
 
@@ -177,3 +173,5 @@ FUNC.preparedockerfile = async function(item, run) {
 	content = content.toString('utf8').replace(/##ID##/g, item.id).replace(/##MAXUPLOAD##/g, item.maxupload || 50).replace(/##HOST##/g, host).replace(/##FOLDER_NPM##/g, nodemodules).replace(/##FOLDER_WWW##/g, wwwfolder);
 	return WriteFile(filename, content);
 };
+
+ON('ready', stats);

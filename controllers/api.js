@@ -14,7 +14,7 @@ exports.install = function() {
 	ROUTE('+POST    /api/{schema}/{id}/                    *{schema}          --> @save', 1024);
 
 	// Localhost
-	ROUTE('+POST    /api/docker/state/                     *Docker            --> @save', [1200000]);
+	ROUTE('+POST    /api/docker/state/                     *Docker            --> @exec', [1200000]);
 
 	// Files
 	ROUTE('+POST    /api/files/{id}/rename/                *FilesRename       --> @exec');
