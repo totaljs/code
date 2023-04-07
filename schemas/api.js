@@ -42,7 +42,7 @@ NEWSCHEMA('API', function(schema) {
 			delete model.release;
 			delete model.template;
 
-			CALL('Projects --> save', model).user(USER).callback(function(err, response) {
+			CALL('Projects --> exec', model).user(USER).callback(function(err, response) {
 
 				if (err) {
 					$.invalid(err);
@@ -70,7 +70,7 @@ NEWSCHEMA('API', function(schema) {
 						F.Fs.unlink(filename, NOOP);
 
 						// Run docker
-						CALL('Docker --> save', { id: model.id, type: 'start' }).callback($.done(model.id));
+						CALL('Docker --> exec', { id: model.id, type: 'start' }).callback($.done(model.id));
 
 					});
 
@@ -101,7 +101,7 @@ NEWSCHEMA('API', function(schema) {
 				return;
 			}
 
-			CALL('Docker --> save', { id: item.id, type: 'stop' }, $.done(item.id));
+			CALL('Docker --> exec', { id: item.id, type: 'stop' }, $.done(item.id));
 		}
 	});
 
