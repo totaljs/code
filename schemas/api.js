@@ -42,7 +42,7 @@ NEWSCHEMA('API', function(schema) {
 			delete model.release;
 			delete model.template;
 
-			CALL('Projects --> exec', model).user(USER).callback(function(err, response) {
+			CALL('Projects --> save', model).user(USER).callback(function(err, response) {
 
 				if (err) {
 					$.invalid(err);
