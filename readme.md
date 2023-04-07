@@ -8,3 +8,4 @@ __Instructions__:
 
 - Localhost: https://github.com/totaljs/code-local
 - Server/Cloud: https://github.com/totaljs/code-cloud
+- [Public API](https://docs.totaljs.com/code/ztmh001yw41d/)
