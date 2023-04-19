@@ -87,6 +87,24 @@ NEWSCHEMA('API', function(schema) {
 		}
 	});
 
+	schema.action('restart', {
+		name: 'Restart container',
+		input: '*id:String',
+		action: function($, model) {
+
+			var item = MAIN.projects.findItem('id', model.id);
+			if (!item)
+				item = MAIN.projects.findItem('url', model.id);
+
+			if (!item) {
+				$.invalid('@(Project not found)');
+				return;
+			}
+
+			CALL('Docker --> exec', { id: item.id, type: 'restart' }, $.done(item.id));
+		}
+	});
+
 	schema.action('stop', {
 		name: 'Stop container',
 		input: '*id:String',
@@ -120,13 +138,10 @@ NEWSCHEMA('API', function(schema) {
 				item.created = m.created;
 				item.isexternal = m.isexternal;
 				item.stats = m.stats;
+				item.logfile = MAIN.logs[m.id];
 
 				arr.push(item);
-
-				CALL('Projects --> logfile').params({ id: m.id }).callback(function(err, response) {
-					item.logfile = response;
-					next();
-				});
+				next();
 
 			}, () => $.callback(arr));
 		}

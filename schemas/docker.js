@@ -8,7 +8,7 @@ const Exec = Promisify(require('child_process').exec);
 NEWSCHEMA('Docker', function(schema) {
 
 	schema.define('id', 'UID', true);
-	schema.define('type', ['start', 'stop'], true);
+	schema.define('type', ['start', 'stop', 'restart'], true);
 
 	schema.action('read', {
 		name: 'Read docker information',
@@ -61,6 +61,22 @@ NEWSCHEMA('Docker', function(schema) {
 			var item = MAIN.projects.findItem('id', $.model.id);
 			if (!item) {
 				$.invalid('error-project');
+				return;
+			}
+
+			if ($.model.type === 'restart') {
+
+				if (!item.running) {
+					$.invalid('@(Docker container is not running)');
+					return;
+				}
+
+				if (!item.stats || !item.stats.id) {
+					$.invalid('@(Try it a bit later to obtain the container ID)');
+					return;
+				}
+
+				Exec('docker restart {0}'.format(item.stats.id), $.done());
 				return;
 			}
 

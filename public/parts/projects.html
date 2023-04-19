@@ -11,10 +11,11 @@
 		<script type="text/plain">
 			[
 				'{{ if hidden }} silver{{ fi }}',
-				{ name: 'name', text: '@(Name)', class: 'b highlight', width: 250, template: '{{ if running }}<i class="ti ti-spin ti-spinner green mr5"></i>{{ fi }}{{ if notfound }}<span class="badge badge-small badge-red mr5">{{ if notfound === \'offline\' }}@(offline){{ else }}@(not found){{ fi }}</span>{{ fi }}{{ if pinned }}<i class="ti ti-pin-alt mr5 orange"></i>{{ fi }}{{ name }}' },
+				{ name: 'name', text: '@(Name)', class: 'b highlight', width: 300, template: '{{ if running }}<i class="ti ti-spin ti-spinner green mr5"></i>{{ fi }}{{ if notfound }}<span class="badge badge-small badge-red mr5">{{ if notfound === \'offline\' }}@(offline){{ else }}@(not found){{ fi }}</span>{{ fi }}{{ if pinned }}<i class="ti ti-pin-alt mr5 orange"></i>{{ fi }}{{ if errors }}<span class="red" title="{{ errors }}">{{ fi }}{{ name }}{{ if errors }}<span class="badge badge-small badge-red ml5">@(errors)</span></span>{{ fi }}' },
 				{ name: 'url', text: '@(URL)', width: 250 },
 				{ name: 'path', text: '@(Path)', width: 250 },
 				{ name: 'users', text: '@(Users)', template: '{{ foreach m in users }}<span class="badge badge-small" style="background:{{ m | color }}">{{ m }}</span>{{ end }}', width: 250 },
+				{ name: 'iserror', text: '@(Errors)', width: 100, type: 'boolean', options: [{ text: 'yes', value: true }, { text: 'no', value: false }], align: 1 },
 				{ name: 'running', text: '@(Running)', width: 100, type: 'boolean', options: [{ text: 'yes', value: true }, { text: 'no', value: false }], align: 1 },
 				{ name: 'cpu', text: '@(CPU)', width: 120, template: '{{ if running }}{{ cpu }}%{{ else }}---{{ fi }}', align: 2 },
 				{ name: 'memory', text: '@(Memory)', width: 120, template: '{{ if running }}{{ memory | format(1) }} MB{{ else }}---{{ fi }}', align: 2, type: 'number' },
@@ -75,6 +76,19 @@
 						m.network = 0;
 						m.cpu = 0;
 					}
+
+					if (m.logs) {
+						var index = m.logs.indexOf('Error');
+						if (index !== -1) {
+							var beg = index - 50;
+							if (beg < 0)
+								beg = 0;
+							var end = index + 70;
+							m.errors = m.logs.replace(/\n|\t|\s{2,}/g, ' ').substring(beg, end).trim();
+							m.iserror = true;
+						} else
+							m.iserror = false;
+					}
 				}
 
 				SET('projects.grid', response);
@@ -115,6 +129,7 @@
 			var refreshcurrent = false;
 
 			items.push({ value: 2, name: '@(Run/Stop Docker)', icon: 'docker blue' });
+			items.push({ value: 250, name: '@(Restart)', icon: 'refresh' });
 			items.push('-');
 			items.push({ value: 1, name: '@(Clear backups)', icon: 'clean' });
 			items.push({ value: 254, name: '@(Unregister)', icon: 'sign-out orange' });
@@ -154,6 +169,26 @@
 						});
 						break;
 
+					case 250:
+						SETTER('approve/show', '@(Are you sure you want to restart selected projects?)', '"ti ti-refresh" @(Restart)', function() {
+							SETTER('loading/show');
+							var index = 0;
+							projects.checked.wait(function(item, next) {
+								index++;
+								SET('common.percentage', (index * 100) / projects.checked.length);
+								if (item.running) {
+									var data = {};
+									data.id = item.id;
+									data.type = 'restart';
+									AJAX('POST /api/docker/state/', data, next);
+								} else
+									next();
+							}, function() {
+								SETTER('loading/hide', 100);
+								exports.refresh();
+							});
+						});
+						break;
 					case 254:
 						SETTER('approve/show', '@(Are you sure you want to unregister selected projects?)', '"ti ti-sign-out" @(Remove)', function() {
 							SETTER('loading/show');

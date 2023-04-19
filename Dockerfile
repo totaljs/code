@@ -11,6 +11,8 @@ WORKDIR /code/
 COPY . /code/
 
 RUN cd /code/
+RUN rm app.bundle
+RUN rm bundle.sh
 RUN npm install
 EXPOSE 8000
 

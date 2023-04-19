@@ -8,6 +8,7 @@ MAIN.projects = [];
 MAIN.projectsonline = {};
 MAIN.spawns = {};
 MAIN.external = {};
+MAIN.logs = {};
 
 // Users
 MAIN.users = [];
@@ -249,4 +250,18 @@ ON('ready', function() {
 
 	if (PREF.name)
 		CONF.name = PREF.name;
+});
+
+ON('service', function() {
+	var logs = {};
+	MAIN.projects.wait(function(m, next) {
+		CALL('Projects --> logfile').params({ id: m.id }).callback(function(err, response) {
+			// Due to real-time outputs
+			MAIN.logs[m.id] = logs[m.id] = response || '';
+			next();
+		});
+	}, function() {
+		// Clears removed projects
+		MAIN.logs = logs;
+	});
 });

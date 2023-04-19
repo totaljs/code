@@ -88,7 +88,7 @@ NEWSCHEMA('Projects', function(schema) {
 
 		MAIN.log($.user, 'files_translate', item, filename);
 
-		var process = function(err, data) {
+		var proc = function(err, data) {
 
 			if (err) {
 				$.invalid(err);
@@ -123,9 +123,9 @@ NEWSCHEMA('Projects', function(schema) {
 		};
 
 		if (item.isexternal)
-			FUNC.external(item, 'load', filename, null, process);
+			FUNC.external(item, 'load', filename, null, proc);
 		else
-			Fs.readFile(filename, process);
+			Fs.readFile(filename, proc);
 
 	});
 
@@ -134,7 +134,7 @@ NEWSCHEMA('Projects', function(schema) {
 		var item = MAIN.projects.findItem('id', $.id);
 		MAIN.log($.user, 'files_localize', item, item.path);
 
-		var process = function(files) {
+		var proc = function(files) {
 
 			var resource = {};
 			var texts = {};
@@ -262,10 +262,10 @@ NEWSCHEMA('Projects', function(schema) {
 
 		if (item.isexternal) {
 			FUNC.external(item, 'browse', item.path, JSON.stringify({ type: 'localization' }), function(err, response) {
-				process(response.files || EMPTYARRAY);
+				proc(response.files || EMPTYARRAY);
 			});
 		} else
-			U.ls(item.path, process, (path, dir) => dir ? (path.endsWith('/node_modules') || path.endsWith('/tmp') || path.endsWith('/.git') || path.endsWith('/.src') || path.endsWith('/logs')) ? false : true : true);
+			U.ls(item.path, proc, (path, dir) => dir ? (path.endsWith('/node_modules') || path.endsWith('/tmp') || path.endsWith('/.git') || path.endsWith('/.src') || path.endsWith('/logs')) ? false : true : true);
 	});
 
 	schema.setSave(function($) {
@@ -346,6 +346,7 @@ NEWSCHEMA('Projects', function(schema) {
 			data.running = item.running;
 			data.pinned = item.pinned == true;
 			data.stats = item.running ? item.stats : null;
+			data.logs = MAIN.logs[item.id];
 
 			if ($.user.sa) {
 				data.path = item.path;

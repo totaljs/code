@@ -3658,10 +3658,11 @@
 				opt.items = [];
 				opt.offsetX = -1;
 				opt.items.push({ id: 'app', name: is ? '@(<strong>Stop</strong> docker)' : '@(<strong>Run</strong> docker)', icon: is ? 'ti ti-stop-alt red' : 'ti ti-play-alt green' });
+				is && opt.items.push({ id: 'restart', name: '@(<strong>Restart</strong> docker)', icon: 'ti ti-refresh' });
 				opt.callback = function(sel) {
 					var data = {};
 					data.id = model.data.id;
-					data.type = is ? 'stop' : 'start';
+					data.type = sel.id === 'restart' ? 'restart' : is ? 'stop' : 'start';
 					var done = function() {
 						AJAX('POST /api/docker/state/ @showloading ERROR', data, function() {
 							if (is && !code.data.files.includes('/index.js.json'))
@@ -3671,6 +3672,8 @@
 					};
 					if (data.type === 'start')
 						SETTER('approve/show', '@(Are you sure you want to start a Docker container?)', '"ti ti-play-alt" @(Start)', done);
+					else if (data.type === 'restart')
+						SETTER('approve/show', '@(Are you sure you want to restart a Docker container?)', '"ti ti-refresh" @(Restart)', done);
 					else
 						done();
 				};
