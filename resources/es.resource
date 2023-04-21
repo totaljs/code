@@ -1,7 +1,7 @@
 // Code translation (es)
 // Created:  09/02/2023 - 13:31
 
-erorr-file               : Archivo no encontrado.
+error-file               : Archivo no encontrado.
 error-blocked            : Tu cuenta ha sido bloqueada.
 error-blocked-ip         : Tu IP ha sido bloqueada.
 error-branches-current   : No puedes eliminar el branch actual.
