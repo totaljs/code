@@ -65,7 +65,7 @@ NEWSCHEMA('SCHEMA_NAME', function(schema) {
 		}
 	});
 
-	schema.action('update', {
+	schema.action('remove', {
 		name: 'Update',
 		params: '*id:UID',
 		action: async function($, model) {
