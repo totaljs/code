@@ -68,7 +68,7 @@ NEWSCHEMA('SCHEMA_NAME', function(schema) {
 	schema.action('remove', {
 		name: 'Remove',
 		params: '*id:UID',
-		action: async function($, model) {
+		action: async function($) {
 
 			// if (UNAUTHORIZED($))
 			// 	return;
