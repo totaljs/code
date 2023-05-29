@@ -1387,7 +1387,7 @@ COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 					el.html(el[0].$def);
 					el[0].$def = null;
 				} else {
-					var val = input.val().replace(/[^a-z0-9.\-_\\/]/gi, '');
+					var val = input.val().replace(/[^+a-z0-9.\-_\\/]/gi, '');
 					var index = +input.closest('.item').attrd('index');
 					var item = cache[index];
 					var newname = val.charAt(0) === '/' ? val : (item.path.substring(0, item.path.length - item.name.length - 1) + '/' + val);
@@ -5608,7 +5608,7 @@ COMPONENT('statusform', function(self, config) {
 	};
 
 	self.submit = function(){
-		EXEC(config.exec, input.parent().attrd('name'), input.val().toLowerCase().replace(/[^a-z0-9./\-_]/gi, ''), formtype);
+		EXEC(config.exec, input.parent().attrd('name'), input.val().toLowerCase().replace(/[^+a-z0-9./\-_]/gi, ''), formtype);
 	};
 
 	self.val = function(value, type, submit) {
