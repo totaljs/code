@@ -2533,6 +2533,7 @@ https://twitter.com/JoelBesada/status/670343885655293952
 	function makeMarker(labels, severity, multiple, tooltips) {
 		var marker = document.createElement('div');
 		var inner = marker;
+
 		marker.className = 'fa CodeMirror-lint-marker-' + severity;
 
 		if (multiple) {
@@ -2652,8 +2653,10 @@ https://twitter.com/JoelBesada/status/670343885655293952
 			for (var i = 0; i < anns.length; ++i) {
 				var ann = anns[i];
 				var severity = ann.severity;
+
 				if (!severity)
 					severity = 'error';
+
 				maxSeverity = getMaxSeverity(maxSeverity, severity);
 
 				if (options.formatAnnotation)
