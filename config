@@ -11,3 +11,5 @@ allow_tms             : false
 
 folder_www     (env)  : FOLDER_WWW
 folder_npm     (env)  : FOLDER_NPM
+
+default_uid           : f
