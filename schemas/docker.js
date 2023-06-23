@@ -95,8 +95,9 @@ NEWSCHEMA('Docker', function(schema) {
 						item.running = start;
 						MAIN.save(2);
 					}
-				} finally {
 					$.success();
+				} catch(e) {
+					$.invalid(e);
 				}
 			};
 
