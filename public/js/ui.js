@@ -1370,7 +1370,7 @@ COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 			if (ddfile)
 				index = +ddfile.attrd('index');
 
-			EXEC(config.upload, cache[index], e.originalEvent);
+			self.EXEC(config.upload, cache[index], e.originalEvent);
 		});
 
 		self.event('focusout', 'input', function() {

@@ -1604,8 +1604,10 @@
 				items = e.dataTransfer.items;
 				dragfiles = e.dataTransfer.files;
 
-				for (var i = 0; i < items.length; i++)
-					arr.push(items[i]);
+				for (let m of items) {
+					let item = m.webkitGetAsEntry();
+					arr.push(item);
+				}
 
 				var files = [];
 				var done = function() {
@@ -1614,8 +1616,7 @@
 					files2upload && exports.upload(node, e, dragfiles);
 				};
 
-				arr.wait(function(item, next) {
-					var entry = item.webkitGetAsEntry();
+				arr.wait(function(entry, next) {
 
 					if (entry == null) {
 						files2upload = true;
@@ -1629,6 +1630,7 @@
 						files.push(entry);
 						next();
 					}
+
 				}, function() {
 
 					var data = new FormData();
@@ -3648,7 +3650,7 @@
 			opt.element = el;
 			opt.large = true;
 
-			SETTER('loading/show');
+			SETTER('loading/show', '@(Loading docker state ...)');
 			AJAX('GET /api/docker/{id}/ ERROR'.arg(model.data), function(response) {
 				var is = response && response.items.length > 0;
 				opt.align = 'right';
@@ -3665,9 +3667,10 @@
 					var data = {};
 					data.id = model.data.id;
 					data.type = sel.id === 'restart' ? 'restart' : is ? 'stop' : 'start';
+
 					var done = function() {
 						AJAX('POST /api/docker/state/ @showloading ERROR', data, function() {
-							if (is && !code.data.files.includes('/index.js.json'))
+							if ((data.type === 'restart' || data.type === 'start'))
 								EXEC('code/refresh');
 							SETTER('loading/hide');
 						});
