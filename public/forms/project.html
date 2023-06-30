@@ -122,7 +122,10 @@
 
 		exports.submit = function() {
 			var data = CLONE(GET('projectsform @reset'));
-			AJAX('POST /api/projects/', data, function(response) {
+			AJAX('POST /api/projects/ @showloading', data, function(response) {
+
+				SETTER('loading/hide');
+
 				if (response.success) {
 
 					if (W.code && W.code.data && data.id === W.code.data.id)
