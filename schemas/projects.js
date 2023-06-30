@@ -307,8 +307,20 @@ NEWSCHEMA('Projects', function(schema) {
 				model.resettime = undefined;
 				model.resetchangelog = undefined;
 
+				var isrelease = item.releasemode;
+
 				COPY(model, item);
 				item.updated = NOW;
+
+				// Check if docker is running
+				if (item.running && isrelease !== item.releasemode) {
+					// Stop and run docker
+					CALL('Docker --> exec', { type: 'stop', id: item.id }, function(err) {
+						if (!err)
+							CALL('Docker --> exec', { type: 'start', id: item.id }, NOOP);
+					});
+				}
+
 			}
 		} else {
 			model.id = UID();
