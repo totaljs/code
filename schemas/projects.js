@@ -315,23 +315,29 @@ NEWSCHEMA('Projects', function(schema) {
 				// Check if docker is running
 				if (item.running && isrelease !== item.releasemode) {
 					// Stop and run docker
-					CALL('Docker --> exec', { type: 'stop', id: item.id }, function(err) {
+					CALL('Docker --> exec', { type: 'stop', id: item.id }).callback(function(err) {
 						if (!err)
-							CALL('Docker --> exec', { type: 'start', id: item.id }, NOOP);
+							CALL('Docker --> exec', { type: 'start', id: item.id }).callback(NOOP);
+						$.success(model.id);
 					});
-				}
+				} else
+					$.success(model.id);
 
+			} else {
+				$.invalid(404);
+				return;
 			}
+
 		} else {
 			model.id = UID();
 			model.ownerid = $.user ? $.user.id : null;
 			model.created = NOW;
 			MAIN.projects.push(model);
 			PATH.mkdir(model.path);
+			$.success(model.id);
 		}
 
 		MAIN.save(2);
-		$.success(model.id);
 	});
 
 	schema.setQuery(function($) {
