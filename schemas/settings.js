@@ -39,6 +39,7 @@ NEWSCHEMA('Settings', function(schema) {
 		PREF.set('accesstoken', model.accesstoken);
 		PREF.set('login', model.login);
 		PREF.set('superadmin', model.superadmin);
+		CONF.totalapi = model.token;
 
 		$.success();
 	});

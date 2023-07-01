@@ -2,12 +2,27 @@ const Path = require('path');
 const Exec = require('child_process').exec;
 const Dns = require('dns');
 
+NEWSCHEMA('ChatGPT', function(schema) {
+
+	schema.action('ask', {
+		name: 'Ask ChatGPT',
+		input: '*value',
+		action: function($, model) {
+			if (CONF.totalapi)
+				API('TAPI', 'chatgpt', model).callback($);
+			else
+				$.invalid("@(You don't have specified a Total.js API token)");
+		}
+	});
+
+});
+
 NEWSCHEMA('Hosts', function(schema) {
 
 	schema.define('host', 'String(50)', true);
 
 	schema.addWorkflow('ping', function($) {
-		var host = $.model.host.replace(/\"|\n/g, '');
+		var host = $.model.host.replace(/"|\n/g, '');
 		Exec('ping -c 3 "{0}"'.format(host), $.done(true));
 	});
 

@@ -239,7 +239,9 @@ Fs.readFile(PATH.databases('projects.json'), function(err, data) {
 
 ON('ready', function() {
 
-	if (!PREF.token)
+	if (PREF.token)
+		CONF.totalapi = PREF.token;
+	else
 		PREF.set('token', '1234567890');
 
 	// Added permissions

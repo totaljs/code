@@ -62,6 +62,7 @@ exports.install = function() {
 	ROUTE('+GET     /api/chat/                            *Chat               --> @query');
 	ROUTE('+POST    /api/chat/                            *Chat               --> @insert');
 	ROUTE('+GET     /api/chat/users/                      *Chat               --> @users');
+	ROUTE('+POST    /api/chatgpt/                         *ChatGPT            --> @ask', [60000]);
 
 	// Clipboard
 	ROUTE('+GET     /api/clipboard/                        *Clipboard         --> @get');

@@ -711,6 +711,22 @@
 
 				items.push({ name: '@(Show selected)', icon: '!ti ti-object-group', value: 'showselected' });
 
+				var isnewline = text.indexOf('\n') !== -1;
+
+				if (text.length > 5) {
+
+					var chatgpt = [];
+					if (!isnewline) {
+						chatgpt.push({ name: '@(Fix Spelling and Grammar)', icon: '!ti ti-spellcheck', value: 'chatgpt-grammar' });
+						chatgpt.push({ name: '@(Generate text)', icon: '!ti ti-align-justify', value: 'chatgpt-generate' });
+					}
+					chatgpt.push({ name: '@(Make keywords)', icon: '!ti ti-font', value: 'chatgpt-keywords' });
+					chatgpt.push({ name: '@(Summarize)', icon: '!ti ti-compress', value: 'chatgpt-summarize' });
+					chatgpt.push('-');
+					chatgpt.push({ name: '@(Ask)', icon: '!ti ti-question-circle', value: 'chatgpt-ask' });
+					items.push({ name: '@(OpenAI)', icon: '!ti ti-openai', children: chatgpt });
+				}
+
 				items.push({ name: '@(Copy)', icon: '!ti ti-copy', command: 'copy' });
 				items.push({ name: '@(Copy with syntax)', icon: 'print', value: 'copysyntax' });
 				items.push({ name: '@(Copy as Markdown)', icon: '!ti ti-pointer', value: 'copymarkdown' });
@@ -939,6 +955,34 @@
 
 				if (value.value === 'showselected') {
 					EXEC('code/showselected');
+					return;
+				}
+
+				if (value.value.substring(0, 8) === 'chatgpt-') {
+
+					var tmp = '\n\n' + text.trim();
+					switch (value.value.substring(8)) {
+						case 'grammar':
+							tmp = '@(Correct this to standard English:)' + tmp;
+							break;
+						case 'keywords':
+							tmp = '@(Extract keywords from this text:)' + tmp;
+							break;
+						case 'summarize':
+							tmp = '@(Summarize this text:)' + tmp;
+							break;
+						case 'generate':
+							tmp = '@(Create text about:)' + tmp;
+							break;
+						case 'ask':
+							tmp = tmp.trim();
+							break;
+					}
+
+					AJAX('POST /api/chatgpt/ @showloading ERROR', { value: tmp }, function(response) {
+						editor.replaceSelection(response.text.trim());
+						SETTER('loading/hide');
+					});
 					return;
 				}
 
