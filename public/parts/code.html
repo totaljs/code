@@ -1014,7 +1014,10 @@
 							for (var i = 0; i < response[0].length; i++) {
 								var arr = response[0][i];
 								var m = output[i];
-								builder.push(m.source + ': ' + (arr[0] || '').trim().substring(2));
+								if (m && m.source && arr[0])
+									builder.push(m.source + ': ' + (arr[0] || '').trim().substring(2));
+								else
+									builder.push('');
 							}
 							editor.replaceSelection(builder.join('\n'));
 						});
