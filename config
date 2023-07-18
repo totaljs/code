@@ -11,5 +11,6 @@ allow_tms             : false
 
 folder_www     (env)  : FOLDER_WWW
 folder_npm     (env)  : FOLDER_NPM
+origin         (env)  : ORIGIN
 
 default_uid           : f
