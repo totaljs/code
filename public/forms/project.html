@@ -122,7 +122,7 @@
 
 		exports.submit = function() {
 			var data = CLONE(GET('projectsform @reset'));
-			AJAX('POST /api/projects/ @showloading', data, function(response) {
+			AJAX('POST /api/projects/ @showloading ERROR', data, function(response) {
 
 				SETTER('loading/hide');
 

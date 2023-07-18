@@ -33,12 +33,23 @@
 
 	PLUGIN('projects', function(exports) {
 
+		function random() {
+			var val = 'abcdefghijklmnoprstuwxyz'.split('');
+			for (var i = val.length - 1; i > 0; i--) {
+				var j = Math.floor(Math.random() * (i + 1));
+				var temp = val[i];
+				val[i] = val[j];
+				val[j] = temp;
+			}
+			return val.join('').substring(0, 6);
+		}
+
 		exports.create = function(el) {
 
 			var opt = {};
 			opt.element = el;
 			opt.summary = '@(Enter URL address to your web app)';
-			opt.value = location.origin.indexOf('.localhost') === -1 ? 'https://' : 'http://';
+			opt.value = common.origin ? common.origin.format(random()) : location.origin.indexOf('.localhost') === -1 ? 'https://' : 'http://';
 			opt.monospace = true;
 			opt.offsetWidth = 300;
 			opt.offsetY = 10;

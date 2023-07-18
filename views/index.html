@@ -105,6 +105,7 @@
 		MAKE('common', function(common) {
 
 			common.id = GUID(5);
+			common.origin = '@{CONF.origin}';
 			common.ismac = navigator.userAgent.indexOf('Mac') != -1;
 			common.version = '@{MAIN.version}';
 			common.idletime = 0;

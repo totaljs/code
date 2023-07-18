@@ -278,6 +278,28 @@ NEWSCHEMA('Projects', function(schema) {
 		var model = $.clean();
 		var users = [];
 
+		if (CONF.origin) {
+
+			var origin = CONF.origin.replace('https://', '');
+			var tmp = origin.split('.');
+			var url = model.url.replace('https://', '').split('.');
+			var index = -1;
+
+			for (var i = 0; i < tmp.length; i++) {
+				if (tmp[i][0] === '{') {
+					index = i;
+					break;
+				}
+			}
+
+			tmp[index] = url[index];
+
+			if (tmp.join('.') !== url.join('.')) {
+				$.invalid('The URL address must be in the form "{0}"'.format(CONF.origin.format('yourpath')));
+				return;
+			}
+		}
+
 		model.isexternal = (/external:\/\//).test(model.path);
 
 		if (!model.isexternal)
