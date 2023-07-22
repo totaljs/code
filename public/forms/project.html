@@ -1,88 +1,90 @@
 <div data---="largeform__common.form__if:projectsform;icon:ti ti-code-branch;width:660;reload:projectsform/reload;autofocus:1;submit:projectsform/submit" class="hidden">
 	<div data-scope="projectsform">
-		<div class="padding">
-			<div class="row">
-				<div class="col-sm-6 m">
-					<div data---="input__?.path__required:true__'/www/www/'">@(Path)</div>
-					<div class="help">
-						<span class="link exec" data-exec="?/autocomplete"><i class="ti ti-search"></i>@(Browse server)</span>. @(The path for external projects must be in the form:) <b>external://@(projectname)</b>
+		<div data-bind="common.cloud__disabled .C__hidden .H">
+			<div class="padding">
+				<div class="row">
+					<div class="col-sm-6 m">
+						<div data---="input__?.path__required:true__'/www/www/'" class="C">@(Path)</div>
+						<div class="help H">
+							<span class="link exec" data-exec="?/autocomplete"><i class="ti ti-search"></i>@(Browse server)</span>. @(The path for external projects must be in the form:) <b>external://@(projectname)</b>
+						</div>
+					</div>
+					<div class="col-sm-6 m">
+						<div data---="input__?.pathsync__maxlength:100__''" class="C">@(Path for synchronization)</div>
+						<div class="help H"><span class="link exec" data-exec="?/autocomplete2"><i class="ti ti-search"></i>@(Browse)</span>. @(Additional path for e.g. production)</div>
 					</div>
 				</div>
-				<div class="col-sm-6 m">
-					<div data---="input__?.pathsync__maxlength:100__''">@(Path for synchronization)</div>
-					<div class="help"><span class="link exec" data-exec="?/autocomplete2"><i class="ti ti-search"></i>@(Browse)</span>. @(Additional path for e.g. production)</div>
-				</div>
-			</div>
 
-			<div data-bind="?.isexternal__show" class="bg-smoke padding m hidden fs12">
-				<i class="ti ti-question-circle mr5"></i><a href="https://github.com/totaljs/framework4/blob/master/helpers/index.js#L19" target="_blank" class="gray">@(How to enable editing source code for the external Total.js project?)</a>
-			</div>
+				<div data-bind="?.isexternal__show" class="bg-smoke padding m hidden fs12">
+					<i class="ti ti-question-circle mr5"></i><a href="https://github.com/totaljs/framework4/blob/master/helpers/index.js#L19" target="_blank" class="gray">@(How to enable editing source code for the external Total.js project?)</a>
+				</div>
 
-			<!--
-			<div data-bind="?.isexternal__show" class="bg-smoke padding m hidden">
-				<div data---="input__?.token__maxlength:50__''">@(Token)</div>
-				<div class="help"><span class="link exec" data-exec="?/securitytoken"><i class="ti ti-key"></i>@(Generate)</span>. @(A security token for the external project)</div>
-			</div>-->
+				<!--
+				<div data-bind="?.isexternal__show" class="bg-smoke padding m hidden">
+					<div data---="input__?.token__maxlength:50__''">@(Token)</div>
+					<div class="help"><span class="link exec" data-exec="?/securitytoken"><i class="ti ti-key"></i>@(Generate)</span>. @(A security token for the external project)</div>
+				</div>-->
 
-			<div class="row">
-				<div class="col-sm-6 m">
-					<div data---="input__?.name__required:true__''">@(Name)</div>
+				<div class="row">
+					<div class="col-sm-6 m">
+						<div data---="input__?.name__required:true__''">@(Name)</div>
+					</div>
+					<div class="col-sm-6 m">
+						<div data---="input__?.url__required:true__''" class="C">@(URL to application)</div>
+					</div>
 				</div>
-				<div class="col-sm-6 m">
-					<div data---="input__?.url__required:true__''">@(URL to application)</div>
+				<div class="row">
+					<div class="col-sm-6 m">
+						<div data---="input__?.documentation__placeholder:https://docs.totaljs.com__'https://docs.totaljs.com'">@(Documentation URL)</div>
+					</div>
+					<div class="col-sm-6 m">
+						<div data---="input__?.support__placeholder:https://messenger.totaljs.com__'https://messenger.totaljs.com'">@(Support URL)</div>
+					</div>
 				</div>
-			</div>
-			<div class="row">
-				<div class="col-sm-6 m">
-					<div data---="input__?.documentation__placeholder:https://docs.totaljs.com__'https://docs.totaljs.com'">@(Documentation URL)</div>
-				</div>
-				<div class="col-sm-6 m">
-					<div data---="input__?.support__placeholder:https://messenger.totaljs.com__'https://messenger.totaljs.com'">@(Support URL)</div>
-				</div>
-			</div>
 
-			<div class="row">
-				<div class="col-sm-6 m">
-					<div data---="input__?.repository__placeholder:cms__''">@(Folder name)</div>
-					<div class="help">@(Electron version of Code app can store files locally in this folder name.)</div>
+				<div class="row">
+					<div class="col-sm-6 m">
+						<div data---="input__?.repository__placeholder:cms__''">@(Folder name)</div>
+						<div class="help">@(Electron version of Code app can store files locally in this folder name.)</div>
+					</div>
+					<div class="col-sm-6 m">
+						<div data---="input__?.logfile__maxlength:100__''">@(A path to log file)</div>
+						<div class="help">@(A default log file is <code>current_app_dir/logs/debug.log</code>)</div>
+					</div>
 				</div>
-				<div class="col-sm-6 m">
-					<div data---="input__?.logfile__maxlength:100__''">@(A path to log file)</div>
-					<div class="help">@(A default log file is <code>current_app_dir/logs/debug.log</code>)</div>
-				</div>
+				<hr class="nmt" />
+				<div data---="checkbox__?.pinned__null__false">@(Pin the project on top)</div>
+				<div data---="checkbox__?.hidden__null__false" class="b">@(Hide project)</div>
+				<hr />
+				<div data---="checkbox__?.backup__null__true">@(Backup all modified files)</div>
+				<div data---="checkbox__?.skiptmp__null__true">@(Skip <b>tmp</b> directory)</div>
+				<div data---="checkbox__?.skipsrc__null__true">@(Skip <b>.src</b> directory)</div>
+				<div data---="checkbox__?.skipnm__null__true">@(Skip <b>node_modules</b> directory)</div>
+				<div data---="checkbox__?.allowbundle__null__true">@(Allow bundle making)</div>
+				<hr />
+				<div data---="checkbox__?.releasemode__null__false">@(<b>Docker:</b> enable release mode)</div>
+				<div data---="checkbox__?.customdocker__null__false">@(<b>Docker:</b> enable custom docker-compose.yaml)</div>
+				<hr />
+				<div data---="checkbox__?.servicemode__null__true">@(Enable service mode)</div>
+				<div data---="checkbox__?.allowlivereload__null__false">@(Allow live reload)</div>
+				<div data---="checkbox__?.allowscripts__null__false">@(Allow scripts)</div>
 			</div>
-			<hr class="nmt" />
-			<div data---="checkbox__?.pinned__null__false">@(Pin the project on top)</div>
-			<div data---="checkbox__?.hidden__null__false" class="b">@(Hide project)</div>
-			<hr />
-			<div data---="checkbox__?.backup__null__true">@(Backup all modified files)</div>
-			<div data---="checkbox__?.skiptmp__null__true">@(Skip <b>tmp</b> directory)</div>
-			<div data---="checkbox__?.skipsrc__null__true">@(Skip <b>.src</b> directory)</div>
-			<div data---="checkbox__?.skipnm__null__true">@(Skip <b>node_modules</b> directory)</div>
-			<div data---="checkbox__?.allowbundle__null__true">@(Allow bundle making)</div>
-			<hr />
-			<div data---="checkbox__?.releasemode__null__false">@(<b>Docker:</b> enable release mode)</div>
-			<div data---="checkbox__?.customdocker__null__false">@(<b>Docker:</b> enable custom docker-compose.yaml)</div>
-			<hr />
-			<div data---="checkbox__?.servicemode__null__true">@(Enable service mode)</div>
-			<div data---="checkbox__?.allowlivereload__null__false">@(Allow live reload)</div>
-			<div data---="checkbox__?.allowscripts__null__false">@(Allow scripts)</div>
-		</div>
-		<hr class="nmt nmb" />
-		<div class="padding">
-			<h3><i class="ti ti-users"></i>@(Users and permissions)</h3>
-			<div data---="selectbox__?.users__if:!value.sa;datasource:%projectsformusers;text:id__[]"></div>
-			<div class="help m">@(Choose users which can have access to this project)</div>
-			<div data---="textarea__?.permissions__height:100;monospace:true;placeholder:@(userid \: path)__''">@(Permissions)</div>
-			<div class="help m">@(Define permissions for the users. Path starting with <code>^</code> will disable the access.)</div>
-		</div>
-		<div data-bind="?.id__show" class="hidden">
 			<hr class="nmt nmb" />
 			<div class="padding">
-				<h3><i class="ti ti-chart-bar"></i>@(Internal stats)</h3>
-				<div data---="checkbox__?.resetcombo__null__false">@(Reset combo scoreboard)</div>
-				<div data---="checkbox__?.resettime__null__false">@(Reset time spent)</div>
-				<div data---="checkbox__?.resetchangelog__null__false">@(Reset changelog)</div>
+				<h3><i class="ti ti-users"></i>@(Users and permissions)</h3>
+				<div data---="selectbox__?.users__if:!value.sa;datasource:%projectsformusers;text:id__[]"></div>
+				<div class="help m">@(Choose users which can have access to this project)</div>
+				<div data---="textarea__?.permissions__height:100;monospace:true;placeholder:@(userid \: path)__''">@(Permissions)</div>
+				<div class="help m">@(Define permissions for the users. Path starting with <code>^</code> will disable the access.)</div>
+			</div>
+			<div data-bind="?.id__show" class="hidden">
+				<hr class="nmt nmb" />
+				<div class="padding">
+					<h3><i class="ti ti-chart-bar"></i>@(Internal stats)</h3>
+					<div data---="checkbox__?.resetcombo__null__false">@(Reset combo scoreboard)</div>
+					<div data---="checkbox__?.resettime__null__false">@(Reset time spent)</div>
+					<div data---="checkbox__?.resetchangelog__null__false">@(Reset changelog)</div>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -96,6 +98,8 @@
 	PLUGIN('projectsform', function(exports) {
 
 		exports.autocomplete = function(el) {
+			if (common.cloud)
+				return;
 			projectsform.path && AJAX('GET /api/common/directories/', { path: projectsform.path }, function(response) {
 				SETTER('suggestion/show', 'left', el, response, function(value) {
 					SET('projectsform.path @change', value.path);
@@ -104,6 +108,8 @@
 		};
 
 		exports.autocomplete2 = function(el) {
+			if (common.cloud)
+				return;
 			projectsform.pathsync && AJAX('GET /api/common/directories/', { path: projectsform.pathsync }, function(response) {
 				SETTER('suggestion/show', 'left', el, response, function(value) {
 					SET('projectsform.pathsync', value.path);

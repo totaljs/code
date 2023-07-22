@@ -280,22 +280,22 @@ NEWSCHEMA('Projects', function(schema) {
 
 		if (CONF.origin) {
 
-			var origin = CONF.origin.replace('https://', '');
-			var tmp = origin.split('.');
-			var url = model.url.replace('https://', '').split('.');
-			var index = -1;
+			var origin = CONF.origin.replace('https://', '').format('');
+			var url = model.url.replace('https://', '');
+			var index = url.indexOf(origin);
+			var err = 'The URL address must be in the form "@"';
 
-			for (var i = 0; i < tmp.length; i++) {
-				if (tmp[i][0] === '{') {
-					index = i;
-					break;
-				}
+			if (index === -1) {
+				$.error.replace('@', CONF.origin.format('yourpath'));
+				$.invalid(err);
+				return;
 			}
 
-			tmp[index] = url[index];
+			var path = url.substring(0, index);
 
-			if (tmp.join('.') !== url.join('.')) {
-				$.invalid('The URL address must be in the form "{0}"'.format(CONF.origin.format('yourpath')));
+			if ((/\.|-|,/).test(path)) {
+				$.error.replace('@', CONF.origin.format('yourpath'));
+				$.invalid(err);
 				return;
 			}
 		}

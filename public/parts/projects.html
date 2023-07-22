@@ -71,7 +71,11 @@
 				SET('common.form', 'projectsform');
 				path && setTimeout(() => CHANGE('projectsform.name'), 1500);
 			};
-			SETTER('floatinginput/show', opt);
+
+			if (common.cloud)
+				opt.callback(opt.value);
+			else
+				SETTER('floatinginput/show', opt);
 		};
 
 		exports.refresh = function() {

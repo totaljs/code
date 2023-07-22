@@ -11,6 +11,11 @@ allow_tms             : false
 
 folder_www     (env)  : FOLDER_WWW
 folder_npm     (env)  : FOLDER_NPM
+
+// Example: https://{0}.eu.totaljs.com
 origin         (env)  : ORIGIN
+
+// Disables editing URL address: "true" or "false"
+cloud          (env)  : CLOUD
 
 default_uid           : f
