@@ -12,7 +12,8 @@ allow_tms             : false
 folder_www     (env)  : FOLDER_WWW
 folder_npm     (env)  : FOLDER_NPM
 
-// Example: https://{0}.eu.totaljs.com
+// Example 1 with the specific hostname: https://{0}.eu.totaljs.com
+// Example 2 with the current hostname: {0}
 origin         (env)  : ORIGIN
 
 // Disables editing URL address: "true" or "false"

@@ -280,13 +280,19 @@ NEWSCHEMA('Projects', function(schema) {
 
 		if (CONF.origin) {
 
-			var origin = CONF.origin.replace('https://', '').format('');
+			var origin = CONF.origin;
+
+			if (origin === '{0}')
+				origin = origin + $.req.hostname().replace('https://', '');
+			else
+				origin = origin.replace('https://', '');
+
 			var url = model.url.replace('https://', '');
-			var index = url.indexOf(origin);
+			var index = url.indexOf(origin.format(''));
 			var err = 'The URL address must be in the form "@"';
 
 			if (index === -1) {
-				$.error.replace('@', CONF.origin.format('yourpath'));
+				$.error.replace('@', origin.format('yourpath'));
 				$.invalid(err);
 				return;
 			}
@@ -294,10 +300,11 @@ NEWSCHEMA('Projects', function(schema) {
 			var path = url.substring(0, index);
 
 			if ((/\.|-|,/).test(path)) {
-				$.error.replace('@', CONF.origin.format('yourpath'));
+				$.error.replace('@', origin.format('yourpath'));
 				$.invalid(err);
 				return;
 			}
+
 		}
 
 		model.isexternal = (/external:\/\//).test(model.path);

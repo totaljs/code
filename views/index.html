@@ -106,6 +106,10 @@
 
 			common.id = GUID(5);
 			common.origin = '@{CONF.origin}';
+
+			if (common.origin === '{0}')
+				common.origin = location.protocol + '//' + common.origin + location.hostname;
+
 			common.cloud = ({ '1': true, 'on': true, 'true': true })['@{CONF.cloud}'.toLowerCase()];
 			common.ismac = navigator.userAgent.indexOf('Mac') != -1;
 			common.version = '@{MAIN.version}';
