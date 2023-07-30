@@ -187,7 +187,7 @@ FUNC.preparedockerfile = async function(item, run) {
 	}
 
 	content = await ReadFile(path);
-	content = content.toString('utf8').replace(/##ID##/g, item.id).replace(/##MAXUPLOAD##/g, item.maxupload || 50).replace(/##HOST##/g, host).replace(/##FOLDER_NPM##/g, nodemodules).replace(/##FOLDER_WWW##/g, wwwfolder);
+	content = content.toString('utf8').replace(/##ID##/g, item.id.toLowerCase()).replace(/##MAXUPLOAD##/g, item.maxupload || 50).replace(/##HOST##/g, host).replace(/##FOLDER_NPM##/g, nodemodules).replace(/##FOLDER_WWW##/g, wwwfolder);
 	return WriteFile(filename, content);
 };
 
