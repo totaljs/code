@@ -6,7 +6,7 @@ const Internal = require('total4/internal');
 
 NEWSCHEMA('Projects', function(schema) {
 
-	schema.define('id', 'UID');
+	schema.define('id', 'String');
 	schema.define('name', 'String(50)', true);
 	schema.define('repository', 'String(100)');
 	schema.define('path', 'String(100)', true);
@@ -358,7 +358,7 @@ NEWSCHEMA('Projects', function(schema) {
 			}
 
 		} else {
-			model.id = UID();
+			model.id = U.random_string(10).toLowerCase();
 			model.ownerid = $.user ? $.user.id : null;
 			model.created = NOW;
 			MAIN.projects.push(model);

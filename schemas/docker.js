@@ -7,7 +7,7 @@ const Exec = Promisify(require('child_process').exec);
 
 NEWSCHEMA('Docker', function(schema) {
 
-	schema.define('id', 'UID', true);
+	schema.define('id', 'String', true);
 	schema.define('type', ['start', 'stop', 'restart'], true);
 
 	schema.action('read', {
@@ -159,7 +159,7 @@ FUNC.preparedockerfile = async function(item, run) {
 	var host = item.url;
 	var wwwfolder = item.path.replace('/www/www', CONF.folder_www);
 	var nodemodules = CONF.folder_npm;
-	var id = item.id.toLowerCase() + (CONF.uid ? ('-' + CONF.uid) : '');
+	var id = (CONF.uid ? (CONF.uid + '-') : '') + item.id;
 
 	wwwfolder = wwwfolder[wwwfolder.length - 1] === '/' ? wwwfolder.substr(0, wwwfolder.length - 1) : wwwfolder;
 	nodemodules = nodemodules[nodemodules.length - 1] === '/' ? nodemodules.substr(0, nodemodules.length - 1) : nodemodules;
