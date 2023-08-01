@@ -140,7 +140,13 @@ function stats() {
 			unit = net.replace(/[0-9.]/g, '').toLowerCase();
 			net = toMB(net.parseFloat2(), unit);
 
-			var project = MAIN.projects.findItem('id', line[1]);
+			var id = line[1] || '';
+
+			if (id.indexOf('-') !== -1)
+				id = id.split('-')[1] || '';
+
+			var project = MAIN.projects.findItem('id', id);
+
 			if (project) {
 				project.stats = { id: line[0], cpu: cpu, mem: mem, net: net };
 				is = true;
