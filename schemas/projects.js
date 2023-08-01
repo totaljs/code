@@ -285,9 +285,9 @@ NEWSCHEMA('Projects', function(schema) {
 			if (origin === '{0}')
 				origin = origin + $.req.hostname().replace('https://', '');
 			else
-				origin = origin.replace('https://', '');
+				origin = origin.replace(/http(s)?:\/\//g, '');
 
-			var url = model.url.replace('https://', '');
+			var url = model.url.replace(/http(s)?:\/\//g, '');
 			var index = url.indexOf(origin.format(''));
 			var err = 'The URL address must be in the form "@"';
 
@@ -456,7 +456,8 @@ NEWSCHEMA('Projects', function(schema) {
 		else
 			allowed = null;
 
-		var skip = '\\.socket|\\index.yaml';
+		// var skip = '\\.socket|\\index.yaml';
+		var skip = '\\.socket';
 
 		if (item.skiptmp)
 			skip += '|' + (IS_WINDOWS ? '\\\\tmp\\\\' : '\\/tmp\\/');

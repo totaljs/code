@@ -1156,6 +1156,7 @@ COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 
 	var REGBK = /(-|_)bk\.\w+$/i;
 	var REGENV = /(-|_)(debug|release)\.\w+$/i;
+	var REGDOCKER = /index.yaml$/i;
 	var items = {};
 	var nestedkey = null;
 	var nesteditem = null;
@@ -1165,7 +1166,7 @@ COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 		if (filename === '/node_modules/')
 			return ' ui-tree-special';
 
-		return filename.charAt(0) === '.' || REGBK.test(filename) || filename === '/modules/code.js' ? ' ui-tree-hiddenfile' : REGENV.test(filename) ? ' ui-tree-envfile' : '';
+		return filename.charAt(0) === '.' || REGBK.test(filename) || filename === '/modules/code.js' ? ' ui-tree-hiddenfile' : REGDOCKER.test(filename) ? ' ui-tree-docker' : REGENV.test(filename) ? ' ui-tree-envfile' : '';
 	};
 
 	Thelpers.fileicon = function(filename) {
@@ -1252,8 +1253,9 @@ COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 			case 'config-test':
 			case 'resource':
 			case 'workflows':
-			case 'yaml':
 				return 'ti ti-cog';
+			case 'yaml':
+				return filename === 'index.yaml' ? 'ti ti-docker' : 'ti ti-config';
 			case 'c':
 			case 'wasm':
 			case 'wat':

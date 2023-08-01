@@ -159,6 +159,9 @@ div.CodeMirror span.CodeMirror-matchingbracket { border-bottom: 2px solid blue; 
 .ui-tree .ti-network-alt, .tabs nav .ti-network-alt { color: #61AFEE; margin-left: -2px; width: 18px !important; }
 .ui-tree .ti-check, .tabs nav .ti-check { color: #85ac82; }
 
+.ui-tree-docker { color: #4093D7 !important; }
+.ui-tree .ti-docker, .tabs nav .ti-docker { color: #4093D7; }
+.ui-tree-docker div:after { content: '!'; color: red; margin-left: 5px; font-weight: bold; font-size: 14px; }
 .ui-tree-special { color: #999 !important; }
 .ui-tree-hiddenfile { color: #B0B0B0 !important; }
 .ui-tree-hiddenfile div:after { content: '!'; color: red; margin-left: 5px; font-weight: bold; font-size: 14px; }
