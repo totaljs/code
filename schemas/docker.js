@@ -159,6 +159,7 @@ FUNC.preparedockerfile = async function(item, run) {
 	var host = item.url;
 	var wwwfolder = item.path.replace('/www/www', CONF.folder_www);
 	var nodemodules = CONF.folder_npm;
+	var id = item.id.toLowerCase() + (CONF.uid ? ('-' + CONF.uid) : '');
 
 	wwwfolder = wwwfolder[wwwfolder.length - 1] === '/' ? wwwfolder.substr(0, wwwfolder.length - 1) : wwwfolder;
 	nodemodules = nodemodules[nodemodules.length - 1] === '/' ? nodemodules.substr(0, nodemodules.length - 1) : nodemodules;
@@ -187,7 +188,7 @@ FUNC.preparedockerfile = async function(item, run) {
 	}
 
 	content = await ReadFile(path);
-	content = content.toString('utf8').replace(/##ID##/g, item.id.toLowerCase()).replace(/##MAXUPLOAD##/g, item.maxupload || 50).replace(/##HOST##/g, host).replace(/##FOLDER_NPM##/g, nodemodules).replace(/##FOLDER_WWW##/g, wwwfolder);
+	content = content.toString('utf8').replace(/##ID##/g, id).replace(/##MAXUPLOAD##/g, item.maxupload || 50).replace(/##HOST##/g, host).replace(/##FOLDER_NPM##/g, nodemodules).replace(/##FOLDER_WWW##/g, wwwfolder);
 	return WriteFile(filename, content);
 };
 
