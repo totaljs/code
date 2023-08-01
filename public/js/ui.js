@@ -1255,7 +1255,7 @@ COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 			case 'workflows':
 				return 'ti ti-cog';
 			case 'yaml':
-				return filename === 'index.yaml' ? 'ti ti-docker' : 'ti ti-config';
+				return filename === 'index.yaml' ? 'ti ti-docker' : 'ti ti-cog';
 			case 'c':
 			case 'wasm':
 			case 'wat':
