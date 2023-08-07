@@ -1036,7 +1036,7 @@ FUNC.requestscriptspawn = function(id, path) {
 	SETTER('loading/show');
 
 	var winid = 'w' + GUID(10);
-	AJAX('GET /api/request/{0}/?path={1}&id={2}'.format(id, encodeURIComponent(path), winid), function(response, err) {
+	AJAX('GET /api/request/{0}/?path={1}&id={2} ERROR'.format(id, encodeURIComponent(path), winid), function() {
 
 		SETTER('loading/hide', 100);
 
@@ -1057,15 +1057,8 @@ FUNC.requestscriptspawn = function(id, path) {
 
 FUNC.requestscript = function(id, path) {
 	SETTER('loading/show');
-	AJAX('GET /api/request/{0}/?path={1}'.format(id, encodeURIComponent(path)), function(response, err) {
-
+	AJAX('GET /api/request/{0}/?path={1} ERROR'.format(id, encodeURIComponent(path)), function(response) {
 		SETTER('loading/hide', 100);
-
-		if (response instanceof Array) {
-			SETTER('message/warning', response[0].error);
-			return;
-		}
-
 		var template = '<div class="output-response-header">{0}:</div><div class="output-response-header-value">{1}</div>';
 		PUSH('^output', '<div class="output-response">{0}</div>'.format(template.format('Response (' + (response.duration / 1000) + ' s)', Thelpers.encode(response.response).replace(/\n/g, '<br />'))));
 		SET('common.form', 'output');

@@ -690,7 +690,7 @@
 			var mode = editor.getModeAt(editor.getCursor());
 			mode = mode.helperType || mode.name;
 
-			if (isscript && !text)
+			if (isscript && !text && !common.cloud)
 				items.push({ name: '@(Run script)', icon: 'play-alt red', value: 'run', classname: 'b', shortcut: (common.ismac ? 'CMD' : 'CTRL') + '+B' });
 
 			if (!can && (code.current.ext === 'ui' || (code.current.ext === 'json' && editor.getValue().indexOf('"components"') !== -1))) {

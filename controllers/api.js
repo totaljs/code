@@ -504,6 +504,7 @@ function makerequest() {
 function makerequestscript(id) {
 	var self = this;
 	var project = MAIN.projects.findItem('id', id);
+
 	if (project == null) {
 		self.invalid('error-project');
 		return;
@@ -516,6 +517,11 @@ function makerequestscript(id) {
 
 	if (!project.allowscripts) {
 		self.invalid('error-project-scripts');
+		return;
+	}
+
+	if (CONF.cloud) {
+		self.invalid('Not supported');
 		return;
 	}
 
