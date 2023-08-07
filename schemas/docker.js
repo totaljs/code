@@ -90,7 +90,7 @@ NEWSCHEMA('Docker', function(schema) {
 				try {
 					await FUNC.preparedockerfile(item, start);
 					item.running = false;
-					await Exec('docker compose -f {0} {1}'.format(filename, start ? 'up -d' : 'down'));
+					await Exec('docker compose{3} -f {0} {1}'.format(filename, start ? 'up -d' : 'down', item.customdocker ? ' --build' : ''));
 					if (item.running !== start) {
 						item.running = start;
 						MAIN.save(2);
