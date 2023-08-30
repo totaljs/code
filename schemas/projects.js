@@ -277,8 +277,10 @@ NEWSCHEMA('Projects', function(schema) {
 
 		var model = $.clean();
 		var users = [];
+		model.isexternal = (/external:\/\//).test(model.path);
 
-		if (CONF.origin) {
+console.log(model.isexternal, model.path);
+		if (!model.isexternal && CONF.origin) {
 
 			var origin = CONF.origin;
 
@@ -306,8 +308,6 @@ NEWSCHEMA('Projects', function(schema) {
 			}
 
 		}
-
-		model.isexternal = (/external:\/\//).test(model.path);
 
 		if (!model.isexternal)
 			model.path = U.path(model.path.replace(/\/\//g, '/').replace(/\\\\/g, '\\'));

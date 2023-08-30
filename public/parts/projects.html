@@ -55,19 +55,29 @@
 			opt.offsetY = 10;
 			opt.callback = function(val) {
 
-				var url = val.replace(/^(http|https):\/\//gi, '').replace(/\//g, '');
+				var url = '';
 				var path = '';
-				if (url) {
-					var arr = url.split('.');
-					arr.reverse();
-					var tmp = arr[1];
-					arr[1] = arr[0];
-					arr[0] = tmp;
-					path = arr.join('-').replace('-', '_') + (path ? path.replace(/\//g, '--').replace(/--$/g, '') : '');
+				var isexternal = false;
+
+				if (val.substring(0, 11) === 'external://') {
+					path = val;
+					url = 'https://www.totaljs.com';
+					isexternal = true;
+				} else {
+					url = val.replace(/^(http|https):\/\//gi, '').replace(/\//g, '');
+					if (url) {
+						var arr = url.split('.');
+						arr.reverse();
+						var tmp = arr[1];
+						arr[1] = arr[0];
+						arr[0] = tmp;
+						path = arr.join('-').replace('-', '_') + (path ? path.replace(/\//g, '--').replace(/--$/g, '') : '');
+					}
+					url = val;
 				}
 
 				DEFAULT('projectsform.*');
-				EXTEND('projectsform', { id: null, url: val, name: path, path: '/www/www/' + (path ? (path + '/') : '') });
+				EXTEND('projectsform', { id: null, url: url, name: path.substring(11), path: isexternal ? path : ('/www/www/' + (path ? (path + '/') : '')), isexternal: isexternal });
 				SET('common.form', 'projectsform');
 				path && setTimeout(() => CHANGE('projectsform.name'), 1500);
 			};
