@@ -279,7 +279,6 @@ NEWSCHEMA('Projects', function(schema) {
 		var users = [];
 		model.isexternal = (/external:\/\//).test(model.path);
 
-console.log(model.isexternal, model.path);
 		if (!model.isexternal && CONF.origin) {
 
 			var origin = CONF.origin;
