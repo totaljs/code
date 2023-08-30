@@ -1808,6 +1808,8 @@ SNIPPETS.push({ type: 'js', search: 'exports.watch', text: '<b>exports.watch()</
 SNIPPETS.push({ type: 'js', search: 'console.log', text: '<b>console.log</b>', code: 'console.log();', ch: 13 });
 SNIPPETS.push({ type: 'js', search: 'console.warn', text: '<b>console.warn</b>', code: 'console.warn();', ch: 14 });
 SNIPPETS.push({ type: 'js', search: 'console.error', text: '<b>console.error</b>', code: 'console.error();', ch: 15 });
+SNIPPETS.push({ type: 'js', search: 'console.time', text: '<b>console.time</b>', code: 'console.time();', ch: 14 });
+SNIPPETS.push({ type: 'js', search: 'console.timeEnd', text: '<b>console.timeEnd</b>', code: 'console.timeEnd();', ch: 17 });
 SNIPPETS.push({ type: 'js', search: 'null', text: '<b>null</b>', code: 'null', ch: 5 });
 SNIPPETS.push({ type: 'js', search: 'undefined', text: '<b>undefined</b>', code: 'undefined', ch: 10, priority: -1 });
 SNIPPETS.push({ type: 'js', search: 'setImmediate', text: 'setImmediate', code: 'setImmediate()', ch: 13, priority: -1 });
