@@ -357,6 +357,20 @@ NEWSCHEMA('Projects', function(schema) {
 			}
 
 		} else {
+
+			if (CONF.limit && !model.isexternal) {
+				var count = 0;
+				for (var m of MAIN.projects) {
+					if (!m.isexternal)
+						count++;
+				}
+				if (count >= CONF.limit) {
+					$.error.replace('@', CONF.limit + '');
+					$.invalid("@(Not allowed. You can develop up to @ apps.)");
+					return;
+				}
+			}
+
 			model.id = U.random_string(10).toLowerCase();
 			model.ownerid = $.user ? $.user.id : null;
 			model.created = NOW;

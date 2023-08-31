@@ -22,4 +22,7 @@ origin         (env)  : ORIGIN
 // Disables editing URL address: "true" or "false"
 cloud          (env)  : CLOUD
 
+// Limits max. count of projects
+// limit          (env)  : LIMIT
+
 default_uid           : f
