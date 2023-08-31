@@ -76,8 +76,7 @@
 					url = val;
 				}
 
-				DEFAULT('projectsform.*');
-				EXTEND('projectsform', { id: null, url: url, name: path.substring(11), path: isexternal ? path : ('/www/www/' + (path ? (path + '/') : '')), isexternal: isexternal });
+				SET('projectsform @default', { id: null, url: url, name: path.substring(11), path: isexternal ? path : ('/www/www/' + (path ? (path + '/') : '')), isexternal: isexternal });
 				SET('common.form', 'projectsform');
 				path && setTimeout(() => CHANGE('projectsform.name'), 1500);
 			};
