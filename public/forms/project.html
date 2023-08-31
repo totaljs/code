@@ -158,7 +158,7 @@
 
 		WATCH('?.path', function(path, value) {
 
-			if (value && value !== '/www/www/' && (/_|-/).test(value)) {
+			if (value && value !== '/www/www/' && (/_|-/).test(value) && value.substring(0, 11) !== 'external://') {
 
 				var index = value.lastIndexOf('/');
 				if (index === -1)
