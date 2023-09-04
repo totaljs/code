@@ -158,7 +158,9 @@
 
 		WATCH('?.path', function(path, value) {
 
-			if (value && value !== '/www/www/' && (/_|-/).test(value) && value.substring(0, 11) !== 'external://') {
+			var isexternal = value ? value.substring(0, 11) !== 'external://' : false;
+
+			if (value && value !== '/www/www/' && (/_|-/).test(value) && !isexternal) {
 
 				var index = value.lastIndexOf('/');
 				if (index === -1)
@@ -173,12 +175,12 @@
 					SET('?.url', 'https://' + arr.join('.'));
 				}
 
-			} else if (value && (/^external\:\/\//).test(value)) {
+			} else if (!isexternal) {
 				var index = value.substring(8).indexOf('/');
 				SET('?.url', value.substring(0, index));
 			}
 
-			SET('?.isexternal', (/^(external)\:\/\//).test(value));
+			SET('?.isexternal', isexternal);
 		});
 
 	});

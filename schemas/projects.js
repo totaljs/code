@@ -277,7 +277,8 @@ NEWSCHEMA('Projects', function(schema) {
 
 		var model = $.clean();
 		var users = [];
-		model.isexternal = (/external:\/\//).test(model.path);
+
+		model.isexternal = (/^external:\/\//).test(model.path);
 
 		if (!model.isexternal && CONF.origin) {
 
@@ -374,8 +375,12 @@ NEWSCHEMA('Projects', function(schema) {
 			model.id = U.random_string(10).toLowerCase();
 			model.ownerid = $.user ? $.user.id : null;
 			model.created = NOW;
+
 			MAIN.projects.push(model);
-			PATH.mkdir(model.path);
+
+			if (!model.isexternal)
+				PATH.mkdir(model.path);
+
 			$.success(model.id);
 		}
 
