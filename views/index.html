@@ -114,6 +114,7 @@
 			common.ismac = navigator.userAgent.indexOf('Mac') != -1;
 			common.version = '@{MAIN.version}';
 			common.idletime = 0;
+			common.limit = '@{CONF.limit}'.parseInt();
 			common.plustimespent = 33;
 			common.electron = navigator.userAgent.indexOf('Electron') !== -1 && window.require != null;
 			common.ismac = navigator.platform.substring(0, 3) === 'Mac';

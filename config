@@ -23,6 +23,6 @@ origin         (env)  : ORIGIN
 cloud          (env)  : CLOUD
 
 // Limits max. count of projects
-// limit          (env)  : LIMIT
+limit          (env)  : LIMIT
 
 default_uid           : f
