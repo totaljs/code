@@ -23,6 +23,7 @@ NEWSCHEMA('Projects', function(schema) {
 	schema.define('skipsrc', Boolean);
 	schema.define('skiptmp', Boolean);
 	schema.define('skipnm', Boolean);
+	schema.define('skipfs', Boolean);
 	schema.define('pinned', Boolean);
 	schema.define('releasemode', Boolean);
 	schema.define('allowbundle', Boolean);
@@ -481,6 +482,9 @@ NEWSCHEMA('Projects', function(schema) {
 			skip += '|' + (IS_WINDOWS ? '\\\\tmp\\\\' : '\\/tmp\\/');
 		if (item.skipsrc)
 			skip += '|' + (IS_WINDOWS ? '\\\\.src\\\\' : '\\/\\.src\\/');
+
+		if (item.skipfs)
+			skip += '|' + (IS_WINDOWS ? '\\\\databases\\fs\\-.*?\\' : '\\/databases\\/fs\\-.*?\\/');
 
 		if (item.skipnm)
 			skip += '|' + (IS_WINDOWS ? '\\\\node_modules\\\\' : '\\/node_modules\\/');
