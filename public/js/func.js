@@ -2888,3 +2888,23 @@ String.prototype.parseConfigTotal = function() {
 
 	return obj;
 };
+
+(function() {
+
+	var lastusage;
+
+	FUNC.totalcombat = function(name) {
+		if (common.totalcombat) {
+
+			var tmp = Date.now();
+			if (name !== 'start' && name !== 'round' && lastusage) {
+				if ((tmp - lastusage) < 3000)
+					return;
+			}
+
+			lastusage = tmp;
+			SETTER(true, 'audio/play', '/sounds/' + name + '.mp3');
+		}
+	};
+
+})();

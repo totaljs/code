@@ -1732,11 +1732,22 @@
 			});
 		};
 
+		var finishhim = function() {
+			if (code.current && code.current.modified)
+				FUNC.totalcombat('finishhim');
+		};
+
+		exports.finishhim = function() {
+			setTimeout2('finishhim', finishhim, 10000);
+		};
+
 		exports.modified = function(changescount) {
 			if (code && code.current && code.current.path) {
 				code.current.modified = changescount == null ? true : changescount > 0;
 				exports.element.find('section.tabs').find('span[data-value="{0}"]'.format(code.current.path)).tclass('modified', code.current.modified);
 				SET('code.current.changes', editor.difflines());
+				if (code.current.modified)
+					exports.finishhim();
 			}
 		};
 
@@ -1871,8 +1882,10 @@
 				exports.savetabs();
 				exports.element.SETTER('tree/select2', FUNC.treeindex(code.tree, item.path), true);
 				editor.editor.focus();
-				if (!code.ready)
+				if (!code.ready) {
 					code.ready = true;
+					setTimeout(() => FUNC.totalcombat('round1'), 2000);
+				}
 			});
 		};
 
@@ -1943,6 +1956,7 @@
 			common.electron && code.data.repository && items.push({ value: 22, name: '@(Download <strong>source-code locally</strong>)', icon: 'save' });
 			items.push({ value: 13, name: common.showparts ? '@(Disable parts panel)' : '<strong>@(Enable parts panel)</strong>', icon: 'puzzle' + (common.showparts ? '' : ' green') });
 			items.push({ value: 15, name: common.powermode ? '@(Disable power mode)' : '<strong>@(Enable power mode)</strong>', icon: 'flask' + (common.powermode ? '' : ' green') });
+			items.push({ value: 25, name: common.totalcombat ? '@(Disable total combat)' : '<strong>@(Enable total combat)</strong>', icon: 'volume-up' });
 			items.push({ value: 17, name: '@(To-Do list)', icon: 'check' });
 			items.push({ value: 14, name: '@(Output panel)', icon: 'rss-square' });
 			items.push({ value: 9, name: '@(Show log file)', icon: 'bug red', shortcut: 'F10' });
@@ -2030,6 +2044,10 @@
 						break;
 					case 15:
 						TOGGLE('common.powermode');
+						break;
+					case 25:
+						TOGGLE('common.totalcombat');
+						common.totalcombat && FUNC.totalcombat('start');
 						break;
 					case 16:
 						EXEC('code/clipboard');
@@ -3074,8 +3092,8 @@
 
 				data.body = code.NOTRIM[code.current.ext] ? val : FUNC.rtrim(val);
 
-				// if (changes && (!code.lastchange || (now - code.lastchange) > 10000))
-				// 	FUNC.totalcombat('welldone');
+				if (changes && (!code.lastchange || (now - code.lastchange) > 10000))
+				 	FUNC.totalcombat('welldone');
 
 				var hashsum = HASH(data.body);
 				if (hashsum === code.current.hashsum && !changes) {
