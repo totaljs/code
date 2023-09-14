@@ -86,7 +86,7 @@
 		<div id="content">
 			<div class="alert-saved hidden exec" data-bind="code.saved__show__html b" data-exec="code/syncsave"><i class="ti ti-warning"></i><b></b> @(has replaced content of this file on the server.)</div>
 			<div data-bind="code.editor.path__show" class="codeeditor">
-				<div data---="editor__code.editor.body__height:100%;pk:path;change:code/modified;shortcut:code/shortcut;contextmenu:code/contextmenu;cursor:code/cursorposition;sync:code/sync;todo:code/todo;components:code/components;combo:code/combo"></div>
+				<div data---="editor__code.editor.body__height:100%;pk:path;change:code/changedcode;shortcut:code/shortcut;contextmenu:code/contextmenu;cursor:code/cursorposition;sync:code/sync;todo:code/todo;components:code/components;combo:code/combo"></div>
 			</div>
 			<div class="messages">
 				<div class="alert hidden" data-bind="code.backup__show" data-name="backup"><i class="ti ti-times exec" data-exec="code/warning"></i><i class="ti ti-warning"></i>@(The content of this file wasn't saved before. Do you want to restore it?) <span class="link exec" data-name="restore" data-exec="code/warning">@(Restore)</span> @(or) <span class="link exec" data-exec="code/warning">@(Cancel)</span>.</div>
@@ -1741,7 +1741,7 @@
 			setTimeout2('finishhim', finishhim, 10000);
 		};
 
-		exports.modified = function(changescount) {
+		exports.changedcode = function(changescount) {
 			if (code && code.current && code.current.path) {
 				code.current.modified = changescount == null ? true : changescount > 0;
 				exports.element.find('section.tabs').find('span[data-value="{0}"]'.format(code.current.path)).tclass('modified', code.current.modified);
