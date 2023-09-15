@@ -102,7 +102,7 @@
 			a = FUNC.resources_clean(a, true);
 
 			SET('?.a', a);
-			SETTER('notifybar/success', '(All changes applied in the input: <b>Resource A</b>)');
+			SETTER('notifybar/success', '@(All changes applied in the input: <b>Resource A</b>)');
 		};
 
 		exports.removeall = function() {
@@ -116,7 +116,7 @@
 			});
 
 			SET('?.a', a);
-			SETTER('notifybar/success', '(All changes applied in the input: <b>Resource A</b>)');
+			SETTER('notifybar/success', '@(All changes applied in the input: <b>Resource A</b>)');
 		};
 
 		WATCH('?', function(path, value, type) {
