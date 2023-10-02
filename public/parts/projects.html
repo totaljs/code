@@ -3,9 +3,11 @@
 
 	<div class="toolbar">
 		<div class="pull-right fs12 mt5" data-bind="common.limit__show__text b:value.pluralize('@(# apps,# app,# apps,# apps)')">@(Maximum allowed apps:) <b></b></div>
-		<button class="exec" data-exec="projects/autodiscover"><i class="ti ti-search-plus"></i>@(Auto-Discover)</button>
-		<button class="exec" data-exec="projects/create"><i class="ti ti-plus-circle green"></i>@(Add)</button>
-		<button data-bind="projects.checked__disabled:!value || !value.length" class="exec" data-exec="projects/options" disabled><i class="ti ti-check-circle"></i>@(Selected)</button>
+		<div class="pull-left">
+			<button class="exec" data-exec="projects/autodiscover"><i class="ti ti-search-plus"></i>@(Auto-Discover)</button>
+			<button class="exec" data-exec="projects/create"><i class="ti ti-plus-circle green"></i>@(Add)</button>
+			<button data-bind="projects.checked__disabled:!value || !value.length" class="exec" data-exec="projects/options" disabled><i class="ti ti-check-circle"></i>@(Selected)</button>
+		</div>
 	</div>
 
 	<div data---="datagrid__projects.grid__click:projects/edit;checked:projects/checked;margin:20;cluster:false">
