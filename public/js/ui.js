@@ -14301,7 +14301,7 @@ COMPONENT('errorhandler', 'keywords:401=login', function(self, config) {
 
 });
 
-COMPONENT('flowstream', 'left:0;top:0;margin:0;zindex:100;url:https://flowstream.totaljs.com;language:', function(self, config, cls) {
+COMPONENT('flowstream', 'left:0;top:0;zindex:100;url:https://flowstream.totaljs.com;language:', function(self, config, cls) {
 
 	var self = this;
 	var iframe;
@@ -14312,8 +14312,10 @@ COMPONENT('flowstream', 'left:0;top:0;margin:0;zindex:100;url:https://flowstream
 
 	self.make = function() {
 
+		config.margin = common.electron ? (common.ismac ? 28 : 1) : 0;
+
 		self.aclass(cls + ' hidden');
-		self.css({ position: 'absolute', 'z-index': config.zindex, left: config.left, top: common.electron ? (common.ismac ? 28 : 1) : config.top, right: 0, bottom: 0 });
+		self.css({ position: 'absolute', 'z-index': config.zindex, left: config.left, top: config.top + config.margin, right: 0, bottom: 0 });
 		self.on('resize + resize2', self.resize);
 
 		$(W).on('message', function(e) {
