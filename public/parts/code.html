@@ -1905,7 +1905,7 @@
 		};
 
 		exports.opentab = function(path) {
-			exports.open({ children: null, path: path });
+			exports.open({ children: null, path: path }, true);
 		};
 
 		exports.addicon = function() {
@@ -3309,7 +3309,7 @@
 			}
 
 			tabs.length && SET('code.open', tabs);
-			selected && exports.open({ children: null, path: selected.path, name: selected.name });
+			selected && exports.open({ children: null, path: selected.path, name: selected.name }, true);
 		};
 
 		var colorclasses = {};
