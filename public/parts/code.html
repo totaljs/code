@@ -1778,15 +1778,17 @@
 
 					var save = function(body) {
 						SETTER('loading/show');
+
 						var data = {};
 						data.body = typeof(body) === 'object' ? STRINGIFY(body) : body;
 						data.path = item.path;
 						data.parts = [];
+
 						AJAX('POST /api/files/{id}/ REPEAT'.arg(code.data), data, ASETTER('message/response', function(response) {
 							SETTER('loading/hide', 500);
 							FUNC.wssend({ TYPE: 'save', connid: common.id, projectid: code.projectid, id: user.id, user: user.name });
 							FUNC.success((response.value === 'synchronized' ? '@(<b>{0}</b> saved and synchronized.)' : '@(<b>{0}</b> saved successfully.)').format(data.path));
-							common.electron && code.data.repository && user.localsave && exports.savelocal();
+							common.electron && code.data.repository && user.localsave && exports.savelocal(true, item.path, data.body);
 							FUNC.livereload(data.path);
 						}));
 					};

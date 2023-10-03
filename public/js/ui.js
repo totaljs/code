@@ -14313,7 +14313,7 @@ COMPONENT('flowstream', 'left:0;top:0;margin:0;zindex:100;url:https://flowstream
 	self.make = function() {
 
 		self.aclass(cls + ' hidden');
-		self.css({ position: 'absolute', 'z-index': config.zindex, left: config.left, top: config.top, right: 0, bottom: 0 });
+		self.css({ position: 'absolute', 'z-index': config.zindex, left: config.left, top: common.electron ? (common.ismac ? 28 : 1) : config.top, right: 0, bottom: 0 });
 		self.on('resize + resize2', self.resize);
 
 		$(W).on('message', function(e) {
@@ -14340,7 +14340,6 @@ COMPONENT('flowstream', 'left:0;top:0;margin:0;zindex:100;url:https://flowstream
 					break;
 				case 'save':
 					meta.callback(typeof(data.data) === 'object' ? JSON.stringify(data.data, null, '\t') : data.data);
-					self.hide();
 					break;
 				case 'close':
 					self.hide();
