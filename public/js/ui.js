@@ -14301,7 +14301,7 @@ COMPONENT('errorhandler', 'keywords:401=login', function(self, config) {
 
 });
 
-COMPONENT('flowstream', 'left:0;top:0;zindex:100;url:https://flowstream.totaljs.com;language:', function(self, config, cls) {
+COMPONENT('flowstream', 'left:0;top:0;zindex:100;url:https://flowstream.totaljs.com;language:eu', function(self, config, cls) {
 
 	var self = this;
 	var iframe;
