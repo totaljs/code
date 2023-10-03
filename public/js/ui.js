@@ -1219,6 +1219,8 @@ COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 				return 'ti ti-highlighter';
 			case 'build':
 				return 'ti ti-code-branch';
+			case 'flow':
+				return 'ti ti-flow';
 			case 'bundle':
 			case 'package':
 				return 'ti ti-box';
@@ -1283,7 +1285,7 @@ COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 		}
 	};
 
-	self.template = Tangular.compile('<div class="item{{ if children }} expand{{ fi }}{{ path | treefilecolor }}" data-index="{{ $pointer }}" title="{{ name }}"><i class="icon {{ if children }}ti ti-folder{{ if isopen }}-open-alt{{ else }}-alt{{ fi }} {{ if name === \'threads\' || name === \'builds\' }} special{{ fi }}{{ else }}{{ name | fileicon }}{{ fi }}"></i><span class="options"><i class="ti ti-ellipsis-h"></i></span><div>{{ name }}</div></div>');
+	self.template = Tangular.compile('<div class="item{{ if children }} expand{{ fi }}{{ path | treefilecolor }}" data-index="{{ $pointer }}" title="{{ name }}"><i class="icon {{ if children }}ti ti-folder{{ if isopen }}-open-alt{{ else }}-alt{{ fi }}{{ if name === \'threads\' || name === \'builds\' || name === \'flowstreams\' }} special{{ fi }}{{ else }} {{ name | fileicon }}{{ fi }}"></i><span class="options"><i class="ti ti-ellipsis-h"></i></span><div>{{ name }}</div></div>');
 	self.readonly();
 
 	self.resizescrollbar = function() {
@@ -14295,6 +14297,90 @@ COMPONENT('errorhandler', 'keywords:401=login', function(self, config) {
 
 			SETTER('!loading/hide', 100);
 		});
+	};
+
+});
+
+COMPONENT('flowstream', 'left:0;top:0;margin:0;zindex:100;url:https://flowstream.totaljs.com;language:', function(self, config, cls) {
+
+	var self = this;
+	var iframe;
+	var meta = {};
+
+	self.singleton();
+	self.readonly();
+
+	self.make = function() {
+
+		self.aclass(cls + ' hidden');
+		self.css({ position: 'absolute', 'z-index': config.zindex, left: config.left, top: config.top, right: 0, bottom: 0 });
+		self.on('resize + resize2', self.resize);
+
+		$(W).on('message', function(e) {
+
+			if (!iframe)
+				return;
+
+			e = e.originalEvent;
+
+			if (e.source !== iframe.contentWindow)
+				return;
+
+			var data = e.data;
+
+			if (typeof(data) === 'string')
+				data = PARSE(data);
+
+			switch (data.TYPE) {
+				case 'ready':
+					iframe.contentWindow.postMessage(STRINGIFY({ TYPE: 'load', data: meta.data }), '*');
+					break;
+				case 'keypress':
+					SETTER('shortcuts/exec', data.value);
+					break;
+				case 'save':
+					meta.callback(typeof(data.data) === 'object' ? JSON.stringify(data.data, null, '\t') : data.data);
+					self.hide();
+					break;
+				case 'close':
+					self.hide();
+					break;
+			}
+		});
+	};
+
+	self.hide = function() {
+		if (iframe) {
+			self.find('iframe').remove();
+			iframe = null;
+			self.aclass('hidden');
+			config.close && self.EXEC(config.close);
+		}
+	};
+
+	self.iframe = function() {
+		iframe && self.find('iframe').remove();
+		self.append('<iframe src="{0}?hideclose=0&language={1}" scrolling="no" frameborder="0" allow="geolocation *; microphone *; camera *; midi *; encrypted-media *"></iframe>'.format(config.url, config.language));
+		iframe = self.find('iframe')[0];
+		self.resize();
+		self.rclass('hidden');
+	};
+
+	self.load = function(data, callback) {
+		meta.data = typeof(data) === 'string' ? PARSE(data) : data;
+		meta.callback = callback;
+		self.rclass('hidden');
+		self.iframe();
+	};
+
+	self.resize = function() {
+		if (iframe) {
+			var css = {};
+			css.width = WW - config.left;
+			css.height = WH - config.top - config.margin;
+			self.css(css);
+			$(iframe).css(css);
+		}
 	};
 
 });

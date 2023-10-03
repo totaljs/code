@@ -147,6 +147,7 @@ div.CodeMirror span.CodeMirror-matchingbracket { border-bottom: 2px solid blue; 
 .ui-tree .fa-css3, .tabs nav .fa-css3 { color: #5a85b1; }
 .ui-tree .fa-md, .td .ui-tree .ti-file-alt, .tabs nav .fa-md, .td .tabs nav .ti-file-alt { color: #586572; }
 .ui-tree .ti-html5, .tabs nav .ti-html5 { color: #d66c4f; }
+.ui-tree .ti-flow, .tabs nav .ti-flow { color: #4285F4; }
 .ui-tree .ti-suitcase, .tabs nav .ti-suitcase { color: #8792b3; }
 .ui-tree .ti-clipboard, .tabs nav .ti-clipboard { color: #9aaf90; }
 .ui-tree .ti-database, .td .ui-tree .ti-link, .tabs nav .ti-database, .td .tabs nav .ti-link { color: #69a1ab; }

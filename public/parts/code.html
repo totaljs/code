@@ -698,6 +698,11 @@
 				items.push('-');
 			}
 
+			if (!can && code.current.ext === 'flow') {
+				items.push({ name: '@(Open FlowStream designer)', icon: 'flow', value: 'flowstream', classname: 'b' });
+				items.push('-');
+			}
+
 			if (can) {
 
 				if (code.current.ext === 'resource')
@@ -950,6 +955,14 @@
 						setTimeout(() => exports.save(), 500);
 					};
 					SETTER('uidesigner/load', data);
+					return;
+				}
+
+				if (value.value === 'flowstream') {
+					SETTER('flowstream/load', editor.getValue(), function() {
+						editor.setValue(JSON.stringify(response, null, '\t'));
+						setTimeout(() => exports.save(), 500);
+					});
 					return;
 				}
 
@@ -1751,12 +1764,12 @@
 			}
 		};
 
-		exports.open = function(item) {
+		exports.open = function(item, edit) {
 
 			if (!item || item.children)
 				return;
 
-			if ((/\.build$/).test(item.path)) {
+			if (edit !== true && (/\.(build|flow)$/).test(item.path)) {
 				// Open designer
 				AJAX('GET /api/projects/{id}/edit/'.arg(code.data), { path: item.path }, function(response) {
 
@@ -1778,7 +1791,7 @@
 						}));
 					};
 
-					SETTER('builder/load', response, save);
+					SETTER((item.path.lastIndexOf('.flow') === -1 ? 'builder' : 'flowstream') + '/load', response, save);
 				});
 				return;
 			}
@@ -2279,6 +2292,9 @@
 				if (ext === 'gz' || ext === 'zip')
 					items.push({ value: 'unpack', name: '@(Unpack)', icon: 'ti ti-box' });
 
+				if (ext === 'flow' || ext === 'build')
+					items.push({ value: 'editbody', name: '@(Edit)', icon: 'pencil' });
+
 				items.push('-');
 			}
 
@@ -2311,6 +2327,9 @@
 				}
 
 				switch (item.value) {
+					case 'editbody':
+						exports.open(node, true);
+						break;
 					case 'sync':
 						exports.syncfilelocally(node.path, function(err) {
 							if (err)
@@ -3435,6 +3454,9 @@
 
 					if (!directory.workers)
 						opt.items.push({ name: '<strong>@(Create):</strong> /workers', icon: '!ti ti-folder', value: '/workers/' });
+
+					if (!directory.flowstreams)
+						opt.items.push({ name: '<strong>@(Create):</strong> /flowstreams', icon: '!ti ti-folder', value: '/flowstreams/' });
 
 					opt.callback = function(item) {
 						exports.statusform('directory', item.value);
