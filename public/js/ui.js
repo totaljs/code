@@ -14361,7 +14361,7 @@ COMPONENT('flowstream', 'left:0;top:0;zindex:100;url:https://flowstream.totaljs.
 
 	self.iframe = function() {
 		iframe && self.find('iframe').remove();
-		self.append('<iframe src="{0}?hideclose=0&language={1}" scrolling="no" frameborder="0" allow="geolocation *; microphone *; camera *; midi *; encrypted-media *"></iframe>'.format(config.url, config.language));
+		self.append('<iframe src="{0}?hideclose=0&language={1}&darkmode={2}" scrolling="no" frameborder="0" allow="geolocation *; microphone *; camera *; midi *; encrypted-media *"></iframe>'.format(config.url, config.language, $('body').hclass('ui-dark') ? 1 : 0));
 		iframe = self.find('iframe')[0];
 		self.resize();
 		self.rclass('hidden');
