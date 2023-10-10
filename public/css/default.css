@@ -662,6 +662,8 @@ header .tools .external { color: #a2a286; }
 .td .changedfiles > div:first-child { color: silver; }
 .td .changeitem .spent b { color: yellow; }
 
+.part-console { color: #E8483F !important; font-weight: bold; }
+.part-console span { color: #EA706B !important; }
 .part-version { font-weight: bold; color: black !important; }
 .td .part-version { color: white !important; }
 .partdocs { padding: 10px 5px; font-size: 11px; }

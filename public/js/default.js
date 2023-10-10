@@ -81,7 +81,7 @@ Thelpers.particon = function(type) {
 		case 'schema':
 			return 'fa fa-code-branch';
 		case 'console':
-			return 'fa fa-font';
+			return 'ti ti-print';
 		case 'operation':
 			return 'fa fa-plug';
 		case 'inlinefile':
