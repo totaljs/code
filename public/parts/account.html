@@ -85,7 +85,7 @@
 					user.localsave = data.localsave;
 					user.autodarkmode = data.autodarkmode;
 					SET('common.superadmin', data.superadmin);
-					$('body').tclass('td', user.darkmode === 1);
+					$('body').tclass('td ui-dark', user.darkmode === 1);
 					SET('code.data.review', !!data.token);
 					FUNC.autodarkmode();
  				}
