@@ -26,3 +26,6 @@ cloud          (env)  : CLOUD
 limit          (env)  : LIMIT
 
 default_uid           : f
+
+floweditor            : https://floweditor.totaljs.com
+uibuilder             : https://uibuilder.totaljs.com

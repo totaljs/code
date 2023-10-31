@@ -48,9 +48,9 @@
 	<div data---="LAZY colorpicker"></div>
 	<div data---="windows__windows"></div>
 
-	<ui-component name="LAZY flowstream"></ui-component>
+	<ui-component name="LAZY flowstream"@{if CONF.floweditor}} data-url="@{CONF.floweditor}"@{fi}></ui-component>
+	<ui-component name="LAZY uidesigner"@{if CONF.uibuilder}} data-url="@{CONF.uibuilder}"@{fi}></ui-component>
 	<ui-component name="LAZY builder"></ui-component>
-	<ui-component name="LAZY uidesigner"></ui-component>
 	<ui-component name="errorhandler"></ui-component>
 
 	<div class="windowtitlebar" data-bind="document.title__text">@{config.name}</div>
