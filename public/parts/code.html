@@ -1769,7 +1769,7 @@
 			if (!item || item.children)
 				return;
 
-			if (edit !== true && (/\.(build|flow)$/).test(item.path)) {
+			if (edit !== true && (/\.(build|flow|ui)$/).test(item.path)) {
 				// Open designer
 				AJAX('GET /api/projects/{id}/edit/'.arg(code.data), { path: item.path }, function(response) {
 
@@ -1793,7 +1793,24 @@
 						}));
 					};
 
-					SETTER((item.path.lastIndexOf('.flow') === -1 ? 'builder' : 'flowstream') + '/load', response, save);
+					var ext = item.path.substring(item.path.lastIndexOf('.') + 1);
+					var type = 'builder';
+
+					if (ext === 'ui') {
+						var uidesigner = {};
+						uidesigner.data = PARSE(response) || {};
+						uidesigner.publish = function(response) {
+							SETTER('clipboard/copy', JSON.stringify(response));
+							SETTER('notifybar/success', '@(The build has been copied into the clipboard successfully)');
+						};
+						uidesigner.save = response => save(JSON.stringify(response, null, '\t'));
+						SETTER('uidesigner/load', uidesigner);
+						return;
+					} else if (ext === 'flow') {
+						type = 'flowstream';
+					}
+
+					SETTER(type + '/load', response, save);
 				});
 				return;
 			}
@@ -2294,7 +2311,7 @@
 				if (ext === 'gz' || ext === 'zip')
 					items.push({ value: 'unpack', name: '@(Unpack)', icon: 'ti ti-box' });
 
-				if (ext === 'flow' || ext === 'build')
+				if (ext === 'flow' || ext === 'build' || ext === 'ui')
 					items.push({ value: 'editbody', name: '@(Edit)', icon: 'pencil' });
 
 				items.push('-');
