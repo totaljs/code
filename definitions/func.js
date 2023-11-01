@@ -154,7 +154,7 @@ FUNC.external_path = function(project, path) {
 	return path ? Path.join(p, path) : p;
 };
 
-var EXTERNAL_JSON = { browse: 1, info: 1, save: 1, remove: 1, create: 1, logclear: 1, modify: 1, ping: 1 };
+var EXTERNAL_JSON = { browse: 1, info: 1, save: 1, remove: 1, create: 1, logclear: 1, modify: 1, ping: 1, rename: 1 };
 
 FUNC.external = function(project, type, path, data, callback) {
 	var body = { TYPE: type, path: path };

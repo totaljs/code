@@ -73,7 +73,6 @@ function external(id) {
 				if (msg.error)
 					obj.callback(ErrorBuilder.assign(msg.error), null, true);
 				else {
-
 					if (obj.type === 4) {
 						obj.callback(null, msg.response, true);
 					} else if (obj.type === 2) {
