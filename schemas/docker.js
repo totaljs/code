@@ -3,6 +3,7 @@ const Promisify = require('util').promisify;
 
 const ReadFile = Promisify(Fs.readFile);
 const WriteFile = Promisify(Fs.writeFile);
+const Stat = Promisify(Fs.stat);
 const Exec = Promisify(require('child_process').exec);
 
 NEWSCHEMA('Docker', function(schema) {
@@ -102,8 +103,13 @@ NEWSCHEMA('Docker', function(schema) {
 			};
 
 			if ($.model.type === 'start') {
-				await WriteFile(PATH.join(item.path, 'index.js'), `// Total.js start script\n// https://www.totaljs.com\n\nvar type = process.argv.indexOf('--release', 1) !== -1 ? 'release' : 'debug';
+				let filename = PATH.join(item.path, 'index.js');
+				try {
+					await Stat(filename);
+				} catch (e) {
+					await WriteFile(filename, `// Total.js start script\n// https://www.totaljs.com\n\nvar type = process.argv.indexOf('--release', 1) !== -1 ? 'release' : 'debug';
 require('total4/' + type)({});`);
+				}
 				done();
 			} else
 				done();
