@@ -276,17 +276,21 @@
 					break;
 				case 'open':
 
-					if (code.data && code.current && msg.connid !== common.id && msg.projectid === code.data.id && msg.fileid === code.current.path)
-						PLUGINS.code.readonly(true);
+					if (PLUGINS.code) {
+						if (code.data && code.current && msg.connid !== common.id && msg.projectid === code.data.id && msg.fileid === code.current.path)
+							PLUGINS.code.readonly(true);
+						PLUGINS.code.collaboration(msg);
+					}
 
-					PLUGINS.code.collaboration(msg);
 					break;
 				case 'close':
 
-					if (code.current && msg.fileid === code.current.path)
-						PLUGINS.code.readonly(false);
+					if (PLUGINS.code) {
+						if (code.current && msg.fileid === code.current.path)
+							PLUGINS.code.readonly(false);
+						PLUGINS.code.collaboration(msg);
+					}
 
-					PLUGINS.code.collaboration(msg);
 					break;
 				case 'sync':
 					if (code.SYNC && msg.projectid === code.projectid && msg.connid !== common.id) {
