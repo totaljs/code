@@ -288,8 +288,11 @@ WAIT('CodeMirror.defineMode', function() {
 				if (stream.match(/<(\/)?file.*?>/, true))
 					return 'variable-E';
 
-				if (stream.match(/data-released=|~PATH~|CLASS|~CDN~|~ID~|--[\w=\s]+--/, true))
+				if (stream.match(/data-released=|--[\w=\s]+--/, true))
 					return 'variable-R';
+
+				if (stream.match(/DATA|MAIN|REPO|FUNC|~PATH~|CLASS|~CDN~|~ID~|exports|DEF/, true))
+					return 'variable-K';
 
 				if (stream.match(/data-bind=/, true))
 					return 'variable-B';
@@ -297,8 +300,11 @@ WAIT('CodeMirror.defineMode', function() {
 				if (stream.match(/data-jc=|data-{2,4}=/, true))
 					return 'variable-J';
 
-				if (stream.match(/data-import|(data-jc-(url|scope|import|cache|path|config|id|type|init|class))=/, true))
+				if (stream.match(/data-import|(data-jc-(url|scope|import|cache|path|config|id|type|init|class|exports|user))=/, true))
 					return 'variable-E';
+
+				if (stream.match(/COMPONENT|PLUGIN|EXTENSION|AJAX|TAPI|WAPI|DAPI|UPLOAD|ENVIRONMENT|SETTER|EXEC|NAV|REDIRECT|ATTRD|SET|GET|PUSH|INC|HIDDEN|IMPORT|FIND|APPEARANCE|WATCH|CONFIG|CLINIT|CLRELOAD|ROUTE/, true))
+					return 'b';
 
 				var m = stream.match(/(ROUTE|AJAX|AJAXCACHEREVIEW|AJAXCACHE)\(/, true);
 				if (m) {
@@ -334,8 +340,11 @@ WAIT('CodeMirror.defineMode', function() {
 				if (stream.match(/@\(.*?\)/, true))
 					return 'variable-L';
 
-				if (stream.match(/~PATH~/, true))
-					return 'variable-R';
+				if (stream.match(/~PATH~|DATA|MAIN|REPO|FUNC|CONF|EMPTYARRAY|EMPTYOBJECT|exports|DEF|ENV|\$/, true))
+					return 'variable-K';
+
+				if (stream.match(/NEWACTION|AUTH|NEWSCHEMA|ROUTE|UNAUTHORIZED|BLOCKED|LOCALIZE|MEMORIZE|LOADCONFIG|LOADRESOURCE|ACTION|EXEC|PLUGINS|MODS|TRANSFORM|TRANSLATE|NEWTRANSFORM|PROXY|PUBLISH|NEWPUBLISH|NEWBUSCRIBE|NEWCALL|SUBSCRIBE|WEBSOCKETCLIENT|FILESTORAGE|NOOP|IMPORT/, true))
+					return 'b';
 
 				var m = stream.match(/(ROUTE|AJAX|AJAXCACHEREVIEW|AJAXCACHE)\(/, true);
 				if (m) {

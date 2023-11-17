@@ -52,6 +52,7 @@ button { outline: 0; }
 .cm-variable-J { background-color: rgba(0,152,189,.2); color: #0098BD; font-weight: bold; }
 .cm-variable-E { background-color: rgba(97,142,193,.2); color: #618EC1; font-weight: bold; }
 .cm-variable-R { background-color: rgba(196,210,90,.35); color: #97a728; font-weight: bold; }
+.cm-variable-K { background-color: rgb(159,224,231,.20); color: #6697a6; }
 .cm-variable-B { background-color: rgba(228,228,228,.35); color: #2183e8; font-weight: bold; }
 .cm-variable-API { background-color: rgba(104,178,91,.3); color: black; font-weight: bold; }
 .cm-changed-line { background-color: rgb(253,252,244,0.8); }
@@ -60,7 +61,8 @@ button { outline: 0; }
 .cm-trailingspace { background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAACCAYAAAB/qH1jAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH3QUXCToH00Y1UgAAACFJREFUCNdjPMDBUc/AwNDAAAFMTAwMDA0OP34wQgX/AQBYgwYEx4f9lQAAAABJRU5ErkJggg==); background-position: bottom left; background-repeat: repeat-x; }
 .CodeMirror-matchingtag { background-color: rgba(200,200,200,0.6); }
 .td .CodeMirror-matchingtag { background-color: rgba(220,220,220,0.15); }
-.cm-matchhighlight { outline: 1px solid #4B85F7; }
+.cm-matchhighlight { outline: 2px solid #4B85F7; }
+.cm-b { font-weight: bold; }
 .cm-searching { background: rgba(247,75,75,0.3); animation: 0.7s blink infinite forwards; }
 .td .cm-searching { background: rgba(247,75,75,0.6); color: #FFF !important; }
 .CodeMirror-selection-highlight-scrollbar { background-color: #777; }
