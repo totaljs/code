@@ -53,6 +53,7 @@ button { outline: 0; }
 .cm-variable-E { background-color: rgba(97,142,193,.2); color: #618EC1; font-weight: bold; }
 .cm-variable-R { background-color: rgba(196,210,90,.35); color: #97a728; font-weight: bold; }
 .cm-variable-K { background-color: rgb(159,224,231,.20); color: #6697a6; }
+.td .cm-variable-K { background-color: rgb(249,144,234,.17); color: #cb9caa; }
 .cm-variable-B { background-color: rgba(228,228,228,.35); color: #2183e8; font-weight: bold; }
 .cm-variable-API { background-color: rgba(104,178,91,.3); color: black; font-weight: bold; }
 .cm-changed-line { background-color: rgb(253,252,244,0.8); }
