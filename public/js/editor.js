@@ -380,6 +380,7 @@ WAIT('CodeMirror.defineMode', function() {
 
 	CodeMirror.defineMode('totaljsresources', function() {
 		var REG_KEY = /^[a-z0-9_/>\-.#]+/i;
+		var REG_SYS = /^\$[a-z0-9_/>\-.#]+/i;
 		return {
 
 			startState: function() {
@@ -400,6 +401,10 @@ WAIT('CodeMirror.defineMode', function() {
 
 					state.type = 0;
 				}
+
+				m = stream.match(REG_SYS, true);
+				if (m)
+					return 'variable-K';
 
 				m = stream.match(REG_KEY, true);
 				if (m)
