@@ -3414,9 +3414,10 @@
 					if (!directory.definitions)
 						opt.items.push({ name: '<strong>@(Create):</strong> /definitions', icon: '!ti ti-folder', value: '/definitions/' });
 
-					/*
 					if (!directory.jsonschemas)
 						opt.items.push({ name: '<strong>@(Create):</strong> /jsonschemas', icon: '!ti ti-folder', value: '/jsonschemas/' });
+
+					/*
 
 					if (!directory.middleware)
 						opt.items.push({ name: '<strong>@(Create):</strong> /middleware', icon: '!ti ti-folder', value: '/middleware/' });
@@ -3427,10 +3428,10 @@
 					if (!directory.modules)
 						opt.items.push({ name: '<strong>@(Create):</strong> /modules', icon: '!ti ti-folder', value: '/modules/' });
 
+					/*
 					if (!directory.operations)
 						opt.items.push({ name: '<strong>@(Create):</strong> /operations', icon: '!ti ti-folder', value: '/operations/' });
 
-					/*
 					if (!directory.packages)
 						opt.items.push({ name: '<strong>@(Create):</strong> /packages', icon: '!ti ti-folder', value: '/packages/' });*/
 
@@ -3451,17 +3452,16 @@
 
 					/*
 					if (!directory.scripts)
-						opt.items.push({ name: '<strong>@(Create):</strong> /scripts', icon: '!ti ti-folder', value: '/scripts/' });*/
+						opt.items.push({ name: '<strong>@(Create):</strong> /scripts', icon: '!ti ti-folder', value: '/scripts/' });
 
 					if (!directory.tasks)
 						opt.items.push({ name: '<strong>@(Create):</strong> /tasks', icon: '!ti ti-folder', value: '/tasks/' });
 
-					/*
 					if (!directory.themes)
-						opt.items.push({ name: '<strong>@(Create):</strong> /themes', icon: '!ti ti-folder', value: '/themes/' });*/
+						opt.items.push({ name: '<strong>@(Create):</strong> /themes', icon: '!ti ti-folder', value: '/themes/' });
 
 					if (!directory.threads)
-						opt.items.push({ name: '<strong>@(Create):</strong> /threads', icon: '!ti ti-folder', value: '/threads/' });
+						opt.items.push({ name: '<strong>@(Create):</strong> /threads', icon: '!ti ti-folder', value: '/threads/' });*/
 
 					if (!directory.templates)
 						opt.items.push({ name: '<strong>@(Create):</strong> /templates', icon: '!ti ti-folder', value: '/templates/' });
@@ -3514,12 +3514,6 @@
 					if (!files['index.js'])
 						opt.items.push({ name: '<strong>@(Create):</strong> /index.js', icon: '!ti ti-file', value: '/index.js' });
 
-					if (!files['config-release'])
-						opt.items.push({ name: '<strong>@(Create):</strong> /config-release', icon: '!ti ti-file', value: '/config-release' });
-
-					if (!files['config-debug'])
-						opt.items.push({ name: '<strong>@(Create):</strong> /config-debug', icon: '!ti ti-file', value: '/config-debug' });
-
 					if (!files['license.txt'])
 						opt.items.push({ name: '<strong>@(Create):</strong> /license.txt', icon: '!ti ti-file', value: '/license.txt' });
 
@@ -3537,12 +3531,6 @@
 
 					if (!files['readme.todo'])
 						opt.items.push({ name: '<strong>@(Create):</strong> /readme.todo', icon: '!ti ti-file', value: '/readme.todo' });
-
-					if (!files['sitemap'])
-						opt.items.push({ name: '<strong>@(Create):</strong> /sitemap', icon: '!ti ti-file', value: '/sitemap' });
-
-					if (!files['versions'])
-						opt.items.push({ name: '<strong>@(Create):</strong> /versions', icon: '!ti ti-file', value: '/versions' });
 
 					opt.callback = function(item) {
 						exports.statusform('file', item.value);
