@@ -202,7 +202,9 @@ FUNC.preparedockerfile = async function(item, run) {
 	}
 
 	content = await ReadFile(path);
-	content = content.toString('utf8').replace(/##ID##/g, id).replace(/##MAXUPLOAD##/g, item.maxupload || 50).replace(/##HOST##/g, host).replace(/##FOLDER_NPM##/g, nodemodules).replace(/##FOLDER_WWW##/g, wwwfolder);
+	var model = {};
+	model.value = { id: id, maxupload: item.maxupload || 50, host: host, npm: nodemodules, www: wwwfolder, certname: item.certname };
+	content = Tangular.render(content.toString('utf8'), model);
 	return WriteFile(filename, content);
 };
 

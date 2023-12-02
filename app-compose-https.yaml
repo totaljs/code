@@ -4,17 +4,17 @@ version: '3.1'
 
 services:
   main_app:
-    container_name: ##ID##
+    container_name: {{ value.id }}
     image: totalplatform/run:npm
     restart: always
     volumes:
-      - ##FOLDER_WWW##:/www
-      - ##FOLDER_NPM##:/node_modules
+      - {{ value.www }}:/www
+      - {{ value.npm }}:/node_modules
     environment:
-      - VIRTUAL_MAX_UPLOAD=##MAXUPLOAD##
-      - VIRTUAL_HOST=##HOST##
+      - VIRTUAL_MAX_UPLOAD={{ value.maxupload }}
+      - VIRTUAL_HOST={{ value.host }}
       - VIRTUAL_PORT=8000
-      - LETSENCRYPT_HOST=##HOST##
+      {{ if value.certname }}- CERT_NAME={{ value.certname }}{{ else }}- LETSENCRYPT_HOST={{ value.host }}{{ fi }}
       - HTTPS_METHOD=redirect
       - DISABLE_ACCESS_LOGS=1
 

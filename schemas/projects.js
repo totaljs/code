@@ -25,6 +25,7 @@ NEWSCHEMA('Projects', function(schema) {
 	schema.define('skipnm', Boolean);
 	schema.define('skipfs', Boolean);
 	schema.define('pinned', Boolean);
+	schema.define('certname', String);
 	schema.define('releasemode', Boolean);
 	schema.define('allowbundle', Boolean);
 	schema.define('allowscripts', Boolean);
