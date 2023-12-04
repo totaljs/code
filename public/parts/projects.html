@@ -23,6 +23,8 @@
 				{ name: 'cpu', text: '@(CPU)', width: 120, template: '{{ if running }}{{ cpu }}%{{ else }}---{{ fi }}', align: 2 },
 				{ name: 'memory', text: '@(Memory)', width: 120, template: '{{ if running }}{{ memory | format(1) }} MB{{ else }}---{{ fi }}', align: 2, type: 'number' },
 				{ name: 'network', text: '@(Network)', width: 120, template: '{{ if running }}{{ network | format(1) }} MB{{ else }}---{{ fi }}', align: 2, type: 'number' },
+				{ name: 'reference', text: '@(Reference)', width: 150 },
+				{ name: 'certname', text: '@(Certificate)', width: 250, hide: true },
 				{ name: 'created', text: '@(Created)', align: 'center', template: '{{ created | format(\'dd.MM.yyyy\') }}', align: 1, width: 120 }
 			]
 		</script>

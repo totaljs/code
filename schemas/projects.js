@@ -413,6 +413,8 @@ NEWSCHEMA('Projects', function(schema) {
 			data.hidden = item.hidden;
 			data.running = item.running;
 			data.pinned = item.pinned == true;
+			data.reference = item.reference;
+			data.certname = item.certname;
 			data.stats = item.running ? item.stats : null;
 			data.logs = MAIN.logs[item.id];
 
