@@ -11,6 +11,7 @@ NEWSCHEMA('Projects', function(schema) {
 	schema.define('repository', 'String(100)');
 	schema.define('path', 'String(100)', true);
 	schema.define('pathsync', 'String(100)');
+	schema.define('reference', String);
 	schema.define('permissions', String);
 	schema.define('documentation', 'String(200)');
 	schema.define('support', 'String(200)');

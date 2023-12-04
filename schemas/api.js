@@ -4,7 +4,7 @@ NEWSCHEMA('API', function(schema) {
 
 	schema.action('create', {
 		name: 'Create',
-		input: 'name:String,*url:String,*template:String,compose:Boolean,release:boolean,certname:String,hidden:Boolean',
+		input: 'name:String,*url:String,*template:String,compose:Boolean,release:boolean,certname:String,hidden:Boolean,reference:String',
 		action: function($, model) {
 
 			var url = model.url.replace(/^(http|https):\/\//gi, '').replace(/\//g, '');
@@ -96,6 +96,8 @@ NEWSCHEMA('API', function(schema) {
 			var item = MAIN.projects.findItem('id', model.id);
 			if (!item)
 				item = MAIN.projects.findItem('url', model.id);
+			if (!item)
+				item = MAIN.projects.findItem('reference', model.id);
 
 			if (!item) {
 				$.invalid('@(Project not found)');
@@ -114,6 +116,8 @@ NEWSCHEMA('API', function(schema) {
 			var item = MAIN.projects.findItem('id', model.id);
 			if (!item)
 				item = MAIN.projects.findItem('url', model.id);
+			if (!item)
+				item = MAIN.projects.findItem('reference', model.id);
 
 			if (!item) {
 				$.invalid('@(Project not found)');
@@ -139,6 +143,7 @@ NEWSCHEMA('API', function(schema) {
 				item.created = m.created;
 				item.isexternal = m.isexternal;
 				item.stats = m.stats;
+				item.reference = m.reference;
 				item.logfile = MAIN.logs[m.id];
 
 				arr.push(item);
@@ -156,6 +161,8 @@ NEWSCHEMA('API', function(schema) {
 			var item = MAIN.projects.findItem('id', model.id);
 			if (!item)
 				item = MAIN.projects.findItem('url', model.id);
+			if (!item)
+				item = MAIN.projects.findItem('reference', model.id);
 
 			if (!item) {
 				$.invalid('@(Project not found)');
