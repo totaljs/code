@@ -4,7 +4,7 @@ NEWSCHEMA('API', function(schema) {
 
 	schema.action('create', {
 		name: 'Create',
-		input: 'name:String,*url:String,*template:String,compose:Boolean,release:boolean',
+		input: 'name:String,*url:String,*template:String,compose:Boolean,release:boolean,certname:String,hidden:Boolean',
 		action: function($, model) {
 
 			var url = model.url.replace(/^(http|https):\/\//gi, '').replace(/\//g, '');
@@ -32,6 +32,7 @@ NEWSCHEMA('API', function(schema) {
 
 			model.backup = true;
 			model.maxupload = 0;
+
 			model.customdocker = model.compose == true;
 			model.allowbundle = true;
 			model.releasemode = model.release == true;
