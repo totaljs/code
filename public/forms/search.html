@@ -70,7 +70,6 @@
 		exports.search = function() {
 
 			var q = GET('?.search');
-
 			currentsearch = q;
 
 			if (common.form !== 'search') {
@@ -131,7 +130,7 @@
 
 		};
 
-		WATCH('?.search', exports.search)
+		WATCH('?.search', exports.search);
 
 	});
 </script>
