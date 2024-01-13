@@ -483,6 +483,19 @@ COMPONENT('editor', function(self, config) {
 		});
 
 		editor.on('keydown', function(editor, e) {
+
+			if ((e.ctrlKey || e.metaKey) && M.ua.browser === 'Firefox') {
+				switch (e.code) {
+					case 'BracketRight':
+					case 'BracketLeft':
+						editor.execCommand('indent' + (e.code === 'BracketLeft' ? 'Less' : 'More'));
+						e.stopPropagation();
+						e.preventDefault();
+						break;
+				}
+				return;
+			}
+
 			if (e.shiftKey && e.ctrlKey && (e.keyCode === 40 || e.keyCode === 38)) {
 				var tmp = editor.getCursor();
 				editor.doc.addSelection({ line: tmp.line + (e.keyCode === 40 ? 1 : -1), ch: tmp.ch });
