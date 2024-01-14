@@ -491,9 +491,8 @@ COMPONENT('editor', function(self, config) {
 						editor.execCommand('indent' + (e.code === 'BracketLeft' ? 'Less' : 'More'));
 						e.stopPropagation();
 						e.preventDefault();
-						break;
+						return;
 				}
-				return;
 			}
 
 			if (e.shiftKey && e.ctrlKey && (e.keyCode === 40 || e.keyCode === 38)) {
