@@ -14353,7 +14353,9 @@ COMPONENT('flowstream', 'left:0;top:0;zindex:100;language:eu', function(self, co
 					iframe.contentWindow.postMessage(STRINGIFY({ TYPE: 'load', data: meta.data }), '*');
 					break;
 				case 'keypress':
-					SETTER('shortcuts/exec', data.value);
+				case 'F1':
+				case 'F10':
+					SETTER('shortcuts/exec', data.value || data.TYPE);
 					break;
 				case 'save':
 					meta.callback(typeof(data.data) === 'object' ? JSON.stringify(data.data, null, '\t') : data.data);

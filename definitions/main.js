@@ -126,9 +126,12 @@ MAIN.backup2 = function(user, path, callback, project, changescount) {
 				return;
 			}
 
-			var writer = Fs.createWriteStream(Path.join(dir, name));
-			response.stream.pipe(writer);
-			CLEANUP(writer, callback);
+			if (response) {
+				var writer = Fs.createWriteStream(Path.join(dir, name));
+				response.stream.pipe(writer);
+				CLEANUP(writer, callback);
+			} else
+				callback();
 		});
 
 	});
