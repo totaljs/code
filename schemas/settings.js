@@ -5,6 +5,7 @@ NEWSCHEMA('Settings', function(schema) {
 	schema.define('superadmin', 'String');
 	schema.define('login', 'String');
 	schema.define('accesstoken', 'String');
+	schema.define('insecure', Boolean);
 
 	schema.setQuery(function($) {
 
@@ -19,6 +20,7 @@ NEWSCHEMA('Settings', function(schema) {
 		data.superadmin = PREF.superadmin;
 		data.login = PREF.login;
 		data.accesstoken = PREF.accesstoken;
+		data.insecure = PREF.insecure;
 		$.callback(data);
 
 	});
@@ -39,6 +41,9 @@ NEWSCHEMA('Settings', function(schema) {
 		PREF.set('accesstoken', model.accesstoken);
 		PREF.set('login', model.login);
 		PREF.set('superadmin', model.superadmin);
+		PREF.set('insecure', model.insecure);
+
+		process.env.NODE_TLS_REJECT_UNAUTHORIZED = model.insecure ? '0' : '1';
 		CONF.totalapi = model.token;
 
 		$.success();

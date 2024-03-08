@@ -11,7 +11,8 @@
 				<div class="help"><i class="ti ti-globe"></i>@(The link will be available in the main menu)</div>
 				<br />
 				<div data---="input__?.login__maxlength:200">@(URL address for login)</div>
-				<div class="help"><i class="ti ti-keys"></i>@(The code will send credentials to this URL address in the background and the API must return a user profile or an error.) <a href="https://docs.totaljs.com/code/z5hu001uc41d/" target="_blank">@(Read more)</a>.</div>
+				<div class="help m"><i class="ti ti-keys"></i>@(The code will send credentials to this URL address in the background and the API must return a user profile or an error.) <a href="https://docs.totaljs.com/code/z5hu001uc41d/" target="_blank">@(Read more)</a>.</div>
+				<div data---="input__?.insecure__type:checkbox">@(Allow insecure SSL for requests)</div>
 				<hr />
 				<div data---="input__?.accesstoken__maxlength:100;camouflage:•;icon:check-circle green;placeholder:@(Enter a token);icon:ti ti-key">@(API Access token)</div>
 				<div class="help m"><span class="link exec" data-exec="?/generate">@(Generate token)</span></div>

@@ -255,6 +255,9 @@ ON('ready', function() {
 
 	if (PREF.name)
 		CONF.name = PREF.name;
+
+	if (PREF.insecure)
+		process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 });
 
 ON('service', function() {
