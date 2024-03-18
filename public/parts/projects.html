@@ -56,6 +56,7 @@
 			opt.summary = '@(Enter URL address to your web app)';
 			opt.value = common.origin ? common.origin.format(random()) : location.origin.indexOf('.localhost') === -1 ? 'https://' : 'http://';
 			opt.monospace = true;
+			opt.maxlength = 300;
 			opt.offsetWidth = 300;
 			opt.offsetY = 10;
 			opt.callback = function(val) {
@@ -63,13 +64,15 @@
 				var url = '';
 				var path = '';
 				var isexternal = false;
+				var name;
 
 				if (val.substring(0, 11) === 'external://') {
 					path = val;
 					url = 'https://www.totaljs.com';
 					isexternal = true;
+					name = path.substring(11);
 				} else {
-					url = val.replace(/^(http|https):\/\//gi, '').replace(/\//g, '');
+					name = url = val.replace(/^(http|https):\/\//gi, '').replace(/\//g, '');
 					if (url) {
 						var arr = url.split('.');
 						arr.reverse();
@@ -81,7 +84,7 @@
 					url = val;
 				}
 
-				SET('projectsform @default', { id: null, url: url, name: path.substring(11), path: isexternal ? path : ('/www/www/' + (path ? (path + '/') : '')), isexternal: isexternal });
+				SET('projectsform @default', { id: null, url: url, name: name, path: isexternal ? path : ('/www/www/' + (path ? (path + '/') : '')), isexternal: isexternal });
 				SET('common.form', 'projectsform');
 				path && setTimeout(() => CHANGE('projectsform.name'), 1500);
 			};
