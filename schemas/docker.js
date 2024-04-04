@@ -38,7 +38,14 @@ NEWSCHEMA('Docker', function(schema) {
 				return;
 			}
 
-			var apps = JSON.parse(ps.stdout);
+			var apps = ps.stdout ? ps.stdout.parseJSON(true) : null;
+
+			if (apps) {
+				if (!(apps instanceof Array))
+					apps = [apps];
+			} else
+				apps = EMPTYARRAY;
+
 			var is = apps.length > 0;
 
 			if (item.running !== is) {
