@@ -692,6 +692,8 @@ function makebundle(id) {
 		data.push('/bundles/*');
 		data.push('/debug.js');
 		data.push('/index.js');
+		data.push('/index.js.json');
+		data.push('/index.js.map');
 		data.push('/index.js.overload');
 		data.push('/license.txt');
 		data.push('/LICENSE');
