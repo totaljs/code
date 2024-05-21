@@ -69,6 +69,9 @@
 				<hr />
 				<div data---="checkbox__?.releasemode__null__false">@(<b>Docker:</b> enable release mode)</div>
 				<div data---="checkbox__?.customdocker__null__false">@(<b>Docker:</b> enable custom docker-compose.yaml)</div>
+				<div data-bind="?.customdocker__enabled .D">
+					<div data---="checkbox__?.dockerlogs__null__false" class="D">@(<b>Docker:</b> use logs directly from the docker container)</div>
+				</div>
 				<div style="margin-top:13px">
 					<div data---="input__?.certname__placeholder:@(Optional, e.g. apps.yourdomain.com);maxlength:300__''">@(Custom SSL certificate name)</div>
 					<div class="help">@(Enter a domain name e.g. <b>apps.yourdomain.com</b>. Docker will use an SSL certificate in the form <b>/proxy/data/certs/apps.yourdomain.com.(csr|key)</b>, etc..)</div>

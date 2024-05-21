@@ -30,6 +30,7 @@ NEWSCHEMA('Projects', function(schema) {
 	schema.define('releasemode', Boolean);
 	schema.define('allowbundle', Boolean);
 	schema.define('allowscripts', Boolean);
+	schema.define('dockerlogs', Boolean);
 	schema.define('servicemode', Boolean);
 	schema.define('resetcombo', Boolean);
 	schema.define('resettime', Boolean);
@@ -743,7 +744,7 @@ NEWSCHEMA('Projects', function(schema) {
 			return;
 		}
 
-		if (project.customdocker) {
+		if (project.customdocker && project.dockerlogs) {
 			var yaml = PATH.join(project.path, 'index.yaml');
 			SHELL('docker compose -f {0} ps --format json'.format(yaml), function(err, response) {
 
