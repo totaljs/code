@@ -1909,7 +1909,7 @@ FUNC.snippets = function(type, text, tabs, line, words, chplus, linestr) {
 			if (path.indexOf(text) !== -1) {
 				if (count++ > 10)
 					break;
-				arr.push({ displayText: '<i class="far fa-file mr5"></i>' + path, text: path, ch: path.length + tabs.length + chplus, line: line });
+				arr.push({ displayText: '<i class="ti ti-file mr5"></i>' + path, text: path, ch: path.length + tabs.length + chplus, line: line });
 			}
 		}
 	}

@@ -1251,6 +1251,7 @@ COMPONENT('tree', 'selected:selected;autoreset:false', function(self, config) {
 			case 'gif':
 			case 'ico':
 			case 'jpeg':
+			case 'webp':
 			case 'jpg':
 			case 'png':
 			case 'svg':
