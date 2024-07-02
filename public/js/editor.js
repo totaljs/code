@@ -3278,7 +3278,7 @@ https://twitter.com/JoelBesada/status/670343885655293952
 					break;
 				case 27:
 					// t.value = '';
-					cm.execCommand('clearSearch');
+					// cm.execCommand('clearSearch');
 					cm.focus();
 					break;
 				case 40:
