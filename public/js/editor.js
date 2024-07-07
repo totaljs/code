@@ -1751,7 +1751,7 @@ SNIPPETS.push({ type: 'html', search: 'script', text: '<b>Script: JSON</b>', cod
 SNIPPETS.push({ type: 'html', search: 'script', text: '<b>Script: Text</b>', code: '<script type="text/plain"></script>', ch: 27 });
 SNIPPETS.push({ type: 'html', search: 'script', text: '<b>Script: Componentator</b>', code: '<script src="https://componentator.com/download.js?id="></script>', ch: 55 });
 SNIPPETS.push({ type: 'html', search: 'ti', text: '<b>Total.js Icon</b>', code: '<i class="ti ti-"></i>', ch: 17 });
-SNIPPETS.push({ type: 'html', search: 'data ui component', text: '<b>ui-component</b>', code: '<ui-component name="" path="" config="" default=""></ui-component>', ch: 21 });
+SNIPPETS.push({ type: 'html', search: 'data ui component', text: '<b>ui-component</b>', code: '<ui-component name="" path="" config=""></ui-component>', ch: 21 });
 SNIPPETS.push({ type: 'html', search: 'br', text: '<b>&lt;br /&gt;</b>', code: '<br />', ch: 7 });
 SNIPPETS.push({ type: 'html', search: 'data ui plugin', text: '<b>ui-plugin</b>', code: '<ui-plugin path="" config=""></ui-plugin>', ch: 18 });
 SNIPPETS.push({ type: 'html', search: 'data ui bind', text: '<b>ui-bind</b>', code: '<ui-bind path="" config=""></ui-bind>', ch: 16 });
