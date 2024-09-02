@@ -444,6 +444,69 @@ WAIT('CodeMirror.defineMode', function() {
 		};
 	});
 
+	CodeMirror.defineMode('properties', function() {
+
+		var REG_KEY = /^.*?=/i;
+		var REG_NUM = /^[-0-9\.\,]+$/;
+		var isclass = function(text) {
+			var count = 0;
+			for (let i = 0; i < text.length; i++) {
+				if (text.charAt(i) === '.')
+					count++;
+				if (count > 1)
+					return true;
+			}
+		};
+
+		return {
+
+			startState: function() {
+				return { type: 0, keyword: 0 };
+			},
+
+			token: function(stream, state) {
+
+				var m;
+
+				if (stream.sol()) {
+
+					var line = stream.string;
+					if (line.charAt(0) === '#') {
+						stream.skipToEnd();
+						return 'comment';
+					}
+
+					state.type = 0;
+				}
+
+				if (!state.keyword) {
+					m = stream.match(REG_KEY, true);
+					if (m) {
+						state.keyword = 1;
+						return 'property';
+					}
+				}
+
+				if (!stream.string) {
+					state.keyword = 0;
+					stream.next();
+					return '';
+				}
+
+				state.keyword = 0;
+				stream.skipToEnd();
+				let val = stream.string.substring(stream.start).trim();
+				if (REG_NUM.test(val))
+					return 'number';
+				if (val.includes('/'))
+					return 'atom';
+				if (isclass(val))
+					return 'tag';
+				return 'string';
+			}
+		};
+	});
+
 	CodeMirror.defineMode('totaljsbundle', function() {
 		var REG_ADD = /^\+/;
 		var REG_REM = /^-/;
