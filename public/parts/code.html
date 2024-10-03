@@ -226,7 +226,6 @@
 			new Function('Thelpers', strhelpers)(helpers);
 
 		var output = Tangular.render(body, { value: model }, null, helpers);
-		var d = W.open();
 		var ismd = (/<(html|body|div|span|b|em|strong|h1|h2|h3|img)/i).test(body) === false;
 
 		if (ismd)
@@ -235,7 +234,7 @@
 		if (!output.includes('<html>'))
 			output = `<!DOCTYPE html><html><head><title>{0}</title><meta charset="utf-8" /><link href="https://cdn.componentator.com/spa.min@20.css" rel="stylesheet" type="text/css" /></head><body>{1}</body></html>`.format(name, output);
 
-		d.document.write(output);
+		SETTER('iframeviewer/open', { name: 'Preview template', esc: true, html: output });
 	}
 
 	PLUGIN('code', function(exports) {
