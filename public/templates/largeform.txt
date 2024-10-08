@@ -1,4 +1,4 @@
-<ui-component name="largeform" path="common.form" config="if:~PATH~;icon:hashtag;autofocus:true;reload:?/reload;scrollbar:1;submit:?/submit;width:800" class="hidden ~PATH~" plugin="~PATH~">
+<ui-component name="largeform" path="*form" config="if:CLASS;icon:hashtag;autofocus:true;reload:?/reload;scrollbar:1;submit:?/submit;width:800" class="hidden CLASS" plugin="CLASS">
 	<div class="padding">
 		YOUR CODE
 	</div>

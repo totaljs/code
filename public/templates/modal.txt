@@ -1,4 +1,4 @@
-<ui-component name="modal" path="common.form" config="if:~PATH~;reload:?/reload;submit:?/submit;width:540;icon:pencil;autofocus:1;scrollbar:1" class="hidden">
+<ui-component name="modal" path="common.form" config="if:CLASS;reload:?/reload;submit:?/submit;width:540;icon:pencil;autofocus:1;scrollbar:1" class="hidden">
 
 	<div>
 		<span class="link cancel"><i class="ti ti-times"></i></span>
@@ -6,7 +6,7 @@
 	</div>
 
 	<div>
-		<ui-plugin path="~PATH~">
+		<ui-plugin path="CLASS">
 
 			<div class="padding">
 				YOUR CODE

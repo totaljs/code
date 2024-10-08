@@ -1,4 +1,4 @@
-<ui-component name="intro" path="common.form" config="if:~PATH~;next:@(Next);done:@(Done);remove:true" class="hidden">
+<ui-component name="intro" path="common.form" config="if:CLASS;next:@(Next);done:@(Done);remove:true" class="hidden">
 	<figure>
 		CONTENT
 	</figure>

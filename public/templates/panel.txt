@@ -1,4 +1,4 @@
-<ui-component name="panel" path="common.panel" config="if:~PATH~;icon:hashtag;autofocus:true;reload:?/reload;scrollbar:1" class="hidden" plugin="~PATH~">
+<ui-component name="panel" path="*panel" config="if:CLASS;icon:hashtag;autofocus:true;reload:?/reload;scrollbar:1" class="hidden" plugin="CLASS">
 	<div class="padding">
 		YOUR CODE
 	</div>
