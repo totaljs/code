@@ -1,11 +1,10 @@
 exports.install = function() {
-	ROUTE('POST /upload/', upload, ['upload'], 1024 * 5); // Max. 5 MB
-	ROUTE('FILE /download/*.*', files);
+	ROUTE('POST /upload/ @upload <5MB', upload);
+	ROUTE('FILE /download/*.*', download);
 };
 
-async function upload() {
+async function upload($) {
 
-	var $ = this;
 	var output = [];
 
 	for (var file of $.files) {
@@ -17,17 +16,17 @@ async function upload() {
 	$.json(output);
 }
 
-function files(req, res) {
+function download($) {
 
-	var index = req.split[1].lastIndexOf('.');
+	var index = $.split[1].lastIndexOf('.');
 	if (index !== -1) {
-		var hash = req.split[1].substring(0, index);
+		var hash = $.split[1].substring(0, index);
 		var id = hash.substring(0, hash.indexOf('-', 10));
 		if (hash === id.sign(CONF.salt)) {
-			res.filefs('files', id);
+			$.filefs('files', id);
 			return;
 		}
 	}
 
-	res.throw404();
+	$.throw404();
 }

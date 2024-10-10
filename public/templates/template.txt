@@ -1,0 +1,19 @@
+<div style="padding:20px">
+	Hello {{ value.name | uppercase }}!
+</div>
+
+<script type="text/json">
+	{
+		"name": "Total.js OpenTemplates"
+	}
+</script>
+
+<script>
+
+	// Custom helpers
+
+	Thelpers.uppercase = function(val) {
+		return val ? val.toUpperCase() : '';
+	};
+
+</script>

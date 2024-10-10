@@ -1,5 +1,11 @@
 exports.install = function() {
 
-	ROUTE('+API   /api/   -operation   -->  action');
+	ROUTE('+API  ?  -->  action');
+	ROUTE('GET /', index);
 
 };
+
+function index($) {
+	// $.view('view_name');
+	$.json({ name: 'Hello world!' });
+}

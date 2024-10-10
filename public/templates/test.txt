@@ -1,44 +1,39 @@
-require('total4');
+require('total5');
+require('total5/test');
 
-TESTER(async function(group, start) {
+Test.push('String.prototypes', function(next) {
+	var value, response, correct;
 
-	group('Users', async function(test, cleanup) {
+	value = 'peter sirka';
+	correct = 'Peter Sirka';
+	response = value.toName();
+	Test.print('String.toName() ', response != correct ? 'Unknown error' : null);
 
-		cleanup(async function(err) {
-			if (err) {
-				// Something is wrong
-			} else {
-				// Tests have been completed in this group
-			}
-			// Cleaning ...
-		});
+	value = '2023-11-07T22:37:00.000Z';
+	correct = true;
+	response = value.isJSONDate();
+	Test.print('String.isJSONDate() ', response !== correct ? 'Invalid JSON date' : null);
 
-		test('Create', async function(next) {
-
-			// next(TRUE_or_ERROR) stops testing
-			next();
-
-		});
-
-		test('Update', async function(next) {
-
-			// next(TRUE_or_ERROR) stops testing
-			next();
-
-		});
-
-		test('Remove', async function(next) {
-
-			// next(TRUE_or_ERROR) stops testing
-			next();
-
-		});
-
-	});
-
-	// Starts all tests in defined groups
-	// await LOAD([], '../');
-	// require('querybuilderpg').init('default', CONF.database, 0, ERROR('QueryBuilder'));
-
-	start();
+	next();
 });
+
+Test.push('Number.prototypes', function(next) {
+
+	var value, response, correct;
+
+	value = 54321;
+	max = 5;
+	correct = '54321';
+	response = value.padLeft(max, '9');
+	Test.print('Number.padLeft() - Pad left with max equal to the length of the value', correct !== response ? 'Test failed' : null);
+
+	value = 7;
+	max = 4;
+	correct = '0007';
+	response = value.padLeft(max);
+	Test.print('Number.padLeft() - Pad left with max greater than the length of the value', correct !== response ? 'Test failed' : null);
+
+	next();
+});
+
+Test.run();
