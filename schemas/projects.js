@@ -305,7 +305,7 @@ NEWSCHEMA('Projects', function(schema) {
 
 			var path = url.substring(0, index);
 
-			if ((/\.|-|,/).test(path)) {
+			if ((/\.|_|,/).test(path)) {
 				$.error.replace('@', origin.format('yourpath'));
 				$.invalid(err);
 				return;
