@@ -692,9 +692,11 @@ function makebundle(id) {
 		data.push('/bundles/*');
 		data.push('/debug.js');
 		data.push('/index.js');
+		data.push('/index.pid');
 		data.push('/index.js.json');
 		data.push('/index.js.map');
 		data.push('/index.js.overload');
+		data.push('/index.yaml');
 		data.push('/license.txt');
 		data.push('/LICENSE');
 		data.push('/localization.resource');
@@ -708,8 +710,6 @@ function makebundle(id) {
 		data.push('/config');
 		data.push('/debug.js.json');
 		data.push('/release.js.json');
-		data.push('/index.js.json');
-		data.push('/index.yaml');
 		data.push('/bundle.sh');
 		data.push('/config-release');
 		data.push('/config-debug');
