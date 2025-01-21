@@ -193,6 +193,28 @@ NEWSCHEMA('Login', function(schema) {
 			return;
 		}
 
+		if (DDOS[$.ip])
+			DDOS[$.ip]++;
+		else
+			DDOS[$.ip] = 1;
+
+		var user = MAIN.users.findItem('email', $.model.email);
+		var signin = function() {
+
+			if (!user || user.password !== $.model.password.sha256() || user.external) {
+				$.invalid('error-credentials');
+				return;
+			}
+
+			if (user.blocked) {
+				$.invalid('error-blocked');
+				return;
+			}
+
+			login($, user);
+
+		};
+
 		if (PREF.login) {
 
 			$.model.type = 'login';
@@ -202,23 +224,35 @@ NEWSCHEMA('Login', function(schema) {
 			RESTBuilder.POST(PREF.login, $.model).callback(function(err, response) {
 
 				if (err) {
-					$.invalid(err);
+					if (!user || user.external)
+						$.invalid(err);
+					else
+						signin();
 					return;
 				}
 
 				if (response instanceof Array) {
 					err = response[0];
-					$.invalid(err ? (err.error || err.message) : 'error-credentials');
+					if (!user || user.external)
+						$.invalid(err ? (err.error || err.message) : 'error-credentials');
+					else
+						signin();
 					return;
 				}
 
 				if (typeof(response) === 'string') {
-					$.invalid(response);
+					if (!user || user.external)
+						$.invalid(response);
+					else
+						signin();
 					return;
 				}
 
 				if (!response || !response.id) {
-					$.invalid('error-credentials');
+					if (!user || user.external)
+						$.invalid('error-credentials');
+					else
+						signin();
 					return;
 				}
 
@@ -230,26 +264,9 @@ NEWSCHEMA('Login', function(schema) {
 
 				login($, output.user);
 			});
-			return;
-		}
 
-		var user = MAIN.users.findItem('email', $.model.email);
-
-		if (!user || user.password !== $.model.password.sha256()) {
-			$.invalid('error-credentials');
-			if (DDOS[$.ip])
-				DDOS[$.ip]++;
-			else
-				DDOS[$.ip] = 1;
-			return;
-		}
-
-		if (user.blocked) {
-			$.invalid('error-blocked');
-			return;
-		}
-
-		login($, user);
+		} else
+			signin();
 	});
 
 });

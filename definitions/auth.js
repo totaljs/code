@@ -21,39 +21,43 @@ var APIUSER = { id: 'api', name: 'API', sa: true };
 	opt.onread = function(meta, next) {
 		var user = MAIN.users.findItem('id', meta.userid);
 		if (user) {
-			if (PREF.login) {
+			if (user.external) {
+				if (PREF.login) {
 
-				var data = {};
-				data.type = 'session';
-				data.code = PREF.name;
-				data.ua = meta.ua;
-				data.ip = meta.ip;
-				data.id = user.id;
-				data.email = user.email;
-				data.url = PREF.url;
+					var data = {};
+					data.type = 'session';
+					data.code = PREF.name;
+					data.ua = meta.ua;
+					data.ip = meta.ip;
+					data.id = user.id;
+					data.authtoken = user.authtoken;
+					data.email = user.email;
+					data.url = PREF.url;
 
-				RESTBuilder.POST(PREF.login, data).callback(function(err, response) {
+					RESTBuilder.POST(PREF.login, data).callback(function(err, response) {
 
-					if (err) {
-						next(err);
-						return;
-					}
+						if (err) {
+							next(err);
+							return;
+						}
 
-					if (!response || response instanceof Array || !response.id) {
-						next('invalid');
-						return;
-					}
+						if (!response || response instanceof Array || !response.id) {
+							next('invalid');
+							return;
+						}
 
-					var output = FUNC.syncuser(response);
-					if (output.error) {
-						next('invalid');
-						return;
-					}
+						var output = FUNC.syncuser(response);
+						if (output.error) {
+							next('invalid');
+							return;
+						}
 
-					var user = CLONE(output.user);
-					user.password = undefined;
-					next(null, output.user);
-				});
+						var user = CLONE(output.user);
+						user.password = undefined;
+						next(null, output.user);
+					});
+				} else
+					next('invalid');
 
 			} else {
 				user.logged = NOW;
