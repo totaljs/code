@@ -22,6 +22,7 @@ NEWSCHEMA('Users', function(schema) {
 		for (var i = 0; i < MAIN.users.length; i++) {
 			var user = CLONE(MAIN.users[i]);
 			user.password = undefined;
+			user.authtoken = undefined;
 			arr.push(user);
 		}
 
