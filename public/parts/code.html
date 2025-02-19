@@ -723,7 +723,7 @@
 			var sub = [];
 			var tools = [];
 			var tmp;
-			var isscript = !code.data.isexternal && (/\/scripts\/|\.sh$/g).test(code.current.path) || (code.data.servicemode && (code.current.ext === 'js' || code.current.ext === 'sh'));
+			var isscript = !code.data.isexternal && (/\/scripts\/|\.sh$/g).test(code.current.path) || (code.data.servicemode && (code.current.ext === 'js' || code.current.ext === 'sh' || code.current.ext === 'py'));
 			var mode = editor.getModeAt(editor.getCursor());
 			mode = mode.helperType || mode.name;
 
