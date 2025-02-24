@@ -1,7 +1,7 @@
 # The file is generated automatically
 # Do not remove this file and change it
 services:
-  total:
+  main_app:
     container_name: {{ value.id }}
     image: totalplatform/run:npm
     restart: always
