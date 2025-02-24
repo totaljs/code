@@ -5625,7 +5625,7 @@ COMPONENT('statusform', function(self, config) {
 	};
 
 	self.submit = function(){
-		EXEC(config.exec, input.parent().attrd('name'), input.val().toLowerCase().replace(/[^+a-z0-9./\-_]/gi, ''), formtype);
+		EXEC(config.exec, input.parent().attrd('name'), input.val().replace(/[^+a-z0-9./\-_]/gi, ''), formtype);
 	};
 
 	self.val = function(value, type, submit) {

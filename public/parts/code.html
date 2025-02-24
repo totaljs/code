@@ -929,10 +929,13 @@
 
 			items.push({ name: '@(Toggle ruler)', icon: 'arrows-v', value: 'toggleruler' });
 
-			if ((/js|json|html|todo|api|txt|versions|sitemap/).test(code.current.ext)) {
+			if ((/js|json|html|todo|api|txt|versions|sitemap/).test(code.current.ext) || code.current.name === 'Dockerfile') {
 
 				sub = [];
-				if (code.current.path.substring(0, 9) === '/scripts/' && code.current.ext === 'js') {
+
+				if (code.current.name === 'Dockerfile') {
+					sub.push({ name: '@(Dockerfile)', icon: 'docker', value: 'template', id: 'dockerfile' });
+				} else if (code.current.path.substring(0, 9) === '/scripts/' && code.current.ext === 'js') {
 					sub.push({ name: '@(Script)', icon: 'code', value: 'template', id: 'script' });
 				} else if (code.current.ext === 'js') {
 					sub.push({ name: '@(Controller)', icon: 'code', value: 'template', id: 'controller' });
@@ -3557,6 +3560,9 @@
 
 					if (!files.config)
 						opt.items.push({ name: '<strong>@(Create):</strong> /config', icon: '!ti ti-file', value: '/config' });
+
+					if (!files.config)
+						opt.items.push({ name: '<strong>@(Create):</strong> /Dockefile', icon: '!ti ti-file', value: '/Dockerfile' });
 
 					if (!files['index.js'])
 						opt.items.push({ name: '<strong>@(Create):</strong> /index.js', icon: '!ti ti-file', value: '/index.js' });

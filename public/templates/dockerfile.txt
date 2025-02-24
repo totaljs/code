@@ -1,0 +1,9 @@
+# Targeted for Total.js Code Editor
+
+FROM node:20-alpine
+RUN apk update && apk add bash && apk add zip && apk add unzip && apk add tar && apk add graphicsmagick
+
+WORKDIR /www
+
+EXPOSE 8000
+CMD [ "/bin/bash", "-c", "mkdir -p logs;npm i;npm start > logs/debug.log" ]
