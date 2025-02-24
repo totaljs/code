@@ -179,6 +179,12 @@ FUNC.preparedockerfile = async function(item, run) {
 	var wwwfolder = item.path.replace('/www/www', CONF.folder_www);
 	var nodemodules = CONF.folder_npm;
 	var id = (CONF.uid ? (CONF.uid + '-') : '') + item.id;
+	var iscustomdockerfile = false;
+
+	try {
+		await Stat(PATH.join(item.path, 'Dockerfile'));
+		iscustomdockerfile = true;
+	} catch {}
 
 	wwwfolder = wwwfolder[wwwfolder.length - 1] === '/' ? wwwfolder.substr(0, wwwfolder.length - 1) : wwwfolder;
 	nodemodules = nodemodules[nodemodules.length - 1] === '/' ? nodemodules.substr(0, nodemodules.length - 1) : nodemodules;
@@ -209,9 +215,15 @@ FUNC.preparedockerfile = async function(item, run) {
 	}
 
 	content = await ReadFile(path);
+	content = content.toString('utf8');
+
+	if (iscustomdockerfile)
+		content = content.replace('image: totalplatform/run:npm', 'build: .');
+
 	var model = {};
 	model.value = { id: id, maxupload: item.maxupload || 50, host: host, npm: nodemodules, www: wwwfolder, certname: item.certname };
-	content = Tangular.render(content.toString('utf8'), model);
+	content = Tangular.render(content, model);
+
 	return WriteFile(filename, content);
 };
 
