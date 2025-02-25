@@ -2399,9 +2399,9 @@ FUNC.jcomponent_update = function(name, type, content, body, meta) {
 
 	FUNC.parts_parser = function(val, mode) {
 
-		var REGTODO = /@todo/i;
+		var REGTODO = /@todo|@tag/i;
 		var REGTODO2 = /^(\s)+-\s.*?/;
-		var REGTODOREPLACE = /^@todo(:)(\s)|(\s)+-(\s)/i;
+		var REGTODOREPLACE = /^@todo|@tag(:)(\s)|(\s)+-(\s)/i;
 		var REGTODODONE = /@done|@canceled/i;
 		var REGTODOCLEAN = /-->|\*\//g;
 		var REGPART = /(COMPONENT|COMPONENT_EXTEND|EXTENSION|CONFIG|NEWSCHEMA|NEWCOMMAND|NEWOPERATION|NEWTASK|MIDDLEWARE|WATCH|ROUTE|(^|\s)ON|PLUGIN|PLUGINABLE)+\(.*?\)/g;
@@ -2443,7 +2443,7 @@ FUNC.jcomponent_update = function(name, type, content, body, meta) {
 			m = mode === 'todo' ? line.match(REGTODO2) : line.match(REGTODO);
 
 			if (m && !REGTODODONE.test(line))
-				todos.push({ line: i + 1, ch: m.index || 0, name: line.substring(m.index, 200).replace(REGTODOREPLACE, '').replace(REGTODOCLEAN, '').trim() });
+				todos.push({ line: i + 1, ch: m.index || 0, type: m[0].charAt(0) === '@' ? m[0].substring(1).toLowerCase() : '', name: line.substring(m.index, 200).replace(REGTODOREPLACE, '').replace(REGTODOCLEAN, '').trim() });
 
 			/*
 			if (line && mode !== 'css') {
