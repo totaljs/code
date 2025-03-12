@@ -196,6 +196,15 @@ FUNC.preparedockerfile = async function(item, run) {
 
 	host = host.replace('http://', '').replace('https://', '');
 
+	if (item.hostnames) {
+		var hostnames = item.hostnames.toLowerCase().split(',').trim();
+		var index = hostnames.indexOf(host);
+		if (index !== -1)
+			hostnames.splice(index, 1);
+		if (hostnames.length)
+			host += ',' + hostnames.join(',');
+	}
+
 	var path = item.customdocker ? PATH.join(item.path, 'docker-compose.yaml') : PATH.root((islocalhost ? 'app-compose.yaml' : 'app-compose-https.yaml'));
 	var content;
 

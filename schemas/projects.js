@@ -19,6 +19,7 @@ NEWSCHEMA('Projects', function(schema) {
 	schema.define('url', 'String(100)');
 	schema.define('token', 'String(50)');
 	schema.define('icon', 'String(30)');
+	schema.define('hostnames', 'String');
 	schema.define('users', '[Lower(30)]');
 	schema.define('backup', Boolean);
 	schema.define('skipsrc', Boolean);
@@ -412,6 +413,7 @@ NEWSCHEMA('Projects', function(schema) {
 			data.isexternal = item.isexternal;
 			data.users = item.users;
 			data.hidden = item.hidden;
+			data.hostnames = item.hostnames;
 			data.running = item.running;
 			data.pinned = item.pinned == true;
 			data.reference = item.reference;
