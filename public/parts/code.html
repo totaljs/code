@@ -2429,7 +2429,7 @@
 							common.isinfopanel = true;
 							response.mode = '0' + (response.mode & parseInt('777', 8)).toString(8);
 							SETTER('infopanel/show', el, function(el) {
-								el.html('<div class="metainfo"><b><i class="ti ti-file"></i> {4}</b>Size: {0}<br />Mode: {1}<br />Modified: {2}<br />Created: {3}</div>'.format(response.size.filesize(), response.mode, response.mtime.format(), response.ctime.format(), path));
+								el.html('<div class="metainfo"><b><i class="ti ti-file"></i> {4}</b>Size: {0}<br />Mode: {1}<br />Modified: {2}<br />Created: {3}</div>'.format(response.size.filesize(), response.mode, new Date(response.mtimeMs).format(), new Date(response.ctimeMs).format(), path));
 							}, -10, -105, false, function() {
 								common.isinfopanel = false;
 							});
