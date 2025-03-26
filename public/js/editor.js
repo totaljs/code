@@ -1837,7 +1837,7 @@ SNIPPETS.push({ type: 'js', search: 'SUBSCRIBE', text: '<b>SUBSCRIBE</b>', code:
 SNIPPETS.push({ type: 'js', search: 'CALL', text: '<b>CALL</b>', code: 'CALL(\' --> exec\').params({}).query({}).promise($);', ch: 7, priority: 1 });
 SNIPPETS.push({ type: 'js', search: 'API', text: '<b>API</b>', code: 'API(\'\', \'schema\', {}).controller($).promise($);', ch: 6, priority: 1 });
 SNIPPETS.push({ type: 'js', search: 'NEWACTION', text: '<b>NEWACTION</b>', code: 'NEWACTION(\'\', {\n\t{0}name: \'\',\n\t{0}input: \'\',\n\t{0}route: \'+API ?\',\n\t{0}query: \'\',\n\t{0}params: \'\',\n\t{0}permissions: \'admin\',\n\t{0}// output: \'success:Boolean\',\n\t{0}action: async function($, model) {\n\t{0}\n\t{0}}\n});', ch: 12 });
-SNIPPETS.push({ type: 'js', search: 'NEWSCHEMA', text: '<b>NEWSCHEMA</b> (v5)', code: 'NEWSCHEMA(\'{1}\', \'\');', ch: 12 });
+SNIPPETS.push({ type: 'js', search: 'NEWSCHEMA', text: '<b>NEWSCHEMA</b> (v5)', code: 'NEWSCHEMA(\'@{1}\', \'id,*email:Email\');', ch: 13 });
 SNIPPETS.push({ type: 'js', search: 'NEWSCHEMA', text: '<b>NEWSCHEMA</b> (v4)', code: 'NEWSCHEMA(\'{1}\', function(schema) {\n\t{0}schema.define(\'key\', String, true);\n{0}});', ch: 12 });
 SNIPPETS.push({ type: 'js', search: 'NEWAPI', text: '<b>NEWAPI</b>', code: 'NEWAPI(\'\', function(opt, next) {\n\t{0}RESTBuilder.API(\'https://yourtotalapp.com/api/\', opt.schema, opt.data).strict().callback(next);\n{0}});', ch: 9 });
 SNIPPETS.push({ type: 'js', search: 'NEWJSONSCHEMA', text: '<b>NEWJSONSCHEMA</b>', code: 'NEWJSONSCHEMA(\'\', {});', ch: 16 });
@@ -1853,6 +1853,7 @@ SNIPPETS.push({ type: 'js', search: 'MIDDLEWARE', text: '<b>MIDDLEWARE (UI)</b>'
 SNIPPETS.push({ type: 'js', search: 'USE', text: '<b>USE</b>', code: 'USE(\'\', \'*\', \'dynamic\');', ch: 6 });
 SNIPPETS.push({ type: 'js', search: 'for var', text: '<b>for in</b>', code: 'for (var i = 0; i < .length; i++)', ch: 21, priority: 10 });
 SNIPPETS.push({ type: 'js', search: '$.invalid', text: '<b>$.invalid()</b>', code: 'if (err) {\n\t{0}$.invalid(err);\n\t{0}return;\n{0}}', ch: 30 });
+SNIPPETS.push({ type: 'js', search: '$.successful', text: '<b>$.successful(...)</b>', code: '$.successful(function(response) {\n\t{0}\n{0}});', ch: 35 });
 SNIPPETS.push({ type: 'js', search: 'callback', text: '<b>callback</b>', code: 'callback', ch: 9, priority: 1 });
 SNIPPETS.push({ type: 'js', search: 'callback function', text: '<b>function() {</b>', code: 'function() {\n\t{0}\n{0}}', ch: 30, priority: 1, special: 1 });
 SNIPPETS.push({ type: 'js', search: 'callback function', text: '<b>function(err, response) {</b>', code: 'function(err, response) {\n\t{0}\n{0}}', ch: 30, priority: 1, special: 1 });
