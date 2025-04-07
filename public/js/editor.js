@@ -1899,6 +1899,7 @@ SNIPPETS.push({ type: 'js', search: 'EMPTYOBJECT', text: 'EMPTYOBJECT', code: 'E
 SNIPPETS.push({ type: 'js', search: 'QUERIFY', text: 'QUERIFY', code: 'QUERIFY()', ch: 9 });
 SNIPPETS.push({ type: 'js', search: 'require db', text: '<b>require(\'querybuilderpg\')</b>', code: 'require(\'querybuilderpg\').init(\'\', CONF.database, 1, ERROR(\'DB\'));', ch: 1, priority: 1 });
 SNIPPETS.push({ type: 'js', search: 'ON @flag', text: '<b>ON(\'@flag something\')</b>', code: 'ON(\'@flag \', function()  {\n\t{0}\n{0}});', ch: 11 });
+SNIPPETS.push({ type: 'js', search: 'ON ready', text: '<b>ON(\'ready\')</b>', code: 'ON(\'ready\', function()  {\n\t{0}\n{0}});', ch: 11 });
 SNIPPETS.push({ search: 'openplatformid', text: 'openplatformid', code: 'openplatformid', ch: 15 });
 SNIPPETS.push({ search: 'encodeURIComponent', text: 'encodeURIComponent', code: 'encodeURIComponent', ch: 19 });
 SNIPPETS.push({ search: 'decodeURIComponent', text: 'decodeURIComponent', code: 'decodeURIComponent', ch: 19 });

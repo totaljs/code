@@ -2404,7 +2404,7 @@ FUNC.jcomponent_update = function(name, type, content, body, meta) {
 		var REGTODOREPLACE = /^(@todo|@tag)(:)(\s)|(\s)+-(\s)/i;
 		var REGTODODONE = /@done|@canceled/i;
 		var REGTODOCLEAN = /-->|\*\//g;
-		var REGPART = /(COMPONENT|COMPONENT_EXTEND|EXTENSION|CONFIG|NEWSCHEMA|NEWCOMMAND|NEWOPERATION|NEWTASK|MIDDLEWARE|WATCH|ROUTE|(^|\s)ON|PLUGIN|PLUGINABLE)+\(.*?\)/g;
+		var REGPART = /(COMPONENT|COMPONENT_EXTEND|AUTH|EXTENSION|CONFIG|NEWSCHEMA|NEWCOMMAND|NEWOPERATION|NEWTASK|MIDDLEWARE|WATCH|ROUTE|(^|\s)ON|PLUGIN|PLUGINABLE)+\(.*?\)/g;
 		var REGACTION = /NEWACTION\(('|").*?('|"),(\s)?\{/g;
 		var REGPARTCLEAN = /('|").*?('|")/;
 		var REGHELPER = /(Thelpers|FUNC|REPO|MAIN)\.[a-z0-9A-Z_$]+(\s)+=/g;
@@ -2494,12 +2494,17 @@ FUNC.jcomponent_update = function(name, type, content, body, meta) {
 				if (m) {
 
 					name = m[0].match(REGPARTCLEAN);
-					tmp = m[0].toLowerCase();
 
-					if (tmp.substring(0, 16) === 'component_extend') {
-						type = 'exten';
-					} else
-						type = tmp.substring(0, 5).trim();
+					if (!name && m[0].substring(0, 4) === 'AUTH') {
+						name = ['AUTH'];
+						tmp = type = 'auth';
+					} else {
+						tmp = m[0].toLowerCase();
+						if (tmp.substring(0, 16) === 'component_extend') {
+							type = 'exten';
+						} else
+							type = tmp.substring(0, 5).trim();
+						}
 
 					if (name) {
 						name = name[0].replace(/'|"/g, '');
@@ -2522,7 +2527,7 @@ FUNC.jcomponent_update = function(name, type, content, body, meta) {
 						if (type === 'watch' && oldplugin)
 							name = name.replace(/\?/g, oldplugin);
 
-						components.push({ line: i, ch: beg, name: name.trim(), type: type.substring(0, 3) === 'on(' ? 'event' : type === 'exten' ? 'extension' : type === 'compo' ? 'component' : type === 'newsc' ? 'schema' : type === 'confi' ? 'config' : type === 'newop' ? 'operation' : type === 'newta' ? 'task' : type === 'newac' ? 'action' : type === 'newco' ? 'command' : type === 'watch' ? 'watcher' : type === 'plugi' ? ispluginable ? 'pluginable' : 'plugin' : type === 'middl' ? 'middleware' : type === 'route' ? 'route' : 'undefined' });
+						components.push({ line: i, ch: beg, name: name.trim(), type: type.substring(0, 3) === 'on(' ? 'event' : type === 'exten' ? 'extension' : type === 'compo' ? 'component' : type === 'newsc' ? 'schema' : type === 'confi' ? 'config' : type === 'newop' ? 'operation' : type === 'newta' ? 'task' : type === 'newac' ? 'action' : type === 'newco' ? 'command' : type === 'watch' ? 'watcher' : type === 'plugi' ? ispluginable ? 'pluginable' : 'plugin' : type === 'middl' ? 'middleware' : type === 'route' ? 'route' : type === 'auth' ? 'auth' : 'undefined' });
 						is = beg;
 					}
 				}

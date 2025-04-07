@@ -49,6 +49,8 @@ Thelpers.particon = function(type) {
 	switch (type) {
 		case 'action':
 			return 'ti ti-atom';
+		case 'auth':
+			return 'ti ti-key';
 		case 'markdown':
 			return 'fa fa-heading';
 		case 'helper':
