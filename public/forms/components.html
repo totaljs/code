@@ -13,7 +13,7 @@
 					{{ if value && value.length }}
 					<div class="partscurrent">
 						{{ foreach m in value }}
-							<div class="part exec" data-exec="components/find" data-search="{{ m.name }}" data-todo="1" data-index="{{ $index }}" title="@(Line:) {{ m.line }}"><i class="{{ if m.type === 'tag' }}ti ti-bookmark{{ else }}ti ti-warning red{{ fi }}"></i>{{ m.name }}</div>
+							<div class="part exec" data-exec="components/find" data-search="{{ m.name }}" data-todo="1" data-index="{{ $index }}" title="@(Line:) {{ m.line }}"><i class="{{ if m.type === 'tag' }}ti ti-bookmark{{ else if m.type === 'fixme' }}ti ti-wrench{{ else if m.type === 'hack' }}ti ti-brain{{ else }}ti ti-warning red{{ fi }}"></i>{{ m.name | keywordformatter }}</div>
 						{{ end }}
 					</div>
 					{{ fi }}
@@ -199,4 +199,15 @@
 		}
 		return '<b>{0}</b>'.format(Thelpers.encode(val));
 	};
+
+	Thelpers.keywordformatter = function(val) {
+		if (val.charAt(0) === '@') {
+			return val.substring(1).replace(/(todo|tag|hack|fixme)/i, function(text) {
+				return '<strong class="cm-flag-{0} part-flag">{1}</strong>'.format(text.toLowerCase(), text.toUpperCase());
+			});
+		}
+
+		return val;
+	};
+
 </script>

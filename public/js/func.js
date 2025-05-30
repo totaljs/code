@@ -2399,9 +2399,8 @@ FUNC.jcomponent_update = function(name, type, content, body, meta) {
 
 	FUNC.parts_parser = function(val, mode) {
 
-		var REGTODO = /@todo|@tag|@hack/i;
+		var REGTODO = /@todo|@tag|@hack|@fixme/i;
 		var REGTODO2 = /^(\s)+-\s.*?/;
-		var REGTODOREPLACE = /^(@todo|@tag|@hack)(:)(\s)|(\s)+-(\s)/i;
 		var REGTODODONE = /@done|@canceled/i;
 		var REGTODOCLEAN = /-->|\*\//g;
 		var REGPART = /(COMPONENT|COMPONENT_EXTEND|AUTH|EXTENSION|CONFIG|NEWSCHEMA|NEWCOMMAND|NEWOPERATION|NEWTASK|MIDDLEWARE|WATCH|ROUTE|(^|\s)ON|PLUGIN|PLUGINABLE)+\(.*?\)/g;
@@ -2443,7 +2442,7 @@ FUNC.jcomponent_update = function(name, type, content, body, meta) {
 			m = mode === 'todo' ? line.match(REGTODO2) : line.match(REGTODO);
 
 			if (m && !REGTODODONE.test(line))
-				todos.push({ line: i + 1, ch: m.index || 0, type: m[0].charAt(0) === '@' ? m[0].substring(1).toLowerCase() : '', name: line.substring(m.index, 200).replace(REGTODOREPLACE, '').replace(REGTODOCLEAN, '').trim() });
+				todos.push({ line: i + 1, ch: m.index || 0, type: m[0].charAt(0) === '@' ? m[0].substring(1).toLowerCase() : '', name: line.substring(m.index, 200).replace(REGTODOCLEAN, '').trim() });
 
 			/*
 			if (line && mode !== 'css') {
@@ -2498,13 +2497,16 @@ FUNC.jcomponent_update = function(name, type, content, body, meta) {
 					if (!name && m[0].substring(0, 4) === 'AUTH') {
 						name = ['AUTH'];
 						tmp = type = 'auth';
+					} else if (!name && m[0].substring(0, 6) === 'PLUGIN') {
+						name = ['PLUGIN'];
+						tmp = type = 'PLUGI';
 					} else {
 						tmp = m[0].toLowerCase();
 						if (tmp.substring(0, 16) === 'component_extend') {
 							type = 'exten';
 						} else
 							type = tmp.substring(0, 5).trim();
-						}
+					}
 
 					if (name) {
 						name = name[0].replace(/'|"/g, '');
@@ -2518,6 +2520,8 @@ FUNC.jcomponent_update = function(name, type, content, body, meta) {
 								taskvariable = m[0].substring(m[0].indexOf('(', 10) + 1, m[0].indexOf(')'));
 								break;
 							case 'plugi':
+							case 'PLUGI':
+
 								oldplugin = name;
 								ispluginable = tmp.substring(0, 10) === 'pluginable';
 								pluginvariable = m[0].substring(m[0].indexOf('(', ispluginable ? 20 : 10) + 1, m[0].indexOf(')'));
