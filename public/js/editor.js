@@ -343,10 +343,15 @@ WAIT('CodeMirror.defineMode', function() {
 				if (stream.match(/~PATH~|DATA|MAIN|REPO|FUNC|CONF|EMPTYARRAY|EMPTYOBJECT|exports|DEF|ENV|\$/, true))
 					return 'variable-K';
 
+				var m = stream.match(/@TODO|@HACK|@TAG|@FIXME/i, true);
+				if (m) {
+					return 'flag-' + m[0].substring(1).toLowerCase();
+				}
+
 				if (stream.match(/NEWACTION|AUTH|NEWSCHEMA|ROUTE|UNAUTHORIZED|BLOCKED|LOCALIZE|MEMORIZE|LOADCONFIG|LOADRESOURCE|ACTION|EXEC|PLUGINS|MODS|TRANSFORM|TRANSLATE|NEWTRANSFORM|PROXY|PUBLISH|NEWPUBLISH|NEWBUSCRIBE|NEWCALL|SUBSCRIBE|WEBSOCKETCLIENT|FILESTORAGE|NOOP|IMPORT|CORS/, true))
 					return 'b';
 
-				var m = stream.match(/(ROUTE|AJAX|AJAXCACHEREVIEW|AJAXCACHE)\(/, true);
+				m = stream.match(/(ROUTE|AJAX|AJAXCACHEREVIEW|AJAXCACHE)\(/, true);
 				if (m) {
 					stream.isroute = true;
 					return null;

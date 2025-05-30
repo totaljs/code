@@ -2399,9 +2399,9 @@ FUNC.jcomponent_update = function(name, type, content, body, meta) {
 
 	FUNC.parts_parser = function(val, mode) {
 
-		var REGTODO = /@todo|@tag/i;
+		var REGTODO = /@todo|@tag|@hack/i;
 		var REGTODO2 = /^(\s)+-\s.*?/;
-		var REGTODOREPLACE = /^(@todo|@tag)(:)(\s)|(\s)+-(\s)/i;
+		var REGTODOREPLACE = /^(@todo|@tag|@hack)(:)(\s)|(\s)+-(\s)/i;
 		var REGTODODONE = /@done|@canceled/i;
 		var REGTODOCLEAN = /-->|\*\//g;
 		var REGPART = /(COMPONENT|COMPONENT_EXTEND|AUTH|EXTENSION|CONFIG|NEWSCHEMA|NEWCOMMAND|NEWOPERATION|NEWTASK|MIDDLEWARE|WATCH|ROUTE|(^|\s)ON|PLUGIN|PLUGINABLE)+\(.*?\)/g;

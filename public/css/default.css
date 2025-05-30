@@ -413,6 +413,11 @@ header .tools .external { color: #a2a286; }
 
 /* THEME DARK */
 
+.cm-flag-todo { background-color: #39baff5e; border-radius: 4px; padding: 0 2px; }
+.cm-flag-fixme { background-color: #ff39ec5e; border-radius: 4px; padding: 0 2px; }
+.cm-flag-tag { background-color: #39ff435e; border-radius: 4px; padding: 0 2px; }
+.cm-flag-hack { background-color: #ffc7395e; border-radius: 4px; padding: 0 2px; }
+
 .cm-s-default .cm-header { padding: 5px 0 0; font-size: 16px; }
 .cm-s-default .cm-headersub { font-weight: bold; color: #000000; line-height: 30px; }
 
