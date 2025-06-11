@@ -202,7 +202,7 @@
 
 	Thelpers.keywordformatter = function(val) {
 		if (val.charAt(0) === '@') {
-			return val.substring(1).replace(/(todo|tag|hack|fixme)/i, function(text) {
+			return val.substring(1).replace(/(todo|tag|hack|fixme|note)/i, function(text) {
 				return '<strong class="cm-flag-{0} part-flag">{1}</strong>'.format(text.toLowerCase(), text.toUpperCase());
 			});
 		}

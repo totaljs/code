@@ -2399,7 +2399,7 @@ FUNC.jcomponent_update = function(name, type, content, body, meta) {
 
 	FUNC.parts_parser = function(val, mode) {
 
-		var REGTODO = /@todo|@tag|@hack|@fixme/i;
+		var REGTODO = /@todo|@tag|@hack|@fixme|@note/i;
 		var REGTODO2 = /^(\s)+-\s.*?/;
 		var REGTODODONE = /@done|@canceled/i;
 		var REGTODOCLEAN = /-->|\*\//g;

@@ -415,6 +415,7 @@ header .tools .external { color: #a2a286; }
 
 .cm-flag-todo { background-color: #39baff5e; border-radius: 4px; padding: 0 2px; }
 .cm-flag-fixme { background-color: #ff39ec5e; border-radius: 4px; padding: 0 2px; }
+.cm-flag-note { background-color: #fbff395e; border-radius: 4px; padding: 0 2px; }
 .cm-flag-tag { background-color: #39ff435e; border-radius: 4px; padding: 0 2px; }
 .cm-flag-hack { background-color: #ffc7395e; border-radius: 4px; padding: 0 2px; }
 .part-flag { color: #000 !important; }
