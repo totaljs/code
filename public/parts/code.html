@@ -234,7 +234,7 @@
 		if (!output.includes('<html>'))
 			output = `<!DOCTYPE html><html><head><title>{0}</title><meta charset="utf-8" /><link href="https://cdn.componentator.com/spa.min@20.css" rel="stylesheet" type="text/css" /></head><body>{1}</body></html>`.format(name, output);
 
-		SETTER('iframeviewer/open', { name: 'Preview template', esc: true, html: output.replace(new RegExp('~C' + 'DN~', 'g', 'https://cdn.componentator.com') });
+		SETTER('iframeviewer/open', { name: 'Preview template', esc: true, html: output.replace(new RegExp('~C' + 'DN~', 'g'), 'https://cdn.componentator.com') });
 	}
 
 	PLUGIN('code', function(exports) {
