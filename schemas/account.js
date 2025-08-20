@@ -44,6 +44,23 @@ NEWSCHEMA('Accounts', function(schema) {
 				user.password = model.password.sha256();
 		}
 
+		let item = MAIN.users.findItem('id', user.id);
+		if (item) {
+
+			if (user.email)
+				item.email = user.email;
+
+			if (user.phone)
+				item.phone = user.phone;
+
+			item.darkmode = user.darkmode;
+			item.localsave = user.localsave;
+			item.autodarkmode = user.autodarkmode;
+
+			if (user.password)
+				item.password = user.password;
+		}
+
 		MAIN.save(1);
 		$.success();
 	});
