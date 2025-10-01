@@ -1,6 +1,8 @@
 ========================= 2.0
 
 - added support for Docker
+- added syntax highlighter for `.h` extensions
+- added syntax highlighter for `Makefile`
 
 ========================= 1.8
 

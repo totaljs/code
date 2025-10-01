@@ -2601,6 +2601,10 @@
 			if (tab.path === '/.bundlesignore' || tab.path === '/.bundleignore') {
 				mode = 'totaljsbundle';
 			} else {
+
+				if (ext.endsWith('/makefile'))
+					ext = 'makefile';
+
 				switch (ext) {
 					case 'src/config':
 					case 'src/config-release':
@@ -2622,6 +2626,10 @@
 					case 'package':
 					case 'bundle':
 						mode = 'totaljsresources';
+						break;
+					case '/makefile':
+					case 'makefile':
+						mode = 'makefile';
 						break;
 					case 'properties':
 						mode = 'properties';
@@ -2656,6 +2664,7 @@
 						mode = 'text/x-csrc';
 						break;
 					case 'cpp':
+					case 'h':
 						mode = 'text/x-c++src';
 						break;
 					case 'sql':
