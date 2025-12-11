@@ -37,7 +37,7 @@ exports.install = function() {
 	ROUTE('+GET     /api/projects/{id}/logfile/            *Projects',        files_logfile);
 	ROUTE('+GET     /api/projects/{id}/logfile/clear/      *Projects          --> @logfileclear');
 	ROUTE('+GET     /api/projects/{id}/restore/            *Projects',        files_restore);
-	ROUTE('+GET     /api/projects/{id}/edit/               *Projects',        files_open);
+	ROUTE('+GET     /api/projects/{id}/edit/               *Projects',        files_open, [20000]);
 	ROUTE('+GET     /api/projects/{id}/translate/          *Projects',        files_translate);
 	ROUTE('+GET     /api/projects/{id}/changes/            *Projects',        files_changes);
 	ROUTE('+POST    /api/projects/{id}/hours/              *Hours             --> @save');
@@ -45,7 +45,7 @@ exports.install = function() {
 	ROUTE('+DELETE  /api/projects/{id}/diff/',                                files_diff_delete);
 	ROUTE('+GET     /api/projects/{id}/changelogs/',                          changelogs);
 	ROUTE('+GET     /api/projects/timespent/',                                timespent);
-	ROUTE('+GET     /api/projects/{id}/modify/',                           	  files_modify);
+	ROUTE('+GET     /api/projects/{id}/modify/',                           	  files_modify, [20000]);
 	ROUTE('+GET     /api/projects/{id}/bundle/',                           	  makebundle, [10000]);
 	ROUTE('+POST    /api/projects/{id}/wiki/              *Wiki               --> @save');
 	ROUTE('+GET     /api/projects/{id}/localize/          *Projects           --> @localize', [30000]);

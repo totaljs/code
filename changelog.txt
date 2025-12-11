@@ -3,6 +3,7 @@
 - added support for Docker
 - added syntax highlighter for `.h` extensions
 - added syntax highlighter for `Makefile`
+- extended timeout for reading/saving operation
 
 ========================= 1.8
 
