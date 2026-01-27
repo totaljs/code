@@ -9,7 +9,7 @@ NEWSCHEMA('ChatGPT', function(schema) {
 		input: '*value',
 		action: function($, model) {
 			if (CONF.totalapi)
-				API('TAPI', 'chatgpt', model).callback($);
+				API('TAPI', 'code', model).callback($);
 			else
 				$.invalid("@(You don't have specified a Total.js API token)");
 		}

@@ -12,6 +12,7 @@ exports.install = function() {
 	ROUTE('+POST    /api/{schema}/                         *{schema}          --> @save', [60000], 1024);
 	ROUTE('+DELETE  /api/{schema}/{id}/                    *{schema}          --> @remove', [1200000]);
 	ROUTE('+POST    /api/{schema}/{id}/                    *{schema}          --> @save', 1024);
+	ROUTE('+POST    /api/ai/                               *AI                --> @exec', [1200000]);
 
 	// Localhost
 	ROUTE('+POST    /api/docker/state/                     *Docker            --> @exec', [1200000]);
