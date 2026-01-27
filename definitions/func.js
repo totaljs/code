@@ -170,7 +170,7 @@ FUNC.external = function(project, type, path, data, callback) {
 			});
 		} else {
 			body.data = data instanceof Buffer ? data.toString('base64') : data;
-			socket.sendcode(body, callback, EXTERNAL_JSON[type] || (type === 'log' ? 4 : 2));
+			socket.sendcode(body, callback, EXTERNAL_JSON[type] || (type === 'exec' || type === 'log' ? 4 : 2));
 		}
 	} else {
 		callback('offline', { status: 400 });

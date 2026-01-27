@@ -1285,7 +1285,7 @@
 
 				if (value.value === 'run') {
 					if (isscript)
-						FUNC.requestscriptspawn(code.data.id, code.current.path);
+						FUNC.requestscriptspawn(code.data.id, code.current.path, code.data.isexternal);
 					else
 						FUNC.request(text, editor.getValue());
 					return;

@@ -1032,13 +1032,20 @@ FUNC.aligntext = function(sel) {
 	return sel;
 };
 
-FUNC.requestscriptspawn = function(id, path) {
+FUNC.requestscriptspawn = function(id, path, isexternal) {
 	SETTER('loading/show');
 
 	var winid = 'w' + GUID(10);
-	AJAX('GET /api/request/{0}/?path={1}&id={2} ERROR'.format(id, encodeURIComponent(path), winid), function() {
+	AJAX('GET /api/request/{0}/?path={1}&id={2} ERROR'.format(id, encodeURIComponent(path), winid), function(response) {
 
 		SETTER('loading/hide', 100);
+
+		if (isexternal) {
+			var template = '<div class="output-response-header">{0}:</div><div class="output-response-header-value">{1}</div>';
+			PUSH('^output', '<div class="output-response">{0}</div>'.format(template.format('Response (' + (response.duration / 1000) + ' s)', Thelpers.encode(response.response).replace(/\n/g, '<br />'))));
+			SET('common.form', 'output');
+			return;
+		}
 
 		var obj = {};
 		obj.id = winid;
@@ -1050,7 +1057,6 @@ FUNC.requestscriptspawn = function(id, path) {
 		obj.destroy = function() {
 			SETTER('websocket/send', { TYPE: 'x', id: winid });
 		};
-
 		PUSH('windows', obj);
 	});
 };

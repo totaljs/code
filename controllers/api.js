@@ -521,11 +521,6 @@ function makerequestscript(id) {
 		return;
 	}
 
-	if (CONF.cloud) {
-		self.invalid('Not supported');
-		return;
-	}
-
 	var user = self.user;
 	if (!user.sa) {
 		if (project.users.indexOf(user.id) === -1) {
@@ -541,11 +536,6 @@ function makerequestscript(id) {
 	var meta = {};
 	var beg = Date.now();
 	var id = self.query.id;
-
-	meta.childtimeout = setTimeout(function() {
-		meta.child.kill(9);
-	}, id ? (60000 * 30) : 19000);
-
 	var ext = U.getExtension(self.query.path);
 	var can = { js: 1, sh: 1 };
 
@@ -553,6 +543,26 @@ function makerequestscript(id) {
 		self.invalid('error-permissions');
 		return;
 	}
+
+	if (project.isexternal) {
+		// Only Total.js v5 (build +5016) can execute scripts remotelly
+		let output = {};
+		output.duration = Date.now();
+		FUNC.external(project, 'exec', self.query.path, '', function(err, response) {
+			if (err) {
+				$.invalid(err);
+				return;
+			}
+			output.duration = Date.now() - output.duration;
+			output.response = response;
+			self.json(output);
+		});
+		return;
+	}
+
+	meta.childtimeout = setTimeout(function() {
+		meta.child.kill(9);
+	}, id ? (60000 * 30) : 19000);
 
 	if (id) {
 
