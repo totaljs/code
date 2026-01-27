@@ -4,7 +4,7 @@ NEWSCHEMA('AI', function(schema) {
 	schema.define('prompt', 'String', true);
 	schema.define('selection', 'String');
 	schema.define('path', 'String');
-	schema.define('action', ['code', 'review', 'explain', 'grammar', 'translation', 'summarize', 'keywords', 'text', 'image'], true);
+	schema.define('action', ['code', 'review', 'explain', 'grammar', 'summarize', 'keywords', 'text', 'image'], true);
 
 	schema.addWorkflow('exec', function($) {
 		let model = $.model;
