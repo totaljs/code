@@ -191,7 +191,7 @@ FUNC.preparedockerfile = async function(item, run) {
 	wwwfolder = wwwfolder.replace(/\/\//g, '/');
 	nodemodules = nodemodules.replace(/\/\//g, '/');
 
-	var islocalhost = host.indexOf('.localhost') !== -1;
+	var islocalhost = host.indexOf('.localhost') !== -1 || host.includes('http:');
 	var filename = PATH.join(item.path, 'index.yaml');
 
 	host = host.replace('http://', '').replace('https://', '');
