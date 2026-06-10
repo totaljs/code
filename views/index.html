@@ -118,7 +118,7 @@
 			common.idletime = 0;
 			common.limit = '@{CONF.limit}'.parseInt();
 			common.plustimespent = 33;
-			common.electron = navigator.userAgent.indexOf('Electron') !== -1 && window.require != null;
+			common.electron = (navigator.userAgent.includes('Electron') || navigator.userAgent.includes('TotalDesktop')) && window.require != null;
 			common.ismac = navigator.platform.substring(0, 3) === 'Mac';
 			common.token = '@{PREF.token}';
 			common.superadmin = '@{PREF.superadmin}';
@@ -129,7 +129,7 @@
 				}, 4000);
 			}
 
-			if (common.electron && !common.ismac)
+			if (common.electron && (!common.ismac || navigator.userAgent.includes('TotalDesktop')))
 				$('header').aclass('electron-header-border');
 
 			ENV('dockmargin', common.electron ? (common.ismac ? 78 : 50) : 50);
