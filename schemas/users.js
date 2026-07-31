@@ -159,10 +159,10 @@ function login($, user) {
 
 		var user = MAIN.users.findItem('id', profile.id);
 		if (user) {
-			COPY(response, user);
+			COPY(profile, user);
 			user.external = true;
 		} else {
-			user = response;
+			user = profile;
 			user.created = NOW;
 			user.blocked = false;
 			user.darkmode = 2;
