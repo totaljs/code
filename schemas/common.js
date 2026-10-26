@@ -1,6 +1,15 @@
 const Path = require('path');
 const Exec = require('child_process').exec;
+const ExecFile = require('child_process').execFile;
 const Dns = require('dns');
+const Url = require('url');
+
+// Returns the hostname in the ASCII form (international names to punycode, IPv4 to the canonical form)
+// or an empty string when it is not a plain hostname or IP address
+function hostname(value) {
+	var host = Url.domainToASCII(String(value || '').trim());
+	return /^[a-z0-9][a-z0-9._-]*$/i.test(host) ? host : '';
+}
 
 NEWSCHEMA('ChatGPT', function(schema) {
 
@@ -22,12 +31,25 @@ NEWSCHEMA('Hosts', function(schema) {
 	schema.define('host', 'String(50)', true);
 
 	schema.addWorkflow('ping', function($) {
-		var host = $.model.host.replace(/"|\n/g, '');
-		Exec('ping -c 3 "{0}"'.format(host), $.done(true));
+
+		var host = hostname($.model.host);
+		if (!host) {
+			$.invalid('@(Invalid hostname)');
+			return;
+		}
+
+		ExecFile('ping', ['-c', '3', host], $.done(true));
 	});
 
 	schema.addWorkflow('resolve', function($) {
-		Dns.resolve4($.model.host, function(e, addresses) {
+
+		var host = hostname($.model.host);
+		if (!host) {
+			$.invalid('@(Invalid hostname)');
+			return;
+		}
+
+		Dns.resolve4(host, function(e, addresses) {
 			if (e)
 				$.invalid(e);
 			else

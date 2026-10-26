@@ -1,4 +1,4 @@
-FROM node:lts-alpine
+FROM node:24-alpine
 
 RUN apk update && apk add bash
 RUN apk add curl
