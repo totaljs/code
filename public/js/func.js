@@ -2464,6 +2464,12 @@ FUNC.jcomponent_update = function(name, type, content, body, meta) {
 
 			if (mode === 'javascript' || mode === 'totaljs' || mode === 'html' || mode === 'htmlmixed' || mode === 'totaljs_server') {
 
+				index = line.indexOf('const ');
+				if (index !== -1) {
+					components.push({ line: i, name: line.substring(index + 6).trim(), type: 'const' });
+					continue;
+				}
+
 				if (line.indexOf('</file>') !== -1) {
 					for (var j = components.length - 1; j > -1; j--) {
 						var tmp = components[j];

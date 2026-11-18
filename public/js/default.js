@@ -88,6 +88,8 @@ Thelpers.particon = function(type) {
 			return 'fa fa-plug';
 		case 'inlinefile':
 			return 'far fa-copy';
+		case 'const':
+			return 'fa fa-equals';
 		case 'version':
 			return 'fa fa-superscript';
 		default:
